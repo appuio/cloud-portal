@@ -4,12 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "http-server": "http-server dist/cloud-portal -p 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:coverage": "jest --coverage",
     "lint": "ng lint",
-    "e2e": "ng e2e",
+    "e2e": "ng e2e --watch=false --headless=true",
+    "e2e-dev": "ng e2e",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
@@ -48,6 +50,7 @@
     "cypress": "9.0.0",
     "eslint": "8.3.0",
     "eslint-plugin-ngrx": "2.0.0",
+    "http-server": "^14.0.0",
     "jest": "27.3.1",
     "jest-preset-angular": "11.0.1",
     "karma-coverage": "2.0.3",
@@ -60,7 +63,8 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
+      "<rootDir>/dist/",
+      "<rootDir>/cypress/"
     ],
     "globals": {
       "ts-jest": {

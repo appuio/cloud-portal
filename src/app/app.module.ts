@@ -8,6 +8,7 @@ import {StyleClassModule} from "primeng/styleclass";
 import {RippleModule} from "primeng/ripple";
 import {InputTextModule} from "primeng/inputtext";
 import {BadgeModule} from "primeng/badge";
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {BadgeModule} from "primeng/badge";
     ButtonModule,
     RippleModule,
     InputTextModule,
-    BadgeModule
+    BadgeModule,
+    StoreModule.forRoot({}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -38,11 +38,12 @@
             "prefix": "app",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "change-detection-strategy/on-push": "error"
       },
       "plugins": [
         "ngrx",
-        "ngrx"
+        "change-detection-strategy"
       ]
     },
     {

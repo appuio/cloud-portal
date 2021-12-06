@@ -9,6 +9,12 @@
   "projects": {
     "cloud-portal": {
       "projectType": "application",
+      "i18n": {
+        "sourceLocale": {
+          "baseHref": "",
+          "code": "en-CH"
+        }
+      },
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
@@ -43,6 +49,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "localize": ["en-CH"],
             "outputPath": "dist/cloud-portal",
             "index": "src/index.html",
             "main": "src/main.ts",

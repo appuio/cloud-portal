@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +8,4 @@ import {Component, Inject, LOCALE_ID} from '@angular/core';
 export class AppComponent {
   date = new Date();
   number = 1000000;
-  constructor(@Inject(LOCALE_ID) locale: any) {
-    console.log(locale);
-  }
 }

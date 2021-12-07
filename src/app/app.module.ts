@@ -13,10 +13,12 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {AuthConfig, OAuthModule, OAuthService} from 'angular-oauth2-oidc';
 import {HttpClientModule} from "@angular/common/http";
+import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavbarItemComponent
   ],
   imports: [
     BrowserModule,

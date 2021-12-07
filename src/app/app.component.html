@@ -8,132 +8,25 @@
       </div>
       <div class="overflow-y-auto mt-3">
         <ul class="list-none p-3 m-0">
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-home mr-2"></i>
-              <span class="font-medium">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-bookmark mr-2"></i>
-              <span class="font-medium">Bookmarks</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" enterActiveClass="slidedown"
-               enterClass="hidden" leaveActiveClass="slideup" leaveToClass="hidden" pRipple
-               pStyleClass="@next">
-              <i class="pi pi-chart-line mr-2"></i>
-              <span class="font-medium">Reports</span>
-              <i class="pi pi-chevron-down ml-auto"></i>
-            </a>
-            <ul
-              class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out">
-              <li>
-                <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                                transition-duration-150 transition-colors" enterActiveClass="slidedown"
-                   enterClass="hidden" leaveActiveClass="slideup" leaveToClass="hidden" pRipple
-                   pStyleClass="@next">
-                  <i class="pi pi-chart-line mr-2"></i>
-                  <span class="font-medium">Revenue</span>
-                  <i class="pi pi-chevron-down ml-auto"></i>
-                </a>
-                <ul
-                  class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out">
-                  <li>
-                    <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                                        transition-duration-150 transition-colors" pRipple>
-                      <i class="pi pi-table mr-2"></i>
-                      <span class="font-medium">View</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                                        transition-duration-150 transition-colors" pRipple>
-                      <i class="pi pi-search mr-2"></i>
-                      <span class="font-medium">Search</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                                transition-duration-150 transition-colors" pRipple>
-                  <i class="pi pi-chart-line mr-2"></i>
-                  <span class="font-medium">Expenses</span>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-users mr-2"></i>
-              <span class="font-medium">Team</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-comments mr-2"></i>
-              <span class="font-medium">Messages</span>
-              <span
-                class="inline-flex align-items-center justify-content-center ml-auto bg-yellow-500 text-bluegray-900 border-circle"
-                style="min-width: 1.5rem; height: 1.5rem">3</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-calendar mr-2"></i>
-              <span class="font-medium">Calendar</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-cog mr-2"></i>
-              <span class="font-medium">Settings</span>
-            </a>
+          <li *ngFor="let menuItem of menuItems">
+            <app-navbar-item [menuItem]="menuItem"></app-navbar-item>
           </li>
         </ul>
       </div>
       <div class="mt-auto">
-        <hr class="mb-3 mx-3 border-top-1 border-none border-white"/>
+        <hr class="mb-3 mx-3 border-top-1 border-none border-white">
         <ul class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                        transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-user mr-2"></i>
-              <span class="font-medium">Profile</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                        transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-cog mr-2"></i>
-              <span class="font-medium">Settings</span>
-            </a>
-          </li>
-          <li>
-            <a class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                        transition-duration-150 transition-colors" pRipple>
-              <i class="pi pi-sign-out mr-2"></i>
-              <span class="font-medium">Sign Out</span>
-            </a>
+          <li *ngFor="let profileItem of profileItems">
+            <app-navbar-item [menuItem]="profileItem"></app-navbar-item>
           </li>
         </ul>
         <a class="m-3 px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer text-white hover:text-blue-50
                     transition-duration-150 transition-colors" enterActiveClass="slidedown"
            enterClass="hidden" leaveActiveClass="slideup" leaveToClass="hidden" pRipple
            pStyleClass="@prev">
-          <img class="mr-2" src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
+          <img class="mr-2" [src]="avatarSrc"
                style="width: 35px; height: 35px; border-radius: 50%">
-          <span class="font-medium">Amy Elsner</span>
+          <span class="font-medium">{{name}}</span>
           <i class="pi pi-chevron-up ml-auto"></i>
         </a>
       </div>
@@ -144,7 +37,8 @@
       class="flex justify-content-between align-items-center px-5 surface-section shadow-2 relative lg:static border-bottom-1 surface-border"
       style="height:60px">
       <div class="flex">
-        <a [hideOnOutsideClick]="true" class="cursor-pointer block lg:hidden text-700 mr-3" enterActiveClass="fadeinleft" enterClass="hidden"
+        <a [hideOnOutsideClick]="true" class="cursor-pointer block lg:hidden text-700 mr-3"
+           enterActiveClass="fadeinleft" enterClass="hidden"
            leaveActiveClass="fadeoutleft" leaveToClass="hidden" pRipple
            pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>
@@ -154,9 +48,6 @@
     <div class="p-5 flex flex-column flex-auto">
       <div class="border-1 surface-border surface-section flex-auto">
         Content
-        {{date | date:'shortDate'}} <br/>
-        {{number | number}} <br/>
-        {{number | currency}}
       </div>
     </div>
   </div>

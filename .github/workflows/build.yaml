@@ -1,38 +1,24 @@
 name: Build
-on: [ push ]
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'npm'
       - run: npm ci
       - run: npm run lint
-  e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
-      - uses: cypress-io/github-action@v2
-        with:
-          build: npm run build
-          start: npm run http-server
-      - uses: actions/upload-artifact@v2
-        with:
-          name: e2e-videos
-          path: cypress/videos
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -43,11 +29,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+  e2e:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - uses: cypress-io/github-action@v2
+        with:
+          start: npm run http-server
+      - uses: actions/upload-artifact@v2
+        with:
+          name: e2e-videos
+          path: cypress/videos
+  docker:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false

@@ -1,9 +1,19 @@
 {
-    "extends": [
-      "config:base",
-      ":disableDependencyDashboard"
-    ],
-    "labels": [
-      "dependency"
+  "extends": [
+    "config:base",
+    ":disableDependencyDashboard"
+  ],
+  "labels": [
+    "dependency"
+  ],
+  "npm": {
+    "packageRules": [
+      {
+        "matchPackageNames": [
+          "typescript"
+        ],
+        "allowedVersions": "4.4.*"
+      }
     ]
+  }
 }

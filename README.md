@@ -1,5 +1,4 @@
-# cloud-portal
-APPUiO Cloud Portal (Web Frontend)
+# APPUiO Cloud Portal  (Web Frontend)
 
 ## Build
 
@@ -7,11 +6,11 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 ## Running unit tests
 
-Run `npm run test` to execute the unit tests.
+Run `npm run test` to execute the unit tests with jest.
 
 ## Running end-to-end tests
 
-Run `npm run e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Run `npm run e2e` to execute the end-to-end tests with cypress.
 
 ## Development
 
@@ -40,3 +39,7 @@ docker compose exec auth /opt/jboss/keycloak/bin/standalone.sh \
   -Dkeycloak.migration.usersExportStrategy=REALM_FILE \
   -Dkeycloak.migration.file=/tmp/realm.json
 ```
+
+## Configuration
+
+The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.

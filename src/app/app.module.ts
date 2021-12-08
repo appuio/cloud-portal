@@ -13,7 +13,9 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {AuthConfig, OAuthModule, OAuthService} from 'angular-oauth2-oidc';
 import {HttpClientModule} from "@angular/common/http";
-import { NavbarItemComponent } from './navbar-item/navbar-item.component';
+import {NavbarItemComponent} from './navbar-item/navbar-item.component';
+import {AppConfigService} from "./app-config.service";
+import {mergeMap, Observable} from "rxjs";
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import { NavbarItemComponent } from './navbar-item/navbar-item.component';
   providers: [
     {
       provide: APP_INITIALIZER,
-      deps: [OAuthService],
+      deps: [AppConfigService, OAuthService],
       useFactory: initializeAppFactory,
       multi: true
     }],
@@ -45,24 +47,31 @@ import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 export class AppModule {
 }
 
-export function initializeAppFactory(oauthService: OAuthService): () => Promise<boolean> {
+export function initializeAppFactory(appConfigService: AppConfigService, oauthService: OAuthService): () => Observable<boolean> {
   return () => {
-    oauthService.configure(authCodeFlowConfig);
-    return oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
-      if (loggedIn) {
-        oauthService.setupAutomaticSilentRefresh();
-        return loggedIn;
-      }
-      return Promise.reject("Not logged in");
-    });
+    return appConfigService.loadConfig()
+      .pipe(mergeMap(appConfig => {
+        const authConfig = {
+          ...authCodeFlowConfig,
+          issuer: appConfig.issuer,
+          clientId: appConfig.clientId
+        }
+        oauthService.configure(authConfig);
+        return oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
+          if (!loggedIn) {
+            return Promise.reject("Not logged in");
+          }
+          oauthService.setupAutomaticSilentRefresh();
+          return true;
+        });
+
+      }))
   };
 }
 
 
 export const authCodeFlowConfig: AuthConfig = {
-  issuer: 'http://localhost:8080/auth/realms/appuio',
   redirectUri: window.location.origin + '/index.html',
-  clientId: 'appuio-cloud-portal',
   responseType: 'code',
   scope: 'openid profile email',
   showDebugInformation: !environment.production,

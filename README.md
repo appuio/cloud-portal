@@ -4,11 +4,11 @@
 
 Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## Running Unit Tests
 
 Run `npm run test` to execute the unit tests with jest.
 
-## Running end-to-end tests
+## Running End-to-End Tests
 
 Run `npm run e2e` to execute the end-to-end tests with cypress.
 

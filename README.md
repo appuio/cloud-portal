@@ -4,7 +4,7 @@
 
 Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## Running Unit Tests
 
 Run `npm run test` to execute the unit tests with jest.
 

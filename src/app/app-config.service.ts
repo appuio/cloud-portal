@@ -1,5 +1,5 @@
 import {HttpClient} from "@angular/common/http";
-import {map} from "rxjs";
+import {map, Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 
 export interface AppConfig {
@@ -18,7 +18,7 @@ export class AppConfigService {
   constructor(private httpClient: HttpClient) {
   }
 
-  public loadConfig() {
+  loadConfig(): Observable<AppConfig> {
     return this.httpClient
       .get<AppConfig>(this.CONFIGURATION_URL)
       .pipe(map((config: AppConfig) => this.appConfig = config));

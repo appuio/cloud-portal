@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -11,10 +11,16 @@ import {BadgeModule} from "primeng/badge";
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
+import {AuthConfig, OAuthModule, OAuthService} from 'angular-oauth2-oidc';
+import {HttpClientModule} from "@angular/common/http";
+import {NavbarItemComponent} from './navbar-item/navbar-item.component';
+import {AppConfigService} from "./app-config.service";
+import {mergeMap, Observable} from "rxjs";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavbarItemComponent
   ],
   imports: [
     BrowserModule,
@@ -24,11 +30,49 @@ import {environment} from '../environments/environment';
     RippleModule,
     InputTextModule,
     BadgeModule,
+    HttpClientModule,
     StoreModule.forRoot({}, {}),
-    StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production})
+    StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
+    OAuthModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      deps: [AppConfigService, OAuthService],
+      useFactory: initializeAppFactory,
+      multi: true
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 }
+
+export function initializeAppFactory(appConfigService: AppConfigService, oauthService: OAuthService): () => Observable<boolean> {
+  return () => {
+    return appConfigService.loadConfig()
+      .pipe(mergeMap(appConfig => {
+        const authConfig = {
+          ...authCodeFlowConfig,
+          issuer: appConfig.issuer,
+          clientId: appConfig.clientId
+        }
+        oauthService.configure(authConfig);
+        return oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
+          if (!loggedIn) {
+            return Promise.reject("Not logged in");
+          }
+          oauthService.setupAutomaticSilentRefresh();
+          return true;
+        });
+
+      }))
+  };
+}
+
+
+export const authCodeFlowConfig: AuthConfig = {
+  redirectUri: window.location.origin + '/index.html',
+  responseType: 'code',
+  scope: 'openid profile email',
+  showDebugInformation: !environment.production,
+};

@@ -59,6 +59,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
+              "src/config.json",
               "src/assets"
             ],
             "styles": [

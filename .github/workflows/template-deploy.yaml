@@ -1,0 +1,70 @@
+on:
+  workflow_call:
+    inputs:
+      namespace:
+        type: string
+        required: true
+      openshift_api_url:
+        type: string
+        required: true
+    secrets:
+      openshift_token:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: preview
+      url: ${{ steps.deployment_info.outputs.route_host }}
+    steps:
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v0.9.0
+        with:
+          helm-version: v3.7.1
+          helmfile-version: v0.142.0
+          install-kubectl: false
+
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "4"
+
+      - name: Authenticate and set context
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ inputs.openshift_api_url }}
+          openshift_token: ${{ secrets.openshift_token }}
+          namespace: ${{ inputs.namespace }}
+          # We don't have a LE cert yet
+          insecure_skip_tls_verify: true
+
+      - name: Deploy app
+        run: helmfile --namespace ${{ env.NAMESPACE }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
+        env:
+          HELM_RELEASE_NAME: ${{ env.HELM_RELEASE_NAME }}
+          IMG_TAG: ${{ env.IMG_TAG }}
+          #GIT_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Gather deployment status
+        if: ${{ github.event_name == 'pull_request' }}
+        id: deployment_info
+        run: |
+          echo ::set-output name=route_host::"$(oc -n ${{ env.NAMESPACE }} get route ${{ env.HELM_RELEASE_NAME }} -o jsonpath='{.spec.host}')"
+
+      - name: Make comment in PR
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ## 🚀 Preview deployment active
+
+            | | |
+            |-|-|
+            **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
+            **Revision** | ${{ github.event.pull_request.head.sha }}
+            **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
+            **Cluster** | ${{ env.OPENSHIFT_API }}
+
+            To uninstall this deployment, close or merge this PR.

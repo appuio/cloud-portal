@@ -11,6 +11,9 @@ on:
         type: string
         default: portal
         required: false
+      image_tag:
+        type: string
+        required: true
     secrets:
       openshift_token:
         required: true
@@ -44,10 +47,10 @@ jobs:
           insecure_skip_tls_verify: true
 
       - name: Deploy app
-        run: helmfile --namespace ${{ input.namespace }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
+        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
         env:
           HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
-          IMG_TAG: ${{ env.IMG_TAG }}
+          IMG_TAG: ${{ inputs.image_tag }}
           #GIT_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Gather deployment status
@@ -69,6 +72,6 @@ jobs:
             **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
             **Revision** | ${{ github.event.pull_request.head.sha }}
             **Helm release** | ${{ inputs.namespace }}/${{ inputs.helm_release_name }}
-            **Cluster** | ${{ env.OPENSHIFT_API }}
+            **Cluster** | ${{ inputs.openshift_api_url }}
 
             To uninstall this deployment, close or merge this PR.

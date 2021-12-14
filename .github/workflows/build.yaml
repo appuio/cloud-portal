@@ -90,7 +90,7 @@ jobs:
         with:
           registry: registry.cloudscale-lpg-2.appuio.cloud
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.OPENSHIFT_TOKEN_PREVIEW }}
+          password: ${{ secrets.OPENSHIFT_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -104,8 +104,8 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
     uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@preview-deployments
     with:
-      namespace: ${{ env.NAMESPACE }}
-      openshift_api_url: ${{ env.OPENSHIFT_API }}
+      namespace: appuio-cloud-preview
+      openshift_api_url: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
     needs:

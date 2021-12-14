@@ -70,6 +70,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
+    environment: preview
     needs:
       - build
     steps:

@@ -13,12 +13,12 @@ helmDefaults:
 releases:
   - name: {{ env "HELM_RELEASE_NAME" | default "portal" }}
     chart: appuio/cloud-portal
-    createNamespace: false
     missingFileHandler: Warn
     values:
       - {{ .Environment.Name }}.yaml
       - image:
           tag: {{ trimPrefix "refs/tags/" (requiredEnv "IMG_TAG") }}
+          repository: {{ .Namespace }}/cloud-portal
       - fullnameOverride: {{ env "HELM_RELEASE_NAME" | default "portal" }}
       - podAnnotations:
           app.kubernetes.io/git-shasum: {{ env "GIT_SHA" | default "GIT_SHA" }}

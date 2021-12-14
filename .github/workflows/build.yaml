@@ -106,8 +106,9 @@ jobs:
     with:
       namespace: appuio-cloud-preview
       openshift_api_url: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
-      helm_release_name: pr-${{ github.event.number }}
+      helm_release_name: portal-pr-${{ github.event.number }}
       image_tag: pr-${{ github.event.number }}
+      revision: ${{ github.event.pull_request.head.sha }}
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
     needs:

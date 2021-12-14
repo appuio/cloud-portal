@@ -14,6 +14,9 @@ on:
       image_tag:
         type: string
         required: true
+      revision:
+        type: string
+        required: true
     secrets:
       openshift_token:
         required: true
@@ -33,6 +36,7 @@ jobs:
           helm-version: v3.7.1
           helmfile-version: v0.142.0
           install-kubectl: false
+          additional-helm-plugins: https://github.com/aslafy-z/helm-git --version 0.11.1
 
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
@@ -49,11 +53,11 @@ jobs:
           insecure_skip_tls_verify: true
 
       - name: Deploy app
-        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
+        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e preview apply --wait
         env:
           HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
           IMG_TAG: ${{ inputs.image_tag }}
-          #GIT_SHA: ${{ github.event.pull_request.head.sha }}
+          GIT_SHA: ${{ inputs.revision }}
 
       - name: Gather deployment status
         if: ${{ github.event_name == 'pull_request' }}
@@ -72,7 +76,7 @@ jobs:
             | | |
             |-|-|
             **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
-            **Revision** | ${{ github.event.pull_request.head.sha }}
+            **Revision** | ${{ inputs.revision }}
             **Helm release** | ${{ inputs.namespace }}/${{ inputs.helm_release_name }}
             **Cluster** | ${{ inputs.openshift_api_url }}
 

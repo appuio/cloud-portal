@@ -102,7 +102,7 @@ jobs:
 
   deploy:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
-    uses: ./.github/workflows/setup_deploy.yaml@${{ github.ref }}
+    uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@preview-deployments
     with:
       namespace: ${{ env.NAMESPACE }}
       openshift_api_url: ${{ env.OPENSHIFT_API }}

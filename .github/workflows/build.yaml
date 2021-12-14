@@ -8,9 +8,7 @@ on:
 
 env:
   REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
-  NAMESPACE:  appuio-cloud-preview
   IMAGE_NAME: appuio-cloud-preview/cloud-portal
-  IMG_TAG_PREVIEW: pr-${{ github.event.number }}
 
 jobs:
   lint:
@@ -84,12 +82,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
+          # by default, it creates the `:pr-#` tag in pull requests and branch name on `master`
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Docker login
         uses: docker/login-action@v1
         with:
-          registry: registry.cloudscale-lpg-2.appuio.cloud
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.OPENSHIFT_TOKEN }}
 
@@ -107,6 +106,7 @@ jobs:
     with:
       namespace: appuio-cloud-preview
       openshift_api_url: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
+      helm_release_name: pr-${{ github.event.number }}
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
     needs:

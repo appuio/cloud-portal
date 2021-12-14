@@ -7,12 +7,16 @@ on:
       openshift_api_url:
         type: string
         required: true
+      helm_release_name:
+        type: string
+        default: portal
+        required: false
     secrets:
       openshift_token:
         required: true
 
 jobs:
-  deploy:
+  install:
     runs-on: ubuntu-latest
     environment:
       name: preview
@@ -40,9 +44,9 @@ jobs:
           insecure_skip_tls_verify: true
 
       - name: Deploy app
-        run: helmfile --namespace ${{ env.NAMESPACE }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
+        run: helmfile --namespace ${{ input.namespace }} --file deployment/helmfile.yaml -e preview diff # diff for now, but should be `apply --wait`
         env:
-          HELM_RELEASE_NAME: ${{ env.HELM_RELEASE_NAME }}
+          HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
           IMG_TAG: ${{ env.IMG_TAG }}
           #GIT_SHA: ${{ github.event.pull_request.head.sha }}
 
@@ -50,7 +54,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         id: deployment_info
         run: |
-          echo ::set-output name=route_host::"$(oc -n ${{ env.NAMESPACE }} get route ${{ env.HELM_RELEASE_NAME }} -o jsonpath='{.spec.host}')"
+          echo ::set-output name=route_host::"$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')"
 
       - name: Make comment in PR
         uses: peter-evans/create-or-update-comment@v1
@@ -64,7 +68,7 @@ jobs:
             |-|-|
             **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
             **Revision** | ${{ github.event.pull_request.head.sha }}
-            **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
+            **Helm release** | ${{ inputs.namespace }}/${{ inputs.helm_release_name }}
             **Cluster** | ${{ env.OPENSHIFT_API }}
 
             To uninstall this deployment, close or merge this PR.

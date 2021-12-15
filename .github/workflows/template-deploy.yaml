@@ -64,3 +64,20 @@ jobs:
         id: deployment_info
         run: |
           echo ::set-output name=route_host::"$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')"
+
+      - name: Notify on success
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ## 🚀 Preview deployment active
+
+            | | |
+            |-|-|
+            **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
+            **Revision** | ${{ inputs.revision }}
+            **Helm release** | ${{ inputs.namespace }}/${{ inputs.helm_release_name }}
+            **Cluster** | ${{ env.OPENSHIFT_API }}
+
+            To uninstall this deployment, close or merge this PR.

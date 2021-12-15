@@ -1,0 +1,85 @@
+name: Undeploy
+
+on:
+  pull_request:
+    types:
+      - closed
+
+env:
+  ENVIRONMENT: preview
+  OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
+  HELM_RELEASE_NAME: portal-pr-${{ github.event.number }}
+  IMG_TAG: pr-${{ github.event.number }}
+  NAMESPACE: appuio-cloud-preview
+  IMAGE_NAME: cloud-portal
+
+jobs:
+  uninstall:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+    environment: preview
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v0.9.0
+        with:
+          helm-version: v3.7.1
+          helmfile-version: v0.142.0
+          install-kubectl: false
+          additional-helm-plugins: https://github.com/aslafy-z/helm-git --version 0.11.1
+
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "4"
+
+      - name: Authenticate and set context
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ env.OPENSHIFT_API }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          namespace: ${{ env.NAMESPACE }}
+          # We don't have a LE cert yet
+          insecure_skip_tls_verify: true
+
+      - name: Uninstall app
+        run: helmfile --namespace ${{ env.NAMESPACE }} --file deployment/helmfile.yaml -e ${{ env.ENVIRONMENT }} destroy --args --wait
+        env:
+          HELM_RELEASE_NAME: ${{ env.HELM_RELEASE_NAME }}
+          IMG_TAG: none
+
+      - name: Delete image in registry
+        run: oc -n ${{ env.NAMESPACE }} delete imagestreamtags ${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }} --ignore-not-found
+
+      - name: Notify on success
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ## ✔️ Preview deployment uninstalled
+
+            | | |
+            |-|-|
+            **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
+            **Cluster** | ${{ env.OPENSHIFT_API }}
+
+      - name: Notify on failure
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ failure() }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ## ❌ Failed to remove preview deployment
+
+            | | |
+            |-|-|
+            **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
+            **Cluster** | ${{ env.OPENSHIFT_API }}
+
+            Please investigate what went wrong in the GitHub actions logs.
+            Maintainers can manually remove the deployment by running
+            ```bash
+            helmfile -n ${{ env.NAMESPACE }} -f deployment/helmfile.yaml -e ${{ env.ENVIRONMENT }} destroy
+            oc -n ${{ env.NAMESPACE }} delete imagestreamtags ${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }} --ignore-not-found
+            ```

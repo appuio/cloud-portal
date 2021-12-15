@@ -4,9 +4,6 @@ on:
       namespace:
         type: string
         required: true
-      openshift_api_url:
-        type: string
-        required: true
       helm_release_name:
         type: string
         default: portal
@@ -20,6 +17,9 @@ on:
     secrets:
       openshift_token:
         required: true
+
+env:
+  OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
 
 jobs:
   install:
@@ -46,7 +46,7 @@ jobs:
       - name: Authenticate and set context
         uses: redhat-actions/oc-login@v1
         with:
-          openshift_server_url: ${{ inputs.openshift_api_url }}
+          openshift_server_url: ${{ env.OPENSHIFT_API }}
           openshift_token: ${{ secrets.openshift_token }}
           namespace: ${{ inputs.namespace }}
           # We don't have a LE cert yet

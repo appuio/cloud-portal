@@ -3,13 +3,49 @@ name: PullRequest
 on:
   pull_request: {}
 
+env:
+  REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
+  NAMESPACE: appuio-cloud-preview
+  IMAGE_NAME: cloud-portal
+
 jobs:
 
   build:
     uses: appuio/cloud-portal/.github/workflows/template-build.yaml@preview-deployments
-    with:
-      namespace: appuio-cloud-preview
-      push_image: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+
+  docker:
+    runs-on: ubuntu-latest
+    environment: preview
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # by default, it creates the `:pr-#` tag in pull requests and branch name on `master`
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}
+
+      - name: Docker login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.OPENSHIFT_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
     # Don't deploy with Renovate PRs
@@ -24,3 +60,4 @@ jobs:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
     needs:
       - build
+      - docker

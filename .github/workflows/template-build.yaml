@@ -1,17 +1,5 @@
 on:
-  workflow_call:
-    inputs:
-      namespace:
-        type: string
-        required: true
-      push_image:
-        type: boolean
-        required: false
-        default: false
-
-env:
-  REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
-  IMAGE_NAME: cloud-portal
+  workflow_call: {}
 
 jobs:
   lint:
@@ -68,38 +56,3 @@ jobs:
         with:
           name: e2e-videos
           path: cypress/videos
-
-  docker:
-    runs-on: ubuntu-latest
-    environment: preview
-    needs:
-      - dist
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: dist
-
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          # by default, it creates the `:pr-#` tag in pull requests and branch name on `master`
-          images: ${{ env.REGISTRY }}/${{ inputs.namespace }}/${{ env.IMAGE_NAME }}
-
-      - name: Docker login
-        if: ${{ inputs.push_image }}
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.OPENSHIFT_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: ${{ inputs.push_image }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}

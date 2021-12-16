@@ -1,10 +1,13 @@
-name: Build
-
 on:
-  push:
-    branches:
-      - master
-  pull_request: {}
+  workflow_call:
+    inputs:
+      namespace:
+        type: string
+        required: true
+      push_image:
+        type: boolean
+        required: false
+        default: false
 
 env:
   REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
@@ -33,7 +36,7 @@ jobs:
       - run: npm ci
       - run: npm run test
 
-  build:
+  dist:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -51,7 +54,7 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     needs:
-      - build
+      - dist
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -70,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: preview
     needs:
-      - build
+      - dist
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -83,9 +86,10 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           # by default, it creates the `:pr-#` tag in pull requests and branch name on `master`
-          images: ${{ env.REGISTRY }}/appuio-cloud-preview/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ inputs.namespace }}/${{ env.IMAGE_NAME }}
 
       - name: Docker login
+        if: ${{ inputs.push_image }}
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
@@ -96,19 +100,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
+          push: ${{ inputs.push_image }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  deploy:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
-    uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@preview-deployments
-    with:
-      namespace: appuio-cloud-preview
-      helm_release_name: portal-pr-${{ github.event.number }}
-      image_tag: pr-${{ github.event.number }}
-      revision: ${{ github.event.pull_request.head.sha }}
-    secrets:
-      openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-    needs:
-      - docker

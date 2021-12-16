@@ -1,0 +1,26 @@
+name: PullRequest
+
+on:
+  pull_request: {}
+
+jobs:
+
+  build:
+    uses: appuio/cloud-portal/.github/workflows/template-build.yaml@preview-deployments
+    with:
+      namespace: appuio-cloud-preview
+      push_image: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+
+  deploy:
+    # Don't deploy with Renovate PRs
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+    uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@preview-deployments
+    with:
+      namespace: appuio-cloud-preview
+      helm_release_name: portal-pr-${{ github.event.number }}
+      image_tag: pr-${{ github.event.number }}
+      revision: ${{ github.event.pull_request.head.sha }}
+    secrets:
+      openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+    needs:
+      - build

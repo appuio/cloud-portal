@@ -14,6 +14,10 @@ on:
       revision:
         type: string
         required: true
+      environment:
+        type: string
+        required: false
+        default: preview
     secrets:
       openshift_token:
         required: true
@@ -25,7 +29,7 @@ jobs:
   install:
     runs-on: ubuntu-latest
     environment:
-      name: preview
+      name: ${{ inputs.environment }}
       url: https://${{ steps.deployment_info.outputs.route_host }}
     steps:
       - uses: actions/checkout@v2
@@ -53,7 +57,7 @@ jobs:
           insecure_skip_tls_verify: true
 
       - name: Deploy app
-        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e preview apply --wait
+        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e ${{ inputs.environment }} apply --wait
         env:
           HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
           IMG_TAG: ${{ inputs.image_tag }}

@@ -6,6 +6,7 @@ repositories:
 
 environments:
   preview: {}
+  integration: {}
 
 helmDefaults:
   historyMax: 3

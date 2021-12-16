@@ -1,0 +1,6 @@
+route:
+  enabled: true
+  host: cloud-portal-integration.apps.cloudscale-lpg-2.appuio.cloud
+image:
+  registry: image-registry.openshift-image-registry.svc:5000
+  pullPolicy: Always

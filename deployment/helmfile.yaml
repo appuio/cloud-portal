@@ -15,6 +15,7 @@ helmDefaults:
 releases:
   - name: "{{ env "HELM_RELEASE_NAME" | default "portal" }}"
     chart: appuio/cloud-portal
+    version: v0.1.0
     createNamespace: false
     missingFileHandler: Warn
     values:

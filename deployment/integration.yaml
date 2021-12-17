@@ -4,3 +4,7 @@ route:
 image:
   registry: image-registry.openshift-image-registry.svc:5000
   pullPolicy: Always
+portal:
+  config:
+    issuer: https://id.appuio.cloud/auth/realms/appuio-cloud
+    clientId: appuio-control-api

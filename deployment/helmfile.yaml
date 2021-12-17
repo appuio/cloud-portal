@@ -7,21 +7,24 @@ environments:
 
 repositories:
   - name: appuio
-    url: {{ getOrNil "repoUrl" .Values | default "https://charts.appuio.ch" }}
+    url: "{{ getOrNil "repoUrl" .Values | default "https://charts.appuio.ch" }}"
 
 helmDefaults:
   historyMax: 3
 
 releases:
-  - name: {{ env "HELM_RELEASE_NAME" | default "portal" }}
+  - name: "{{ env "HELM_RELEASE_NAME" | default "portal" }}"
     chart: appuio/cloud-portal
     createNamespace: false
     missingFileHandler: Warn
     values:
-      - {{ .Environment.Name }}.yaml
+      - "{{ .Environment.Name }}.yaml"
       - image:
           tag: {{ trimPrefix "refs/tags/" (requiredEnv "IMG_TAG") }}
-          repository: {{ .Namespace }}/cloud-portal
+          repository: "{{ .Namespace }}/cloud-portal"
       - fullnameOverride: {{ env "HELM_RELEASE_NAME" | default "portal" }}
       - podAnnotations:
           app.kubernetes.io/git-shasum: {{ env "GIT_SHA" | default "GIT_SHA" }}
+      - portal:
+          config:
+            version: {{ env "GIT_SHA" | default "GIT_SHA" }}

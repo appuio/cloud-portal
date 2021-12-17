@@ -1,12 +1,13 @@
+environments:
+  preview:
+    values:
+      # If testing out a feature branch of the Helm chart, uncomment the Git url:
+      - repoUrl: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
+  integration: {}
+
 repositories:
   - name: appuio
-    #url: https://charts.appuio.ch
-    # If testing out a feature branch, use the Git url:
-    url: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
-
-environments:
-  preview: {}
-  integration: {}
+    url: {{ getOrNil "repoUrl" .Values | default "https://charts.appuio.ch" }}
 
 helmDefaults:
   historyMax: 3

@@ -50,7 +50,7 @@ The APPUiO Cloud Portal can be configured with the `config.json` file which is l
 Setup the project and deploy user
 
 ```bash
-nstest=appuio-cloud-preview
+nstest=appuio-control-api-preview
 sa=cloud-portal-deployer
 
 oc new-project $nstest

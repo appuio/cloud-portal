@@ -1,0 +1,25 @@
+repositories:
+  - name: appuio
+    #url: https://charts.appuio.ch
+    # If testing out a feature branch, use the Git url:
+    url: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
+
+environments:
+  preview: {}
+
+helmDefaults:
+  historyMax: 3
+
+releases:
+  - name: {{ env "HELM_RELEASE_NAME" | default "portal" }}
+    chart: appuio/cloud-portal
+    createNamespace: false
+    missingFileHandler: Warn
+    values:
+      - {{ .Environment.Name }}.yaml
+      - image:
+          tag: {{ trimPrefix "refs/tags/" (requiredEnv "IMG_TAG") }}
+          repository: {{ .Namespace }}/cloud-portal
+      - fullnameOverride: {{ env "HELM_RELEASE_NAME" | default "portal" }}
+      - podAnnotations:
+          app.kubernetes.io/git-shasum: {{ env "GIT_SHA" | default "GIT_SHA" }}

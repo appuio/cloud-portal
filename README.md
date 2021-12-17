@@ -43,3 +43,27 @@ docker compose exec auth /opt/jboss/keycloak/bin/standalone.sh \
 ## Configuration
 
 The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.
+
+
+## Deploy to OpenShift
+
+Setup the project and deploy user
+
+```bash
+nstest=appuio-control-api-preview
+sa=cloud-portal-deployer
+
+oc new-project $nstest
+
+oc -n $nstest create sa $sa
+
+# Allow the deployer user to manage deployments in test namespace
+oc -n $nstest policy add-role-to-user admin -z $sa --rolebinding-name admin
+oc -n $nstest policy add-role-to-user system:image-pusher -z $sa
+echo
+
+# Get SA token
+oc -n $nstest sa get-token $sa
+```
+
+Now, put the token into GitHub's Secrets

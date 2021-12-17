@@ -1,0 +1,83 @@
+on:
+  workflow_call:
+    inputs:
+      namespace:
+        type: string
+        required: true
+      helm_release_name:
+        type: string
+        default: portal
+        required: false
+      image_tag:
+        type: string
+        required: true
+      revision:
+        type: string
+        required: true
+    secrets:
+      openshift_token:
+        required: true
+
+env:
+  OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    environment:
+      name: preview
+      url: https://${{ steps.deployment_info.outputs.route_host }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v0.9.0
+        with:
+          helm-version: v3.7.1
+          helmfile-version: v0.142.0
+          install-kubectl: false
+          additional-helm-plugins: https://github.com/aslafy-z/helm-git --version 0.11.1
+
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "4"
+
+      - name: Authenticate and set context
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ env.OPENSHIFT_API }}
+          openshift_token: ${{ secrets.openshift_token }}
+          namespace: ${{ inputs.namespace }}
+          # We don't have a LE cert yet
+          insecure_skip_tls_verify: true
+
+      - name: Deploy app
+        run: helmfile --namespace ${{ inputs.namespace }} --file deployment/helmfile.yaml -e preview apply --wait
+        env:
+          HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
+          IMG_TAG: ${{ inputs.image_tag }}
+          GIT_SHA: ${{ inputs.revision }}
+
+      - name: Gather deployment status
+        if: ${{ github.event_name == 'pull_request' }}
+        id: deployment_info
+        run: |
+          echo ::set-output name=route_host::"$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')"
+
+      - name: Notify on success
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ## 🚀 Preview deployment active
+
+            | | |
+            |-|-|
+            **App URL** | https://${{ steps.deployment_info.outputs.route_host }}
+            **Revision** | ${{ inputs.revision }}
+            **Helm release** | ${{ inputs.namespace }}/${{ inputs.helm_release_name }}
+            **Cluster** | ${{ env.OPENSHIFT_API }}
+
+            To uninstall this deployment, close or merge this PR.

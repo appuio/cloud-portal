@@ -67,3 +67,16 @@ oc -n $nstest sa get-token $sa
 ```
 
 Now, put the token into GitHub's Secrets
+
+## Use existing Keycloak in preview deployments
+
+A GitHub action workflows dynamically registers the redirect URL in an existing Keycloak instance via API.
+
+1. Create a new User in master realm
+1. Set a secure password
+1. In the role mappings, select `appuio-cloud-dev-realm` in the "Client Roles" dropdown.
+   Add `manage-clients`.
+1. Create a new Client in the target realm (e.g. `appuio-control-api`)
+1. When editing the client, the URL shows the UUID of the client.
+   Copy this value and set it in `.github/keycloak-redirect-url.sh`.
+1. Update the `KEYCLOAK_USER` and `KEYCLOAK_PASSWORD` secrets in GitHub environment `preview` with the values in the first steps.

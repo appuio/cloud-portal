@@ -21,6 +21,10 @@ on:
     secrets:
       openshift_token:
         required: true
+      keycloak_user:
+        required: false
+      keycloak_password:
+        required: false
 
 env:
   OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
@@ -68,6 +72,10 @@ jobs:
         id: deployment_info
         run: |
           echo ::set-output name=route_host::"$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')"
+
+      - name: Add route URL to Keycloak client
+        if: ${{ github.event_name == 'pull_request' }}
+        run: .github/keycloak-redirect-url.sh "${{ secrets.keycloak_user }}" "${{ secrets.keycloak_password }}" "https://${{ steps.deployment_info.outputs.route_host }}/*"
 
       - name: Notify on success
         uses: peter-evans/create-or-update-comment@v1

@@ -58,6 +58,8 @@ jobs:
       revision: ${{ github.event.pull_request.head.sha }}
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+      keycloak_password: ${{ secrets.KEYCLOAK_PASSWORD }}
+      keycloak_user: ${{ secrets.KEYCLOAK_USER }}
     needs:
       - build
       - docker

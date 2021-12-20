@@ -43,6 +43,11 @@ jobs:
           # We don't have a LE cert yet
           insecure_skip_tls_verify: true
 
+      - name: Gather deployment status
+        id: deployment_info
+        run: |
+          echo ::set-output name=route_host::"$(oc -n ${{ env.NAMESPACE }} get route ${{ env.HELM_RELEASE_NAME }} -o jsonpath='{.spec.host}')"
+
       - name: Uninstall app
         run: helmfile --namespace ${{ env.NAMESPACE }} --file deployment/helmfile.yaml -e ${{ env.ENVIRONMENT }} destroy --args --wait
         env:
@@ -51,6 +56,9 @@ jobs:
 
       - name: Delete image in registry
         run: oc -n ${{ env.NAMESPACE }} delete imagestreamtags ${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }} --ignore-not-found
+
+      - name: Remove route URL from Keycloak client
+        run: ./github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on success
         uses: peter-evans/create-or-update-comment@v1
@@ -63,9 +71,6 @@ jobs:
             |-|-|
             **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
             **Cluster** | ${{ env.OPENSHIFT_API }}
-
-      - name: Remove route URL from Keycloak client
-        run: ./github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on failure
         uses: peter-evans/create-or-update-comment@v1

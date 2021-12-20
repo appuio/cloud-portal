@@ -33,6 +33,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}
 
       - name: Docker login
+        if: ${{ !startsWith(github.head_ref, 'renovate/') }}
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
@@ -43,13 +44,13 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
+          push: ${{ !startsWith(github.head_ref, 'renovate/') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
     # Don't deploy with Renovate PRs
-    if: ${{ !contains(github.ref, 'refs/heads/renovate/') }}
+    if: ${{ !startsWith(github.head_ref, 'renovate/') }}
     uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@master
     with:
       namespace: appuio-control-api-preview

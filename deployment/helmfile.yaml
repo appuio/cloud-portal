@@ -1,8 +1,8 @@
 environments:
   preview:
-    values:
+    values: []
       # If testing out a feature branch of the Helm chart, uncomment the Git url:
-      - repoUrl: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
+      #- repoUrl: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
   integration: {}
 
 repositories:

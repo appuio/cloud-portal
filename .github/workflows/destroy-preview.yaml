@@ -16,7 +16,7 @@ env:
 jobs:
   uninstall:
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+    if: ${{ !contains(github.ref, 'refs/heads/renovate/') }}
     environment: preview
     steps:
       - uses: actions/checkout@v2
@@ -63,6 +63,9 @@ jobs:
             |-|-|
             **Helm release** | ${{ env.NAMESPACE }}/${{ env.HELM_RELEASE_NAME }}
             **Cluster** | ${{ env.OPENSHIFT_API }}
+
+      - name: Remove route URL from Keycloak client
+        run: ./github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on failure
         uses: peter-evans/create-or-update-comment@v1

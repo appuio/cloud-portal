@@ -1,9 +1,10 @@
 route:
   enabled: true
+  host: cloud-portal-integration.apps.cloudscale-lpg-2.appuio.cloud
 image:
   registry: image-registry.openshift-image-registry.svc:5000
   pullPolicy: Always
 portal:
   config:
-    issuer: https://id.dev.appuio.cloud/auth/realms/appuio-cloud-dev
+    issuer: https://id.appuio.cloud/auth/realms/appuio-cloud
     clientId: appuio-control-api

@@ -1,11 +1,13 @@
-name: PullRequest
+name: Master
 
 on:
-  pull_request: {}
+  push:
+    branches:
+      - master
 
 env:
   REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
-  NAMESPACE: appuio-control-api-preview
+  NAMESPACE: appuio-control-api-integration
   IMAGE_NAME: cloud-portal
 
 jobs:
@@ -15,7 +17,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
-    environment: preview
+    environment: integration
     needs:
       - build
     steps:
@@ -30,7 +32,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           # by default, it creates the `:pr-#` tag in pull requests and branch name on `master`
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE}}/${{ env.IMAGE_NAME }}
 
       - name: Docker login
         uses: docker/login-action@v1
@@ -48,18 +50,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
-    # Don't deploy with Renovate PRs
-    if: ${{ !contains(github.ref, 'refs/heads/renovate/') }}
     uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@master
     with:
-      namespace: appuio-control-api-preview
-      helm_release_name: portal-pr-${{ github.event.number }}
-      image_tag: pr-${{ github.event.number }}
-      revision: ${{ github.event.pull_request.head.sha }}
+      namespace: appuio-control-api-integration
+      image_tag: master
+      revision: ${{ github.sha }}
+      environment: integration
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-      keycloak_password: ${{ secrets.KEYCLOAK_PASSWORD }}
-      keycloak_user: ${{ secrets.KEYCLOAK_USER }}
     needs:
       - build
       - docker

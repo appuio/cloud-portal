@@ -29,10 +29,10 @@ json_resp_client=$(curl -sS --fail ${clientUrl} -H "Content-Type: application/js
 
 if [ "${ACTION}" = "remove" ]; then
   echo "* Removing '${REDIRECT_URI}' from Client config '${editClientId}'"
-  json_req_update=$(echo ${json_resp_client} | jq -c '.redirectUris |= (.- ["'${REDIRECT_URI}'"] | unique)')
+  json_req_update=$(echo ${json_resp_client} | jq -c '.redirectUris |= (.- ["'${REDIRECT_URI}'/*"] | unique) | .webOrigins |= (.- ["'${REDIRECT_URI}'"] | unique)')
 else
   echo "* Adding '${REDIRECT_URI}' to Client config '${editClientId}'"
-  json_req_update=$(echo ${json_resp_client} | jq -c '.redirectUris |= (.+ ["'${REDIRECT_URI}'"] | unique)')
+  json_req_update=$(echo ${json_resp_client} | jq -c '.redirectUris |= (.+ ["'${REDIRECT_URI}'/*"] | unique) | .webOrigins |= (.+ ["'${REDIRECT_URI}'"] | unique)')
 fi
 
 curl -sS --fail ${clientUrl} -H "Content-Type: application/json" -H "Authorization: bearer ${access_token}" -X PUT --data "${json_req_update}"

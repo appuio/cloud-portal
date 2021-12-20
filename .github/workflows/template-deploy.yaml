@@ -75,7 +75,7 @@ jobs:
 
       - name: Add route URL to Keycloak client
         if: ${{ github.event_name == 'pull_request' }}
-        run: .github/keycloak-redirect-url.sh "${{ secrets.keycloak_user }}" "${{ secrets.keycloak_password }}" "https://${{ steps.deployment_info.outputs.route_host }}/*"
+        run: .github/keycloak-redirect-url.sh "${{ secrets.keycloak_user }}" "${{ secrets.keycloak_password }}" "https://${{ steps.deployment_info.outputs.route_host }}"
 
       - name: Notify on success
         uses: peter-evans/create-or-update-comment@v1

@@ -49,7 +49,7 @@ jobs:
 
   deploy:
     # Don't deploy with Renovate PRs
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+    if: ${{ !contains(github.ref, 'refs/heads/renovate/') }}
     uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@master
     with:
       namespace: appuio-control-api-preview

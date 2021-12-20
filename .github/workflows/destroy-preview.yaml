@@ -16,7 +16,7 @@ env:
 jobs:
   uninstall:
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependency') }}
+    if: ${{ !contains(github.ref, 'refs/heads/renovate/') }}
     environment: preview
     steps:
       - uses: actions/checkout@v2

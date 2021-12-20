@@ -62,6 +62,9 @@ oc -n $nstest policy add-role-to-user admin -z $sa --rolebinding-name admin
 oc -n $nstest policy add-role-to-user system:image-pusher -z $sa
 echo
 
+# Annotate namespace
+oc annotate namespace $nstest --overwrite "app.kubernetes.io/managed-by=GitHub Actions" "app.kubernetes.io/source=https://github.com/appuio/cloud-portal"
+
 # Get SA token
 oc -n $nstest sa get-token $sa
 ```

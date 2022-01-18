@@ -12,15 +12,18 @@ import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {AuthConfig, OAuthModule, OAuthService} from 'angular-oauth2-oidc';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NavbarItemComponent} from './navbar-item/navbar-item.component';
 import {AppConfigService} from "./app-config.service";
 import {mergeMap, Observable} from "rxjs";
+import {ZonesComponent} from './zones/zones.component';
+import {IdTokenInterceptor} from "./id-token.interceptor";
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarItemComponent
+    NavbarItemComponent,
+    ZonesComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +44,9 @@ import {mergeMap, Observable} from "rxjs";
       deps: [AppConfigService, OAuthService],
       useFactory: initializeAppFactory,
       multi: true
-    }],
+    },
+    {provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
@@ -55,7 +60,7 @@ export function initializeAppFactory(appConfigService: AppConfigService, oauthSe
           ...authCodeFlowConfig,
           issuer: appConfig.issuer,
           clientId: appConfig.clientId
-        }
+        };
         oauthService.configure(authConfig);
         return oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
           if (!loggedIn) {
@@ -65,7 +70,7 @@ export function initializeAppFactory(appConfigService: AppConfigService, oauthSe
           return true;
         });
 
-      }))
+      }));
   };
 }
 
@@ -73,6 +78,6 @@ export function initializeAppFactory(appConfigService: AppConfigService, oauthSe
 export const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + '/index.html',
   responseType: 'code',
-  scope: 'openid profile email',
+  scope: 'openid profile email roles offline_access web-origins',
   showDebugInformation: !environment.production,
 };

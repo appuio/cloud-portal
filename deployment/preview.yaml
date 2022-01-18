@@ -7,3 +7,5 @@ portal:
   config:
     issuer: https://id.dev.appuio.cloud/auth/realms/appuio-cloud-dev
     clientId: appuio-control-api
+  env:
+    KUBERNETES_APIS: https://api.appuio.cloud:6443/apis/

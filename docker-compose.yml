@@ -1,15 +1,15 @@
 services:
-  auth:
-    image: "quay.io/keycloak/keycloak:16.1.0"
+  portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    networks:
+      - default
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/realm.json
-    volumes:
-      - keycloak_data:/opt/jboss/keycloak/standalone/data
-      - ./docker/realm.json:/tmp/realm.json
-volumes:
-  keycloak_data:
-    driver: local
+      KUBERNETES_APIS: https://control-api-v1.22.1-control-plane:6443/apis/
+networks:
+  default:
+    external: true
+    name: kind

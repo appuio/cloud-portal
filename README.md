@@ -14,36 +14,19 @@ Run `npm run e2e` to execute the end-to-end tests with cypress.
 
 ## Development
 
-1. Run `docker compose up`
-2. Run `npm start`
+1. Start the local control api: https://github.com/appuio/control-api/tree/master/local-env
+2. Run `kubectl proxy` to start a proxy server between localhost and the Kubernetes API server.
+3. Run `npm start` to start angular locally.
 
 ## Keycloak
 
-You find Keycloak on http://localhost:8080/.
-
-The default admin credentials are `admin:admin`.
-
-The default user credentials are `user:1234`.
-
-### Export realm
-
-If you have made changes to the realm, be sure to export it via the command line.
-The export via the UI does not contain the credentials and is therefore worthless for our purpose!
-
-```
-docker compose exec auth /opt/jboss/keycloak/bin/standalone.sh \
-  -Djboss.socket.binding.port-offset=100 \
-  -Dkeycloak.migration.action=export \
-  -Dkeycloak.migration.provider=singleFile \
-  -Dkeycloak.migration.realmName=appuio \
-  -Dkeycloak.migration.usersExportStrategy=REALM_FILE \
-  -Dkeycloak.migration.file=/tmp/realm.json
-```
+Use the dev instance from VSHN: https://id.dev.appuio.cloud
 
 ## Configuration
 
 The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.
 
+In addition to that, the environment variable `KUBERNETES_APIS` has to be set as well. (i.E `https://control-api-v1.22.1-control-plane:6443/apis/`)
 
 ## Deploy to OpenShift
 

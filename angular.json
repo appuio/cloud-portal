@@ -107,7 +107,8 @@
               "browserTarget": "cloud-portal:build:production"
             },
             "development": {
-              "browserTarget": "cloud-portal:build:development"
+              "browserTarget": "cloud-portal:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

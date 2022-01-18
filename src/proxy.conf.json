@@ -1,6 +1,9 @@
 {
-  "/api": {
+  "/appuio-api": {
     "target": "http://localhost:8001",
-    "secure": false
+    "secure": false,
+    "pathRewrite": {
+      "^/appuio-api": ""
+    }
   }
 }

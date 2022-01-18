@@ -12,6 +12,6 @@ export class KubernetesClientService {
   }
 
   getZones(): Observable<ZoneList> {
-    return this.httpClient.get<ZoneList>('apis/appuio.io/v1/zones');
+    return this.httpClient.get<ZoneList>('appuio-api/apis/appuio.io/v1/zones');
   }
 }

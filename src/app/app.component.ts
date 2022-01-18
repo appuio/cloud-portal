@@ -12,30 +12,19 @@ import {Md5} from "ts-md5";
 export class AppComponent {
   menuItems: MenuItem[] = [
     {
-      label: 'Dashboard',
-      icon: 'pi pi-home',
+      label: $localize`Zones`,
+      icon: 'pi pi-database',
       routerLink: []
     },
-    {
-      label: 'Reports',
-      icon: 'pi pi-chart-line',
-      items: [
-        {
-          label: 'Report 1',
-          icon: 'pi pi-chart-line',
-          routerLink: []
-        }
-      ]
-    }
   ];
 
   profileItems: MenuItem[] = [
     {
-      label: 'Profile',
+      label: $localize`Profile`,
       icon: 'pi pi-user',
     },
     {
-      label: 'Sign out',
+      label: $localize`Sign out`,
       icon: 'pi pi-sign-out',
       command: () => this.oauthService.logOut()
     }

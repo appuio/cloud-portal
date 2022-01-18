@@ -8,8 +8,6 @@ import {StyleClassModule} from "primeng/styleclass";
 import {RippleModule} from "primeng/ripple";
 import {InputTextModule} from "primeng/inputtext";
 import {BadgeModule} from "primeng/badge";
-import {StoreModule} from '@ngrx/store';
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {AuthConfig, OAuthModule, OAuthService} from 'angular-oauth2-oidc';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
@@ -18,6 +16,15 @@ import {AppConfigService} from "./app-config.service";
 import {mergeMap, Observable} from "rxjs";
 import {ZonesComponent} from './zones/zones.component';
 import {IdTokenInterceptor} from "./id-token.interceptor";
+import {ReactiveComponentModule} from "@ngrx/component";
+import {TagModule} from "primeng/tag";
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {ClipboardModule} from "@angular/cdk/clipboard";
+import {StoreModule} from '@ngrx/store';
+import {appReducer} from './store/app.reducer';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {EffectsModule} from '@ngrx/effects';
+import {AppEffects} from './store/app.effects';
 
 @NgModule({
   declarations: [
@@ -34,9 +41,14 @@ import {IdTokenInterceptor} from "./id-token.interceptor";
     InputTextModule,
     BadgeModule,
     HttpClientModule,
-    StoreModule.forRoot({}, {}),
-    StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
-    OAuthModule.forRoot()
+    OAuthModule.forRoot(),
+    ReactiveComponentModule,
+    TagModule,
+    FontAwesomeModule,
+    ClipboardModule,
+    StoreModule.forRoot({app: appReducer}),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forRoot([AppEffects])
   ],
   providers: [
     {
@@ -73,7 +85,6 @@ export function initializeAppFactory(appConfigService: AppConfigService, oauthSe
       }));
   };
 }
-
 
 export const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + '/index.html',

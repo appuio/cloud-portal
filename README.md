@@ -26,7 +26,7 @@ Use the dev instance from VSHN: https://id.dev.appuio.cloud
 
 The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.
 
-In addition to that, the environment variable `KUBERNETES_APIS` has to be set as well. (i.E `https://control-api-v1.22.1-control-plane:6443/apis/`)
+In addition to that, the environment variable `APPUIO_API` has to be set as well. (i.E `https://control-api-v1.22.1-control-plane:6443/apis/`)
 
 ## Deploy to OpenShift
 

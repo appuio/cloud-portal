@@ -10,7 +10,7 @@ export class IdTokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (request.url.startsWith('apis')) {
+    if (request.url.startsWith('appuio-api')) {
       return next.handle(request.clone({
         headers: request.headers.set('Authorization', `Bearer ${this.oAuthService.getIdToken()}`)
       }));

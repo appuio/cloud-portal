@@ -58,7 +58,7 @@ jobs:
         run: oc -n ${{ env.NAMESPACE }} delete imagestreamtags ${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }} --ignore-not-found
 
       - name: Remove route URL from Keycloak client
-        run: ./github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
+        run: .github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on success
         uses: peter-evans/create-or-update-comment@v1

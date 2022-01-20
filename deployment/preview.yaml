@@ -7,3 +7,5 @@ portal:
   config:
     issuer: https://id.dev.appuio.cloud/auth/realms/appuio-cloud-dev
     clientId: appuio-control-api
+  env:
+    APPUIO_API: https://api-integration.apps.cloudscale-lpg-2.appuio.cloud/

@@ -1,13 +1,12 @@
 environments:
-  preview:
-    values: []
-      # If testing out a feature branch of the Helm chart, uncomment the Git url:
-      #- repoUrl: git+https://github.com/appuio/charts@appuio/cloud-portal?ref=cloud-portal
+  preview: {}
   integration: {}
 
 repositories:
   - name: appuio
-    url: "{{ getOrNil "repoUrl" .Values | default "https://charts.appuio.ch" }}"
+    # If testing out a feature branch of the Helm chart, export variable:
+    # `export CHART_REPO_URL="git+https://github.com/appuio/charts@appuio/cloud-portal?ref=<your-feature-branch>"`
+    url: "{{ env "CHART_REPO_URL" | default "https://charts.appuio.ch" }}"
 
 helmDefaults:
   historyMax: 3
@@ -15,7 +14,7 @@ helmDefaults:
 releases:
   - name: "{{ env "HELM_RELEASE_NAME" | default "portal" }}"
     chart: appuio/cloud-portal
-    version: v0.1.0
+    version: v0.2.0
     createNamespace: false
     missingFileHandler: Warn
     values:

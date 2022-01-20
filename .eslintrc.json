@@ -45,7 +45,8 @@
           {
             "allowExpressions": true
           }
-        ]
+        ],
+        "semi": "error"
       },
       "plugins": [
         "ngrx",

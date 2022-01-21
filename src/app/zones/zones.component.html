@@ -21,7 +21,7 @@
 
       <div class="flex flex-wrap border-top-1 surface-border" *ngIf="!codeMode[i]">
         <ul class="w-full list-none p-0 m-0 surface-border">
-          <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Cloud Provider</div>
             <div class="text-900 w-full md:w-9">
               {{zone.data.cloudProvider.name}} - {{zone.data.cloudProvider.region}}
@@ -30,7 +30,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap">
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>CName</div>
             <div class="text-900 w-full md:w-9 relative">
               {{zone.data.cname}}
@@ -39,7 +39,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium">Default App Domain</div>
             <div class="text-900 w-full md:w-9 line-height-3 relative">
               {{zone.data.defaultAppDomain}}
@@ -48,7 +48,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap">
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Features</div>
             <div class="text-900 w-full md:w-9">
               <p-tag styleClass="mr-1 mb-1 text-white" [value]="'Kubernetes: '+zone.data.features.kubernetesVersion"
@@ -59,14 +59,14 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Gateway IPs</div>
             <div class="text-900 w-full md:w-9">
               <p-tag *ngFor="let ip of zone.data.gatewayIPs" styleClass="mr-1 mb-1" [value]="ip"></p-tag>
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap">
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Console</div>
             <div class="text-900 w-full md:w-9 relative">
               <a class="text-blue-500 no-underline" [href]="zone.data.urls.console">{{zone.data.urls.console}}</a>
@@ -75,7 +75,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Kubernetes API</div>
             <div class="text-900 w-full md:w-9 relative">
               <a class="text-blue-500 no-underline"
@@ -85,7 +85,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap">
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Logging</div>
             <div class="text-900 w-full md:w-9 relative">
               <a class="text-blue-500 no-underline" [href]="zone.data.urls.logging">{{zone.data.urls.logging}}</a>
@@ -94,7 +94,7 @@
             </div>
           </li>
 
-          <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Registry</div>
             <div class="text-900 w-full md:w-9 relative">
               <a class="text-blue-500 no-underline" [href]="zone.data.urls.registry">{{zone.data.urls.registry}}</a>

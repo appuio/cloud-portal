@@ -25,6 +25,10 @@ import {appReducer} from './store/app.reducer';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {EffectsModule} from '@ngrx/effects';
 import {AppEffects} from './store/app.effects';
+import {ToastModule} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MessagesModule} from "primeng/messages";
 
 @NgModule({
   declarations: [
@@ -34,6 +38,7 @@ import {AppEffects} from './store/app.effects';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     StyleClassModule,
     ButtonModule,
@@ -48,7 +53,9 @@ import {AppEffects} from './store/app.effects';
     ClipboardModule,
     StoreModule.forRoot({app: appReducer}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot([AppEffects]),
+    ToastModule,
+    MessagesModule
   ],
   providers: [
     {
@@ -58,6 +65,7 @@ import {AppEffects} from './store/app.effects';
       multi: true
     },
     {provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true},
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

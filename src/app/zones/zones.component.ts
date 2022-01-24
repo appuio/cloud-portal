@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {faClipboard, faCode, faList} from '@fortawesome/free-solid-svg-icons';
+import {faClipboard, faCode, faInfoCircle, faList} from '@fortawesome/free-solid-svg-icons';
 import {selectZones} from "../store/app.selectors";
 import {Store} from "@ngrx/store";
 import {loadZones} from "../store/app.actions";
@@ -17,6 +17,7 @@ export class ZonesComponent {
   faList = faList;
   faClipboard = faClipboard;
   codeMode: {[key: string]: boolean} = {};
+  faInfo = faInfoCircle;
 
   constructor(private store: Store) {
     store.dispatch(loadZones());

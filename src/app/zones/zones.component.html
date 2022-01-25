@@ -1,4 +1,4 @@
-<h1 id="title" class="pt-0 mt-0" i18n>Zones</h1>
+<h1 class="pt-0 mt-0" i18n id="zones-title">Zones</h1>
 
 <ng-container *ngIf="zones$ | ngrxPush as zones;">
 
@@ -119,7 +119,7 @@
     <p-messages severity="info">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faInfo"></fa-icon>
-        <div class="ml-2" i18n>No zones available.</div>
+        <div class="ml-2" i18n id="no-zone-message">No zones available.</div>
       </ng-template>
     </p-messages>
   </ng-container>
@@ -128,7 +128,7 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n>Zones could not be loaded.</div>
+        <div class="ml-2" i18n id="zone-failure-message">Zones could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>

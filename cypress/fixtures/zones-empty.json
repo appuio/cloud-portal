@@ -1,0 +1,9 @@
+{
+  "apiVersion": "appuio.io/v1",
+  "items": [],
+  "kind": "ZoneList",
+  "metadata": {
+    "continue": "",
+    "resourceVersion": "169635"
+  }
+}

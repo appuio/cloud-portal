@@ -1,4 +1,136 @@
-<h1>Zones</h1>
-<pre>
-{{zones$ | async | json }}
-</pre>
+<h1 class="pt-0 mt-0" i18n id="zones-title">Zones</h1>
+
+<ng-container *ngIf="zones$ | ngrxPush as zones;">
+
+  <ng-container *ngFor="let zone of zones.value; index as i">
+
+    <div class="surface-card p-4 shadow-2 border-round mb-4">
+      <div class="flex flex-row justify-content-between">
+        <div class="text-3xl font-medium text-900 mb-3">{{zone.data.displayName}}</div>
+        <div>
+          <a class="text-blue-500 hover:text-primary text-2xl cursor-pointer" (click)="switchToCodeMode(i)"
+             *ngIf="!codeMode[i]">
+            <fa-icon [icon]="faCode"></fa-icon>
+          </a>
+          <a class="text-blue-500 hover:text-primary text-2xl cursor-pointer" (click)="switchToNoCodeMode(i)"
+             *ngIf="codeMode[i]">
+            <fa-icon [icon]="faList"></fa-icon>
+          </a>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap border-top-1 surface-border" *ngIf="!codeMode[i]">
+        <ul class="w-full list-none p-0 m-0 surface-border">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Cloud Provider</div>
+            <div class="text-900 w-full md:w-9">
+              {{zone.data.cloudProvider.name}} - {{zone.data.cloudProvider.region}}
+              <p-tag *ngFor="let zone of zone.data.cloudProvider.zones" styleClass="mr-2" [value]="zone"
+                     [rounded]="true"></p-tag>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>CName</div>
+            <div class="text-900 w-full md:w-9 relative">
+              {{zone.data.cname}}
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.cname"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Default App Domain</div>
+            <div class="text-900 w-full md:w-9 line-height-3 relative">
+              {{zone.data.defaultAppDomain}}
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.defaultAppDomain"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Features</div>
+            <div class="text-900 w-full md:w-9">
+              <p-tag [value]="'Kubernetes: ' + zone.data.features.kubernetesVersion" styleClass="mr-1 mb-1 text-white"
+                     [style]="{'background-color':'#3371e3'}"></p-tag>
+              <p-tag [value]="'OpenShift: ' + zone.data.features.openshiftVersion" styleClass="mr-1 mb-1 text-white"
+                     [style]="{'background-color':'#EE0000'}"></p-tag>
+              <p-tag [value]="'SDN Plugin: ' + zone.data.features.sdnPlugin" styleClass="mr-1 mb-1"></p-tag>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Gateway IPs</div>
+            <div class="text-900 w-full md:w-9">
+              <p-tag *ngFor="let ip of zone.data.gatewayIPs" styleClass="mr-1 mb-1" [value]="ip"></p-tag>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Console</div>
+            <div class="text-900 w-full md:w-9 relative">
+              <a class="text-blue-500 no-underline" [href]="zone.data.urls.console">{{zone.data.urls.console}}</a>
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.urls.console"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Kubernetes API</div>
+            <div class="text-900 w-full md:w-9 relative">
+              <a class="text-blue-500 no-underline"
+                 [href]="zone.data.urls.kubernetesAPI">{{zone.data.urls.kubernetesAPI}}</a>
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.urls.kubernetesAPI"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Logging</div>
+            <div class="text-900 w-full md:w-9 relative">
+              <a class="text-blue-500 no-underline" [href]="zone.data.urls.logging">{{zone.data.urls.logging}}</a>
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.urls.logging"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Registry</div>
+            <div class="text-900 w-full md:w-9 relative">
+              <a class="text-blue-500 no-underline" [href]="zone.data.urls.registry">{{zone.data.urls.registry}}</a>
+              <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data.urls.registry"
+                       class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <div *ngIf="codeMode[i]" class="bg-gray-700 text-white p-3 border-round relative">
+        <pre>{{zone.data | json}}</pre>
+        <fa-icon [icon]="faClipboard" [cdkCopyToClipboard]="zone.data | json"
+                 class="text-400 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0 mr-3 mt-2"></fa-icon>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="isZoneListEmpty(zones)">
+    <p-messages severity="info">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faInfo"></fa-icon>
+        <div class="ml-2" i18n id="no-zone-message">No zones available.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+  <ng-container *ngIf="hasZoneLoadingFailed(zones)">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="zone-failure-message">Zones could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>

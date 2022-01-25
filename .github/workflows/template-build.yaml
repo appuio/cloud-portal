@@ -56,3 +56,4 @@ jobs:
         with:
           name: e2e-videos
           path: cypress/videos
+

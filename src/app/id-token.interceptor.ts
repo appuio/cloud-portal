@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {OAuthService} from "angular-oauth2-oidc";
+import {OAuthService} from 'angular-oauth2-oidc';
 
 @Injectable()
 export class IdTokenInterceptor implements HttpInterceptor {

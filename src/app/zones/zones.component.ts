@@ -1,5 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {KubernetesClientService} from "../kubernetes-client.service";
+import {faClipboard, faCode, faInfoCircle, faList, faWarning} from '@fortawesome/free-solid-svg-icons';
+import {selectZones} from '../store/app.selectors';
+import {Store} from '@ngrx/store';
+import {loadZones} from '../store/app.actions';
+import {Entity, EntityState} from '../store/app.reducer';
+import {Zone} from '../types/zone';
 
 @Component({
   selector: 'app-zones',
@@ -9,9 +14,31 @@ import {KubernetesClientService} from "../kubernetes-client.service";
 })
 export class ZonesComponent {
 
-  zones$ = this.kubernetesClientService.getZones();
+  zones$ = this.store.select(selectZones);
+  faCode = faCode;
+  faList = faList;
+  faClipboard = faClipboard;
+  codeMode: { [key: string]: boolean } = {};
+  faInfo = faInfoCircle;
+  faWarning = faWarning;
 
-  constructor(private kubernetesClientService: KubernetesClientService) {
+  constructor(private store: Store) {
+    store.dispatch(loadZones());
   }
 
+  switchToCodeMode(i: number): void {
+    this.codeMode[i] = true;
+  }
+
+  switchToNoCodeMode(i: number): void {
+    this.codeMode[i] = false;
+  }
+
+  isZoneListEmpty(zones: Entity<Zone[]>): boolean {
+    return zones.state === EntityState.Loaded && zones.value.length === 0;
+  }
+
+  hasZoneLoadingFailed(zones: Entity<Zone[]>): boolean {
+    return zones.state === EntityState.Failed;
+  }
 }

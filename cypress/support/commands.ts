@@ -11,36 +11,37 @@ function setupAuth(): void {
   window.sessionStorage.setItem('id_token', 'token');
   window.sessionStorage.setItem('access_token', 'token');
   window.sessionStorage.setItem('id_token_claims_obj', JSON.stringify({
-    "exp": 1642607047,
-    "iat": 1642606747,
-    "auth_time": 1642506182,
-    "jti": "ca989eba-d31a-4196-ac4c-cd0e1429481b",
-    "iss": "https://id.dev.appuio.cloud/auth/realms/local-dev-mig",
-    "aud": "local-dev",
-    "sub": "abf7ae0c-e6da-4451-93cb-4303a7cba314",
-    "typ": "ID",
-    "azp": "local-dev",
-    "nonce": "Y0NaOTAxbXVBeW1-RUMzRUl3ZldBRF9ENnB3RVBJUjZka2VSOEN-cmx4LlZ6",
-    "session_state": "5420a178-dc2a-4828-9433-819e6444d327",
-    "at_hash": "OZ_XRmCxHbwb50CVApNdEw",
-    "acr": "1",
-    "sid": "5420a178-dc2a-4828-9433-819e6444d327",
-    "email_verified": true,
-    "name": "Michi Gerber",
-    "groups": ["offline_access", "default-roles-local-dev-mig", "admin", "uma_authorization"],
-    "preferred_username": "mig",
-    "given_name": "Michi",
-    "family_name": "Gerber",
-    "email": "michael.gerber@nxt.engineering"
+    'exp': 1642607047,
+    'iat': 1642606747,
+    'auth_time': 1642506182,
+    'jti': 'ca989eba-d31a-4196-ac4c-cd0e1429481b',
+    'iss': 'https://id.dev.appuio.cloud/auth/realms/local-dev-mig',
+    'aud': 'local-dev',
+    'sub': 'abf7ae0c-e6da-4451-93cb-4303a7cba314',
+    'typ': 'ID',
+    'azp': 'local-dev',
+    'nonce': 'Y0NaOTAxbXVBeW1-RUMzRUl3ZldBRF9ENnB3RVBJUjZka2VSOEN-cmx4LlZ6',
+    'session_state': '5420a178-dc2a-4828-9433-819e6444d327',
+    'at_hash': 'OZ_XRmCxHbwb50CVApNdEw',
+    'acr': '1',
+    'sid': '5420a178-dc2a-4828-9433-819e6444d327',
+    'email_verified': true,
+    'name': 'Michi Gerber',
+    'groups': ['offline_access', 'default-roles-local-dev-mig', 'admin', 'uma_authorization'],
+    'preferred_username': 'mig',
+    'given_name': 'Michi',
+    'family_name': 'Gerber',
+    'email': 'michael.gerber@nxt.engineering'
   }));
   const date = new Date();
-  date.setMinutes(new Date().getMinutes() + 15);
-  window.sessionStorage.setItem('id_token_expires_at', String(date.getTime()));
-  window.sessionStorage.setItem('access_token_expires_at', String(date.getTime()));
-  window.sessionStorage.setItem('expires_at', String(date.getTime()));
-  window.sessionStorage.setItem('access_token_stored_at', String(date.getTime()));
-  window.sessionStorage.setItem('id_token_expires_at', String(date.getTime()));
-  window.sessionStorage.setItem('id_token_stored_at', String(date.getTime()));
+  date.setMinutes(date.getMinutes() + 15);
+  const time = String(date.getTime());
+  window.sessionStorage.setItem('id_token_expires_at', time);
+  window.sessionStorage.setItem('access_token_expires_at', time);
+  window.sessionStorage.setItem('expires_at', time);
+  window.sessionStorage.setItem('access_token_stored_at', time);
+  window.sessionStorage.setItem('id_token_expires_at', time);
+  window.sessionStorage.setItem('id_token_stored_at', time);
 
 }
 

@@ -1,8 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {faClipboard, faCode, faInfoCircle, faList} from '@fortawesome/free-solid-svg-icons';
-import {selectZones} from "../store/app.selectors";
-import {Store} from "@ngrx/store";
-import {loadZones} from "../store/app.actions";
+import {faClipboard, faCode, faInfoCircle, faList, faWarning} from '@fortawesome/free-solid-svg-icons';
+import {selectZones} from '../store/app.selectors';
+import {Store} from '@ngrx/store';
+import {loadZones} from '../store/app.actions';
+import {Entity, EntityState} from '../store/app.reducer';
+import {Zone} from '../types/zone';
 
 @Component({
   selector: 'app-zones',
@@ -16,8 +18,9 @@ export class ZonesComponent {
   faCode = faCode;
   faList = faList;
   faClipboard = faClipboard;
-  codeMode: {[key: string]: boolean} = {};
+  codeMode: { [key: string]: boolean } = {};
   faInfo = faInfoCircle;
+  faWarning = faWarning;
 
   constructor(private store: Store) {
     store.dispatch(loadZones());
@@ -29,5 +32,13 @@ export class ZonesComponent {
 
   switchToNoCodeMode(i: number): void {
     this.codeMode[i] = false;
+  }
+
+  isZoneListEmpty(zones: Entity<Zone[]>): boolean {
+    return zones.state === EntityState.Loaded && zones.value.length === 0;
+  }
+
+  hasZoneLoadingFailed(zones: Entity<Zone[]>): boolean {
+    return zones.state === EntityState.Failed;
   }
 }

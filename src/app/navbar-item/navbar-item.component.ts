@@ -1,5 +1,5 @@
-import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
-import {MenuItem} from "primeng/api";
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-navbar-item',

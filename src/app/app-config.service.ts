@@ -1,6 +1,6 @@
-import {HttpClient} from "@angular/common/http";
-import {map, Observable} from "rxjs";
-import {Injectable} from "@angular/core";
+import {HttpClient} from '@angular/common/http';
+import {map, Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
 
 export interface AppConfig {
   version: string;
@@ -9,10 +9,10 @@ export interface AppConfig {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class AppConfigService {
-  private readonly CONFIGURATION_URL = "config.json";
+  private readonly CONFIGURATION_URL = 'config.json';
   private appConfig?: AppConfig;
 
   constructor(private httpClient: HttpClient) {

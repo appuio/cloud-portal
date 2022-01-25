@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {MenuItem} from "primeng/api";
-import {OAuthService} from "angular-oauth2-oidc";
-import {Md5} from "ts-md5";
+import {MenuItem} from 'primeng/api';
+import {OAuthService} from 'angular-oauth2-oidc';
+import {Md5} from 'ts-md5';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +36,6 @@ export class AppComponent {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.name = (oauthService.getIdentityClaims() as any).name;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.avatarSrc = "https://www.gravatar.com/avatar/" + Md5.hashStr((oauthService.getIdentityClaims() as any).email);
+    this.avatarSrc = 'https://www.gravatar.com/avatar/' + Md5.hashStr((oauthService.getIdentityClaims() as any).email);
   }
 }

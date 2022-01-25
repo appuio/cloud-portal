@@ -1,10 +1,16 @@
 <div class="min-h-screen flex surface-ground">
-  <div class="bg-blue-500 h-screen hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 select-none"
-       id="app-sidebar"
-       style="width:280px">
+  <div
+    class="bg-blue-500 h-screen hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 select-none"
+    id="app-sidebar"
+    style="width: 280px">
     <div class="flex flex-column h-full">
-      <div class="flex align-items-center px-5 flex-shrink-0" style="height:60px">
-        <img alt="APPUiO Cloud Logo" class="pt-3 h-full" src="assets/logo.svg">
+      <div
+        class="flex align-items-center px-5 flex-shrink-0"
+        style="height: 60px">
+        <img
+          alt="APPUiO Cloud Logo"
+          class="pt-3 h-full"
+          src="assets/logo.svg" />
       </div>
       <div class="overflow-y-auto mt-3">
         <ul class="list-none p-3 m-0">
@@ -14,20 +20,27 @@
         </ul>
       </div>
       <div class="mt-auto">
-        <hr class="mb-3 mx-3 border-top-1 border-none border-white">
-        <ul class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
+        <hr class="mb-3 mx-3 border-top-1 border-none border-white" />
+        <ul
+          class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
           <li *ngFor="let profileItem of profileItems">
             <app-navbar-item [menuItem]="profileItem"></app-navbar-item>
           </li>
         </ul>
-        <a class="m-3 px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer text-white hover:text-blue-50
-                    transition-duration-150 transition-colors" enterActiveClass="slidedown"
-           enterClass="hidden" leaveActiveClass="slideup" leaveToClass="hidden" pRipple
-           pStyleClass="@prev">
-          <img class="mr-2" [src]="avatarSrc"
-               alt="Avatar"
-               style="width: 35px; height: 35px; border-radius: 50%">
-          <span class="font-medium">{{name}}</span>
+        <a
+          class="m-3 px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer text-white hover:text-blue-50 transition-duration-150 transition-colors"
+          enterActiveClass="slidedown"
+          enterClass="hidden"
+          leaveActiveClass="slideup"
+          leaveToClass="hidden"
+          pRipple
+          pStyleClass="@prev">
+          <img
+            [src]="avatarSrc"
+            alt="Avatar"
+            class="mr-2"
+            style="width: 35px; height: 35px; border-radius: 50%" />
+          <span class="font-medium">{{ name }}</span>
           <i class="pi pi-chevron-up ml-auto"></i>
         </a>
       </div>
@@ -36,12 +49,17 @@
   <div class="min-h-screen flex flex-column relative flex-auto">
     <div
       class="flex justify-content-between align-items-center px-5 surface-section shadow-2 relative lg:static border-bottom-1 surface-border"
-      style="height:60px">
+      style="height: 60px">
       <div class="flex">
-        <a [hideOnOutsideClick]="true" class="cursor-pointer block lg:hidden text-700 mr-3"
-           enterActiveClass="fadeinleft" enterClass="hidden"
-           leaveActiveClass="fadeoutleft" leaveToClass="hidden" pRipple
-           pStyleClass="#app-sidebar">
+        <a
+          [hideOnOutsideClick]="true"
+          class="cursor-pointer block lg:hidden text-700 mr-3"
+          enterActiveClass="fadeinleft"
+          enterClass="hidden"
+          leaveActiveClass="fadeoutleft"
+          leaveToClass="hidden"
+          pRipple
+          pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>
         </a>
       </div>

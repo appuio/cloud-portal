@@ -26,10 +26,7 @@
     "code token",
     "code id_token token"
   ],
-  "subject_types_supported": [
-    "public",
-    "pairwise"
-  ],
+  "subject_types_supported": ["public", "pairwise"],
   "id_token_signing_alg_values_supported": [
     "PS384",
     "ES384",
@@ -191,9 +188,7 @@
     "email",
     "acr"
   ],
-  "claim_types_supported": [
-    "normal"
-  ],
+  "claim_types_supported": ["normal"],
   "claims_parameter_supported": true,
   "scopes_supported": [
     "openid",
@@ -209,10 +204,7 @@
   "request_parameter_supported": true,
   "request_uri_parameter_supported": true,
   "require_request_uri_registration": true,
-  "code_challenge_methods_supported": [
-    "plain",
-    "S256"
-  ],
+  "code_challenge_methods_supported": ["plain", "S256"],
   "tls_client_certificate_bound_access_tokens": true,
   "revocation_endpoint": "https://id.dev.appuio.cloud/auth/realms/local-dev-mig/protocol/openid-connect/revoke",
   "revocation_endpoint_auth_methods_supported": [
@@ -239,10 +231,7 @@
   "backchannel_logout_supported": true,
   "backchannel_logout_session_supported": true,
   "device_authorization_endpoint": "https://id.dev.appuio.cloud/auth/realms/local-dev-mig/protocol/openid-connect/auth/device",
-  "backchannel_token_delivery_modes_supported": [
-    "poll",
-    "ping"
-  ],
+  "backchannel_token_delivery_modes_supported": ["poll", "ping"],
   "backchannel_authentication_endpoint": "https://id.dev.appuio.cloud/auth/realms/local-dev-mig/protocol/openid-connect/ext/ciba/auth",
   "backchannel_authentication_request_signing_alg_values_supported": [
     "PS384",

@@ -7,9 +7,7 @@
         "cloudProvider": {
           "name": "cloudscale.ch",
           "region": "Lupfig (AG)",
-          "zones": [
-            "lpg1"
-          ]
+          "zones": ["lpg1"]
         },
         "cname": "cname.cloudscale-lpg-0.appuio.cloud",
         "defaultAppDomain": "apps.cloudscale-lpg-0.appuio.cloud",
@@ -19,9 +17,7 @@
           "openshiftVersion": "4.8",
           "sdnPlugin": "OVN-Kubernetes"
         },
-        "gatewayIPs": [
-          "185.98.123.122"
-        ],
+        "gatewayIPs": ["185.98.123.122"],
         "urls": {
           "console": "https://console.cloudscale-lpg-0.appuio.cloud/",
           "kubernetesAPI": "https://api.cloudscale-lpg-0.appuio.cloud:6443/",
@@ -37,9 +33,7 @@
         "cloudProvider": {
           "name": "cloudscale.ch",
           "region": "Lupfig (AG)",
-          "zones": [
-            "lpg2"
-          ]
+          "zones": ["lpg2"]
         },
         "cname": "cname.cloudscale-lpg-2.appuio.cloud",
         "defaultAppDomain": "apps.cloudscale-lpg-2.appuio.cloud",
@@ -49,9 +43,7 @@
           "openshiftVersion": "4.8",
           "sdnPlugin": "OVN-Kubernetes"
         },
-        "gatewayIPs": [
-          "185.98.123.122"
-        ],
+        "gatewayIPs": ["185.98.123.122"],
         "urls": {
           "console": "https://console.cloudscale-lpg-2.appuio.cloud/",
           "kubernetesAPI": "https://api.cloudscale-lpg-2.appuio.cloud:6443/",

@@ -1,4 +1,4 @@
-# APPUiO Cloud Portal  (Web Frontend)
+# APPUiO Cloud Portal (Web Frontend)
 
 ## Build
 

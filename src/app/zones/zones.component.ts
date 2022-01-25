@@ -1,19 +1,24 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {faClipboard, faCode, faInfoCircle, faList, faWarning} from '@fortawesome/free-solid-svg-icons';
-import {selectZones} from '../store/app.selectors';
-import {Store} from '@ngrx/store';
-import {loadZones} from '../store/app.actions';
-import {Entity, EntityState} from '../store/app.reducer';
-import {Zone} from '../types/zone';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  faClipboard,
+  faCode,
+  faInfoCircle,
+  faList,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
+import { selectZones } from '../store/app.selectors';
+import { Store } from '@ngrx/store';
+import { loadZones } from '../store/app.actions';
+import { Entity, EntityState } from '../store/app.reducer';
+import { Zone } from '../types/zone';
 
 @Component({
   selector: 'app-zones',
   templateUrl: './zones.component.html',
   styleUrls: ['./zones.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZonesComponent {
-
   zones$ = this.store.select(selectZones);
   faCode = faCode;
   faList = faList;

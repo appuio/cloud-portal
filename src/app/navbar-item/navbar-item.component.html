@@ -1,34 +1,36 @@
 <div class="text-white">
   <ng-container *ngIf="!menuItem.items">
-    <a *ngIf="menuItem.command"
-       (click)="menuItem.command($event)"
-       class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50
-                              transition-duration-150 transition-colors" pRipple>
-      <i class="mr-2"
-         [ngClass]="menuItem.icon ?? ''"></i>
-      <span class="font-medium">{{menuItem.label}}</span>
+    <a
+      (click)="menuItem.command($event)"
+      *ngIf="menuItem.command"
+      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors"
+      pRipple>
+      <i [ngClass]="menuItem.icon ?? ''" class="mr-2"></i>
+      <span class="font-medium">{{ menuItem.label }}</span>
     </a>
-    <a *ngIf="menuItem.routerLink"
-       [routerLink]="menuItem.routerLink"
-       [routerLinkActive]="'text-primary'"
-       class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50
-                              transition-duration-150 transition-colors no-underline" pRipple>
-      <i class="mr-2"
-         [ngClass]="menuItem.icon ?? ''"></i>
-      <span class="font-medium">{{menuItem.label}}</span>
+    <a
+      *ngIf="menuItem.routerLink"
+      [routerLinkActive]="'text-primary'"
+      [routerLink]="menuItem.routerLink"
+      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline"
+      pRipple>
+      <i [ngClass]="menuItem.icon ?? ''" class="mr-2"></i>
+      <span class="font-medium">{{ menuItem.label }}</span>
     </a>
   </ng-container>
 </div>
 
-
-<a *ngIf="menuItem.items"
-   class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50
-                            transition-duration-150 transition-colors" enterActiveClass="slidedown"
-   enterClass="hidden" leaveActiveClass="slideup" leaveToClass="hidden" pRipple
-   pStyleClass="@next">
-  <i class="mr-2"
-     [ngClass]="menuItem.icon ?? ''"></i>
-  <span class="font-medium">{{menuItem.label}}</span>
+<a
+  *ngIf="menuItem.items"
+  class="flex align-items-center cursor-pointer p-3 hover:bg-primary text-white hover:text-blue-50 transition-duration-150 transition-colors"
+  enterActiveClass="slidedown"
+  enterClass="hidden"
+  leaveActiveClass="slideup"
+  leaveToClass="hidden"
+  pRipple
+  pStyleClass="@next">
+  <i [ngClass]="menuItem.icon ?? ''" class="mr-2"></i>
+  <span class="font-medium">{{ menuItem.label }}</span>
   <i class="pi pi-chevron-down ml-auto"></i>
 </a>
 <ul

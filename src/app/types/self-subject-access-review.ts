@@ -6,6 +6,7 @@ export class SelfSubjectAccessReview {
       namespace: 'default',
       verb: '',
       resource: '',
+      group: 'appuio.io',
     },
   };
   readonly status = {

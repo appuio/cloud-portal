@@ -13,7 +13,8 @@
     "e2e": "ng e2e --watch=false --headless=true",
     "e2e-dev": "ng e2e",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "prettier": "prettier --write ."
   },
   "private": true,
   "dependencies": {
@@ -62,9 +63,11 @@
     "eslint": "8.7.0",
     "eslint-plugin-change-detection-strategy": "0.1.1",
     "eslint-plugin-ngrx": "2.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
     "http-server": "14.1.0",
     "jest": "27.4.7",
     "jest-preset-angular": "11.1.0",
+    "prettier": "2.5.1",
     "typescript": "4.4.4"
   },
   "jest": {

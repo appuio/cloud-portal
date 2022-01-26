@@ -23,6 +23,7 @@
         "plugin:ngrx/recommended"
       ],
       "rules": {
+        "prettier/prettier": "error",
         "quotes": [
           "error",
           "single"
@@ -54,7 +55,8 @@
       },
       "plugins": [
         "ngrx",
-        "change-detection-strategy"
+        "change-detection-strategy",
+        "prettier"
       ]
     },
     {

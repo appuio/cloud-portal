@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Zone } from '../types/zone';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Permission } from './app.reducer';
 
 export const loadZones = createAction('[App] Load zones');
 export const loadZonesSuccess = createAction(
@@ -10,4 +11,9 @@ export const loadZonesSuccess = createAction(
 export const loadZonesFailure = createAction(
   '[App] Load zones failed',
   props<{ error: HttpErrorResponse }>()
+);
+
+export const setPermissions = createAction(
+  '[App] Set permissions',
+  props<{ permissions: Permission }>()
 );

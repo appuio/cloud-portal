@@ -1,0 +1,5 @@
+.active {
+  &:not(:hover) {
+    color: var(--primary-color) !important;
+  }
+}

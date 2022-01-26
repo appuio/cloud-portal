@@ -7,3 +7,8 @@ export const selectZones = createSelector(
   selectAppState,
   (state) => state.zones
 );
+
+export const selectPermissions = createSelector(
+  selectAppState,
+  (state) => state.permissions
+);

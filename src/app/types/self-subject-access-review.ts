@@ -6,7 +6,7 @@ export class SelfSubjectAccessReview {
       namespace: 'default',
       verb: '',
       resource: '',
-      group: 'appuio.io',
+      group: '',
     },
   };
   readonly status = {
@@ -14,8 +14,9 @@ export class SelfSubjectAccessReview {
     reason: '',
   };
 
-  constructor(verb: string, resource: string) {
+  constructor(verb: string, resource: string, group: string) {
     this.spec.resourceAttributes.verb = verb;
     this.spec.resourceAttributes.resource = resource;
+    this.spec.resourceAttributes.group = group;
   }
 }

@@ -18,7 +18,7 @@ export class KubernetesClientService {
     return this.httpClient
       .post<SelfSubjectAccessReview>(
         'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
-        new SelfSubjectAccessReview('list', 'zones')
+        new SelfSubjectAccessReview('list', 'zones', 'appuio.io')
       )
       .pipe(map((result) => result?.status?.allowed ?? false));
   }

@@ -8,9 +8,9 @@ export class SelfSubjectAccessReview {
       resource: '',
     },
   };
-  readonly status?: {
-    allowed: boolean;
-    reason: string;
+  readonly status = {
+    allowed: false,
+    reason: '',
   };
 
   constructor(verb: string, resource: string) {

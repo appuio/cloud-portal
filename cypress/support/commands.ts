@@ -3,7 +3,33 @@ declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any
   interface Chainable<Subject = any> {
     setupAuth(): typeof setupAuth;
+
+    addPermission(verb: string, resource: string): typeof addPermission;
   }
+}
+
+function addPermission(verb: string, resource: string): void {
+  cy.intercept(
+    'POST',
+    'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
+    {
+      body: JSON.stringify({
+        kind: 'SelfSubjectAccessReview',
+        apiVersion: 'authorization.k8s.io/v1',
+        spec: {
+          resourceAttributes: {
+            namespace: 'default',
+            verb,
+            resource,
+          },
+        },
+        status: {
+          allowed: true,
+          reason: '',
+        },
+      }),
+    }
+  );
 }
 
 function setupAuth(): void {
@@ -57,3 +83,4 @@ function setupAuth(): void {
 }
 
 Cypress.Commands.add('setupAuth', setupAuth);
+Cypress.Commands.add('addPermission', addPermission);

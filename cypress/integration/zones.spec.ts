@@ -3,7 +3,8 @@ describe('Test zones', () => {
     cy.setupAuth();
   });
   beforeEach(() => {
-    cy.visit('/');
+    cy.addPermission('list', 'zones');
+    cy.visit('/zones');
     cy.title().should('eq', 'APPUiO Cloud Portal');
   });
   it('list with two entries', () => {
@@ -38,5 +39,20 @@ describe('Test zones', () => {
       'contain.text',
       'Zones could not be loaded.'
     );
+  });
+});
+
+describe('Test zones permission', () => {
+  before(() => {
+    cy.setupAuth();
+  });
+  it('navigate to zones with permission', () => {
+    cy.addPermission('list', 'zones');
+    cy.visit('/zones');
+    cy.url().should('contain', 'zones');
+  });
+  it('navigate to zones without permission', () => {
+    cy.visit('/zones');
+    cy.url().should('not.contain', 'zones');
   });
 });

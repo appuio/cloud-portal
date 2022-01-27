@@ -12,14 +12,8 @@ describe('Test zones', () => {
       fixture: 'zones.json',
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should(
-      'contain.text',
-      'cloudscale.ch LPG 0'
-    );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should(
-      'contain.text',
-      'cloudscale.ch LPG 2'
-    );
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 0');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 2');
   });
 
   it('empty list', () => {
@@ -35,10 +29,7 @@ describe('Test zones', () => {
       statusCode: 403,
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
-    cy.get('#zone-failure-message').should(
-      'contain.text',
-      'Zones could not be loaded.'
-    );
+    cy.get('#zone-failure-message').should('contain.text', 'Zones could not be loaded.');
   });
 });
 

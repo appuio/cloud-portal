@@ -34,12 +34,7 @@ import { KubernetesClientService } from './kubernetes-client.service';
 import { setPermission } from './store/app.actions';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarItemComponent,
-    ZonesComponent,
-    HomeComponent,
-  ],
+  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -102,9 +97,7 @@ export function initializeAppFactory(
               .pipe(retry({ count: 5, delay: 500 }))
               .subscribe({
                 next: (result) => {
-                  store.dispatch(
-                    setPermission({ permission: { zones: result } })
-                  );
+                  store.dispatch(setPermission({ permission: { zones: result } }));
                   resolve(true);
                 },
                 error: () => {

@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { map, Observable, take } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectPermissions } from './store/app.selectors';
+import { selectPermission } from './store/app.selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -18,17 +18,21 @@ export class PermissionGuard implements CanActivate {
 
   canActivate(
     route: ActivatedRouteSnapshot,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> {
     return this.store
-      .select(selectPermissions)
+      .select(selectPermission)
       .pipe(take(1))
       .pipe(
-        map((permissions) => {
-          const { permission } = route.data;
+        map((permission) => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          return permissions[permission] ?? this.router.createUrlTree(['home']);
+          const hasPermission = permission[route.data.permission];
+          if (!hasPermission) {
+            return this.router.navigate(['/home']);
+          }
+          return hasPermission;
         })
       );
   }

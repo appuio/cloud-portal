@@ -3,7 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
-import { selectPermissions } from './store/app.selectors';
+import { selectPermission } from './store/app.selectors';
 import { take } from 'rxjs';
 import { Permission } from './store/app.reducer';
 
@@ -27,8 +27,8 @@ export class AppComponent implements OnInit {
       command: () => this.oauthService.logOut(),
     },
   ];
-  name!: string;
-  avatarSrc!: string;
+  name = '';
+  avatarSrc = '';
 
   constructor(private oauthService: OAuthService, private store: Store) {}
 
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
       'https://www.gravatar.com/avatar/' + Md5.hashStr(identityClaims.email);
 
     this.store
-      .select(selectPermissions)
+      .select(selectPermission)
       .pipe(take(1))
       .subscribe((permission) => this.createMenu(permission));
   }

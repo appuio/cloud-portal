@@ -20,6 +20,10 @@ export class KubernetesClientService {
         'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
         new SelfSubjectAccessReview('list', 'zones', 'appuio.io')
       )
-      .pipe(map((result) => result?.status?.allowed ?? false));
+      .pipe(
+        map((result) => {
+          return result.status?.allowed ?? false;
+        })
+      );
   }
 }

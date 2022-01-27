@@ -31,7 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessagesModule } from 'primeng/messages';
 import { HomeComponent } from './home/home.component';
 import { KubernetesClientService } from './kubernetes-client.service';
-import { setPermissions } from './store/app.actions';
+import { setPermission } from './store/app.actions';
 
 @NgModule({
   declarations: [
@@ -103,7 +103,7 @@ export function initializeAppFactory(
               .subscribe({
                 next: (result) => {
                   store.dispatch(
-                    setPermissions({ permissions: { zones: result } })
+                    setPermission({ permission: { zones: result } })
                   );
                   resolve(true);
                 },

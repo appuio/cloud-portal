@@ -4,30 +4,31 @@ declare namespace Cypress {
   interface Chainable<Subject = any> {
     setupAuth(): typeof setupAuth;
 
-    addPermission(verb: string, resource: string): typeof addPermission;
+    addPermission(
+      verb: string,
+      resource: string,
+      group: string
+    ): typeof addPermission;
   }
 }
 
-function addPermission(verb: string, resource: string): void {
+function addPermission(verb: string, resource: string, group: string): void {
   cy.intercept(
     'POST',
     'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
-    {
-      body: JSON.stringify({
-        kind: 'SelfSubjectAccessReview',
-        apiVersion: 'authorization.k8s.io/v1',
-        spec: {
-          resourceAttributes: {
-            namespace: 'default',
-            verb,
-            resource,
-          },
-        },
-        status: {
-          allowed: true,
-          reason: '',
-        },
-      }),
+    (request) => {
+      const requestBody = request.body;
+      const resourceAttributes = requestBody.spec.resourceAttributes;
+      if (
+        resourceAttributes.verb === verb &&
+        resourceAttributes.resource === resource &&
+        resourceAttributes.group === group
+      ) {
+        requestBody.status = { allowed: true, reason: 'match' };
+      } else {
+        requestBody.status = { allowed: false, reason: 'no match' };
+      }
+      request.reply(requestBody);
     }
   );
 }
@@ -36,7 +37,9 @@ function setupAuth(): void {
   cy.intercept(
     'GET',
     'https://id.dev.appuio.cloud/auth/realms/local-dev-mig/.well-known/openid-configuration',
-    { fixture: 'well-known.json' }
+    {
+      fixture: 'well-known.json',
+    }
   );
   window.sessionStorage.setItem('id_token', 'token');
   window.sessionStorage.setItem('access_token', 'token');

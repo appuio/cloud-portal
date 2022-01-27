@@ -13,7 +13,7 @@ export const loadZonesFailure = createAction(
   props<{ error: HttpErrorResponse }>()
 );
 
-export const setPermissions = createAction(
-  '[App] Set permissions',
-  props<{ permissions: Permission }>()
+export const setPermission = createAction(
+  '[App] Set permission',
+  props<{ permission: Permission }>()
 );

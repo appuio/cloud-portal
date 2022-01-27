@@ -4,7 +4,7 @@ import {
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
-  setPermissions,
+  setPermission,
 } from './app.actions';
 
 export enum EntityState {
@@ -25,12 +25,12 @@ export interface Permission {
 
 export interface AppState {
   zones: Entity<Zone[]>;
-  permissions: Permission;
+  permission: Permission;
 }
 
 const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
-  permissions: {
+  permission: {
     zones: false,
   },
 };
@@ -59,7 +59,7 @@ export const appReducer = createReducer(
     })
   ),
   on(
-    setPermissions,
-    (state, { permissions }): AppState => ({ ...state, permissions })
+    setPermission,
+    (state, { permission }): AppState => ({ ...state, permission })
   )
 );

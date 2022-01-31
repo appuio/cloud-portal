@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Md5 } from 'ts-md5';
+import { Store } from '@ngrx/store';
+import { selectPermission } from './store/app.selectors';
+import { take } from 'rxjs';
+import { Permission } from './store/app.reducer';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +13,8 @@ import { Md5 } from 'ts-md5';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
-  menuItems: MenuItem[] = [
-    {
-      label: $localize`Zones`,
-      icon: 'pi pi-database',
-      routerLink: [],
-    },
-  ];
+export class AppComponent implements OnInit {
+  menuItems: MenuItem[] = [];
 
   profileItems: MenuItem[] = [
     {
@@ -29,15 +27,30 @@ export class AppComponent {
       command: () => this.oauthService.logOut(),
     },
   ];
-  name: string;
-  avatarSrc: string;
+  name = '';
+  avatarSrc = '';
 
-  constructor(private oauthService: OAuthService) {
+  constructor(private oauthService: OAuthService, private store: Store) {}
+
+  ngOnInit(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.name = (oauthService.getIdentityClaims() as any).name;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.avatarSrc =
-      'https://www.gravatar.com/avatar/' +
-      Md5.hashStr((oauthService.getIdentityClaims() as any).email);
+    const identityClaims = this.oauthService.getIdentityClaims() as any;
+    this.name = identityClaims.name;
+    this.avatarSrc = 'https://www.gravatar.com/avatar/' + Md5.hashStr(identityClaims.email);
+
+    this.store
+      .select(selectPermission)
+      .pipe(take(1))
+      .subscribe((permission) => this.createMenu(permission));
+  }
+
+  private createMenu(permission: Permission): void {
+    if (permission.zones) {
+      this.menuItems.push({
+        label: $localize`Zones`,
+        icon: 'pi pi-database',
+        routerLink: ['zones'],
+      });
+    }
   }
 }

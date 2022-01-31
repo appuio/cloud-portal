@@ -1,11 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {
-  faClipboard,
-  faCode,
-  faInfoCircle,
-  faList,
-  faWarning,
-} from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faCode, faInfoCircle, faList, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { selectZones } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { loadZones } from '../store/app.actions';

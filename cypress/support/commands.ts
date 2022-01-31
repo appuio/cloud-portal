@@ -3,15 +3,32 @@ declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any
   interface Chainable<Subject = any> {
     setupAuth(): typeof setupAuth;
+
+    addPermission(verb: string, resource: string, group: string): typeof addPermission;
   }
 }
 
+function addPermission(verb: string, resource: string, group: string): void {
+  cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', (request) => {
+    const requestBody = request.body;
+    const resourceAttributes = requestBody.spec.resourceAttributes;
+    if (
+      resourceAttributes.verb === verb &&
+      resourceAttributes.resource === resource &&
+      resourceAttributes.group === group
+    ) {
+      requestBody.status = { allowed: true, reason: 'match' };
+    } else {
+      requestBody.status = { allowed: false, reason: 'no match' };
+    }
+    request.reply(requestBody);
+  });
+}
+
 function setupAuth(): void {
-  cy.intercept(
-    'GET',
-    'https://id.dev.appuio.cloud/auth/realms/local-dev-mig/.well-known/openid-configuration',
-    { fixture: 'well-known.json' }
-  );
+  cy.intercept('GET', 'https://id.dev.appuio.cloud/auth/realms/local-dev-mig/.well-known/openid-configuration', {
+    fixture: 'well-known.json',
+  });
   window.sessionStorage.setItem('id_token', 'token');
   window.sessionStorage.setItem('access_token', 'token');
   window.sessionStorage.setItem(
@@ -33,12 +50,7 @@ function setupAuth(): void {
       sid: '5420a178-dc2a-4828-9433-819e6444d327',
       email_verified: true,
       name: 'Michi Gerber',
-      groups: [
-        'offline_access',
-        'default-roles-local-dev-mig',
-        'admin',
-        'uma_authorization',
-      ],
+      groups: ['offline_access', 'default-roles-local-dev-mig', 'admin', 'uma_authorization'],
       preferred_username: 'mig',
       given_name: 'Michi',
       family_name: 'Gerber',
@@ -57,3 +69,4 @@ function setupAuth(): void {
 }
 
 Cypress.Commands.add('setupAuth', setupAuth);
+Cypress.Commands.add('addPermission', addPermission);

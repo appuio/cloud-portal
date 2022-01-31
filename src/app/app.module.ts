@@ -13,14 +13,14 @@ import { AuthConfig, OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
-import { mergeMap, Observable } from 'rxjs';
+import { mergeMap, Observable, retry } from 'rxjs';
 import { ZonesComponent } from './zones/zones.component';
 import { IdTokenInterceptor } from './id-token.interceptor';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { TagModule } from 'primeng/tag';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { appReducer } from './store/app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
@@ -29,9 +29,12 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessagesModule } from 'primeng/messages';
+import { HomeComponent } from './home/home.component';
+import { KubernetesClientService } from './kubernetes-client.service';
+import { setPermission } from './store/app.actions';
 
 @NgModule({
-  declarations: [AppComponent, NavbarItemComponent, ZonesComponent],
+  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -56,7 +59,7 @@ import { MessagesModule } from 'primeng/messages';
   providers: [
     {
       provide: APP_INITIALIZER,
-      deps: [AppConfigService, OAuthService],
+      deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
       useFactory: initializeAppFactory,
       multi: true,
     },
@@ -69,7 +72,9 @@ export class AppModule {}
 
 export function initializeAppFactory(
   appConfigService: AppConfigService,
-  oauthService: OAuthService
+  oauthService: OAuthService,
+  kubernetesClientService: KubernetesClientService,
+  store: Store
 ): () => Observable<boolean> {
   return () => {
     return appConfigService.loadConfig().pipe(
@@ -85,7 +90,21 @@ export function initializeAppFactory(
             return Promise.reject('Not logged in');
           }
           oauthService.setupAutomaticSilentRefresh();
-          return true;
+
+          return new Promise<boolean>((resolve) => {
+            kubernetesClientService
+              .getZonePermission()
+              .pipe(retry({ count: 5, delay: 500 }))
+              .subscribe({
+                next: (result) => {
+                  store.dispatch(setPermission({ permission: { zones: result } }));
+                  resolve(true);
+                },
+                error: () => {
+                  resolve(true);
+                },
+              });
+          });
         });
       })
     );

@@ -23,15 +23,10 @@
         </div>
       </div>
 
-      <div
-        *ngIf="!codeMode[i]"
-        class="flex flex-wrap border-top-1 surface-border">
+      <div *ngIf="!codeMode[i]" class="flex flex-wrap border-top-1 surface-border">
         <ul class="w-full list-none p-0 m-0 surface-border">
-          <li
-            class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>
-              Cloud Provider
-            </div>
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Cloud Provider</div>
             <div class="text-900 w-full md:w-9">
               {{ zone.data.cloudProvider.name }} -
               {{ zone.data.cloudProvider.region }}
@@ -54,11 +49,8 @@
             </div>
           </li>
 
-          <li
-            class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>
-              Default App Domain
-            </div>
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Default App Domain</div>
             <div class="text-900 w-full md:w-9 line-height-3 relative">
               {{ zone.data.defaultAppDomain }}
               <fa-icon
@@ -79,31 +71,21 @@
                 [style]="{ 'background-color': '#EE0000' }"
                 [value]="'OpenShift: ' + zone.data.features.openshiftVersion"
                 styleClass="mr-1 mb-1 text-white"></p-tag>
-              <p-tag
-                [value]="'SDN Plugin: ' + zone.data.features.sdnPlugin"
-                styleClass="mr-1 mb-1"></p-tag>
+              <p-tag [value]="'SDN Plugin: ' + zone.data.features.sdnPlugin" styleClass="mr-1 mb-1"></p-tag>
             </div>
           </li>
 
-          <li
-            class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>
-              Gateway IPs
-            </div>
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Gateway IPs</div>
             <div class="text-900 w-full md:w-9">
-              <p-tag
-                *ngFor="let ip of zone.data.gatewayIPs"
-                [value]="ip"
-                styleClass="mr-1 mb-1"></p-tag>
+              <p-tag *ngFor="let ip of zone.data.gatewayIPs" [value]="ip" styleClass="mr-1 mb-1"></p-tag>
             </div>
           </li>
 
           <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Console</div>
             <div class="text-900 w-full md:w-9 relative">
-              <a
-                [href]="zone.data.urls.console"
-                class="text-blue-500 no-underline">
+              <a [href]="zone.data.urls.console" class="text-blue-500 no-underline">
                 {{ zone.data.urls.console }}
               </a>
               <fa-icon
@@ -113,15 +95,10 @@
             </div>
           </li>
 
-          <li
-            class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>
-              Kubernetes API
-            </div>
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Kubernetes API</div>
             <div class="text-900 w-full md:w-9 relative">
-              <a
-                [href]="zone.data.urls.kubernetesAPI"
-                class="text-blue-500 no-underline">
+              <a [href]="zone.data.urls.kubernetesAPI" class="text-blue-500 no-underline">
                 {{ zone.data.urls.kubernetesAPI }}
               </a>
               <fa-icon
@@ -134,9 +111,7 @@
           <li class="flex align-items-center py-2 px-2 flex-wrap">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Logging</div>
             <div class="text-900 w-full md:w-9 relative">
-              <a
-                [href]="zone.data.urls.logging"
-                class="text-blue-500 no-underline">
+              <a [href]="zone.data.urls.logging" class="text-blue-500 no-underline">
                 {{ zone.data.urls.logging }}
               </a>
               <fa-icon
@@ -146,13 +121,10 @@
             </div>
           </li>
 
-          <li
-            class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Registry</div>
             <div class="text-900 w-full md:w-9 relative">
-              <a
-                [href]="zone.data.urls.registry"
-                class="text-blue-500 no-underline">
+              <a [href]="zone.data.urls.registry" class="text-blue-500 no-underline">
                 {{ zone.data.urls.registry }}
               </a>
               <fa-icon
@@ -164,9 +136,7 @@
         </ul>
       </div>
 
-      <div
-        *ngIf="codeMode[i]"
-        class="bg-gray-700 text-white p-3 border-round relative">
+      <div *ngIf="codeMode[i]" class="bg-gray-700 text-white p-3 border-round relative">
         <pre>{{ zone.data | json }}</pre>
         <fa-icon
           [cdkCopyToClipboard]="zone.data | json"
@@ -189,9 +159,7 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="zone-failure-message">
-          Zones could not be loaded.
-        </div>
+        <div class="ml-2" i18n id="zone-failure-message">Zones could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>

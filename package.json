@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "http-server": "http-server dist/cloud-portal/en-CH -p 4200",
+    "http-server": "angular-http-server --path dist/cloud-portal/en-CH -p 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest --passWithNoTests",
@@ -65,7 +65,7 @@
     "eslint-plugin-change-detection-strategy": "0.1.1",
     "eslint-plugin-ngrx": "2.0.3",
     "eslint-plugin-prettier": "4.0.0",
-    "http-server": "14.1.0",
+    "angular-http-server": "1.10.0",
     "jest": "27.4.7",
     "jest-preset-angular": "11.1.0",
     "pwa-asset-generator": "6.0.6",

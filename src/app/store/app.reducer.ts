@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Zone } from '../types/zone';
-import { loadZones, loadZonesFailure, loadZonesSuccess } from './app.actions';
+import { loadZones, loadZonesFailure, loadZonesSuccess, setPermission } from './app.actions';
 
 export enum EntityState {
   Unloaded = 0,
@@ -14,12 +14,20 @@ export interface Entity<ValueType> {
   value: ValueType;
 }
 
+export interface Permission {
+  zones: boolean;
+}
+
 export interface AppState {
   zones: Entity<Zone[]>;
+  permission: Permission;
 }
 
 const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
+  permission: {
+    zones: false,
+  },
 };
 
 export const appReducer = createReducer(
@@ -44,5 +52,6 @@ export const appReducer = createReducer(
       ...state,
       zones: { value: [], state: EntityState.Failed },
     })
-  )
+  ),
+  on(setPermission, (state, { permission }): AppState => ({ ...state, permission }))
 );

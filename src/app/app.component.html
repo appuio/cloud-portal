@@ -4,13 +4,8 @@
     id="app-sidebar"
     style="width: 280px">
     <div class="flex flex-column h-full">
-      <div
-        class="flex align-items-center px-5 flex-shrink-0"
-        style="height: 60px">
-        <img
-          alt="APPUiO Cloud Logo"
-          class="pt-3 h-full"
-          src="assets/logo.svg" />
+      <div class="flex align-items-center px-5 flex-shrink-0" style="height: 60px">
+        <img alt="APPUiO Cloud Logo" class="pt-3 h-full" src="assets/logo.svg" />
       </div>
       <div class="overflow-y-auto mt-3">
         <ul class="list-none p-3 m-0">
@@ -21,8 +16,7 @@
       </div>
       <div class="mt-auto">
         <hr class="mb-3 mx-3 border-top-1 border-none border-white" />
-        <ul
-          class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
+        <ul class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
           <li *ngFor="let profileItem of profileItems">
             <app-navbar-item [menuItem]="profileItem"></app-navbar-item>
           </li>
@@ -35,11 +29,7 @@
           leaveToClass="hidden"
           pRipple
           pStyleClass="@prev">
-          <img
-            [src]="avatarSrc"
-            alt="Avatar"
-            class="mr-2"
-            style="width: 35px; height: 35px; border-radius: 50%" />
+          <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
           <span class="font-medium">{{ name }}</span>
           <i class="pi pi-chevron-up ml-auto"></i>
         </a>

@@ -14,9 +14,7 @@ export class AppEffects {
       mergeMap(() =>
         this.kubernetesClientService.getZoneList().pipe(
           map((zoneList) => loadZonesSuccess({ zones: zoneList.items })),
-          catchError((error: HttpErrorResponse) =>
-            of(loadZonesFailure({ error }))
-          )
+          catchError((error: HttpErrorResponse) => of(loadZonesFailure({ error })))
         )
       )
     );

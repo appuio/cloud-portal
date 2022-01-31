@@ -3,7 +3,8 @@ describe('Test zones', () => {
     cy.setupAuth();
   });
   beforeEach(() => {
-    cy.visit('/');
+    cy.addPermission('list', 'zones', 'appuio.io');
+    cy.visit('/zones');
     cy.title().should('eq', 'APPUiO Cloud Portal');
   });
   it('list with two entries', () => {
@@ -11,14 +12,8 @@ describe('Test zones', () => {
       fixture: 'zones.json',
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should(
-      'contain.text',
-      'cloudscale.ch LPG 0'
-    );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should(
-      'contain.text',
-      'cloudscale.ch LPG 2'
-    );
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 0');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 2');
   });
 
   it('empty list', () => {
@@ -34,9 +29,22 @@ describe('Test zones', () => {
       statusCode: 403,
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
-    cy.get('#zone-failure-message').should(
-      'contain.text',
-      'Zones could not be loaded.'
-    );
+    cy.get('#zone-failure-message').should('contain.text', 'Zones could not be loaded.');
+  });
+});
+
+describe('Test zones permission', () => {
+  before(() => {
+    cy.setupAuth();
+  });
+  it('navigate to zones with permission', () => {
+    cy.addPermission('list', 'zones', 'appuio.io');
+    cy.visit('/zones');
+    cy.get('#zones-title').should('contain.text', 'Zones');
+  });
+
+  it('navigate to zones without permission', () => {
+    cy.visit('/zones');
+    cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
 });

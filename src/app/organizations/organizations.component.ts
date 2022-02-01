@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Organization } from '../types/organization';
+import { Entity, EntityState } from '../types/entity';
+import { Observable } from 'rxjs';
+import { selectOrganizations } from './store/organization.selectors';
+import { faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-organizations',
@@ -6,8 +12,22 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   styleUrls: ['./organizations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationsComponent implements OnInit {
-  constructor() {}
+export class OrganizationsComponent {
+  organizations$: Observable<Entity<Organization[]>> = this.store.select(selectOrganizations);
+  faInfo = faInfoCircle;
+  faWarning = faWarning;
 
-  ngOnInit(): void {}
+  constructor(private store: Store) {}
+
+  isLoading(zones: Entity<Organization[]>): boolean {
+    return zones.state === EntityState.Loading;
+  }
+
+  isListEmpty(zones: Entity<Organization[]>): boolean {
+    return zones.state === EntityState.Loaded && zones.value.length === 0;
+  }
+
+  hasLoadingFailed(zones: Entity<Organization[]>): boolean {
+    return zones.state === EntityState.Failed;
+  }
 }

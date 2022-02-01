@@ -1,18 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { Zone } from '../types/zone';
 import { loadZones, loadZonesFailure, loadZonesSuccess, setPermission } from './app.actions';
-
-export enum EntityState {
-  Unloaded = 0,
-  Loading = 1,
-  Loaded = 2,
-  Failed = 3,
-}
-
-export interface Entity<ValueType> {
-  state: EntityState;
-  value: ValueType;
-}
+import { Entity, EntityState } from '../types/entity';
 
 export interface Permission {
   zones: boolean;

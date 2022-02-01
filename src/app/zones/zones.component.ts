@@ -3,8 +3,8 @@ import { faClipboard, faCode, faInfoCircle, faList, faWarning } from '@fortaweso
 import { selectZones } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { loadZones } from '../store/app.actions';
-import { Entity, EntityState } from '../store/app.reducer';
 import { Zone } from '../types/zone';
+import { Entity, EntityState } from '../types/entity';
 
 @Component({
   selector: 'app-zones',

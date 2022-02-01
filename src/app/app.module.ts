@@ -15,7 +15,7 @@ import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
 import { mergeMap, Observable, retry } from 'rxjs';
 import { ZonesComponent } from './zones/zones.component';
-import { IdTokenInterceptor } from './id-token.interceptor';
+import { IdTokenInterceptor } from './core/id-token.interceptor';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { TagModule } from 'primeng/tag';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -30,7 +30,7 @@ import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessagesModule } from 'primeng/messages';
 import { HomeComponent } from './home/home.component';
-import { KubernetesClientService } from './kubernetes-client.service';
+import { KubernetesClientService } from './core/kubernetes-client.service';
 import { setPermission } from './store/app.actions';
 
 @NgModule({

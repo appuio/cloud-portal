@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { ZoneList } from './types/zone';
-import { SelfSubjectAccessReview } from './types/self-subject-access-review';
+import { ZoneList } from '../types/zone';
+import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 
 @Injectable({
   providedIn: 'root',

@@ -22,6 +22,10 @@ const routes: Routes = [
       permission: 'zones',
     },
   },
+  {
+    path: 'organizations',
+    loadChildren: () => import('./organizations/organizations.module').then((m) => m.OrganizationsModule),
+  },
 ];
 
 @NgModule({

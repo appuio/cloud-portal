@@ -16,6 +16,7 @@ export interface Entity<ValueType> {
 
 export interface Permission {
   zones: boolean;
+  organizations: boolean;
 }
 
 export interface AppState {
@@ -27,6 +28,7 @@ const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
   permission: {
     zones: false,
+    organizations: false,
   },
 };
 

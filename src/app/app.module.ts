@@ -13,7 +13,7 @@ import { AuthConfig, OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
-import { mergeMap, Observable, retry } from 'rxjs';
+import { forkJoin, mergeMap, Observable, retry } from 'rxjs';
 import { ZonesComponent } from './zones/zones.component';
 import { IdTokenInterceptor } from './core/id-token.interceptor';
 import { ReactiveComponentModule } from '@ngrx/component';
@@ -92,12 +92,11 @@ export function initializeAppFactory(
           oauthService.setupAutomaticSilentRefresh();
 
           return new Promise<boolean>((resolve) => {
-            kubernetesClientService
-              .getZonePermission()
+            forkJoin([kubernetesClientService.getZonePermission(), kubernetesClientService.getOrganizationPermission()])
               .pipe(retry({ count: 5, delay: 500 }))
               .subscribe({
-                next: (result) => {
-                  store.dispatch(setPermission({ permission: { zones: result } }));
+                next: ([zones, organizations]) => {
+                  store.dispatch(setPermission({ permission: { zones, organizations } }));
                   resolve(true);
                 },
                 error: () => {

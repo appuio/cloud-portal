@@ -50,15 +50,23 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "localize": ["en-CH"],
+            "localize": [
+              "en-CH"
+            ],
             "outputPath": "dist/cloud-portal",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/config.json", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              "src/manifest.webmanifest",
+              "src/config.json",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { NavMenuItem } from '../app.component';
 
 @Component({
   selector: 'app-navbar-item',
@@ -8,5 +8,5 @@ import { MenuItem } from 'primeng/api';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarItemComponent {
-  @Input() menuItem!: MenuItem;
+  @Input() menuItem!: NavMenuItem;
 }

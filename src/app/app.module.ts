@@ -32,6 +32,7 @@ import { MessagesModule } from 'primeng/messages';
 import { HomeComponent } from './home/home.component';
 import { KubernetesClientService } from './core/kubernetes-client.service';
 import { setPermission } from './store/app.actions';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
@@ -55,6 +56,7 @@ import { setPermission } from './store/app.actions';
     EffectsModule.forRoot([AppEffects]),
     ToastModule,
     MessagesModule,
+    StoreRouterConnectingModule.forRoot(),
   ],
   providers: [
     {

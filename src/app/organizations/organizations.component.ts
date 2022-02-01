@@ -4,7 +4,7 @@ import { Organization } from '../types/organization';
 import { Entity, EntityState } from '../types/entity';
 import { Observable } from 'rxjs';
 import { selectOrganizations } from './store/organization.selectors';
-import { faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faEdit, faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-organizations',
@@ -16,6 +16,8 @@ export class OrganizationsComponent {
   organizations$: Observable<Entity<Organization[]>> = this.store.select(selectOrganizations);
   faInfo = faInfoCircle;
   faWarning = faWarning;
+  faEdit = faEdit;
+  faAdd = faAdd;
 
   constructor(private store: Store) {}
 

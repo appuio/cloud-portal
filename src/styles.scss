@@ -10,3 +10,19 @@ body {
   padding: 0;
   font-family: var(--font-family);
 }
+
+@keyframes blink {
+  0% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.05;
+  }
+}
+
+.blink {
+  animation: blink 2500ms ease-in-out infinite
+}

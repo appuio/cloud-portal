@@ -22,5 +22,22 @@ export class OrganizationEffects {
     );
   });
 
+  saveOrganization$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OrganizationActions.saveOrganization),
+      concatMap(({ organization, isNew }) =>
+        (isNew
+          ? this.kubernetesClientService.addOrganization(organization)
+          : this.kubernetesClientService.updateOrganization(organization)
+        ).pipe(
+          map((organization) => OrganizationActions.saveOrganizationsSuccess({ organization })),
+          catchError((error) =>
+            of(OrganizationActions.saveOrganizationsFailure({ error: error.error.message ?? error.message }))
+          )
+        )
+      )
+    );
+  });
+
   constructor(private actions$: Actions, private kubernetesClientService: KubernetesClientService) {}
 }

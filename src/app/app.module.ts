@@ -3,11 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ButtonModule } from 'primeng/button';
-import { StyleClassModule } from 'primeng/styleclass';
-import { RippleModule } from 'primeng/ripple';
-import { InputTextModule } from 'primeng/inputtext';
-import { BadgeModule } from 'primeng/badge';
 import { environment } from '../environments/environment';
 import { AuthConfig, OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -16,46 +11,31 @@ import { AppConfigService } from './app-config.service';
 import { forkJoin, mergeMap, Observable, retry } from 'rxjs';
 import { ZonesComponent } from './zones/zones.component';
 import { IdTokenInterceptor } from './core/id-token.interceptor';
-import { ReactiveComponentModule } from '@ngrx/component';
-import { TagModule } from 'primeng/tag';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import { Store, StoreModule } from '@ngrx/store';
 import { appReducer } from './store/app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './store/app.effects';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MessagesModule } from 'primeng/messages';
 import { HomeComponent } from './home/home.component';
 import { KubernetesClientService } from './core/kubernetes-client.service';
 import { setPermission } from './store/app.actions';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    SharedModule,
     AppRoutingModule,
-    StyleClassModule,
-    ButtonModule,
-    RippleModule,
-    InputTextModule,
-    BadgeModule,
     HttpClientModule,
     OAuthModule.forRoot(),
-    ReactiveComponentModule,
-    TagModule,
-    FontAwesomeModule,
-    ClipboardModule,
-    StoreModule.forRoot({ app: appReducer }),
+    StoreModule.forRoot({ app: appReducer, router: routerReducer }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
-    ToastModule,
-    MessagesModule,
     StoreRouterConnectingModule.forRoot(),
   ],
   providers: [

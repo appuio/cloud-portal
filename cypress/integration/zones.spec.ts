@@ -34,8 +34,6 @@ describe('Test zones', () => {
   });
 
   it('no permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
-    cy.visit('/zones');
     cy.visit('/zones');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });

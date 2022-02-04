@@ -30,9 +30,9 @@ export class OrganizationEffects {
           ? this.kubernetesClientService.addOrganization(organization)
           : this.kubernetesClientService.updateOrganization(organization)
         ).pipe(
-          map((organization) => OrganizationActions.saveOrganizationsSuccess({ organization })),
+          map((organization) => OrganizationActions.saveOrganizationSuccess({ organization })),
           catchError((error) =>
-            of(OrganizationActions.saveOrganizationsFailure({ error: error.error.message ?? error.message }))
+            of(OrganizationActions.saveOrganizationFailure({ error: error.error.message ?? error.message }))
           )
         )
       )

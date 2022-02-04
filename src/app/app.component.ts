@@ -4,7 +4,7 @@ import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
 import { selectPermission } from './store/app.selectors';
 import { take } from 'rxjs';
-import { Permission } from './store/app.reducer';
+import { Permission, Verb } from './store/app.reducer';
 import { faSignOut, faSitemap, faUser } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
@@ -47,14 +47,14 @@ export class AppComponent implements OnInit {
   }
 
   private createMenu(permission: Permission): void {
-    if (permission.zones.includes('list')) {
+    if (permission.zones.includes(Verb.List)) {
       this.menuItems.push({
         label: $localize`Zones`,
         icon: faDatabase,
         routerLink: ['zones'],
       });
     }
-    if (permission.organizations.includes('list')) {
+    if (permission.organizations.includes(Verb.List)) {
       this.menuItems.push({
         label: $localize`Organizations`,
         icon: faSitemap,

@@ -14,16 +14,16 @@ export const loadOrganizationsFailure = createAction(
 );
 
 export const saveOrganization = createAction(
-  '[Organization] Save Organizations',
+  '[Organization] Save Organization',
   props<{ organization: Organization; isNew: boolean }>()
 );
 
-export const saveOrganizationsSuccess = createAction(
-  '[Organization] Save Organizations Success',
+export const saveOrganizationSuccess = createAction(
+  '[Organization] Save Organization Success',
   props<{ organization: Organization }>()
 );
 
-export const saveOrganizationsFailure = createAction(
-  '[Organization] Save Organizations Failure',
+export const saveOrganizationFailure = createAction(
+  '[Organization] Save Organization Failure',
   props<{ error: string }>()
 );

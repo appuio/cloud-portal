@@ -34,20 +34,20 @@ export class KubernetesClientService {
 
   getOrganizationPermission(): Observable<Verb[]> {
     return forkJoin([
-      this.getPermission('list', 'organizations', 'organization.appuio.io'),
-      this.getPermission('create', 'organizations', 'organization.appuio.io'),
-      this.getPermission('update', 'organizations', 'organization.appuio.io'),
+      this.getPermission(Verb.List, 'organizations', 'organization.appuio.io'),
+      this.getPermission(Verb.Create, 'organizations', 'organization.appuio.io'),
+      this.getPermission(Verb.Update, 'organizations', 'organization.appuio.io'),
     ]).pipe(
       map(([list, create, update]) => {
         const result: Verb[] = [];
         if (list) {
-          result.push('list');
+          result.push(Verb.List);
         }
         if (create) {
-          result.push('create');
+          result.push(Verb.Create);
         }
         if (update) {
-          result.push('update');
+          result.push(Verb.Update);
         }
         return result;
       })
@@ -55,7 +55,7 @@ export class KubernetesClientService {
   }
 
   getZonePermission(): Observable<Verb[]> {
-    return this.getPermission('list', 'zones', 'appuio.io').pipe(map((result) => (result ? ['list'] : [])));
+    return this.getPermission(Verb.List, 'zones', 'appuio.io').pipe(map((result) => (result ? [Verb.List] : [])));
   }
 
   private getPermission(verb: Verb, resource: string, group: string): Observable<boolean> {

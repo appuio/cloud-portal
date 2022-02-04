@@ -3,7 +3,11 @@ import { Zone } from '../types/zone';
 import { loadZones, loadZonesFailure, loadZonesSuccess, setPermission } from './app.actions';
 import { Entity, EntityState } from '../types/entity';
 
-export type Verb = 'list' | 'update' | 'create';
+export enum Verb {
+  List = 'list',
+  Update = 'update',
+  Create = 'create',
+}
 
 export interface Permission {
   zones: Verb[];

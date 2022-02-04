@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Organization } from '../../types/organization';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
-import { saveOrganization, saveOrganizationsFailure, saveOrganizationsSuccess } from '../store/organization.actions';
+import { saveOrganization, saveOrganizationFailure, saveOrganizationSuccess } from '../store/organization.actions';
 import { Actions, ofType } from '@ngrx/effects';
-import { take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
@@ -15,15 +15,16 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./organization-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationFormComponent implements OnInit {
+export class OrganizationFormComponent implements OnInit, OnDestroy {
   @Input()
   organization!: Organization;
   @Input()
-  new!: boolean;
+  new = true;
 
   form!: FormGroup;
   faSave = faSave;
   saving = false;
+  private handleActionsSubscription?: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,12 +44,12 @@ export class OrganizationFormComponent implements OnInit {
         [Validators.required, Validators.pattern('(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')],
       ],
     });
+    this.handleActions();
   }
 
   save(): void {
     if (this.form.valid) {
       this.saving = true;
-      this.handleActions();
       this.store.dispatch(
         saveOrganization({
           isNew: this.new,
@@ -67,13 +68,16 @@ export class OrganizationFormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.handleActionsSubscription?.unsubscribe();
+  }
+
   private handleActions(): void {
-    this.action
-      .pipe(ofType(saveOrganizationsSuccess, saveOrganizationsFailure))
-      .pipe(take(1))
+    this.handleActionsSubscription = this.action
+      .pipe(ofType(saveOrganizationSuccess, saveOrganizationFailure))
       .subscribe((action) => {
         this.saving = false;
-        if (action.type === saveOrganizationsFailure.type) {
+        if (action.type === saveOrganizationFailure.type) {
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,

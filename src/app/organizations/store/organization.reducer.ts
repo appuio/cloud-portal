@@ -41,7 +41,7 @@ export const reducer = createReducer(
     })
   ),
   on(
-    OrganizationActions.saveOrganizationsSuccess,
+    OrganizationActions.saveOrganizationSuccess,
     (state, { organization }): OrganizationState => ({
       ...state,
       organizations: {

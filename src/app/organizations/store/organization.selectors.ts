@@ -10,7 +10,7 @@ export const selectOrganizationState = createFeatureSelector<fromOrganization.Or
 
 export const selectOrganizations = createSelector(selectOrganizationState, (state): Entity<Organization[]> => {
   const organizations = [...state.organizations.value];
-  organizations.sort((a, b) => (a.metadata.name < b.metadata.name ? -1 : 1));
+  organizations.sort((a, b) => a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }));
   return {
     state: state.organizations.state,
     value: organizations,

@@ -1,10 +1,10 @@
 <div class="flex flex-row justify-content-between">
   <h1 class="pt-0 mt-0" i18n id="organizations-title">Organizations</h1>
 
-  <div>
+  <div *ngIf="hasCreatePermission$ | ngrxPush">
     <button [routerLink]="['$new']" class="" pButton pRipple>
       <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-      Add new Organization
+      <span i18n>Add new Organization</span>
     </button>
   </div>
 </div>
@@ -16,7 +16,12 @@
         <div class="text-3xl font-medium text-900 mb-3">
           {{ organization.metadata.name }}
         </div>
-        <a [routerLink]="[organization.metadata.name]" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+        <a
+          *ngIf="hasUpdatePermission$ | ngrxPush"
+          [routerLink]="[organization.metadata.name]"
+          class="text-blue-500 hover:text-primary text-2xl cursor-pointer"
+          i18n-title
+          title="Edit">
           <fa-icon [icon]="faEdit"></fa-icon>
         </a>
       </div>

@@ -44,7 +44,13 @@ export const reducer = createReducer(
     OrganizationActions.saveOrganizationsSuccess,
     (state, { organization }): OrganizationState => ({
       ...state,
-      organizations: { value: [organization, ...state.organizations.value], state: EntityState.Loaded },
+      organizations: {
+        value: [
+          organization,
+          ...state.organizations.value.filter((o) => o.metadata.name != organization.metadata.name),
+        ],
+        state: EntityState.Loaded,
+      },
     })
   )
 );

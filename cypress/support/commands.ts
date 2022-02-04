@@ -4,18 +4,21 @@ declare namespace Cypress {
   interface Chainable<Subject = any> {
     setupAuth(): typeof setupAuth;
 
-    addPermission(verb: string, resource: string, group: string): typeof addPermission;
+    setPermission(...permission: { verb: string; resource: string; group: string }[]): typeof setPermission;
   }
 }
 
-function addPermission(verb: string, resource: string, group: string): void {
+function setPermission(...permission: { verb: string; resource: string; group: string }[]): void {
   cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', (request) => {
     const requestBody = request.body;
     const resourceAttributes = requestBody.spec.resourceAttributes;
     if (
-      resourceAttributes.verb === verb &&
-      resourceAttributes.resource === resource &&
-      resourceAttributes.group === group
+      permission.find(
+        (p) =>
+          resourceAttributes.verb === p.verb &&
+          resourceAttributes.resource === p.resource &&
+          resourceAttributes.group === p.group
+      )
     ) {
       requestBody.status = { allowed: true, reason: 'match' };
     } else {
@@ -69,4 +72,4 @@ function setupAuth(): void {
 }
 
 Cypress.Commands.add('setupAuth', setupAuth);
-Cypress.Commands.add('addPermission', addPermission);
+Cypress.Commands.add('setPermission', setPermission);

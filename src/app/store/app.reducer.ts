@@ -3,9 +3,11 @@ import { Zone } from '../types/zone';
 import { loadZones, loadZonesFailure, loadZonesSuccess, setPermission } from './app.actions';
 import { Entity, EntityState } from '../types/entity';
 
+export type Verb = 'list' | 'update' | 'create';
+
 export interface Permission {
-  zones: boolean;
-  organizations: boolean;
+  zones: Verb[];
+  organizations: Verb[];
 }
 
 export interface AppState {
@@ -16,8 +18,8 @@ export interface AppState {
 const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
   permission: {
-    zones: false,
-    organizations: false,
+    zones: [],
+    organizations: [],
   },
 };
 

@@ -2,12 +2,9 @@ describe('Test zones', () => {
   before(() => {
     cy.setupAuth();
   });
-  beforeEach(() => {
-    cy.addPermission('list', 'zones', 'appuio.io');
-    cy.visit('/zones');
-    cy.title().should('eq', 'APPUiO Cloud Portal');
-  });
   it('list with two entries', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.visit('/zones');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
       fixture: 'zones.json',
     });
@@ -17,6 +14,8 @@ describe('Test zones', () => {
   });
 
   it('empty list', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.visit('/zones');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
       fixture: 'zones-empty.json',
     });
@@ -25,25 +24,18 @@ describe('Test zones', () => {
   });
 
   it('request failed', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.visit('/zones');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
       statusCode: 403,
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
     cy.get('#zone-failure-message').should('contain.text', 'Zones could not be loaded.');
   });
-});
 
-describe('Test zones permission', () => {
-  before(() => {
-    cy.setupAuth();
-  });
-  it('navigate to zones with permission', () => {
-    cy.addPermission('list', 'zones', 'appuio.io');
+  it('no permission', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
     cy.visit('/zones');
-    cy.get('#zones-title').should('contain.text', 'Zones');
-  });
-
-  it('navigate to zones without permission', () => {
     cy.visit('/zones');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });

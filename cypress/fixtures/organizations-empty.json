@@ -1,0 +1,8 @@
+{
+  "kind": "OrganizationList",
+  "apiVersion": "organization.appuio.io/v1",
+  "metadata": {
+    "resourceVersion": "1828"
+  },
+  "items": []
+}

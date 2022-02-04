@@ -20,11 +20,17 @@ const routes: Routes = [
     canActivate: [PermissionGuard],
     data: {
       permission: 'zones',
+      verb: 'list',
     },
   },
   {
     path: 'organizations',
     loadChildren: () => import('./organizations/organizations.module').then((m) => m.OrganizationsModule),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'organizations',
+      verb: 'list',
+    },
   },
 ];
 

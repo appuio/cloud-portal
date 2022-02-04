@@ -47,14 +47,14 @@ export class AppComponent implements OnInit {
   }
 
   private createMenu(permission: Permission): void {
-    if (permission.zones) {
+    if (permission.zones.includes('list')) {
       this.menuItems.push({
         label: $localize`Zones`,
         icon: faDatabase,
         routerLink: ['zones'],
       });
     }
-    if (permission.organizations) {
+    if (permission.organizations.includes('list')) {
       this.menuItems.push({
         label: $localize`Organizations`,
         icon: faSitemap,

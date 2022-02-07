@@ -33,7 +33,7 @@
     "@fortawesome/free-solid-svg-icons": "6.0.0-beta3",
     "@ngrx/component": "13.0.2",
     "@ngrx/effects": "13.0.2",
-    "@ngrx/router-store": "^13.0.2",
+    "@ngrx/router-store": "13.0.2",
     "@ngrx/store": "13.0.2",
     "@ngrx/store-devtools": "13.0.2",
     "angular-oauth2-oidc": "13.0.1",

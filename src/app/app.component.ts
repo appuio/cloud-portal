@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
 import { selectPermission } from './store/app.selectors';
 import { take } from 'rxjs';
-import { Permission } from './store/app.reducer';
+import { Permission, Verb } from './store/app.reducer';
+import { faSignOut, faSitemap, faUser } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
+import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 
 @Component({
   selector: 'app-root',
@@ -14,16 +16,16 @@ import { Permission } from './store/app.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-  menuItems: MenuItem[] = [];
+  menuItems: NavMenuItem[] = [];
 
-  profileItems: MenuItem[] = [
+  profileItems: NavMenuItem[] = [
     {
       label: $localize`Profile`,
-      icon: 'pi pi-user',
+      icon: faUser,
     },
     {
       label: $localize`Sign out`,
-      icon: 'pi pi-sign-out',
+      icon: faSignOut,
       command: () => this.oauthService.logOut(),
     },
   ];
@@ -45,12 +47,27 @@ export class AppComponent implements OnInit {
   }
 
   private createMenu(permission: Permission): void {
-    if (permission.zones) {
+    if (permission.zones.includes(Verb.List)) {
       this.menuItems.push({
         label: $localize`Zones`,
-        icon: 'pi pi-database',
+        icon: faDatabase,
         routerLink: ['zones'],
       });
     }
+    if (permission.organizations.includes(Verb.List)) {
+      this.menuItems.push({
+        label: $localize`Organizations`,
+        icon: faSitemap,
+        routerLink: ['organizations'],
+      });
+    }
   }
+}
+
+export interface NavMenuItem {
+  items?: NavMenuItem[];
+  label: string;
+  icon: IconDefinition;
+  command?: () => void;
+  routerLink?: string[];
 }

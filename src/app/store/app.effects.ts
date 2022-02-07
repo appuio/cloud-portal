@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { KubernetesClientService } from '../kubernetes-client.service';
+import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { loadZones, loadZonesFailure, loadZonesSuccess } from './app.actions';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';

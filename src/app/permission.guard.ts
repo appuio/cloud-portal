@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { map, Observable, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectPermission } from './store/app.selectors';
+import { Permission, Verb } from './store/app.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +21,14 @@ export class PermissionGuard implements CanActivate {
       .pipe(take(1))
       .pipe(
         map((permission) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const hasPermission = permission[route.data.permission];
+          const verb: Verb = route.data['verb'];
+          const requiredPermission: keyof Permission = route.data['permission'];
+          const hasPermission = permission[requiredPermission].includes(verb);
           if (!hasPermission) {
-            return this.router.navigate(['/home']);
+            void this.router.navigate(['/home']);
+            return false;
           }
-          return hasPermission;
+          return true;
         })
       );
   }

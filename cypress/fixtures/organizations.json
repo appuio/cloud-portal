@@ -1,0 +1,27 @@
+{
+  "kind": "OrganizationList",
+  "apiVersion": "organization.appuio.io/v1",
+  "metadata": {
+    "resourceVersion": "1828"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "nxt",
+        "uid": "90542b5a-116e-4efa-a5a4-ce842470b8be"
+      },
+      "spec": {
+        "displayName": "nxt Engineering GmbH"
+      }
+    },
+    {
+      "metadata": {
+        "name": "VSHN",
+        "uid": "b9cd207a-0a48-4819-8553-254470994cc8"
+      },
+      "spec": {
+        "displayName": "VSHN AG"
+      }
+    }
+  ]
+}

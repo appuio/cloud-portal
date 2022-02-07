@@ -1,7 +1,10 @@
 export interface Zone {
   kind: 'Zone';
-  apiVersion: string;
-  metadata: object;
+  apiVersion: 'appuio.io/v1';
+  metadata: {
+    name: string;
+    [key: string]: unknown;
+  };
   data: {
     displayName: string;
     features: {
@@ -28,10 +31,7 @@ export interface Zone {
 
 export interface ZoneList {
   kind: 'ZoneList';
-  apiVersion: string;
-  metadata: {
-    continue: string;
-    resourceVersion: string;
-  };
+  apiVersion: 'appuio.io/v1';
+  metadata: object;
   items: Zone[];
 }

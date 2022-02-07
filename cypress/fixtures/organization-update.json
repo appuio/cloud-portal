@@ -1,0 +1,10 @@
+{
+  "kind": "Organization",
+  "apiVersion": "organization.appuio.io/v1",
+  "metadata": {
+    "name": "VSHN"
+  },
+  "spec": {
+    "displayName": "VSHN - the DevOps Company"
+  }
+}

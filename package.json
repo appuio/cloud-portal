@@ -67,7 +67,7 @@
     "eslint-plugin-change-detection-strategy": "0.1.1",
     "eslint-plugin-ngrx": "2.0.3",
     "eslint-plugin-prettier": "4.0.0",
-    "jest": "27.4.7",
+    "jest": "27.5.0",
     "jest-preset-angular": "11.1.0",
     "prettier": "2.5.1",
     "pwa-asset-generator": "6.0.6",

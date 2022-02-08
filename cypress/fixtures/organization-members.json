@@ -1,0 +1,25 @@
+{
+  "apiVersion": "appuio.io/v1",
+  "kind": "OrganizationMembers",
+  "metadata": {
+    "namespace": "nxt",
+    "ownerReferences": [
+      {
+        "apiVersion": "organization.appuio.io/v1",
+        "controller": true,
+        "kind": "Organization",
+        "name": "nxt"
+      }
+    ]
+  },
+  "spec": {
+    "userRefs": [
+      {
+        "name": "hans.meier"
+      },
+      {
+        "name": "peter.muster"
+      }
+    ]
+  }
+}

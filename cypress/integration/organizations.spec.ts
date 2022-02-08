@@ -66,7 +66,7 @@ describe('Test organization edit', () => {
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should('contain.text', 'VSHN AG');
 
-    cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').click();
+    cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
     cy.get('.text-3xl').should('contain.text', 'VSHN');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');

@@ -27,7 +27,7 @@ export class KubernetesClientService {
 
   getOrganizationMembers(namespace: string): Observable<OrganizationMembers> {
     return this.httpClient.get<OrganizationMembers>(
-      `/appuio-api/apis/appuio.io/v1/namespaces/${namespace}/organizationmembers/members`
+      `appuio-api/apis/appuio.io/v1/namespaces/${namespace}/organizationmembers/members`
     );
   }
 

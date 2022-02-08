@@ -12,6 +12,7 @@ export enum Verb {
 export interface Permission {
   zones: Verb[];
   organizations: Verb[];
+  organizationMembers: Verb[];
 }
 
 export interface AppState {
@@ -24,6 +25,7 @@ const initialState: AppState = {
   permission: {
     zones: [],
     organizations: [],
+    organizationMembers: [],
   },
 };
 

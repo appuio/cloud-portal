@@ -11,15 +11,23 @@ import { loadOrganizations } from './store/organization.actions';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
 import { SharedModule } from '../shared/shared.module';
 import { OrganizationFormComponent } from './organization-form/organization-form.component';
+import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
+import { FocusTrapModule } from 'primeng/focustrap';
 
 @NgModule({
-  declarations: [OrganizationsComponent, OrganizationEditComponent, OrganizationFormComponent],
+  declarations: [
+    OrganizationsComponent,
+    OrganizationEditComponent,
+    OrganizationFormComponent,
+    OrganizationMembersEditComponent,
+  ],
   imports: [
     CommonModule,
     OrganizationsRoutingModule,
     StoreModule.forFeature(fromOrganization.organizationFeatureKey, fromOrganization.reducer),
     EffectsModule.forFeature([OrganizationEffects]),
     SharedModule,
+    FocusTrapModule,
   ],
 })
 export class OrganizationsModule {

@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
 import { PermissionGuard } from '../permission.guard';
+import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
+import { OrganizationMembersResolver } from './organization-members-edit/organization-members.resolver';
 
 const routes: Routes = [
   {
@@ -21,6 +23,16 @@ const routes: Routes = [
     data: {
       permission: 'organizations',
       verb: 'update',
+    },
+  },
+  {
+    path: ':name/members',
+    component: OrganizationMembersEditComponent,
+    canActivate: [PermissionGuard],
+    resolve: { organizationMembers: OrganizationMembersResolver },
+    data: {
+      permission: 'organizationMembers',
+      verb: 'list',
     },
   },
 ];

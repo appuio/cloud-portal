@@ -1,0 +1,40 @@
+<div class="surface-card p-4 shadow-2 border-round mb-4">
+  <div class="flex flex-row justify-content-between">
+    <div class="text-3xl font-medium text-900 mb-3">
+      {{ organizationMembers.metadata.namespace }}
+      <span i18n>Members</span>
+    </div>
+    <a [routerLink]="['../..']" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+      <fa-icon [icon]="faClose"></fa-icon>
+    </a>
+  </div>
+  <div *ngrxLet="hasOrganizationMembersUpdatePermission$; let updatePermission" class="border-top-1 surface-border">
+    <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
+      <div *ngFor="let control of this.userRefs.controls; let i = index; let last = last" class="flex-auto flex mt-3">
+        <input [formControl]="$any(control)" class="flex-auto" pInputText tabindex="0" type="text" />
+        <button
+          (click)="removeFormControl(i)"
+          *ngIf="!last && updatePermission; else noButton"
+          class="p-button-icon-only ml-3"
+          i18n-title
+          pButton
+          pRipple
+          tabindex="1"
+          title="Remove"
+          type="button">
+          <fa-icon [icon]="faClose"></fa-icon>
+        </button>
+        <ng-template #noButton>
+          <div *ngIf="updatePermission" class="ml-3" style="width: 3rem"></div>
+        </ng-template>
+      </div>
+
+      <div *ngIf="updatePermission">
+        <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+          <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
+          <span class="pr-2" i18n>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

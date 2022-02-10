@@ -58,7 +58,7 @@
     "@cypress/schematic": "1.6.0",
     "@ngrx/schematics": "13.0.2",
     "@types/jest": "27.4.0",
-    "@types/node": "16.11.22",
+    "@types/node": "16.11.24",
     "@typescript-eslint/eslint-plugin": "5.11.0",
     "@typescript-eslint/parser": "5.11.0",
     "angular-http-server": "1.10.0",

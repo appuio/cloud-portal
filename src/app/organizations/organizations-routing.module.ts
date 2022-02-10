@@ -28,12 +28,7 @@ const routes: Routes = [
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
-    canActivate: [PermissionGuard],
     resolve: { organizationMembers: OrganizationMembersResolver },
-    data: {
-      permission: 'organizationMembers',
-      verb: 'list',
-    },
   },
 ];
 

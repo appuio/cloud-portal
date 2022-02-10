@@ -82,15 +82,11 @@ export function initializeAppFactory(
           oauthService.setupAutomaticSilentRefresh();
 
           return new Promise<boolean>((resolve) => {
-            forkJoin([
-              kubernetesClientService.getZonePermission(),
-              kubernetesClientService.getOrganizationPermission(),
-              kubernetesClientService.getOrganizationMembersPermission(),
-            ])
+            forkJoin([kubernetesClientService.getZonePermission(), kubernetesClientService.getOrganizationPermission()])
               .pipe(retry({ count: 5, delay: 500 }))
               .subscribe({
-                next: ([zones, organizations, organizationMembers]) => {
-                  store.dispatch(setPermission({ permission: { zones, organizations, organizationMembers } }));
+                next: ([zones, organizations]) => {
+                  store.dispatch(setPermission({ permission: { zones, organizations } }));
                   resolve(true);
                 },
                 error: () => {

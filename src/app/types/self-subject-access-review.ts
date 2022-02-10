@@ -3,7 +3,7 @@ export class SelfSubjectAccessReview {
   readonly apiVersion = 'authorization.k8s.io/v1';
   readonly spec = {
     resourceAttributes: {
-      namespace: 'default',
+      namespace: '',
       verb: '',
       resource: '',
       group: '',
@@ -14,9 +14,10 @@ export class SelfSubjectAccessReview {
     reason: '',
   };
 
-  constructor(verb: string, resource: string, group: string) {
+  constructor(verb: string, resource: string, group: string, namespace: string) {
     this.spec.resourceAttributes.verb = verb;
     this.spec.resourceAttributes.resource = resource;
     this.spec.resourceAttributes.group = group;
+    this.spec.resourceAttributes.namespace = namespace;
   }
 }

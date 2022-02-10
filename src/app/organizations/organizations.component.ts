@@ -22,7 +22,6 @@ export class OrganizationsComponent {
   faAdd = faAdd;
   hasUpdatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Update));
   hasCreatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Create));
-  hasOrganizationMembersPermission$ = this.store.select(selectHasPermission('organizationMembers', Verb.List));
   faUserGroup = faUserGroup;
 
   constructor(private store: Store) {}

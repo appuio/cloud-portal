@@ -47,23 +47,30 @@ export class KubernetesClientService {
   }
 
   getOrganizationPermission(): Observable<Verb[]> {
-    return this.getPermissions('organizations', 'organization.appuio.io', Verb.List, Verb.Create, Verb.Update);
-  }
-
-  getOrganizationMembersPermission(): Observable<Verb[]> {
-    return this.getPermissions('organizationmembers', 'appuio.io', Verb.List, Verb.Create, Verb.Update);
+    return this.getPermissions(
+      'default',
+      'organizations',
+      'organization.appuio.io',
+      Verb.List,
+      Verb.Create,
+      Verb.Update
+    );
   }
 
   getZonePermission(): Observable<Verb[]> {
-    return this.getPermissions('zones', 'appuio.io', Verb.List);
+    return this.getPermissions('default', 'zones', 'appuio.io', Verb.List);
   }
 
-  private getPermissions(resource: string, group: string, ...verbs: Verb[]): Observable<Verb[]> {
+  getOrganizationMembersPermission(namespace: string, verb: Verb = Verb.List): Observable<Verb[]> {
+    return this.getPermissions(namespace, 'organizationmembers', 'appuio.io', verb);
+  }
+
+  private getPermissions(namespace: string, resource: string, group: string, ...verbs: Verb[]): Observable<Verb[]> {
     const requests = verbs.map((verb) =>
       this.httpClient
         .post<SelfSubjectAccessReview>(
           'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
-          new SelfSubjectAccessReview(verb, resource, group)
+          new SelfSubjectAccessReview(verb, resource, group, namespace)
         )
         .pipe(map((result) => result.status?.allowed ?? false))
     );

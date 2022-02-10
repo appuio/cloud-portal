@@ -3,15 +3,12 @@ export interface OrganizationMembers {
   apiVersion: 'appuio.io/v1';
   metadata: {
     [key: string]: unknown;
-    namespace: 'string';
-    ownerReferences: {
-      [key: string]: unknown;
-      name: string;
-    }[];
+    namespace: string;
   };
   spec: {
     userRefs: {
       name: string;
     }[];
   };
+  editMembers?: boolean;
 }

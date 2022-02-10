@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 
 import * as OrganizationActions from './organization.actions';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
+import { Verb } from '../../store/app.reducer';
 
 @Injectable()
 export class OrganizationEffects {
@@ -13,9 +14,23 @@ export class OrganizationEffects {
       ofType(OrganizationActions.loadOrganizations),
       concatMap(() =>
         this.kubernetesClientService.getOrganizationList().pipe(
-          map((organizationList) =>
-            OrganizationActions.loadOrganizationsSuccess({ organizations: organizationList.items })
-          ),
+          switchMap((organizationList) => {
+            const organizations = organizationList.items;
+            if (organizations.length === 0) {
+              return of(OrganizationActions.loadOrganizationsSuccess({ organizations: organizations }));
+            }
+            const requests = organizations.map((o) =>
+              this.kubernetesClientService.getOrganizationMembersPermission(o.metadata.name)
+            );
+            return forkJoin(requests).pipe(
+              map((verb: Verb[][]) => {
+                organizations.forEach((organization, index) => {
+                  organization.viewMembers = verb[index].includes(Verb.List);
+                });
+                return OrganizationActions.loadOrganizationsSuccess({ organizations: organizations });
+              })
+            );
+          }),
           catchError((error) => of(OrganizationActions.loadOrganizationsFailure({ error })))
         )
       )

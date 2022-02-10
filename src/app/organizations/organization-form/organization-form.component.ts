@@ -54,12 +54,12 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
         saveOrganization({
           isNew: this.new,
           organization: {
-            ...this.organization,
+            kind: 'Organization',
+            apiVersion: 'organization.appuio.io/v1',
             metadata: {
               name: this.form.value.name,
             },
             spec: {
-              ...this.organization.spec,
               displayName: this.form.value.displayName,
             },
           },

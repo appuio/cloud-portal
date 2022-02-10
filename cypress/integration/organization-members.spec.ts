@@ -9,6 +9,7 @@ describe('Test organization members', () => {
         verb: 'list',
         resource: 'organizationmembers',
         group: 'appuio.io',
+        namespace: 'nxt',
       }
     );
     cy.visit('/organizations');
@@ -23,12 +24,11 @@ describe('Test organization members', () => {
     cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'peter.muster');
     cy.get('button[type=submit]').should('not.exist');
   });
-
   it('edit list with two entries', () => {
     cy.setPermission(
       { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
-      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io' },
-      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io' }
+      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
+      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
@@ -39,6 +39,8 @@ describe('Test organization members', () => {
       fixture: 'organization-members.json',
     }).as('save');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
+    cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('not.exist');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
     cy.get(':nth-child(1) > .p-inputtext').should('have.value', 'hans.meier');
@@ -52,12 +54,11 @@ describe('Test organization members', () => {
         expect(body.spec.userRefs[1].name).to.eq('test');
       });
   });
-
   it('add a new entry', () => {
     cy.setPermission(
       { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
-      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io' },
-      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io' }
+      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
+      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });

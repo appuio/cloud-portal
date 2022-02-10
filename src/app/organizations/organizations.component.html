@@ -26,7 +26,7 @@
             <fa-icon [icon]="faUserGroup"></fa-icon>
           </a>
           <a
-            *ngIf="hasUpdatePermission$ | ngrxPush"
+            *ngIf="organization?.editOrganization"
             [routerLink]="[organization.metadata.name]"
             class="text-blue-500 hover:text-primary text-2xl cursor-pointer"
             i18n-title

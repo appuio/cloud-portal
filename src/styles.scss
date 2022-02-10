@@ -26,3 +26,15 @@ body {
 .blink {
   animation: blink 2500ms ease-in-out infinite
 }
+
+.required {
+  font-weight: bold;
+
+  &:after {
+    content: '*';
+  }
+}
+
+.p-inline-message {
+  justify-content: left !important;
+}

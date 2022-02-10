@@ -38,7 +38,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      displayName: [this.organization.spec.displayName, Validators.required],
+      displayName: [this.organization.spec.displayName],
       name: [
         this.organization.metadata.name,
         [Validators.required, Validators.pattern('(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')],
@@ -78,11 +78,23 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       .subscribe((action) => {
         this.saving = false;
         if (action.type === saveOrganizationFailure.type) {
+          let detail = '';
+          if ('message' in action.error) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            detail = action.error.message;
+          }
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if ('AlreadyExists' === action.error.reason) {
+            this.form.get('name')?.setErrors({ alreadyExists: true });
+          }
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: action.error,
+            detail: detail,
           });
+          console.log(action.error);
         } else {
           this.messageService.add({
             severity: 'success',

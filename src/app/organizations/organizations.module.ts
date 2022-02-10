@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { OrganizationFormComponent } from './organization-form/organization-form.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 import { FocusTrapModule } from 'primeng/focustrap';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { FocusTrapModule } from 'primeng/focustrap';
     EffectsModule.forFeature([OrganizationEffects]),
     SharedModule,
     FocusTrapModule,
+    MessageModule,
   ],
 })
 export class OrganizationsModule {

@@ -19,13 +19,17 @@ export class OrganizationEffects {
             if (organizations.length === 0) {
               return of(OrganizationActions.loadOrganizationsSuccess({ organizations: organizations }));
             }
-            const requests = organizations.map((o) =>
-              this.kubernetesClientService.getOrganizationMembersPermission(o.metadata.name)
-            );
+            const requests = [
+              ...organizations.map((o) =>
+                this.kubernetesClientService.getOrganizationMembersPermission(o.metadata.name)
+              ),
+              ...organizations.map((o) => this.kubernetesClientService.getOrganizationPermission(o.metadata.name)),
+            ];
             return forkJoin(requests).pipe(
               map((verb: Verb[][]) => {
                 organizations.forEach((organization, index) => {
                   organization.viewMembers = verb[index].includes(Verb.List);
+                  organization.editOrganization = verb[index + organizations.length].includes(Verb.Update);
                 });
                 return OrganizationActions.loadOrganizationsSuccess({ organizations: organizations });
               })

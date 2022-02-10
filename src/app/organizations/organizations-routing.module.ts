@@ -22,7 +22,7 @@ const routes: Routes = [
     canActivate: [PermissionGuard],
     data: {
       permission: 'organizations',
-      verb: 'update',
+      verb: 'create',
     },
   },
   {

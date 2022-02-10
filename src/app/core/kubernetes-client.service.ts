@@ -46,19 +46,16 @@ export class KubernetesClientService {
     return this.httpClient.put<Organization>(`${this.organizationsApi}/${organization.metadata.name}`, organization);
   }
 
-  getOrganizationPermission(): Observable<Verb[]> {
-    return this.getPermissions(
-      'default',
-      'organizations',
-      'organization.appuio.io',
-      Verb.List,
-      Verb.Create,
-      Verb.Update
-    );
+  getOrganizationsPermission(): Observable<Verb[]> {
+    return this.getPermissions('', 'organizations', 'rbac.appuio.io', Verb.List, Verb.Create);
+  }
+
+  getOrganizationPermission(namespace: string, verb: Verb = Verb.Update): Observable<Verb[]> {
+    return this.getPermissions(namespace, 'organizations', 'rbac.appuio.io', verb);
   }
 
   getZonePermission(): Observable<Verb[]> {
-    return this.getPermissions('default', 'zones', 'appuio.io', Verb.List);
+    return this.getPermissions('', 'zones', 'appuio.io', Verb.List);
   }
 
   getOrganizationMembersPermission(namespace: string, verb: Verb = Verb.List): Observable<Verb[]> {

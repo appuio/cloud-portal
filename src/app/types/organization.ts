@@ -9,6 +9,7 @@ export interface Organization {
     displayName: string;
   };
   viewMembers?: boolean;
+  editOrganization?: boolean;
 }
 
 export interface OrganizationList {

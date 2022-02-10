@@ -20,7 +20,6 @@ export class OrganizationsComponent {
   faWarning = faWarning;
   faEdit = faEdit;
   faAdd = faAdd;
-  hasUpdatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Update));
   hasCreatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Create));
   faUserGroup = faUserGroup;
 

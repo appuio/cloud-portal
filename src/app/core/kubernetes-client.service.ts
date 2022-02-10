@@ -33,7 +33,7 @@ export class KubernetesClientService {
 
   updateOrganizationMembers(organizationMembers: OrganizationMembers): Observable<OrganizationMembers> {
     return this.httpClient.put<OrganizationMembers>(
-      `/appuio-api/apis/appuio.io/v1/namespaces/${organizationMembers.metadata.namespace}/organizationmembers/members`,
+      `appuio-api/apis/appuio.io/v1/namespaces/${organizationMembers.metadata.namespace}/organizationmembers/members`,
       organizationMembers
     );
   }

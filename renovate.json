@@ -1,11 +1,27 @@
 {
-  "extends": ["config:base", ":disableDependencyDashboard"],
-  "labels": ["dependency"],
+  "extends": [
+    "config:base",
+    ":disableDependencyDashboard"
+  ],
+  "labels": [
+    "dependency"
+  ],
   "npm": {
     "packageRules": [
       {
-        "matchPackageNames": ["typescript"],
+        "matchPackageNames": [
+          "typescript"
+        ],
         "allowedVersions": "4.4.*"
+      },
+      {
+        "matchPackagePatterns": [
+          "@.+\/.+"
+        ],
+        "groupName": "npm",
+        "schedule": [
+          "on the first day of the month"
+        ]
       }
     ]
   }

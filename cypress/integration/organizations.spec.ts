@@ -3,7 +3,7 @@ describe('Test organization list', () => {
     cy.setupAuth();
   });
   it('list with two entries', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -12,9 +12,8 @@ describe('Test organization list', () => {
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
   });
-
   it('empty list', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations-empty.json',
@@ -24,7 +23,7 @@ describe('Test organization list', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       statusCode: 403,
@@ -45,8 +44,8 @@ describe('Test organization edit', () => {
   });
   it('edit organization with button', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
-      { verb: 'update', resource: 'organizations', group: 'organization.appuio.io' }
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io', namespace: 'VSHN' }
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -66,6 +65,7 @@ describe('Test organization edit', () => {
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should('contain.text', 'VSHN AG');
 
+    cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('not.exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
     cy.get('.text-3xl').should('contain.text', 'VSHN');
     cy.get('#displayName').type('{selectall}');
@@ -89,7 +89,7 @@ describe('Test organization edit', () => {
     );
   });
   it('no edit permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -105,9 +105,9 @@ describe('Test organization add', () => {
   });
   it('add organization with button', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
-      { verb: 'create', resource: 'organizations', group: 'organization.appuio.io' },
-      { verb: 'update', resource: 'organizations', group: 'organization.appuio.io' }
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'create', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io' }
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -124,7 +124,7 @@ describe('Test organization add', () => {
 
     cy.get('#name').type('VSHN');
     cy.get('#displayName').type('VSHN - the DevOps Company');
-    cy.get('.grid > :nth-child(3) > .p-element').click();
+    cy.get('button[type=submit]').click();
     cy.get('@add')
       .its('request.body')
       .then((body) => {
@@ -136,9 +136,11 @@ describe('Test organization add', () => {
       'contain.text',
       'VSHN - the DevOps Company'
     );
+    cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('exist');
+    cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
   });
   it('no create permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations-empty.json',

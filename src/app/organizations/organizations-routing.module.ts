@@ -20,10 +20,6 @@ const routes: Routes = [
     path: ':name',
     component: OrganizationEditComponent,
     canActivate: [PermissionGuard],
-    data: {
-      permission: 'organizations',
-      verb: 'create',
-    },
   },
   {
     path: ':name/members',

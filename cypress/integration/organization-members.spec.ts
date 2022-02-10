@@ -4,7 +4,7 @@ describe('Test organization members', () => {
   });
   it('readonly list with two entries', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
       {
         verb: 'list',
         resource: 'organizationmembers',
@@ -26,7 +26,7 @@ describe('Test organization members', () => {
   });
   it('edit list with two entries', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
       { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
       { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
@@ -56,7 +56,7 @@ describe('Test organization members', () => {
   });
   it('add a new entry', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'organization.appuio.io' },
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
       { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
       { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
@@ -84,7 +84,7 @@ describe('Test organization members', () => {
       });
   });
   it('no list permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'organization.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
     cy.get('#organizations-title').should('contain.text', 'Organizations');

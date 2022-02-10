@@ -20,7 +20,7 @@ function setPermission(...permission: { verb: string; resource: string; group: s
           resourceAttributes.verb === p.verb &&
           resourceAttributes.resource === p.resource &&
           resourceAttributes.group === p.group &&
-          ((!p.namespace && resourceAttributes.namespace === 'default') || resourceAttributes.namespace === p.namespace)
+          ((!p.namespace && resourceAttributes.namespace === '') || resourceAttributes.namespace === p.namespace)
       )
     ) {
       requestBody.status = { allowed: true, reason: 'match' };

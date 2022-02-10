@@ -88,13 +88,13 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
           // @ts-ignore
           if ('AlreadyExists' === action.error.reason) {
             this.form.get('name')?.setErrors({ alreadyExists: true });
+            detail = $localize`Organization "${this.form.get('name')?.value}" already exists.`;
           }
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
             detail: detail,
           });
-          console.log(action.error);
         } else {
           this.messageService.add({
             severity: 'success',

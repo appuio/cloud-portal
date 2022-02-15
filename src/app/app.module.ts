@@ -16,7 +16,6 @@ import { appReducer } from './store/app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './store/app.effects';
-import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { KubernetesClientService } from './core/kubernetes-client.service';
@@ -54,7 +53,6 @@ import * as Sentry from '@sentry/angular';
         logErrors: true,
       }),
     },
-    MessageService,
   ],
   bootstrap: [AppComponent],
 })

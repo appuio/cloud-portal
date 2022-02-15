@@ -120,7 +120,7 @@ describe('Test organization add', () => {
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
 
-    cy.get('app-organizations.ng-star-inserted > .flex > div > .p-element').click();
+    cy.get('#addOrganizationButton').click();
 
     cy.get('#name').type('VSHN');
     cy.get('#displayName').type('VSHN - the DevOps Company');
@@ -147,6 +147,6 @@ describe('Test organization add', () => {
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
-    cy.get('app-organizations.ng-star-inserted > .flex > div > .p-element').should('not.exist');
+    cy.get('#addOrganizationButton').should('not.exist');
   });
 });

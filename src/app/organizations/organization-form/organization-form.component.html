@@ -1,12 +1,17 @@
 <form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
   <div *ngIf="new" class="col-12 mb-2">
-    <p-message severity="info" text="The name of an organization can not be changed later."></p-message>
+    <p-message i18n-text severity="info" text="The name of an organization can not be changed later."></p-message>
   </div>
   <div *ngIf="new" class="field mb-4 col-12">
     <label class="required" for="name">Name</label>
     <input formControlName="name" id="name" pInputText type="text" />
     <small *ngIf="form.get('name')?.hasError('alreadyExists')" class="block p-error" i18n>
       An organization with the same name already exists.
+    </small>
+    <small *ngIf="form.get('name')?.hasError('pattern')" class="block p-error" i18n>
+      The organization name must match the pattern
+      <code>(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?</code>
+      .
     </small>
   </div>
 

@@ -12,6 +12,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   declarations: [],
@@ -31,5 +33,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveComponentModule,
     ReactiveFormsModule,
   ],
+  providers: [MessageService, DialogService],
 })
 export class SharedModule {}

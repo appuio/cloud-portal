@@ -10,6 +10,12 @@
   </div>
   <div class="border-top-1 surface-border">
     <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
+      <div class="mt-2">
+        <p-message
+          i18n-text
+          severity="info"
+          text="List all user names that should have access to this organization."></p-message>
+      </div>
       <div *ngFor="let control of this.userRefs.controls; let i = index; let last = last" class="flex-auto flex mt-3">
         <input [formControl]="$any(control)" class="flex-auto" pInputText tabindex="0" type="text" />
         <button

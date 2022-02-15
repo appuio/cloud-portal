@@ -14,6 +14,7 @@ import { OrganizationFormComponent } from './organization-form/organization-form
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 import { FocusTrapModule } from 'primeng/focustrap';
 import { MessageModule } from 'primeng/message';
+import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { MessageModule } from 'primeng/message';
     OrganizationEditComponent,
     OrganizationFormComponent,
     OrganizationMembersEditComponent,
+    JoinOrganizationDialogComponent,
   ],
   imports: [
     CommonModule,

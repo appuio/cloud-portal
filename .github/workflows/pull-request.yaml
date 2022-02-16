@@ -51,7 +51,7 @@ jobs:
   deploy:
     # Don't deploy with Renovate PRs
     if: ${{ !startsWith(github.head_ref, 'renovate/') }}
-    uses: appuio/cloud-portal/.github/workflows/template-deploy.yaml@master
+    uses: ./.github/workflows/template-deploy.yaml
     with:
       namespace: appuio-control-api-preview
       helm_release_name: portal-pr-${{ github.event.number }}

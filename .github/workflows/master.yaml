@@ -58,6 +58,7 @@ jobs:
       environment: integration
     secrets:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+      glitch_tip_dsn: ${{ secrets.GLITCH_TIP_DSN }}
     needs:
       - build
       - docker

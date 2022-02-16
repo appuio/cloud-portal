@@ -50,7 +50,8 @@ export class AppComponent implements OnInit {
     const identityClaims = this.oauthService.getIdentityClaims() as any;
     this.name = identityClaims.name;
     this.username = identityClaims.preferred_username;
-    this.avatarSrc = 'https://www.gravatar.com/avatar/' + Md5.hashStr(identityClaims.email);
+    const hash = identityClaims.email?.length ? Md5.hashStr(identityClaims.email) : '';
+    this.avatarSrc = 'https://www.gravatar.com/avatar/' + hash;
 
     this.store
       .select(selectPermission)

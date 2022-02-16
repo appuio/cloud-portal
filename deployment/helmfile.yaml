@@ -28,3 +28,5 @@ releases:
       - portal:
           config:
             version: {{ env "GIT_SHA" | default "GIT_SHA" }}
+            environment: {{ .Environment.Name }}
+            glitchTipDsn: {{ env "GLITCH_TIP_DSN" }}

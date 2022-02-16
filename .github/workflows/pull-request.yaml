@@ -61,6 +61,7 @@ jobs:
       openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
       keycloak_password: ${{ secrets.KEYCLOAK_PASSWORD }}
       keycloak_user: ${{ secrets.KEYCLOAK_USER }}
+      glitch_tip_dsn: ${{ secrets.GLITCH_TIP_DSN }}
     needs:
       - build
       - docker

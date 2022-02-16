@@ -4,8 +4,10 @@ import { Injectable } from '@angular/core';
 
 export interface AppConfig {
   version: string;
+  environment: string;
   issuer: string;
   clientId: string;
+  glitchTipDsn: string;
 }
 
 @Injectable({

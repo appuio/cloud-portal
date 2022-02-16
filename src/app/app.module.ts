@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,6 +23,7 @@ import { KubernetesClientService } from './core/kubernetes-client.service';
 import { setPermission } from './store/app.actions';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { SharedModule } from './shared/shared.module';
+import * as Sentry from '@sentry/angular';
 
 @NgModule({
   declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
@@ -46,6 +47,13 @@ import { SharedModule } from './shared/shared.module';
       multi: true,
     },
     { provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+        logErrors: true,
+      }),
+    },
     MessageService,
   ],
   bootstrap: [AppComponent],

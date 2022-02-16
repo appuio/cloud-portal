@@ -32,6 +32,7 @@ const routes: Routes = [
       verb: 'list',
     },
   },
+  { path: 'references', loadChildren: () => import('./references/references.module').then((m) => m.ReferencesModule) },
 ];
 
 @NgModule({

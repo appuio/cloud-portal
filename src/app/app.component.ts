@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { selectPermission } from './store/app.selectors';
 import { take } from 'rxjs';
 import { Permission, Verb } from './store/app.reducer';
-import { faSignOut, faSitemap, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faSignOut, faSitemap, faUser } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
@@ -83,6 +83,12 @@ export class AppComponent implements OnInit {
         routerLink: ['organizations'],
       });
     }
+
+    this.menuItems.push({
+      label: $localize`References`,
+      icon: faBook,
+      routerLink: ['references'],
+    });
   }
 }
 

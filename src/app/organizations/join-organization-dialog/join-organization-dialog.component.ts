@@ -21,7 +21,7 @@ export class JoinOrganizationDialogComponent implements OnInit {
     this.username = identityClaims.preferred_username;
     const name = identityClaims.name;
     const body = encodeURI(
-      $localize`Hi\n\nI would like to join the organization with my username "${this.username}".\n\nBest wishes\n${name}`
+      $localize`Hi\n\nI would like to join the APPUiO Cloud organization. My username on APPUiO Cloud is "${this.username}".\n\nBest wishes\n${name}`
     );
     const subject = encodeURI($localize`Join Organization`);
     this.mailto = `mailto:?subject=${subject}&body=${body}`;

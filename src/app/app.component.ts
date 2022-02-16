@@ -22,7 +22,15 @@ export class AppComponent implements OnInit {
 
   profileItems: NavMenuItem[] = [
     {
-      label: $localize`Profile`,
+      label: $localize`Edit Account`,
+      command: () => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const iss = this.oauthService.getIdentityClaims().iss;
+        const referrer = encodeURI(this.appConfigService.getConfiguration().clientId);
+        const referrerUri = `${encodeURI(window.location.href)}`;
+        window.location.href = `${iss}/account?referrer=${referrer}&referrer_uri=${referrerUri}`;
+      },
       icon: faUser,
     },
     {

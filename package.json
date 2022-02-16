@@ -65,7 +65,7 @@
     "cypress": "9.4.1",
     "eslint": "8.9.0",
     "eslint-plugin-change-detection-strategy": "0.1.1",
-    "eslint-plugin-ngrx": "2.0.3",
+    "eslint-plugin-ngrx": "2.0.4",
     "eslint-plugin-prettier": "4.0.0",
     "jest": "27.5.1",
     "jest-preset-angular": "11.1.1",

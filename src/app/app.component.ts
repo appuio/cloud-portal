@@ -8,6 +8,8 @@ import { Permission, Verb } from './store/app.reducer';
 import { faSignOut, faSitemap, faUser } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
+import * as Sentry from '@sentry/browser';
+import { AppConfigService } from './app-config.service';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +34,7 @@ export class AppComponent implements OnInit {
   name = '';
   avatarSrc = '';
 
-  constructor(private oauthService: OAuthService, private store: Store) {}
+  constructor(private oauthService: OAuthService, private store: Store, private appConfigService: AppConfigService) {}
 
   ngOnInit(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,6 +46,26 @@ export class AppComponent implements OnInit {
       .select(selectPermission)
       .pipe(take(1))
       .subscribe((permission) => this.createMenu(permission));
+
+    this.setupGlitchTip(identityClaims.name, identityClaims.email, identityClaims.preferred_username);
+  }
+
+  setupGlitchTip(name: string, email: string, username: string): void {
+    const config = this.appConfigService.getConfiguration();
+    if (config.glitchTipDsn?.length) {
+      Sentry.init({
+        dsn: config.glitchTipDsn,
+        environment: config.environment,
+        release: config.version,
+        autoSessionTracking: false,
+        tracesSampleRate: 0.01,
+      });
+      Sentry.setUser({
+        name: name,
+        email: email,
+        username: username,
+      });
+    }
   }
 
   private createMenu(permission: Permission): void {

@@ -25,6 +25,8 @@ on:
         required: false
       keycloak_password:
         required: false
+      glitch_tip_dsn:
+        required: true
 
 env:
   OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
@@ -66,6 +68,8 @@ jobs:
           HELM_RELEASE_NAME: ${{ inputs.helm_release_name }}
           IMG_TAG: ${{ inputs.image_tag }}
           GIT_SHA: ${{ inputs.revision }}
+          GLITCH_TIP_DSN: ${{ secrets.glitch_tip_dsn }}
+          ENVIRONMENT: preview-${{ inputs.image_tag }}
 
       - name: Gather deployment status
         id: deployment_info

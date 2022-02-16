@@ -56,6 +56,17 @@
           <i class="pi pi-bars text-4xl"></i>
         </a>
       </div>
+      <div>
+        <p-tag
+          id="status"
+          (click)="openStatusPage()"
+          *ngIf="status"
+          [rounded]="true"
+          [severity]="status"
+          class="cursor-pointer"
+          i18n-value
+          value="APPUiO Cloud"></p-tag>
+      </div>
     </div>
     <div class="p-5 flex flex-column flex-auto">
       <router-outlet></router-outlet>

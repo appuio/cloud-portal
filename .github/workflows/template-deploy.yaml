@@ -69,6 +69,7 @@ jobs:
           IMG_TAG: ${{ inputs.image_tag }}
           GIT_SHA: ${{ inputs.revision }}
           GLITCH_TIP_DSN: ${{ secrets.glitch_tip_dsn }}
+          ENVIRONMENT: preview-${{ inputs.image_tag }}
 
       - name: Gather deployment status
         id: deployment_info

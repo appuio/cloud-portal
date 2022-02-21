@@ -1,6 +1,7 @@
 describe('Test organization members', () => {
   before(() => {
     cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', String(new Date().getTime()));
   });
   it('readonly list with two entries', () => {
     cy.setPermission(

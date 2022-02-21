@@ -1,6 +1,7 @@
 describe('Test organization list', () => {
   before(() => {
     cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', String(new Date().getTime()));
   });
   it('list with two entries', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
@@ -41,6 +42,7 @@ describe('Test organization list', () => {
 describe('Test organization edit', () => {
   before(() => {
     cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', String(new Date().getTime()));
   });
   it('edit organization with button', () => {
     cy.setPermission(
@@ -102,6 +104,7 @@ describe('Test organization edit', () => {
 describe('Test organization add', () => {
   before(() => {
     cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', String(new Date().getTime()));
   });
   it('add organization with button', () => {
     cy.setPermission(

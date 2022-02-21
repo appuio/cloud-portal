@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { forkJoin, map, Observable } from 'rxjs';
 import { ZoneList } from '../types/zone';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
@@ -21,8 +21,12 @@ export class KubernetesClientService {
     return this.httpClient.get<ZoneList>(this.zonesApi);
   }
 
-  getOrganizationList(): Observable<OrganizationList> {
-    return this.httpClient.get<OrganizationList>(this.organizationsApi);
+  getOrganizationList(limit = 0): Observable<OrganizationList> {
+    let params = new HttpParams();
+    if (limit > 0) {
+      params = params.set('limit', limit);
+    }
+    return this.httpClient.get<OrganizationList>(this.organizationsApi, { params });
   }
 
   getOrganizationMembers(namespace: string): Observable<OrganizationMembers> {

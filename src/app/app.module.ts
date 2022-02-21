@@ -84,7 +84,7 @@ export function initializeAppFactory(
               kubernetesClientService.getZonePermission(),
               kubernetesClientService.getOrganizationsPermission(),
             ])
-              .pipe(retry({ count: 5, delay: 500 }))
+              .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
                 next: ([zones, organizations]) => {
                   store.dispatch(setPermission({ permission: { zones, organizations } }));

@@ -70,7 +70,7 @@ describe('Test organization edit', () => {
     cy.get('.text-3xl').should('contain.text', 'vshn');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
-    cy.get(':nth-child(2) > .p-element').click();
+    cy.get('button[type=submit]').click();
     cy.get('@update')
       .its('request.body')
       .then((body) => {

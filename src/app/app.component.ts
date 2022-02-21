@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
     },
   ];
   name = '';
+  username = '';
   avatarSrc = '';
 
   constructor(private oauthService: OAuthService, private store: Store, private appConfigService: AppConfigService) {}
@@ -48,7 +49,9 @@ export class AppComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const identityClaims = this.oauthService.getIdentityClaims() as any;
     this.name = identityClaims.name;
-    this.avatarSrc = 'https://www.gravatar.com/avatar/' + Md5.hashStr(identityClaims.email);
+    this.username = identityClaims.preferred_username;
+    const hash = identityClaims.email?.length ? Md5.hashStr(identityClaims.email) : '';
+    this.avatarSrc = 'https://www.gravatar.com/avatar/' + hash;
 
     this.store
       .select(selectPermission)

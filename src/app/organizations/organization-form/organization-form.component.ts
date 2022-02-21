@@ -38,10 +38,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      displayName: [this.organization.spec.displayName, Validators.required],
+      displayName: [this.organization.spec.displayName],
       name: [
         this.organization.metadata.name,
-        [Validators.required, Validators.pattern('(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')],
+        [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9]*)?[a-z0-9])?')],
       ],
     });
     this.handleActions();
@@ -54,12 +54,12 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
         saveOrganization({
           isNew: this.new,
           organization: {
-            ...this.organization,
+            kind: 'Organization',
+            apiVersion: 'organization.appuio.io/v1',
             metadata: {
               name: this.form.value.name,
             },
             spec: {
-              ...this.organization.spec,
               displayName: this.form.value.displayName,
             },
           },
@@ -78,10 +78,22 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       .subscribe((action) => {
         this.saving = false;
         if (action.type === saveOrganizationFailure.type) {
+          let detail = '';
+          if ('message' in action.error) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            detail = action.error.message;
+          }
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if ('AlreadyExists' === action.error.reason) {
+            this.form.get('name')?.setErrors({ alreadyExists: true });
+            detail = $localize`Organization "${this.form.get('name')?.value}" already exists.`;
+          }
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: action.error,
+            detail,
           });
         } else {
           this.messageService.add({

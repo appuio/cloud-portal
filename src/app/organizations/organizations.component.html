@@ -1,11 +1,18 @@
 <div class="flex flex-row justify-content-between">
   <h1 class="pt-0 mt-0" i18n id="organizations-title">Organizations</h1>
 
-  <div *ngIf="hasCreatePermission$ | ngrxPush">
-    <button [routerLink]="['$new']" class="" pButton pRipple>
-      <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-      <span i18n>Add new Organization</span>
+  <div>
+    <button (click)="openJoinOrganizationDialog()" class="mr-2" id="joinOrganizationButton" pButton pRipple>
+      <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
+      <span i18n>Join Organization</span>
     </button>
+
+    <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
+      <button [routerLink]="['$new']" class="" id="addOrganizationButton" pButton pRipple>
+        <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
+        <span i18n>Add new Organization</span>
+      </button>
+    </ng-container>
   </div>
 </div>
 
@@ -16,14 +23,24 @@
         <div class="text-3xl font-medium text-900 mb-3">
           {{ organization.metadata.name }}
         </div>
-        <a
-          *ngIf="hasUpdatePermission$ | ngrxPush"
-          [routerLink]="[organization.metadata.name]"
-          class="text-blue-500 hover:text-primary text-2xl cursor-pointer"
-          i18n-title
-          title="Edit">
-          <fa-icon [icon]="faEdit"></fa-icon>
-        </a>
+        <div>
+          <a
+            *ngIf="organization?.viewMembers"
+            [routerLink]="[organization.metadata.name, 'members']"
+            class="text-blue-500 hover:text-primary text-2xl cursor-pointer mr-2"
+            i18n-title
+            title="Edit members">
+            <fa-icon [icon]="faUserGroup"></fa-icon>
+          </a>
+          <a
+            *ngIf="organization?.editOrganization"
+            [routerLink]="[organization.metadata.name]"
+            class="text-blue-500 hover:text-primary text-2xl cursor-pointer"
+            i18n-title
+            title="Edit organization">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </a>
+        </div>
       </div>
 
       <div class="flex flex-wrap border-top-1 surface-border">

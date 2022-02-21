@@ -8,6 +8,8 @@ export interface Organization {
   spec: {
     displayName: string;
   };
+  viewMembers?: boolean;
+  editOrganization?: boolean;
 }
 
 export interface OrganizationList {

@@ -25,5 +25,5 @@ export const saveOrganizationSuccess = createAction(
 
 export const saveOrganizationFailure = createAction(
   '[Organization] Save Organization Failure',
-  props<{ error: string }>()
+  props<{ error: object }>()
 );

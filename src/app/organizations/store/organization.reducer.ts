@@ -46,7 +46,7 @@ export const reducer = createReducer(
       ...state,
       organizations: {
         value: [
-          organization,
+          { ...organization, viewMembers: true, editOrganization: true },
           ...state.organizations.value.filter((o) => o.metadata.name != organization.metadata.name),
         ],
         state: EntityState.Loaded,

@@ -10,7 +10,7 @@
     </small>
     <small *ngIf="form.get('name')?.hasError('pattern')" class="block p-error" i18n>
       The organization name must match the pattern
-      <code>(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?</code>
+      <code>(([a-z0-9][-a-z0-9_.]*)?[a-z0-9])?</code>
       .
     </small>
   </div>

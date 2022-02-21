@@ -41,7 +41,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       displayName: [this.organization.spec.displayName],
       name: [
         this.organization.metadata.name,
-        [Validators.required, Validators.pattern('(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?')],
+        [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9_.]*)?[a-z0-9])?')],
       ],
     });
     this.handleActions();
@@ -93,7 +93,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: detail,
+            detail,
           });
         } else {
           this.messageService.add({

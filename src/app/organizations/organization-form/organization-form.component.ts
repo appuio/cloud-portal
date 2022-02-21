@@ -41,7 +41,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       displayName: [this.organization.spec.displayName],
       name: [
         this.organization.metadata.name,
-        [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9_.]*)?[a-z0-9])?')],
+        [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9]*)?[a-z0-9])?')],
       ],
     });
     this.handleActions();

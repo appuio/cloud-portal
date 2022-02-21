@@ -26,10 +26,10 @@ export class OrganizationEffects {
               ...organizations.map((o) => this.kubernetesClientService.getOrganizationPermission(o.metadata.name)),
             ];
             return forkJoin(requests).pipe(
-              map((verb: Verb[][]) => {
+              map((verbs: Verb[][]) => {
                 organizations.forEach((organization, index) => {
-                  organization.viewMembers = verb[index].includes(Verb.List);
-                  organization.editOrganization = verb[index + organizations.length].includes(Verb.Update);
+                  organization.viewMembers = verbs[index].includes(Verb.List);
+                  organization.editOrganization = verbs[index + organizations.length].includes(Verb.Update);
                 });
                 return OrganizationActions.loadOrganizationsSuccess({ organizations: organizations });
               })

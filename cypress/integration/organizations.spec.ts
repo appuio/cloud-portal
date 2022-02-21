@@ -10,7 +10,7 @@ describe('Test organization list', () => {
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
   });
   it('empty list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
@@ -45,13 +45,13 @@ describe('Test organization edit', () => {
   it('edit organization with button', () => {
     cy.setPermission(
       { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
-      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io', namespace: 'VSHN' }
+      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io', namespace: 'vshn' }
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
-    cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/VSHN', {
+    cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
       fixture: 'organization-update.json',
       statusCode: 200,
     }).as('update');
@@ -62,19 +62,19 @@ describe('Test organization edit', () => {
       'contain.text',
       'nxt Engineering GmbH'
     );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should('contain.text', 'VSHN AG');
 
     cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('not.exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
-    cy.get('.text-3xl').should('contain.text', 'VSHN');
+    cy.get('.text-3xl').should('contain.text', 'vshn');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get(':nth-child(2) > .p-element').click();
     cy.get('@update')
       .its('request.body')
       .then((body) => {
-        expect(body.metadata.name).to.eq('VSHN');
+        expect(body.metadata.name).to.eq('vshn');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
@@ -82,7 +82,7 @@ describe('Test organization edit', () => {
       'contain.text',
       'nxt Engineering GmbH'
     );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'VSHN - the DevOps Company'
@@ -122,16 +122,16 @@ describe('Test organization add', () => {
 
     cy.get('#addOrganizationButton').click();
 
-    cy.get('#name').type('VSHN');
+    cy.get('#name').type('vshn');
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('button[type=submit]').click();
     cy.get('@add')
       .its('request.body')
       .then((body) => {
-        expect(body.metadata.name).to.eq('VSHN');
+        expect(body.metadata.name).to.eq('vshn');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
       });
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'VSHN');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
     cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'VSHN - the DevOps Company'

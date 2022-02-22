@@ -17,10 +17,6 @@ export class StatusBadgeComponent implements OnInit {
     this.loadStatus();
   }
 
-  openStatusPage(): void {
-    window.open('https://status.appuio.cloud', '_blank')?.focus();
-  }
-
   private loadStatus(): void {
     this.statusService.getStatus().subscribe((statusPageStatus) => {
       if (!statusPageStatus.status_page.current_incident_type) {

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Organization } from '../types/organization';
 import { Entity, EntityState } from '../types/entity';
-import { Observable, take } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { selectOrganizations } from './store/organization.selectors';
 import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { selectHasPermission } from '../store/app.selectors';
@@ -10,6 +10,7 @@ import { Verb } from '../store/app.reducer';
 import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-organizations',
@@ -17,7 +18,7 @@ import { selectQueryParam } from '../store/router.selectors';
   styleUrls: ['./organizations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationsComponent implements OnInit {
+export class OrganizationsComponent implements OnInit, OnDestroy {
   organizations$: Observable<Entity<Organization[]>> = this.store.select(selectOrganizations);
   faInfo = faInfoCircle;
   faWarning = faWarning;
@@ -26,16 +27,27 @@ export class OrganizationsComponent implements OnInit {
   faSitemap = faSitemap;
   hasCreatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Create));
   faUserGroup = faUserGroup;
+  private showJoinDialogSubscription?: Subscription;
 
-  constructor(private store: Store, private dialogService: DialogService) {}
+  constructor(
+    private store: Store,
+    private dialogService: DialogService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.store
+    this.showJoinDialogSubscription = this.store
       .select(selectQueryParam('showJoinDialog'))
-      .pipe(take(1))
+      // eslint-disable-next-line ngrx/no-store-subscription
       .subscribe((showJoinDialog) => {
         if (showJoinDialog) {
           this.openJoinOrganizationDialog();
+          this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: { showJoinDialog: undefined },
+            queryParamsHandling: 'merge',
+          });
         }
       });
   }
@@ -58,5 +70,9 @@ export class OrganizationsComponent implements OnInit {
       closable: true,
       header: $localize`Join Organization`,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.showJoinDialogSubscription?.unsubscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
@@ -10,8 +10,6 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { IncidentType } from './types/statuspal';
-import { StatusService } from './store/status.service';
 
 @Component({
   selector: 'app-root',
@@ -44,15 +42,8 @@ export class AppComponent implements OnInit {
   name = '';
   username = '';
   avatarSrc = '';
-  status?: string;
 
-  constructor(
-    private oauthService: OAuthService,
-    private store: Store,
-    private statusService: StatusService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private appConfigService: AppConfigService
-  ) {}
+  constructor(private oauthService: OAuthService, private store: Store, private appConfigService: AppConfigService) {}
 
   ngOnInit(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +59,6 @@ export class AppComponent implements OnInit {
       .subscribe((permission) => this.createMenu(permission));
 
     this.setupGlitchTip(identityClaims.name, identityClaims.email, identityClaims.preferred_username);
-    this.loadStatus();
   }
 
   setupGlitchTip(name: string, email: string, username: string): void {
@@ -109,25 +99,6 @@ export class AppComponent implements OnInit {
       label: $localize`References`,
       icon: faBook,
       routerLink: ['references'],
-    });
-  }
-
-  openStatusPage(): void {
-    window.location.href = 'https://status.appuio.cloud/';
-  }
-
-  private loadStatus(): void {
-    this.statusService.getStatus().subscribe((statusPageStatus) => {
-      if (!statusPageStatus.status_page.current_incident_type) {
-        this.status = 'success';
-      } else if (statusPageStatus.status_page.current_incident_type === IncidentType.minor) {
-        this.status = 'warning';
-      } else if (statusPageStatus.status_page.current_incident_type === IncidentType.major) {
-        this.status = 'danger';
-      } else if (statusPageStatus.status_page.current_incident_type === IncidentType.scheduled) {
-        this.status = 'info';
-      }
-      this.changeDetectorRef.markForCheck();
     });
   }
 }

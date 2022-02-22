@@ -17,7 +17,7 @@ describe('Test zones', () => {
       },
     });
     cy.visit('/');
-    cy.get('#status > .p-tag-success').should('exist');
+    cy.get('app-status-badge .p-tag-success').should('exist');
   });
   it('scheduled', () => {
     cy.intercept('GET', 'https://statuspal.eu/api/v1/status_pages/appuio-cloud/status', {
@@ -28,7 +28,7 @@ describe('Test zones', () => {
       },
     });
     cy.visit('/');
-    cy.get('#status > .p-tag-info').should('exist');
+    cy.get('app-status-badge .p-tag-info').should('exist');
   });
   it('major', () => {
     cy.intercept('GET', 'https://statuspal.eu/api/v1/status_pages/appuio-cloud/status', {
@@ -39,7 +39,7 @@ describe('Test zones', () => {
       },
     });
     cy.visit('/');
-    cy.get('#status > .p-tag-danger').should('exist');
+    cy.get('app-status-badge .p-tag-danger').should('exist');
   });
   it('minor', () => {
     cy.intercept('GET', 'https://statuspal.eu/api/v1/status_pages/appuio-cloud/status', {
@@ -50,6 +50,6 @@ describe('Test zones', () => {
       },
     });
     cy.visit('/');
-    cy.get('#status > .p-tag-warning').should('exist');
+    cy.get('app-status-badge .p-tag-warning').should('exist');
   });
 });

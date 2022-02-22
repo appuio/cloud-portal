@@ -23,9 +23,10 @@ import { setPermission } from './store/app.actions';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { SharedModule } from './shared/shared.module';
 import * as Sentry from '@sentry/angular';
+import { StatusBadgeComponent } from './status-badge/status-badge.component';
 
 @NgModule({
-  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
+  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent, StatusBadgeComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

@@ -23,9 +23,10 @@ import { setPermission } from './store/app.actions';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { SharedModule } from './shared/shared.module';
 import * as Sentry from '@sentry/angular';
+import { StatusBadgeComponent } from './status-badge/status-badge.component';
 
 @NgModule({
-  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent],
+  declarations: [AppComponent, NavbarItemComponent, ZonesComponent, HomeComponent, StatusBadgeComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -84,7 +85,7 @@ export function initializeAppFactory(
               kubernetesClientService.getZonePermission(),
               kubernetesClientService.getOrganizationsPermission(),
             ])
-              .pipe(retry({ count: 5, delay: 500 }))
+              .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
                 next: ([zones, organizations]) => {
                   store.dispatch(setPermission({ permission: { zones, organizations } }));

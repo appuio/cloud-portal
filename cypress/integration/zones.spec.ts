@@ -1,6 +1,7 @@
 describe('Test zones', () => {
   before(() => {
     cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('list with two entries', () => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });

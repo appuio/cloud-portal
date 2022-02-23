@@ -1,0 +1,48 @@
+<p-dialog
+  (onHide)="firstTimeLoginDialogHide()"
+  [(visible)]="showFirstLoginDialog"
+  [draggable]="false"
+  [modal]="true"
+  [resizable]="false"
+  [style]="{ width: '590px' }"
+  appendTo="body"
+  header="Welcome to the APPUiO Cloud Portal"
+  i18n-header>
+  <div class="flex flex-wrap pt-4">
+    <div class="bg-blue-50 flex align-items-center justify-content-center w-4 border-round">
+      <img alt="Image" class="w-9" src="assets/logo_appuio_cloud_rgb.svg" />
+    </div>
+    <div class="text-700 line-height-3 pl-4 w-8">
+      <p class="mt-0" i18n>
+        Unfortunately, you don't have access to an organization yet. You can either join an existing organization or
+        create a new one.
+      </p>
+
+      <p i18n>
+        Don't forget to have a look at the
+        <a href="https://docs.appuio.cloud/user/index.html" target="_blank">documentation</a>
+        of APPUiO Cloud.
+      </p>
+
+      <p-checkbox
+        inputId="hideFirstTimeLoginDialogCheckbox"
+        [binary]="true"
+        [formControl]="hideFirstTimeLoginDialogControl"
+        i18n-label
+        label="Don't show again"></p-checkbox>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="pt-3">
+      <button (click)="joinOrganization()" id="joinOrganizationDialogButton" pButton pRipple>
+        <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
+        <span i18n>Join Organization</span>
+      </button>
+
+      <button (click)="addOrganization()" id="addOrganizationDialogButton" pButton pRipple>
+        <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
+        <span i18n>Add new Organization</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -14,6 +14,8 @@ import { ReactiveComponentModule } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [],
@@ -32,6 +34,8 @@ import { DialogService } from 'primeng/dynamicdialog';
     MessagesModule,
     ReactiveComponentModule,
     ReactiveFormsModule,
+    DialogModule,
+    CheckboxModule,
   ],
   providers: [MessageService, DialogService],
 })

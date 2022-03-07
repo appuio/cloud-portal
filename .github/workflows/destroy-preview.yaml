@@ -19,7 +19,7 @@ jobs:
     if: ${{ !startsWith(github.head_ref, 'renovate/') }}
     environment: preview
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v0.9.0

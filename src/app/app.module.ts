@@ -25,6 +25,8 @@ import { SharedModule } from './shared/shared.module';
 import * as Sentry from '@sentry/angular';
 import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-time-login-dialog.component';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,9 @@ import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-t
     StoreRouterConnectingModule.forRoot(),
   ],
   providers: [
+    MessageService,
+    DialogService,
+    ConfirmationService,
     {
       provide: APP_INITIALIZER,
       deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
@@ -92,11 +97,12 @@ export function initializeAppFactory(
             forkJoin([
               kubernetesClientService.getZonePermission(),
               kubernetesClientService.getOrganizationsPermission(),
+              kubernetesClientService.getTeamsPermission(),
             ])
               .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
-                next: ([zones, organizations]) => {
-                  store.dispatch(setPermission({ permission: { zones, organizations } }));
+                next: ([zones, organizations, teams]) => {
+                  store.dispatch(setPermission({ permission: { zones, organizations, teams } }));
                   resolve(true);
                 },
                 error: () => {

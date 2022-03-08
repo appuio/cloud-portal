@@ -32,7 +32,20 @@ const routes: Routes = [
       verb: 'list',
     },
   },
-  { path: 'references', loadChildren: () => import('./references/references.module').then((m) => m.ReferencesModule) },
+  {
+    path: 'references',
+    loadChildren: () => import('./references/references.module').then((m) => m.ReferencesModule),
+  },
+  {
+    path: 'teams',
+    loadChildren: () => import('./teams/teams.module').then((m) => m.TeamsModule),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'teams',
+      verb: 'list',
+      organizationSelectionEnabled: true,
+    },
+  },
 ];
 
 @NgModule({

@@ -55,6 +55,16 @@
           pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>
         </a>
+        <ng-container *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush">
+          <ng-container *ngrxLet="organizations$; let organizations">
+            <p-dropdown
+              [formControl]="organizationControl"
+              [options]="organizations"
+              optionLabel="spec.displayName"
+              optionValue="metadata.name"
+              styleClass="w-20rem"></p-dropdown>
+          </ng-container>
+        </ng-container>
       </div>
       <app-status-badge></app-status-badge>
     </div>
@@ -66,3 +76,4 @@
 
 <p-toast></p-toast>
 <app-first-time-login-dialog></app-first-time-login-dialog>
+<p-confirmDialog></p-confirmDialog>

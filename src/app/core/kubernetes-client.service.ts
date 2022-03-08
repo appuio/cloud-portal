@@ -6,6 +6,8 @@ import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { Organization, OrganizationList } from '../types/organization';
 import { Verb } from '../store/app.reducer';
 import { OrganizationMembers } from '../types/organization-members';
+import { Team } from '../types/team';
+import { List } from '../types/list';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +29,32 @@ export class KubernetesClientService {
       params = params.set('limit', limit);
     }
     return this.httpClient.get<OrganizationList>(this.organizationsApi, { params });
+  }
+
+  getTeamList(namespace: string): Observable<List<Team>> {
+    return this.httpClient.get<List<Team>>(`${this.apiPrefix}/apis/appuio.io/v1/namespaces/${namespace}/teams`);
+  }
+
+  getTeam(namespace: string, name: string): Observable<Team> {
+    return this.httpClient.get<Team>(`${this.apiPrefix}/apis/appuio.io/v1/namespaces/${namespace}/teams/${name}`);
+  }
+
+  addTeam(team: Team): Observable<Team> {
+    return this.httpClient.post<Team>(
+      `${this.apiPrefix}/apis/appuio.io/v1/namespaces/${team.metadata.namespace}/teams`,
+      team
+    );
+  }
+
+  updateTeam(team: Team): Observable<Team> {
+    return this.httpClient.put<Team>(
+      `${this.apiPrefix}/apis/appuio.io/v1/namespaces/${team.metadata.namespace}/teams/${team.metadata.name}`,
+      team
+    );
+  }
+
+  deleteTeam(namespace: string, name: string): Observable<unknown> {
+    return this.httpClient.delete(`${this.apiPrefix}/apis/appuio.io/v1/namespaces/${namespace}/teams/${name}`);
   }
 
   getOrganizationMembers(namespace: string): Observable<OrganizationMembers> {
@@ -52,6 +80,10 @@ export class KubernetesClientService {
 
   getOrganizationsPermission(): Observable<Verb[]> {
     return this.getPermissions('', 'organizations', 'rbac.appuio.io', Verb.List, Verb.Create);
+  }
+
+  getTeamsPermission(): Observable<Verb[]> {
+    return this.getPermissions('', 'teams', 'appuio.io', Verb.List, Verb.Update, Verb.Create, Verb.Delete);
   }
 
   getOrganizationPermission(namespace: string, verb: Verb = Verb.Update): Observable<Verb[]> {

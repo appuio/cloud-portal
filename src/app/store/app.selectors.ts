@@ -11,3 +11,10 @@ export const selectPermission = createSelector(selectAppState, (state) => state.
 export const selectHasPermission = (permission: keyof Permission, verb: Verb) => {
   return createSelector(selectAppState, (state) => state.permission[permission].includes(verb));
 };
+
+export const selectOrganizations = createSelector(selectAppState, (state) => state.organizations.value);
+export const selectFocusOrganizationName = createSelector(selectAppState, (state) => state.focusOrganizationName);
+export const selectOrganizationSelectionEnabled = createSelector(
+  selectAppState,
+  (state) => state.organizationSelectionEnabled
+);

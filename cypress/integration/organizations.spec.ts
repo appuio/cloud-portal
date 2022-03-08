@@ -38,7 +38,6 @@ describe('Test organization list', () => {
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
 });
-
 describe('Test organization edit', () => {
   before(() => {
     cy.setupAuth();
@@ -100,7 +99,6 @@ describe('Test organization edit', () => {
     cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
   });
 });
-
 describe('Test organization add', () => {
   before(() => {
     cy.setupAuth();

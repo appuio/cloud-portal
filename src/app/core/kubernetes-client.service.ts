@@ -82,8 +82,8 @@ export class KubernetesClientService {
     return this.getPermissions('', 'organizations', 'rbac.appuio.io', Verb.List, Verb.Create);
   }
 
-  getTeamsPermission(): Observable<Verb[]> {
-    return this.getPermissions('', 'teams', 'appuio.io', Verb.List, Verb.Update, Verb.Create, Verb.Delete);
+  getTeamsPermission(namespace: string): Observable<Verb[]> {
+    return this.getPermissions(namespace, 'teams', 'appuio.io', Verb.List, Verb.Update, Verb.Create, Verb.Delete);
   }
 
   getOrganizationPermission(namespace: string, verb: Verb = Verb.Update): Observable<Verb[]> {

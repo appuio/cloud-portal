@@ -4,7 +4,6 @@ describe('Test teams list', () => {
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('list with two entries', () => {
-    cy.setPermission({ verb: 'list', resource: 'teams', group: 'appuio.io' });
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -18,7 +17,6 @@ describe('Test teams list', () => {
   });
 
   it('empty list', () => {
-    cy.setPermission({ verb: 'list', resource: 'teams', group: 'appuio.io' });
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -31,7 +29,6 @@ describe('Test teams list', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'teams', group: 'appuio.io' });
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -43,10 +40,6 @@ describe('Test teams list', () => {
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get('#teams-failure-message').should('contain.text', 'Teams could not be loaded.');
   });
-  it('no permission', () => {
-    cy.visit('/teams');
-    cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
-  });
 });
 
 describe('Test team edit', () => {
@@ -55,10 +48,7 @@ describe('Test team edit', () => {
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('edit team with button', () => {
-    cy.setPermission(
-      { verb: 'list', resource: 'teams', group: 'appuio.io' },
-      { verb: 'update', resource: 'teams', group: 'appuio.io' }
-    );
+    cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
@@ -96,7 +86,6 @@ describe('Test team edit', () => {
       });
   });
   it('no edit permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'teams', group: 'appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
@@ -116,9 +105,8 @@ describe('Test teams add', () => {
   });
   it('add team with button', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'teams', group: 'appuio.io' },
-      { verb: 'create', resource: 'teams', group: 'appuio.io' },
-      { verb: 'update', resource: 'teams', group: 'appuio.io' }
+      { verb: 'create', resource: 'teams', group: 'appuio.io', namespace: 'nxt' },
+      { verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
@@ -156,10 +144,7 @@ describe('Test teams add', () => {
       });
   });
   it('no create permission', () => {
-    cy.setPermission(
-      { verb: 'list', resource: 'teams', group: 'appuio.io' },
-      { verb: 'update', resource: 'teams', group: 'appuio.io' }
-    );
+    cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
@@ -177,10 +162,7 @@ describe('Test teams delete', () => {
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('delete team with button', () => {
-    cy.setPermission(
-      { verb: 'list', resource: 'teams', group: 'appuio.io' },
-      { verb: 'delete', resource: 'teams', group: 'appuio.io' }
-    );
+    cy.setPermission({ verb: 'delete', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
@@ -206,7 +188,6 @@ describe('Test teams delete', () => {
     cy.wait('@delete');
   });
   it('no delete permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'teams', group: 'appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organizations.json',
     });
@@ -215,6 +196,8 @@ describe('Test teams delete', () => {
     });
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
+
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Delete team"]').should('not.exist');
   });
 });

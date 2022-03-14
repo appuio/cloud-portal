@@ -125,13 +125,11 @@ export class AppComponent implements OnInit, OnDestroy {
         routerLink: ['organizations'],
       });
     }
-    if (permission.teams.includes(Verb.List)) {
-      this.menuItems.push({
-        label: $localize`Teams`,
-        icon: faUserGroup,
-        routerLink: ['teams'],
-      });
-    }
+    this.menuItems.push({
+      label: $localize`Teams`,
+      icon: faUserGroup,
+      routerLink: ['teams'],
+    });
 
     this.menuItems.push({
       label: $localize`References`,

@@ -39,10 +39,7 @@ const routes: Routes = [
   {
     path: 'teams',
     loadChildren: () => import('./teams/teams.module').then((m) => m.TeamsModule),
-    canActivate: [PermissionGuard],
     data: {
-      permission: 'teams',
-      verb: 'list',
       organizationSelectionEnabled: true,
     },
   },

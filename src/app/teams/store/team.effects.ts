@@ -5,6 +5,9 @@ import {
   deleteTeam,
   deleteTeamFailure,
   deleteTeamSuccess,
+  loadTeamPermissions,
+  loadTeamPermissionsFailure,
+  loadTeamPermissionsSuccess,
   loadTeams,
   loadTeamsFailure,
   loadTeamsSuccess,
@@ -25,9 +28,25 @@ export class TeamEffects {
         if (!organizationName) {
           return of(loadTeamsSuccess({ teams: [] }));
         }
-        return this.kubernetesClientService.getTeamList(organizationName ?? '').pipe(
+        return this.kubernetesClientService.getTeamList(organizationName).pipe(
           map((teamList) => loadTeamsSuccess({ teams: teamList.items })),
           catchError((error) => of(loadTeamsFailure({ error })))
+        );
+      })
+    );
+  });
+
+  loadTeamPermissions$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(loadTeamPermissions),
+      concatLatestFrom(() => this.store.select(selectFocusOrganizationName)),
+      concatMap(([, organizationName]) => {
+        if (!organizationName) {
+          return of(loadTeamPermissionsSuccess({ verbs: [] }));
+        }
+        return this.kubernetesClientService.getTeamsPermission(organizationName).pipe(
+          map((verbs) => loadTeamPermissionsSuccess({ verbs })),
+          catchError((error) => of(loadTeamPermissionsFailure({ error })))
         );
       })
     );

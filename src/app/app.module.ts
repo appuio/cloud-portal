@@ -97,12 +97,11 @@ export function initializeAppFactory(
             forkJoin([
               kubernetesClientService.getZonePermission(),
               kubernetesClientService.getOrganizationsPermission(),
-              kubernetesClientService.getTeamsPermission(),
             ])
               .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
-                next: ([zones, organizations, teams]) => {
-                  store.dispatch(setPermission({ permission: { zones, organizations, teams } }));
+                next: ([zones, organizations]) => {
+                  store.dispatch(setPermission({ permission: { zones, organizations } }));
                   resolve(true);
                 },
                 error: () => {

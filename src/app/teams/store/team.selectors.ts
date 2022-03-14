@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromTeam from './team.reducer';
 import { Entity } from '../../types/entity';
 import { Team } from '../../types/team';
-import { selectRouteParam } from '../../store/router.selectors';
+import { Verb } from '../../store/app.reducer';
 
 export const selectTeamState = createFeatureSelector<fromTeam.TeamState>(fromTeam.teamFeatureKey);
 
@@ -15,4 +15,7 @@ export const selectTeams = createSelector(selectTeamState, (state): Entity<Team[
   };
 });
 
-export const selectIsNewTeam = createSelector(selectRouteParam('name'), (name): boolean => name === '$new');
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const selectHasTeamPermission = (verb: Verb) => {
+  return createSelector(selectTeamState, (state) => state.permissions.includes(verb));
+};

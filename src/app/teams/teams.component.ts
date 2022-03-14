@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectFocusOrganizationName, selectHasPermission } from '../store/app.selectors';
+import { selectFocusOrganizationName } from '../store/app.selectors';
 import { Observable, Subscription } from 'rxjs';
 import { Entity, EntityState } from '../types/entity';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
@@ -9,8 +9,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectQueryParam } from '../store/router.selectors';
 import { Team } from '../types/team';
-import { selectTeams } from './store/team.selectors';
-import { deleteTeam, loadTeams } from './store/team.actions';
+import { selectHasTeamPermission, selectTeams } from './store/team.selectors';
+import { deleteTeam, loadTeamPermissions, loadTeams } from './store/team.actions';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
 import { ConfirmationService } from 'primeng/api';
 
@@ -22,9 +22,9 @@ import { ConfirmationService } from 'primeng/api';
 })
 export class TeamsComponent implements OnInit, OnDestroy {
   teams$: Observable<Entity<Team[]>> = this.store.select(selectTeams);
-  hasCreatePermission$ = this.store.select(selectHasPermission('teams', Verb.Create));
-  hasUpdatePermission$ = this.store.select(selectHasPermission('teams', Verb.Update));
-  hasDeletePermission$ = this.store.select(selectHasPermission('teams', Verb.Delete));
+  hasCreatePermission$ = this.store.select(selectHasTeamPermission(Verb.Create));
+  hasUpdatePermission$ = this.store.select(selectHasTeamPermission(Verb.Update));
+  hasDeletePermission$ = this.store.select(selectHasTeamPermission(Verb.Delete));
   faInfo = faInfoCircle;
   faWarning = faWarning;
   faEdit = faEdit;
@@ -46,7 +46,10 @@ export class TeamsComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line ngrx/no-store-subscription
     this.store.select(selectFocusOrganizationName).subscribe((organizationName) => {
       this.organizationName = organizationName;
+      // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
       this.store.dispatch(loadTeams());
+      // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
+      this.store.dispatch(loadTeamPermissions());
     });
 
     this.subscriptions.push(

@@ -2,11 +2,13 @@ import { createReducer, on } from '@ngrx/store';
 import * as TeamActions from './team.actions';
 import { Team } from '../../types/team';
 import { Entity, EntityState } from '../../types/entity';
+import { Verb } from '../../store/app.reducer';
 
 export const teamFeatureKey = 'team';
 
 export interface TeamState {
   teams: Entity<Team[]>;
+  permissions: Verb[];
 }
 
 export const initialState: TeamState = {
@@ -14,6 +16,7 @@ export const initialState: TeamState = {
     state: EntityState.Unloaded,
     value: [],
   },
+  permissions: [],
 };
 
 export const reducer = createReducer(
@@ -44,6 +47,20 @@ export const reducer = createReducer(
     (state, { name }): TeamState => ({
       ...state,
       teams: { value: state.teams.value.filter((d) => d.metadata.name !== name), state: state.teams.state },
+    })
+  ),
+  on(
+    TeamActions.loadTeamPermissionsSuccess,
+    (state, { verbs }): TeamState => ({
+      ...state,
+      permissions: [...verbs],
+    })
+  ),
+  on(
+    TeamActions.loadTeamPermissions,
+    (state): TeamState => ({
+      ...state,
+      permissions: [],
     })
   )
 );

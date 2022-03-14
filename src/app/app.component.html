@@ -60,8 +60,7 @@
             <p-dropdown
               [formControl]="organizationControl"
               [options]="organizations"
-              optionLabel="spec.displayName"
-              optionValue="metadata.name"
+              [filter]="true"
               styleClass="w-20rem"></p-dropdown>
           </ng-container>
         </ng-container>

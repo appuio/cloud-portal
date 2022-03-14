@@ -4,8 +4,8 @@ import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
 import {
   selectFocusOrganizationName,
-  selectOrganizations,
   selectOrganizationSelectionEnabled,
+  selectOrganizationSelectItems,
   selectPermission,
 } from './store/app.selectors';
 import { Observable, Subscription, take } from 'rxjs';
@@ -16,8 +16,8 @@ import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
 import { loadOrganizations, setFocusOrganization } from './store/app.actions';
-import { Organization } from './types/organization';
 import { FormControl } from '@angular/forms';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   username = '';
   avatarSrc = '';
   selectOrganizationSelectionEnabled$ = this.store.select(selectOrganizationSelectionEnabled);
-  organizations$: Observable<Organization[]> = this.store.select(selectOrganizations);
+  organizations$: Observable<SelectItem[]> = this.store.select(selectOrganizationSelectItems);
   organizationControl = new FormControl();
   subscriptions: Subscription[] = [];
 

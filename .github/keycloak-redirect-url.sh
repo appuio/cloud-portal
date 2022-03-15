@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-BASE_URL=https://id.dev.appuio.cloud
+BASE_URL=https://id.test.vshn.net
 
 USER=$1
 PASSWORD=$2
@@ -12,9 +12,9 @@ ACTION=$4
 
 loginRealm=master
 
-editRealm=appuio-cloud-dev
+editRealm=VSHN-main-dev-realm
 # The client ID has to be the UUID
-editClientId=a4d5a5cb-81ff-4532-9b25-d2d4242d23e2
+editClientId=9b236a54-d2f4-4647-8ebf-4a4a880baf0c
 
 loginUrl="${BASE_URL}/auth/realms/${loginRealm}/protocol/openid-connect/token"
 clientUrl="${BASE_URL}/auth/admin/realms/${editRealm}/clients/${editClientId}"

@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
   organizations$: Observable<SelectItem[]> = this.store.select(selectOrganizationSelectItems);
   organizationControl = new FormControl();
   subscriptions: Subscription[] = [];
+  faSitemap = faSitemap;
 
   constructor(private oauthService: OAuthService, private store: Store, private appConfigService: AppConfigService) {}
 

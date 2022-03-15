@@ -32,6 +32,13 @@
         <input formControlName="displayName" id="displayName" pInputText type="text" />
       </div>
 
+      <div class="col-12 mb-2">
+        <p-message
+          i18n-text
+          severity="info"
+          text="List all user names that should have access to this team."></p-message>
+      </div>
+
       <div class="field mb-4 col-12">
         <label i18n>Members</label>
         <div
@@ -52,7 +59,7 @@
             <fa-icon [icon]="faClose"></fa-icon>
           </button>
           <ng-template #noButton>
-            <div class="ml-3" style="width: 3rem"></div>
+            <div class="ml-3 w-3rem"></div>
           </ng-template>
         </div>
       </div>

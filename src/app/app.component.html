@@ -61,7 +61,12 @@
               [formControl]="organizationControl"
               [options]="organizations"
               [filter]="true"
-              styleClass="w-20rem"></p-dropdown>
+              styleClass="w-20rem">
+              <ng-template let-item pTemplate="selectedItem">
+                <fa-icon [icon]="faSitemap" class="mr-1"></fa-icon>
+                {{ item.label }}
+              </ng-template>
+            </p-dropdown>
           </ng-container>
         </ng-container>
       </div>

@@ -73,7 +73,7 @@ describe('Test team edit', () => {
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('Awesome Team!');
 
-    cy.get(':nth-child(2) > :nth-child(3) > .p-ripple').click();
+    cy.get(':nth-child(3) > :nth-child(3) > .p-ripple').click();
     cy.get(':nth-child(3) > .p-inputtext').type('cma');
     cy.get('button[type=submit]').click();
     cy.get('@update')

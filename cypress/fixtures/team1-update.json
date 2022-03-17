@@ -1,0 +1,19 @@
+{
+  "apiVersion": "appuio.io/v1",
+  "kind": "Team",
+  "metadata": {
+    "name": "team1",
+    "namespace": "nxt"
+  },
+  "spec": {
+    "displayName": "Awesome Team!",
+    "userRefs": [
+      {
+        "name": "mig"
+      },
+      {
+        "name": "cma"
+      }
+    ]
+  }
+}

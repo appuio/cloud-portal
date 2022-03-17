@@ -1,12 +1,24 @@
 import { createReducer, on } from '@ngrx/store';
 import { Zone } from '../types/zone';
-import { loadZones, loadZonesFailure, loadZonesSuccess, setPermission } from './app.actions';
+import {
+  loadOrganizations,
+  loadOrganizationsFailure,
+  loadOrganizationsSuccess,
+  loadZones,
+  loadZonesFailure,
+  loadZonesSuccess,
+  setFocusOrganization,
+  setOrganizationSelectionEnabled,
+  setPermission,
+} from './app.actions';
 import { Entity, EntityState } from '../types/entity';
+import { Organization } from '../types/organization';
 
 export enum Verb {
   List = 'list',
   Update = 'update',
   Create = 'create',
+  Delete = 'delete',
 }
 
 export interface Permission {
@@ -16,15 +28,20 @@ export interface Permission {
 
 export interface AppState {
   zones: Entity<Zone[]>;
+  organizations: Entity<Organization[]>;
   permission: Permission;
+  focusOrganizationName?: string;
+  organizationSelectionEnabled: boolean;
 }
 
 const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
+  organizations: { value: [], state: EntityState.Unloaded },
   permission: {
     zones: [],
     organizations: [],
   },
+  organizationSelectionEnabled: false,
 };
 
 export const appReducer = createReducer(
@@ -48,6 +65,44 @@ export const appReducer = createReducer(
     (state): AppState => ({
       ...state,
       zones: { value: [], state: EntityState.Failed },
+    })
+  ),
+  on(
+    loadOrganizations,
+    (state): AppState => ({
+      ...state,
+      zones: { value: [], state: EntityState.Loading },
+      focusOrganizationName: undefined,
+    })
+  ),
+  on(
+    loadOrganizationsSuccess,
+    (state, { organizations }): AppState => ({
+      ...state,
+      organizations: { value: organizations, state: EntityState.Loaded },
+      focusOrganizationName: organizations[0]?.metadata?.name,
+    })
+  ),
+  on(
+    loadOrganizationsFailure,
+    (state): AppState => ({
+      ...state,
+      organizations: { value: [], state: EntityState.Failed },
+      focusOrganizationName: undefined,
+    })
+  ),
+  on(
+    setFocusOrganization,
+    (state, { focusOrganizationName }): AppState => ({
+      ...state,
+      focusOrganizationName: focusOrganizationName,
+    })
+  ),
+  on(
+    setOrganizationSelectionEnabled,
+    (state, { organizationSelectionEnabled }): AppState => ({
+      ...state,
+      organizationSelectionEnabled: organizationSelectionEnabled,
     })
   ),
   on(setPermission, (state, { permission }): AppState => ({ ...state, permission }))

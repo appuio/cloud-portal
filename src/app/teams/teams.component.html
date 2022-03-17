@@ -1,43 +1,43 @@
 <div class="flex flex-row justify-content-between">
-  <h1 class="pt-0 mt-0" i18n id="organizations-title">Organizations</h1>
+  <h1 class="pt-0 mt-0" i18n id="teams-title">Teams</h1>
 
   <div>
-    <button (click)="openJoinOrganizationDialog()" class="mr-2" id="joinOrganizationButton" pButton pRipple>
-      <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
-      <span i18n>Join Organization</span>
+    <button (click)="openJoinTeamDialog()" class="mr-2" id="joinTeamButton" pButton pRipple>
+      <fa-icon [icon]="faUserGroup" class="mr-2"></fa-icon>
+      <span i18n>Join Team</span>
     </button>
 
     <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
-      <button [routerLink]="['$new']" class="" id="addOrganizationButton" pButton pRipple>
+      <button [routerLink]="[organizationName, '$new']" class="" id="addTeamButton" pButton pRipple>
         <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-        <span i18n>Add new Organization</span>
+        <span i18n>Add new Team</span>
       </button>
     </ng-container>
   </div>
 </div>
 
-<ng-container *ngIf="organizations$ | ngrxPush as organizations">
-  <ng-container *ngFor="let organization of organizations.value; index as i">
+<ng-container *ngIf="teams$ | ngrxPush as teams">
+  <ng-container *ngFor="let team of teams.value; index as i">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
-          {{ organization.metadata.name }}
+          {{ team.metadata.name }}
         </div>
         <div>
           <a
-            *ngIf="organization?.viewMembers"
-            [routerLink]="[organization.metadata.name, 'members']"
+            *ngIf="hasDeletePermission$ | ngrxPush"
+            (click)="deleteTeam(team)"
             class="text-blue-500 hover:text-primary cursor-pointer mr-2"
             i18n-title
-            title="Edit members">
-            <fa-icon [icon]="faUserGroup"></fa-icon>
+            title="Delete team">
+            <fa-icon [icon]="faTrash"></fa-icon>
           </a>
           <a
-            *ngIf="organization?.editOrganization"
-            [routerLink]="[organization.metadata.name]"
+            *ngIf="hasUpdatePermission$ | ngrxPush"
+            [routerLink]="[organizationName, team.metadata.name]"
             class="text-blue-500 hover:text-primary cursor-pointer"
             i18n-title
-            title="Edit organization">
+            title="Edit team">
             <fa-icon [icon]="faEdit"></fa-icon>
           </a>
         </div>
@@ -48,7 +48,15 @@
           <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
             <div class="text-900 w-full md:w-9">
-              {{ organization.spec.displayName }}
+              {{ team.spec.displayName }}
+            </div>
+          </li>
+          <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Members</div>
+            <div class="text-900 w-full md:w-9">
+              <ul *ngFor="let user of team.spec.userRefs" class="pl-3">
+                <li>{{ user.name }}</li>
+              </ul>
             </div>
           </li>
         </ul>
@@ -56,7 +64,7 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="isLoading(organizations)">
+  <ng-container *ngIf="isLoading(teams)">
     <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
@@ -73,20 +81,20 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="isListEmpty(organizations)">
+  <ng-container *ngIf="isListEmpty(teams)">
     <p-messages severity="info">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faInfo"></fa-icon>
-        <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
+        <div class="ml-2" i18n id="no-teams-message">No teams available.</div>
       </ng-template>
     </p-messages>
   </ng-container>
 
-  <ng-container *ngIf="hasLoadingFailed(organizations)">
+  <ng-container *ngIf="hasLoadingFailed(teams)">
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="organization-failure-message">Organizations could not be loaded.</div>
+        <div class="ml-2" i18n id="teams-failure-message">Teams could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>

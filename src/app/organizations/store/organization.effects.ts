@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, map, mergeMap, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 
 import * as OrganizationActions from './organization.actions';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { Verb } from '../../store/app.reducer';
+import { loadOrganizations } from '../../store/app.actions';
 
 @Injectable()
 export class OrganizationEffects {
@@ -49,7 +50,11 @@ export class OrganizationEffects {
           ? this.kubernetesClientService.addOrganization(organization)
           : this.kubernetesClientService.updateOrganization(organization)
         ).pipe(
-          map((organization) => OrganizationActions.saveOrganizationSuccess({ organization })),
+          // eslint-disable-next-line ngrx/no-multiple-actions-in-effects
+          mergeMap((organization) => [
+            OrganizationActions.saveOrganizationSuccess({ organization }),
+            loadOrganizations(),
+          ]),
           catchError((error) => of(OrganizationActions.saveOrganizationFailure({ error: error.error })))
         )
       )

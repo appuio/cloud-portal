@@ -12,10 +12,12 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { FocusTrapModule } from 'primeng/focustrap';
+import { MessageModule } from 'primeng/message';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [],
@@ -36,7 +38,10 @@ import { CheckboxModule } from 'primeng/checkbox';
     ReactiveFormsModule,
     DialogModule,
     CheckboxModule,
+    DropdownModule,
+    FocusTrapModule,
+    MessageModule,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService, DialogService],
 })
 export class SharedModule {}

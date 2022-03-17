@@ -1,10 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
-import { loadZones, loadZonesFailure, loadZonesSuccess } from './app.actions';
+import {
+  loadOrganizations,
+  loadOrganizationsFailure,
+  loadOrganizationsSuccess,
+  loadZones,
+  loadZonesFailure,
+  loadZonesSuccess,
+  setOrganizationSelectionEnabled,
+} from './app.actions';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { concatMap } from 'rxjs/operators';
+import { selectRouteData } from './router.selectors';
+import { Store } from '@ngrx/store';
+import { routerNavigatedAction } from '@ngrx/router-store';
 
 @Injectable()
 export class AppEffects {
@@ -36,9 +48,34 @@ export class AppEffects {
     { dispatch: false }
   );
 
+  loadOrganizations$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(loadOrganizations),
+      concatMap(() => {
+        return this.kubernetesClientService.getOrganizationList().pipe(
+          map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
+          catchError((error) => of(loadOrganizationsFailure({ error })))
+        );
+      })
+    );
+  });
+
+  selectRouteData$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(routerNavigatedAction),
+      concatLatestFrom(() => this.store.select(selectRouteData)),
+      map(([, routerData]) =>
+        setOrganizationSelectionEnabled({
+          organizationSelectionEnabled: routerData['organizationSelectionEnabled'],
+        })
+      )
+    );
+  });
+
   constructor(
     private actions$: Actions,
     private kubernetesClientService: KubernetesClientService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private store: Store
   ) {}
 }

@@ -1,9 +1,16 @@
 // This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// `ng build` replaces `environment.ts` with `environment.production.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
   production: false,
+  appConfig: {
+    version: '1.0',
+    environment: 'Development',
+    issuer: 'https://id.dev.appuio.cloud/auth/realms/local-dev-miw',
+    clientId: 'local-dev',
+    glitchTipDsn: '',
+  },
 };
 
 /*

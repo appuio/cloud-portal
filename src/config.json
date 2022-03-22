@@ -1,7 +1,0 @@
-{
-  "version": "1.0",
-  "environment": "Development",
-  "issuer": "https://id.dev.appuio.cloud/auth/realms/local-dev-mig",
-  "clientId": "local-dev",
-  "glitchTipDsn": ""
-}

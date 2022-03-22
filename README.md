@@ -14,9 +14,10 @@ Run `npm run e2e` to execute the end-to-end tests with cypress.
 
 ## Development
 
-1. Start the local control api: https://github.com/appuio/control-api/tree/master/local-env
-2. Run `kubectl proxy` to start a proxy server between localhost and the Kubernetes API server.
-3. Run `npm start` to start angular locally.
+1. Duplicate `environments/environment.ts` and rename the file to `environment.development.ts`. Replace the values where necessary.
+2. Start the local control api: https://github.com/appuio/control-api/tree/master/local-env
+3. Run `kubectl proxy` to start a proxy server between localhost and the Kubernetes API server.
+4. Run `npm start` to start angular locally.
 
 ## Keycloak
 

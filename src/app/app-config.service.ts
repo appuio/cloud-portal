@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 
 export interface AppConfig {
   version: string;
@@ -14,15 +15,19 @@ export interface AppConfig {
   providedIn: 'root',
 })
 export class AppConfigService {
-  private readonly CONFIGURATION_URL = 'config.json';
+  private readonly CONFIGURATION_URL = 'config.json'; // contains the structure of `environment.appConfig`.
   private appConfig?: AppConfig;
 
   constructor(private httpClient: HttpClient) {}
 
   loadConfig(): Observable<AppConfig> {
-    return this.httpClient
-      .get<AppConfig>(this.CONFIGURATION_URL)
-      .pipe(map((config: AppConfig) => (this.appConfig = config)));
+    if (environment.production) {
+      return this.httpClient
+        .get<AppConfig>(this.CONFIGURATION_URL)
+        .pipe(map((config: AppConfig) => (this.appConfig = config)));
+    }
+    this.appConfig = environment.appConfig;
+    return of(environment.appConfig);
   }
 
   getConfiguration(): AppConfig {

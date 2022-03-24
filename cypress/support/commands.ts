@@ -32,7 +32,7 @@ function setPermission(...permission: { verb: string; resource: string; group: s
 }
 
 function setupAuth(): void {
-  cy.intercept('GET', 'https://id.dev.appuio.cloud/auth/realms/local-dev-mig/.well-known/openid-configuration', {
+  cy.intercept('GET', 'https://id.dev.appuio.cloud/auth/realms/development/.well-known/openid-configuration', {
     fixture: 'well-known.json',
   });
   window.sessionStorage.setItem('id_token', 'token');
@@ -44,7 +44,7 @@ function setupAuth(): void {
       iat: 1642606747,
       auth_time: 1642506182,
       jti: 'ca989eba-d31a-4196-ac4c-cd0e1429481b',
-      iss: 'https://id.dev.appuio.cloud/auth/realms/local-dev-mig',
+      iss: 'https://id.dev.appuio.cloud/auth/realms/development',
       aud: 'local-dev',
       sub: 'abf7ae0c-e6da-4451-93cb-4303a7cba314',
       typ: 'ID',
@@ -56,7 +56,7 @@ function setupAuth(): void {
       sid: '5420a178-dc2a-4828-9433-819e6444d327',
       email_verified: true,
       name: 'Michi Gerber',
-      groups: ['offline_access', 'default-roles-local-dev-mig', 'admin', 'uma_authorization'],
+      groups: ['offline_access', 'default-roles-development', 'admin', 'uma_authorization'],
       preferred_username: 'mig',
       given_name: 'Michi',
       family_name: 'Gerber',

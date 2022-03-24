@@ -21,7 +21,7 @@ export class AppConfigService {
   constructor(private httpClient: HttpClient) {}
 
   loadConfig(): Observable<AppConfig> {
-    if (environment.production) {
+    if (!environment.appConfig) {
       return this.httpClient
         .get<AppConfig>(this.CONFIGURATION_URL)
         .pipe(map((config: AppConfig) => (this.appConfig = config)));

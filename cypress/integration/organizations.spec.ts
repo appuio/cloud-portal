@@ -1,5 +1,5 @@
 describe('Test organization list', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });

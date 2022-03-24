@@ -1,5 +1,5 @@
 describe('Test zones', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });

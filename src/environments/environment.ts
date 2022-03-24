@@ -2,13 +2,14 @@
 // `ng build` replaces `environment.ts` with `environment.production.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// this environment is used as a template for environment.development.ts which is developer-specific
 export const environment = {
   production: false,
   appConfig: {
     version: '1.0',
     environment: 'Development',
-    issuer: 'https://id.dev.appuio.cloud/auth/realms/local-dev-miw',
-    clientId: 'local-dev',
+    issuer: 'https://id.dev.appuio.cloud/auth/realms/development',
+    clientId: 'development',
     glitchTipDsn: '',
   },
 };

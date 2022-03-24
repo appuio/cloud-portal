@@ -6,6 +6,8 @@ import { AppConfigService } from '../app-config.service';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { faAdd, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
+import { OrganizationMemberList } from '../types/organization-members';
+import { IdentityService } from '../core/identity.service';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -27,17 +29,25 @@ export class FirstTimeLoginDialogComponent implements OnInit {
     private router: Router,
     private appConfigService: AppConfigService,
     private changeDetectorRef: ChangeDetectorRef,
-    private kubernetesClientService: KubernetesClientService
+    private kubernetesClientService: KubernetesClientService,
+    private identityService: IdentityService
   ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.kubernetesClientService.getOrganizationList(1).subscribe((o) => {
-        if (o.items.length === 0) {
-          this.showFirstLoginDialog = true;
-          this.changeDetectorRef.markForCheck();
-        }
-      });
+      this.kubernetesClientService
+        .getOrganizationMemberList()
+        .subscribe((organizationMemberList: OrganizationMemberList) =>
+          this.showFirstLoginDialogIfNecessary(organizationMemberList)
+        );
+    }
+  }
+
+  private showFirstLoginDialogIfNecessary(organizationMemberList: OrganizationMemberList): void {
+    const usernames = organizationMemberList.items.flatMap((o) => o.spec.userRefs.map((userRef) => userRef.name));
+    if (!usernames.includes(this.identityService.getUsername())) {
+      this.showFirstLoginDialog = true;
+      this.changeDetectorRef.markForCheck();
     }
   }
 

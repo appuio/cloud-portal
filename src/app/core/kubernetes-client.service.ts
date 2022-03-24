@@ -5,7 +5,7 @@ import { ZoneList } from '../types/zone';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { Organization, OrganizationList } from '../types/organization';
 import { Verb } from '../store/app.reducer';
-import { OrganizationMembers } from '../types/organization-members';
+import { OrganizationMemberList, OrganizationMembers } from '../types/organization-members';
 import { Team } from '../types/team';
 import { List } from '../types/list';
 
@@ -61,6 +61,10 @@ export class KubernetesClientService {
     return this.httpClient.get<OrganizationMembers>(
       `appuio-api/apis/appuio.io/v1/namespaces/${namespace}/organizationmembers/members`
     );
+  }
+
+  getOrganizationMemberList(): Observable<OrganizationMemberList> {
+    return this.httpClient.get<OrganizationMemberList>('appuio-api/apis/appuio.io/v1/organizationmembers');
   }
 
   updateOrganizationMembers(organizationMembers: OrganizationMembers): Observable<OrganizationMembers> {

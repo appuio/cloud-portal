@@ -7,7 +7,7 @@ describe('Test zones', () => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
     cy.visit('/zones');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      fixture: 'zones.json',
+      fixture: 'zone-list.json',
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 0');
@@ -18,7 +18,7 @@ describe('Test zones', () => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
     cy.visit('/zones');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      fixture: 'zones-empty.json',
+      fixture: 'zone-list-empty.json',
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
     cy.get('#no-zone-message').should('contain.text', 'No zones available.');

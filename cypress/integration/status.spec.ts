@@ -5,7 +5,7 @@ describe('Test zones', () => {
   beforeEach(() => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      fixture: 'zones.json',
+      fixture: 'zone-list.json',
     });
   });
   it('success', () => {

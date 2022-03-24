@@ -12,3 +12,10 @@ export interface OrganizationMembers {
   };
   editMembers?: boolean;
 }
+
+export interface OrganizationMemberList {
+  kind: 'OrganizationMemberList';
+  apiVersion: 'appuio.io/v1';
+  metadata: object;
+  items: OrganizationMembers[];
+}

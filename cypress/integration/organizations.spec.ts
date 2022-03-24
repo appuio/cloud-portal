@@ -7,7 +7,7 @@ describe('Test organization list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
@@ -17,7 +17,7 @@ describe('Test organization list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations-empty.json',
+      fixture: 'organization-list-empty.json',
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -39,7 +39,7 @@ describe('Test organization list', () => {
   });
 });
 describe('Test organization edit', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
@@ -50,7 +50,7 @@ describe('Test organization edit', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
       fixture: 'organization-update.json',
@@ -93,14 +93,14 @@ describe('Test organization edit', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
   });
 });
 describe('Test organization add', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
@@ -112,7 +112,7 @@ describe('Test organization add', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations-empty.json',
+      fixture: 'organization-list-empty.json',
     });
     cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organization-update.json',
@@ -144,7 +144,7 @@ describe('Test organization add', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations-empty.json',
+      fixture: 'organization-list-empty.json',
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');

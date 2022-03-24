@@ -14,7 +14,9 @@ describe('Test organization members', () => {
       }
     );
     cy.visit('/organizations');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      fixture: 'organization-list.json',
+    });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       fixture: 'organization-members.json',
     });
@@ -32,7 +34,9 @@ describe('Test organization members', () => {
       { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.visit('/organizations');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      fixture: 'organization-list.json',
+    });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       fixture: 'organization-members.json',
     });
@@ -62,7 +66,9 @@ describe('Test organization members', () => {
       { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.visit('/organizations');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      fixture: 'organization-list.json',
+    });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       fixture: 'organization-members.json',
     });
@@ -87,7 +93,9 @@ describe('Test organization members', () => {
   it('no list permission', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', { fixture: 'organizations.json' });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      fixture: 'organization-list.json',
+    });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');
   });

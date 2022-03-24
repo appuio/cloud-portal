@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 // this environment is used as a template for environment.development.ts which is developer-specific
-export const environment = {
+
+import { EnvironmentType } from './environment.type';
+
+export const environment: EnvironmentType = {
   production: false,
   appConfig: {
     version: '1.0',

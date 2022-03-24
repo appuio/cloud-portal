@@ -1,4 +1,6 @@
-export const environment = {
+import { EnvironmentType } from './environment.type';
+
+export const environment: EnvironmentType = {
   production: true,
   appConfig: {
     version: '1.0',

@@ -91,7 +91,7 @@
               ],
               "outputHashing": "all"
             },
-            "e2e": {
+            "e2e-development": {
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -101,7 +101,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.e2e.ts"
+                  "with": "src/environments/environment.e2e-development.ts"
                 }
               ]
             },
@@ -128,8 +128,8 @@
             "production": {
               "browserTarget": "cloud-portal:build:production"
             },
-            "e2e": {
-              "browserTarget": "cloud-portal:build:e2e"
+            "e2e-development": {
+              "browserTarget": "cloud-portal:build:e2e-development"
             },
             "development": {
               "browserTarget": "cloud-portal:build:development",
@@ -171,13 +171,13 @@
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "cloud-portal:serve:e2e",
+            "devServerTarget": "cloud-portal:serve",
             "watch": true,
             "headless": false
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "cloud-portal:serve:e2e"
+            "development": {
+              "devServerTarget": "cloud-portal:serve:e2e-development"
             }
           }
         }

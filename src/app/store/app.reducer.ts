@@ -71,7 +71,7 @@ export const appReducer = createReducer(
     loadOrganizations,
     (state): AppState => ({
       ...state,
-      zones: { value: [], state: EntityState.Loading },
+      organizations: { value: [], state: EntityState.Loading },
       focusOrganizationName: undefined,
     })
   ),

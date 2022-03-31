@@ -6,7 +6,7 @@ export interface OrganizationMembers {
     namespace: string;
   };
   spec: {
-    userRefs: {
+    userRefs?: {
       name: string;
     }[];
   };

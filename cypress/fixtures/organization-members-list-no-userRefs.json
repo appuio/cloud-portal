@@ -1,0 +1,19 @@
+{
+  "apiVersion": "appuio.io/v1",
+  "kind": "OrganizationMembersList",
+  "metadata": {
+    "continue": "",
+    "resourceVersion": ""
+  },
+  "items": [
+    {
+      "apiVersion": "appuio.io/v1",
+      "kind": "OrganizationMembers",
+      "metadata": {
+        "resourceVersion": ""
+      },
+      "spec": {
+      }
+    }
+  ]
+}

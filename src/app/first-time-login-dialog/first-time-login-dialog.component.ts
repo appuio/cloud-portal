@@ -44,7 +44,12 @@ export class FirstTimeLoginDialogComponent implements OnInit {
   }
 
   private showFirstLoginDialogIfNecessary(organizationMemberList: OrganizationMemberList): void {
-    const usernames = organizationMemberList.items.flatMap((o) => o.spec.userRefs.map((userRef) => userRef.name));
+    const usernames = organizationMemberList.items.flatMap((o) => {
+      if (o.spec.userRefs) {
+        return o.spec.userRefs.map((userRef) => userRef.name);
+      }
+      return [];
+    });
     if (!usernames.includes(this.identityService.getUsername())) {
       this.showFirstLoginDialog = true;
       this.changeDetectorRef.markForCheck();

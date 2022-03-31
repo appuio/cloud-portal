@@ -38,7 +38,7 @@ export class OrganizationMembersEditComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ organizationMembers }) => (this.organizationMembers = organizationMembers));
     this.editPermission = this.organizationMembers.editMembers ?? false;
     const members = this.userRefs;
-    this.organizationMembers.spec.userRefs.forEach((userRef) => {
+    this.organizationMembers.spec.userRefs?.forEach((userRef) => {
       members.push(new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required));
     });
     if (this.editPermission) {

@@ -81,6 +81,20 @@ describe('Test First Time Login', () => {
     cy.get('#addOrganizationDialogButton').should('exist');
   });
 
+  it('show dialog because no organization contains current username and no userRefs', () => {
+    cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/organizationmembers', {
+      fixture: 'organization-members-list-no-userRefs.json',
+    });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      fixture: 'organization-list.json',
+    });
+    cy.visit('/');
+    cy.get('#joinOrganizationDialogButton').should('exist');
+    cy.get('#addOrganizationDialogButton').should('exist');
+  });
+
   it('do not show dialog because one organization contains current username', () => {
     cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });

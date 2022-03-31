@@ -9,7 +9,7 @@ import {
 } from './store/app.selectors';
 import { Observable, Subscription, take } from 'rxjs';
 import { Permission, Verb } from './store/app.reducer';
-import { faBook, faSignOut, faSitemap, faUser, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faSignOut, faSitemap, faUser, faUserGear, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
@@ -29,6 +29,11 @@ export class AppComponent implements OnInit, OnDestroy {
   menuItems: NavMenuItem[] = [];
 
   profileItems: NavMenuItem[] = [
+    {
+      label: $localize`User Settings`,
+      icon: faUserGear,
+      routerLink: ['user'],
+    },
     {
       label: $localize`Edit Account`,
       command: () => {

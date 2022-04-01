@@ -5,6 +5,9 @@ import {
   loadOrganizations,
   loadOrganizationsFailure,
   loadOrganizationsSuccess,
+  loadUser,
+  loadUserFailure,
+  loadUserSuccess,
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
@@ -55,6 +58,18 @@ export class AppEffects {
         return this.kubernetesClientService.getOrganizationList().pipe(
           map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
           catchError((error) => of(loadOrganizationsFailure({ error })))
+        );
+      })
+    );
+  });
+
+  loadUser$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(loadUser),
+      concatMap(({ username }) => {
+        return this.kubernetesClientService.getUser(username).pipe(
+          map((user) => loadUserSuccess({ user })),
+          catchError((error) => of(loadUserFailure({ error })))
         );
       })
     );

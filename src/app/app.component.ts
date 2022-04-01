@@ -14,7 +14,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { loadOrganizations, setFocusOrganization } from './store/app.actions';
+import { loadOrganizations, loadUser, setFocusOrganization } from './store/app.actions';
 import { FormControl } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { IdentityService } from './core/identity.service';
@@ -69,7 +69,11 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadOrganizations());
+
+    // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
+    this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));
 
     this.name = this.identityService.getName();
     this.username = this.identityService.getUsername();

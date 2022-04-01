@@ -4,6 +4,9 @@ import {
   loadOrganizations,
   loadOrganizationsFailure,
   loadOrganizationsSuccess,
+  loadUser,
+  loadUserFailure,
+  loadUserSuccess,
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
@@ -13,6 +16,7 @@ import {
 } from './app.actions';
 import { Entity, EntityState } from '../types/entity';
 import { Organization } from '../types/organization';
+import { User } from '../types/user';
 
 export enum Verb {
   List = 'list',
@@ -32,6 +36,7 @@ export interface AppState {
   permission: Permission;
   focusOrganizationName?: string;
   organizationSelectionEnabled: boolean;
+  user: Entity<User | null>;
 }
 
 const initialState: AppState = {
@@ -42,6 +47,7 @@ const initialState: AppState = {
     organizations: [],
   },
   organizationSelectionEnabled: false,
+  user: { value: null, state: EntityState.Unloaded },
 };
 
 export const appReducer = createReducer(
@@ -89,6 +95,27 @@ export const appReducer = createReducer(
       ...state,
       organizations: { value: [], state: EntityState.Failed },
       focusOrganizationName: undefined,
+    })
+  ),
+  on(
+    loadUser,
+    (state): AppState => ({
+      ...state,
+      user: { value: null, state: EntityState.Loading },
+    })
+  ),
+  on(
+    loadUserSuccess,
+    (state, { user }): AppState => ({
+      ...state,
+      user: { value: user, state: EntityState.Loaded },
+    })
+  ),
+  on(
+    loadUserFailure,
+    (state): AppState => ({
+      ...state,
+      user: { value: null, state: EntityState.Failed },
     })
   ),
   on(

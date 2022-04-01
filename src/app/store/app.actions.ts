@@ -3,6 +3,7 @@ import { Zone } from '../types/zone';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Permission } from './app.reducer';
 import { Organization } from '../types/organization';
+import { User } from '../types/user';
 
 export const loadZones = createAction('[App] Load Zones');
 export const loadZonesSuccess = createAction('[App] Load Zones Success', props<{ zones: Zone[] }>());
@@ -24,3 +25,7 @@ export const setOrganizationSelectionEnabled = createAction(
 );
 
 export const setPermission = createAction('[App] Set Permission', props<{ permission: Permission }>());
+
+export const loadUser = createAction('[App] Load User', props<{ username: string }>());
+export const loadUserSuccess = createAction('[App] Load User Success', props<{ user: User }>());
+export const loadUserFailure = createAction('[App] Load User Failure', props<{ error: string }>());

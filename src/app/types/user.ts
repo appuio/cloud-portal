@@ -18,3 +18,10 @@ export interface User {
     defaultOrganizationRef: string;
   };
 }
+
+export interface UserList {
+  kind: 'UserList';
+  apiVersion: 'appuio.io/v1';
+  metadata: object;
+  items: User[];
+}

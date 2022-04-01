@@ -8,6 +8,7 @@ import { Verb } from '../store/app.reducer';
 import { OrganizationMemberList, OrganizationMembers } from '../types/organization-members';
 import { Team } from '../types/team';
 import { List } from '../types/list';
+import { User } from '../types/user';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +16,17 @@ import { List } from '../types/list';
 export class KubernetesClientService {
   private readonly apiPrefix = 'appuio-api';
   private readonly zonesApi = `${this.apiPrefix}/apis/appuio.io/v1/zones`;
+  private readonly usersApi = `${this.apiPrefix}/apis/appuio.io/v1/users`;
   private readonly organizationsApi = `${this.apiPrefix}/apis/organization.appuio.io/v1/organizations`;
 
   constructor(private httpClient: HttpClient) {}
 
   getZoneList(): Observable<ZoneList> {
     return this.httpClient.get<ZoneList>(this.zonesApi);
+  }
+
+  getUser(username: string): Observable<User> {
+    return this.httpClient.get<User>(`${this.usersApi}/${username}`);
   }
 
   getOrganizationList(limit = 0): Observable<OrganizationList> {

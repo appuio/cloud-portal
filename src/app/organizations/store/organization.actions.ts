@@ -7,7 +7,7 @@ export const loadOrganizationsSuccess = createAction(
   props<{ organizations: Organization[] }>()
 );
 export const loadOrganizationsFailure = createAction(
-  '[Organization] Load Organizations Failed',
+  '[Organization] Load Organizations Failure',
   props<{ error: string }>()
 );
 

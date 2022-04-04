@@ -26,6 +26,7 @@ import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-time-login-dialog.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { DialogService } from 'primeng/dynamicdialog';
     HomeComponent,
     StatusBadgeComponent,
     FirstTimeLoginDialogComponent,
+    OrganizationSelectionComponent,
   ],
   imports: [
     BrowserModule,

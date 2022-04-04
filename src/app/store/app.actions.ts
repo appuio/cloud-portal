@@ -34,7 +34,7 @@ export const loadUserFailure = createAction('[App] Load User Failure', props<{ e
 
 export const saveUserPreferences = createAction(
   '[Organization] Save User Preferences',
-  props<{ defaultOrganizationRef: string }>()
+  props<{ defaultOrganizationRef: string | null }>()
 );
 
 export const saveUserPreferencesSuccess = createAction(

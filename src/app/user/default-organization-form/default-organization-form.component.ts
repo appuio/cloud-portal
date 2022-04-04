@@ -25,7 +25,6 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
 
   private handleActionsSubscription?: Subscription;
   private userOrganizationSubscription?: Subscription;
-  private user$ = this.store.select(selectUser);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,14 +45,13 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserAndOrganizationChanges(): void {
-    this.userOrganizationSubscription = combineLatest(this.user$, this.organizations$).subscribe(
+    this.userOrganizationSubscription = combineLatest(this.store.select(selectUser), this.organizations$).subscribe(
       ([user, organizations]) => {
         const organization = organizations.find(
-          (organization) => organization.value === user.value?.spec.preferences.defaultOrganizationRef
+          (organization) => organization.value === user.value?.spec.preferences?.defaultOrganizationRef
         );
         if (organization) {
           this.defaultOrganizationRefControl.setValue(organization);
-          // this.changeDetectorRef.markForCheck();
         }
       }
     );
@@ -64,7 +62,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
       this.saving = true;
       this.store.dispatch(
         saveUserPreferences({
-          defaultOrganizationRef: this.form.value.defaultOrganizationRef.value,
+          defaultOrganizationRef: this.form.value.defaultOrganizationRef?.value ?? null,
         })
       );
     }

@@ -55,20 +55,7 @@
           pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>
         </a>
-        <ng-container *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush">
-          <ng-container *ngrxLet="organizations$; let organizations">
-            <p-dropdown
-              [formControl]="organizationControl"
-              [options]="organizations"
-              [filter]="true"
-              styleClass="w-20rem">
-              <ng-template let-item pTemplate="selectedItem">
-                <fa-icon [icon]="faSitemap" class="mr-1"></fa-icon>
-                {{ item.label }}
-              </ng-template>
-            </p-dropdown>
-          </ng-container>
-        </ng-container>
+        <app-organization-selection *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"></app-organization-selection>
       </div>
       <app-status-badge></app-status-badge>
     </div>

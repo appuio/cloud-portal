@@ -5,7 +5,10 @@
       <p-dropdown
         [formControl]="defaultOrganizationRefControl"
         [options]="organizations"
+        placeholder="None"
+        i18n-placeholder
         [filter]="true"
+        [showClear]="true"
         [optionLabel]="'label'"
         id="defaultOrganizationRef"></p-dropdown>
     </ng-container>

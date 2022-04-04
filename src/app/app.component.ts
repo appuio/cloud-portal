@@ -1,23 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
-import {
-  selectFocusOrganizationName,
-  selectOrganizationSelectionEnabled,
-  selectOrganizationSelectItems,
-  selectPermission,
-} from './store/app.selectors';
-import { Observable, Subscription, take } from 'rxjs';
+import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
 import { faBook, faSignOut, faSitemap, faUser, faUserGear, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { loadOrganizations, loadUser, setFocusOrganization } from './store/app.actions';
-import { FormControl } from '@angular/forms';
-import { SelectItem } from 'primeng/api';
+import { loadOrganizations, loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +18,7 @@ import { IdentityService } from './core/identity.service';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   menuItems: NavMenuItem[] = [];
 
   profileItems: NavMenuItem[] = [
@@ -56,9 +49,6 @@ export class AppComponent implements OnInit, OnDestroy {
   username = '';
   avatarSrc = '';
   selectOrganizationSelectionEnabled$ = this.store.select(selectOrganizationSelectionEnabled);
-  organizations$: Observable<SelectItem[]> = this.store.select(selectOrganizationSelectItems);
-  organizationControl = new FormControl();
-  subscriptions: Subscription[] = [];
   faSitemap = faSitemap;
 
   constructor(
@@ -85,19 +75,6 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe((permission) => this.createMenu(permission));
 
-    this.subscriptions.push(
-      this.store
-        .select(selectFocusOrganizationName)
-        // eslint-disable-next-line ngrx/no-store-subscription
-        .subscribe((organizationName) => this.organizationControl.setValue(organizationName, { emitEvent: false }))
-    );
-
-    this.subscriptions.push(
-      this.organizationControl.valueChanges.subscribe((focusOrganizationName) =>
-        this.store.dispatch(setFocusOrganization({ focusOrganizationName }))
-      )
-    );
-
     this.setupGlitchTip(this.name, email, this.username);
   }
 
@@ -117,10 +94,6 @@ export class AppComponent implements OnInit, OnDestroy {
         username: username,
       });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   private createMenu(permission: Permission): void {

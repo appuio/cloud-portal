@@ -6,8 +6,8 @@ export interface User {
     [key: string]: unknown;
   };
   spec: {
-    preferences: {
-      defaultOrganizationRef: string;
+    preferences?: {
+      defaultOrganizationRef?: string | null;
     };
   };
   status: {

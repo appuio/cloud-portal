@@ -29,6 +29,10 @@ export class KubernetesClientService {
     return this.httpClient.get<User>(`${this.usersApi}/${username}`);
   }
 
+  updateUser(user: User): Observable<User> {
+    return this.httpClient.put<User>(`${this.usersApi}/${user.metadata.name}`, user);
+  }
+
   getOrganizationList(limit = 0): Observable<OrganizationList> {
     let params = new HttpParams();
     if (limit > 0) {

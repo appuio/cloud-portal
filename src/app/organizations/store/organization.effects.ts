@@ -36,7 +36,7 @@ export class OrganizationEffects {
               })
             );
           }),
-          catchError((error) => of(OrganizationActions.loadOrganizationsFailure({ error })))
+          catchError((error) => of(OrganizationActions.loadOrganizationsFailure({ errorMessage: error.message })))
         )
       )
     );

@@ -29,7 +29,7 @@ export class AppEffects {
       mergeMap(() =>
         this.kubernetesClientService.getZoneList().pipe(
           map((zoneList) => loadZonesSuccess({ zones: zoneList.items })),
-          catchError((error: HttpErrorResponse) => of(loadZonesFailure({ error })))
+          catchError((error: HttpErrorResponse) => of(loadZonesFailure({ errorMessage: error.message })))
         )
       )
     );
@@ -39,11 +39,11 @@ export class AppEffects {
     () => {
       return this.actions$.pipe(
         ofType(loadZonesFailure),
-        tap(({ error }) => {
+        tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: error.message,
+            detail: errorMessage,
           });
         })
       );
@@ -57,7 +57,7 @@ export class AppEffects {
       concatMap(() => {
         return this.kubernetesClientService.getOrganizationList().pipe(
           map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
-          catchError((error) => of(loadOrganizationsFailure({ error })))
+          catchError((error) => of(loadOrganizationsFailure({ errorMessage: error.message })))
         );
       })
     );
@@ -69,7 +69,7 @@ export class AppEffects {
       concatMap(({ username }) => {
         return this.kubernetesClientService.getUser(username).pipe(
           map((user) => loadUserSuccess({ user })),
-          catchError((error) => of(loadUserFailure({ error })))
+          catchError((error) => of(loadUserFailure({ errorMessage: error.message })))
         );
       })
     );

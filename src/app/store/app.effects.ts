@@ -11,15 +11,20 @@ import {
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
+  saveUserPreferences,
+  saveUserPreferencesFailure,
+  saveUserPreferencesSuccess,
   setOrganizationSelectionEnabled,
 } from './app.actions';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, filter, map, mergeMap, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, switchMap } from 'rxjs/operators';
 import { selectRouteData } from './router.selectors';
 import { Store } from '@ngrx/store';
 import { routerNavigatedAction } from '@ngrx/router-store';
+import { selectUser } from './app.selectors';
+import { EntityState } from '../types/entity';
 
 @Injectable()
 export class AppEffects {
@@ -72,6 +77,39 @@ export class AppEffects {
           catchError((error) => of(loadUserFailure({ errorMessage: error.message })))
         );
       })
+    );
+  });
+
+  saveUserPreferences$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(saveUserPreferences),
+      concatLatestFrom(() => this.store.select(selectUser)),
+      filter(([, userEntity]) => userEntity.state === EntityState.Loaded),
+      concatMap(([userPreferences, userEntity]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const user = userEntity.value!;
+        const updatedUser = {
+          ...user,
+          spec: {
+            ...user.spec,
+            preferences: {
+              ...user.spec.preferences,
+              defaultOrganizationRef: userPreferences.defaultOrganizationRef,
+            },
+          },
+        };
+        return this.kubernetesClientService.updateUser(updatedUser).pipe(
+          map((user) => saveUserPreferencesSuccess({ user })),
+          catchError((error) => of(saveUserPreferencesFailure({ errorMessage: error.message })))
+        );
+      })
+    );
+  });
+
+  saveUserPreferencesSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(saveUserPreferencesSuccess),
+      switchMap((user) => of(loadUserSuccess(user)))
     );
   });
 

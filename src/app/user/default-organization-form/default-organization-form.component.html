@@ -1,0 +1,20 @@
+<form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
+  <div class="field mb-4 col-12">
+    <label for="defaultOrganizationRef" i18n>Default Organization</label>
+    <ng-container *ngrxLet="organizations$; let organizations">
+      <p-dropdown
+        [formControl]="defaultOrganizationRefControl"
+        [options]="organizations"
+        [filter]="true"
+        [optionLabel]="'label'"
+        id="defaultOrganizationRef"></p-dropdown>
+    </ng-container>
+  </div>
+
+  <div class="col-12">
+    <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+      <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
+      <span class="pr-2" i18n>Save</span>
+    </button>
+  </div>
+</form>

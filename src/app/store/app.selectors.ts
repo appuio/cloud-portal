@@ -27,3 +27,4 @@ export const selectOrganizationSelectionEnabled = createSelector(
   selectAppState,
   (state) => state.organizationSelectionEnabled
 );
+export const selectUser = createSelector(selectAppState, (state) => state.user);

@@ -3,6 +3,7 @@ describe('Test teams list', () => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
+
   it('list with two entries', () => {
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -188,6 +189,7 @@ describe('Test teams delete', () => {
     cy.get('.p-confirm-dialog-accept').click();
     cy.wait('@delete');
   });
+
   it('no delete permission', () => {
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       fixture: 'organization-list.json',

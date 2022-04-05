@@ -86,8 +86,7 @@ export const appReducer = createReducer(
     (state, { organizations }): AppState => ({
       ...state,
       organizations: { value: organizations, state: EntityState.Loaded },
-      focusOrganizationName:
-        state.user.value?.spec.preferences?.defaultOrganizationRef ?? organizations[0]?.metadata?.name,
+      focusOrganizationName: state.user.value?.spec.preferences?.defaultOrganizationRef ?? undefined,
     })
   ),
   on(

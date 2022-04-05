@@ -1,7 +1,16 @@
+import { createUser } from './user.spec';
+
 describe('Test organization members', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
   });
   it('readonly list with two entries', () => {
     cy.setPermission(

@@ -1,3 +1,9 @@
+export interface UserSpec {
+  preferences?: {
+    defaultOrganizationRef?: string | null;
+  };
+}
+
 export interface User {
   kind: 'User';
   apiVersion: 'appuio.io/v1';
@@ -5,12 +11,8 @@ export interface User {
     name: string;
     [key: string]: unknown;
   };
-  spec: {
-    preferences?: {
-      defaultOrganizationRef?: string | null;
-    };
-  };
-  status: {
+  spec: UserSpec;
+  status?: {
     id: string;
     displayName: string;
     username: string;

@@ -32,14 +32,8 @@ function setPermission(...permission: { verb: string; resource: string; group: s
 }
 
 function setupAuth(): void {
-  // needed for initial getUser request
-  cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
-
   cy.intercept('GET', 'https://id.dev.appuio.cloud/auth/realms/development/.well-known/openid-configuration', {
     fixture: 'well-known.json',
-  });
-  cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
-    fixture: 'user-mig-without-default-organisation.json',
   });
   window.sessionStorage.setItem('id_token', 'token');
   window.sessionStorage.setItem('access_token', 'token');

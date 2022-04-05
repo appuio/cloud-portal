@@ -1,7 +1,16 @@
+import { createUser } from './user.spec';
+
 describe('Test organization list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
   });
   it('list with two entries', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
@@ -41,6 +50,11 @@ describe('Test organization list', () => {
 describe('Test organization edit', () => {
   beforeEach(() => {
     cy.setupAuth();
+    // needed for initial getUser request
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('edit organization with button', () => {
@@ -102,6 +116,11 @@ describe('Test organization edit', () => {
 describe('Test organization add', () => {
   beforeEach(() => {
     cy.setupAuth();
+    // needed for initial getUser request
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('add organization with button', () => {

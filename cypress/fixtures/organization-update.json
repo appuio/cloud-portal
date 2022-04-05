@@ -1,6 +1,6 @@
 {
-  "kind": "Organization",
   "apiVersion": "organization.appuio.io/v1",
+  "kind": "Organization",
   "metadata": {
     "name": "vshn"
   },

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { Md5 } from 'ts-md5';
 import { Store } from '@ngrx/store';
 import {
   selectFocusOrganizationName,
@@ -18,6 +17,7 @@ import { AppConfigService } from './app-config.service';
 import { loadOrganizations, setFocusOrganization } from './store/app.actions';
 import { FormControl } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
+import { IdentityService } from './core/identity.service';
 
 @Component({
   selector: 'app-root',
@@ -56,17 +56,20 @@ export class AppComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   faSitemap = faSitemap;
 
-  constructor(private oauthService: OAuthService, private store: Store, private appConfigService: AppConfigService) {}
+  constructor(
+    private oauthService: OAuthService,
+    private store: Store,
+    private appConfigService: AppConfigService,
+    private identityService: IdentityService
+  ) {}
 
   ngOnInit(): void {
     this.store.dispatch(loadOrganizations());
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const identityClaims = this.oauthService.getIdentityClaims() as any;
-    this.name = identityClaims.name;
-    this.username = identityClaims.preferred_username;
-    const hash = identityClaims.email?.length ? Md5.hashStr(identityClaims.email) : '';
-    this.avatarSrc = 'https://www.gravatar.com/avatar/' + hash;
+    this.name = this.identityService.getName();
+    this.username = this.identityService.getUsername();
+    this.avatarSrc = this.identityService.getAvatarUrl();
+    const email = this.identityService.getEmail();
 
     this.store
       .select(selectPermission)
@@ -86,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
       )
     );
 
-    this.setupGlitchTip(identityClaims.name, identityClaims.email, identityClaims.preferred_username);
+    this.setupGlitchTip(this.name, email, this.username);
   }
 
   setupGlitchTip(name: string, email: string, username: string): void {

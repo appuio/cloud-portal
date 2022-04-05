@@ -1,5 +1,6 @@
 {
   "apiVersion": "appuio.io/v1",
+  "kind": "ZoneList",
   "items": [
     {
       "apiVersion": "appuio.io/v1",
@@ -54,9 +55,8 @@
       "kind": "Zone"
     }
   ],
-  "kind": "ZoneList",
   "metadata": {
     "continue": "",
-    "resourceVersion": "169635"
+    "resourceVersion": ""
   }
 }

@@ -40,9 +40,10 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+/cypress/screenshots/
+/cypress/videos/
+/src/environments/environment.development.ts
 
 # System Files
 .DS_Store
 Thumbs.db
-/cypress/screenshots/
-/cypress/videos/

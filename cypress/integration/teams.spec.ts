@@ -1,12 +1,12 @@
 describe('Test teams list', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('list with two entries', () => {
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -19,7 +19,7 @@ describe('Test teams list', () => {
   it('empty list', () => {
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams-empty.json',
@@ -31,7 +31,7 @@ describe('Test teams list', () => {
   it('request failed', () => {
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
@@ -43,14 +43,14 @@ describe('Test teams list', () => {
 });
 
 describe('Test team edit', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('edit team with button', () => {
     cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -87,7 +87,7 @@ describe('Test team edit', () => {
   });
   it('no edit permission', () => {
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -99,7 +99,7 @@ describe('Test team edit', () => {
   });
 });
 describe('Test teams add', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
@@ -109,7 +109,7 @@ describe('Test teams add', () => {
       { verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -146,7 +146,7 @@ describe('Test teams add', () => {
   it('no create permission', () => {
     cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -157,14 +157,14 @@ describe('Test teams add', () => {
   });
 });
 describe('Test teams delete', () => {
-  before(() => {
+  beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
   });
   it('delete team with button', () => {
     cy.setPermission({ verb: 'delete', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',
@@ -182,6 +182,7 @@ describe('Test teams delete', () => {
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Delete team"]').click();
     cy.get('.p-confirm-dialog-message').should(
       'contain.text',
+      // eslint-disable-next-line quotes
       "Are you sure that you want to delete the team 'My Super Team 1'?"
     );
     cy.get('.p-confirm-dialog-accept').click();
@@ -189,7 +190,7 @@ describe('Test teams delete', () => {
   });
   it('no delete permission', () => {
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organizations.json',
+      fixture: 'organization-list.json',
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       fixture: 'teams.json',

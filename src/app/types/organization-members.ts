@@ -6,9 +6,16 @@ export interface OrganizationMembers {
     namespace: string;
   };
   spec: {
-    userRefs: {
+    userRefs?: {
       name: string;
     }[];
   };
   editMembers?: boolean;
+}
+
+export interface OrganizationMemberList {
+  kind: 'OrganizationMemberList';
+  apiVersion: 'appuio.io/v1';
+  metadata: object;
+  items: OrganizationMembers[];
 }

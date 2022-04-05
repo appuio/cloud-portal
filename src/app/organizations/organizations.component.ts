@@ -52,16 +52,16 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  isLoading(zones: Entity<Organization[]>): boolean {
-    return zones.state === EntityState.Loading;
+  isLoading(organizations: Entity<Organization[]>): boolean {
+    return organizations.state === EntityState.Loading;
   }
 
-  isListEmpty(zones: Entity<Organization[]>): boolean {
-    return zones.state === EntityState.Loaded && zones.value.length === 0;
+  isListEmpty(organizations: Entity<Organization[]>): boolean {
+    return organizations.state === EntityState.Loaded && organizations.value.length === 0;
   }
 
-  hasLoadingFailed(zones: Entity<Organization[]>): boolean {
-    return zones.state === EntityState.Failed;
+  hasLoadingFailed(organizations: Entity<Organization[]>): boolean {
+    return organizations.state === EntityState.Failed;
   }
 
   openJoinOrganizationDialog(): void {

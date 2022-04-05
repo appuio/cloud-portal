@@ -6,6 +6,9 @@ import { AppConfigService } from '../app-config.service';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { faAdd, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
+import { IdentityService } from '../core/identity.service';
+import { OrganizationList } from '../types/organization';
+import { forkJoin } from 'rxjs';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -27,18 +30,38 @@ export class FirstTimeLoginDialogComponent implements OnInit {
     private router: Router,
     private appConfigService: AppConfigService,
     private changeDetectorRef: ChangeDetectorRef,
-    private kubernetesClientService: KubernetesClientService
+    private kubernetesClientService: KubernetesClientService,
+    private identityService: IdentityService
   ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.kubernetesClientService.getOrganizationList(1).subscribe((o) => {
-        if (o.items.length === 0) {
-          this.showFirstLoginDialog = true;
-          this.changeDetectorRef.markForCheck();
-        }
-      });
+      this.kubernetesClientService
+        .getOrganizationList()
+        .subscribe((organizationList) => this.showFirstLoginDialogIfNecessary(organizationList));
     }
+  }
+
+  private showFirstLoginDialogIfNecessary(organizationList: OrganizationList): void {
+    if (organizationList.items.length === 0) {
+      this.showFirstLoginDialog = true;
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    const getOrganizationMembersRequests = organizationList.items.map((organization) =>
+      this.kubernetesClientService.getOrganizationMembers(organization.metadata.name)
+    );
+
+    forkJoin(getOrganizationMembersRequests).subscribe((members) => {
+      const usernames = members
+        .map((organizationMembers) => (organizationMembers.spec.userRefs ?? []).map((userRef) => userRef.name))
+        .flatMap((usernames) => usernames);
+      if (!usernames.includes(this.identityService.getUsername())) {
+        this.showFirstLoginDialog = true;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
   }
 
   addOrganization(): void {

@@ -1,0 +1,11 @@
+name: portal
+title: APPUiO Cloud Portal
+version: master
+start_page: ROOT:index.adoc
+nav:
+  - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    product: APPUiO Cloud
+    zone: APPUiO Zone
+    idp: APPUiO IdP

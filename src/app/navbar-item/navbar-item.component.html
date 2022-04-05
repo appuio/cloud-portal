@@ -5,7 +5,7 @@
       *ngIf="menuItem.command"
       class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors"
       pRipple>
-      <fa-icon [icon]="menuItem.icon" class="mr-2"></fa-icon>
+      <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
       <span class="font-medium">{{ menuItem.label }}</span>
     </a>
     <a
@@ -14,7 +14,7 @@
       [routerLink]="menuItem.routerLink"
       class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline text-white"
       pRipple>
-      <fa-icon [icon]="menuItem.icon" class="mr-2"></fa-icon>
+      <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
       <span class="font-medium">{{ menuItem.label }}</span>
     </a>
   </ng-container>
@@ -29,7 +29,7 @@
   leaveToClass="hidden"
   pRipple
   pStyleClass="@next">
-  <fa-icon [icon]="menuItem.icon" class="mr-2"></fa-icon>
+  <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
   <span class="font-medium">{{ menuItem.label }}</span>
   <i class="pi pi-chevron-down ml-auto"></i>
 </a>

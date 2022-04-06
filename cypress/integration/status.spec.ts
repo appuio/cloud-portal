@@ -1,4 +1,5 @@
 import { createUser } from './user.spec';
+import { createZoneList, zoneCloudscale1, zoneCloudscale2 } from './zones.spec';
 
 describe('Test zones', () => {
   beforeEach(() => {
@@ -7,7 +8,7 @@ describe('Test zones', () => {
   beforeEach(() => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      fixture: 'zone-list.json',
+      body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
     });
   });
   beforeEach(() => {

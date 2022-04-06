@@ -1,6 +1,6 @@
-import { createUser } from './user.spec';
-import { createOrganizationList, organizationListNxtVshn } from './organizations.spec';
-import { createOrganizationMembers } from './organization-members.spec';
+import { createUser } from '../fixtures/user';
+import { createOrganizationList, organizationListNxtVshn } from '../fixtures/organization';
+import { createOrganizationMembers } from '../fixtures/organization-members';
 
 describe('Test First Time Login', () => {
   beforeEach(() => {

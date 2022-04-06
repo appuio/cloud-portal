@@ -1,5 +1,5 @@
-import { createUser } from './user.spec';
-import { createZoneList, zoneCloudscale1, zoneCloudscale2 } from './zones.spec';
+import { createZoneList, zoneCloudscale1, zoneCloudscale2 } from '../fixtures/zone';
+import { createUser } from '../fixtures/user';
 
 describe('Test zones', () => {
   beforeEach(() => {

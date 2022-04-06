@@ -1,7 +1,6 @@
-import { createUser } from './user.spec';
-import { organizationListNxtVshn } from './organizations.spec';
-import { OrganizationMembers } from '../../src/app/types/organization-members';
-import { UserRef } from '../../src/app/types/team';
+import { createUser } from '../fixtures/user';
+import { organizationListNxtVshn } from '../fixtures/organization';
+import { createOrganizationMembers } from '../fixtures/organization-members';
 
 describe('Test organization members', () => {
   beforeEach(() => {
@@ -127,21 +126,3 @@ describe('Test organization members', () => {
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');
   });
 });
-
-export interface OrganizationMembersConfig {
-  namespace: string;
-  userRefs: UserRef[];
-}
-
-export function createOrganizationMembers(organizationMembersConfig: OrganizationMembersConfig): OrganizationMembers {
-  return {
-    kind: 'OrganizationMembers',
-    apiVersion: 'appuio.io/v1',
-    metadata: {
-      namespace: organizationMembersConfig.namespace,
-    },
-    spec: {
-      userRefs: organizationMembersConfig.userRefs,
-    },
-  };
-}

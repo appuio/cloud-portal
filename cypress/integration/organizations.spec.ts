@@ -1,5 +1,5 @@
-import { createUser } from './user.spec';
-import { Organization, OrganizationList } from '../../src/app/types/organization';
+import { createUser } from '../fixtures/user';
+import { createOrganizationList, organizationListNxtVshn, organizationVshn } from '../fixtures/organization';
 
 describe('Test organization list', () => {
   beforeEach(() => {
@@ -171,56 +171,3 @@ describe('Test organization add', () => {
     cy.get('#addOrganizationButton').should('not.exist');
   });
 });
-
-export interface OrganizationConfig {
-  name: string;
-  displayName: string;
-  viewMembers?: boolean;
-  editOrganization?: boolean;
-}
-
-export const organizationVshn = createOrganization({
-  name: 'vshn',
-  displayName: 'VSHN - the DevOps Company',
-});
-
-export const organizationListNxtVshn = createOrganizationList({
-  items: [
-    createOrganization({
-      name: 'nxt',
-      displayName: 'nxt Engineering GmbH',
-    }),
-    createOrganization({
-      name: 'vshn',
-      displayName: 'VSHN AG',
-    }),
-  ],
-});
-
-export function createOrganization(organizationConfig: OrganizationConfig): Organization {
-  return {
-    kind: 'Organization',
-    apiVersion: 'organization.appuio.io/v1',
-    metadata: {
-      name: organizationConfig.name,
-    },
-    spec: {
-      displayName: organizationConfig.displayName,
-    },
-    viewMembers: organizationConfig.viewMembers,
-    editOrganization: organizationConfig.editOrganization,
-  };
-}
-
-export interface OrganizationListConfig {
-  items: Organization[];
-}
-
-export function createOrganizationList(organizationListConfig: OrganizationListConfig): OrganizationList {
-  return {
-    kind: 'OrganizationList',
-    apiVersion: 'organization.appuio.io/v1',
-    metadata: {},
-    items: organizationListConfig.items,
-  };
-}

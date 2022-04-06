@@ -1,6 +1,7 @@
 import { createUser, userMigWithoutPreferences } from './user.spec';
 import { Team, UserRef } from '../../src/app/types/team';
 import { List } from '../../src/app/types/list';
+import { organizationListNxtVshn } from './organizations.spec';
 
 describe('Test teams list', () => {
   beforeEach(() => {
@@ -17,7 +18,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -36,7 +37,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
       body: teamsVshn,
@@ -54,7 +55,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
       body: teamsVshn,
@@ -79,7 +80,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: createTeamList({ items: [] }),
@@ -97,7 +98,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
@@ -123,7 +124,7 @@ describe('Test team edit', () => {
 
     cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -174,7 +175,7 @@ describe('Test team edit', () => {
     });
 
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -204,7 +205,7 @@ describe('Test teams add', () => {
       { verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -255,7 +256,7 @@ describe('Test teams add', () => {
 
     cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -281,7 +282,7 @@ describe('Test teams delete', () => {
 
     cy.setPermission({ verb: 'delete', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,
@@ -314,7 +315,7 @@ describe('Test teams delete', () => {
     });
 
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamsNxt,

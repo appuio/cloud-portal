@@ -1,4 +1,5 @@
 import { createUser } from './user.spec';
+import { Organization, OrganizationList } from '../../src/app/types/organization';
 
 describe('Test organization list', () => {
   beforeEach(() => {
@@ -16,7 +17,7 @@ describe('Test organization list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
@@ -26,7 +27,7 @@ describe('Test organization list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -64,10 +65,10 @@ describe('Test organization edit', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
-      fixture: 'organization-update.json',
+      body: organizationVshn,
       statusCode: 200,
     }).as('update');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -107,7 +108,7 @@ describe('Test organization edit', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
@@ -131,10 +132,10 @@ describe('Test organization add', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-update.json',
+      body: organizationVshn,
       statusCode: 201,
     }).as('add');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -163,10 +164,63 @@ describe('Test organization add', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
     cy.get('#addOrganizationButton').should('not.exist');
   });
 });
+
+export interface OrganizationConfig {
+  name: string;
+  displayName: string;
+  viewMembers?: boolean;
+  editOrganization?: boolean;
+}
+
+export const organizationVshn = createOrganization({
+  name: 'vshn',
+  displayName: 'VSHN - the DevOps Company',
+});
+
+export const organizationListNxtVshn = createOrganizationList({
+  items: [
+    createOrganization({
+      name: 'nxt',
+      displayName: 'nxt Engineering GmbH',
+    }),
+    createOrganization({
+      name: 'vshn',
+      displayName: 'VSHN AG',
+    }),
+  ],
+});
+
+export function createOrganization(organizationConfig: OrganizationConfig): Organization {
+  return {
+    kind: 'Organization',
+    apiVersion: 'organization.appuio.io/v1',
+    metadata: {
+      name: organizationConfig.name,
+    },
+    spec: {
+      displayName: organizationConfig.displayName,
+    },
+    viewMembers: organizationConfig.viewMembers,
+    editOrganization: organizationConfig.editOrganization,
+  };
+}
+
+export interface OrganizationListConfig {
+  items: Organization[];
+}
+
+export function createOrganizationList(organizationListConfig: OrganizationListConfig): OrganizationList {
+  return {
+    kind: 'OrganizationList',
+    apiVersion: 'organization.appuio.io/v1',
+    metadata: {},
+    items: organizationListConfig.items,
+  };
+}

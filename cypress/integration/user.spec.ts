@@ -1,4 +1,5 @@
 import { User, UserSpec } from 'src/app/types/user';
+import { organizationListNxtVshn } from './organizations.spec';
 
 describe('Test user', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('Test user', () => {
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('.p-dropdown-label').should('contain.text', 'None');
   });
@@ -29,7 +30,7 @@ describe('Test user', () => {
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH');
   });
@@ -46,7 +47,7 @@ describe('Test user', () => {
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH');
     cy.get('.p-dropdown-trigger-icon').click();
@@ -67,7 +68,7 @@ describe('Test user', () => {
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH');
     cy.get('.p-dropdown-clear-icon').click();

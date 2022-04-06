@@ -1,4 +1,6 @@
 import { createUser } from './user.spec';
+import { createOrganizationList, organizationListNxtVshn } from './organizations.spec';
+import { createOrganizationMembers } from './organization-members.spec';
 
 describe('Test First Time Login', () => {
   beforeEach(() => {
@@ -16,7 +18,7 @@ describe('Test First Time Login', () => {
   it('join organization', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.visit('/');
     cy.get('.p-dialog-header').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
@@ -27,7 +29,7 @@ describe('Test First Time Login', () => {
   it('add organization', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.visit('/');
     cy.get('.p-dialog-header').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
@@ -39,13 +41,19 @@ describe('Test First Time Login', () => {
     cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members-nxt.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'mig' }, { name: 'miw' }],
+      }),
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {
-      fixture: 'organization-members-vshn.json',
+      body: createOrganizationMembers({
+        namespace: 'vshn',
+        userRefs: [{ name: 'tobru' }, { name: 'corvus' }],
+      }),
     });
     cy.visit('/');
     cy.get('.p-dialog-header').should('not.exist');
@@ -54,7 +62,7 @@ describe('Test First Time Login', () => {
   it('do not show dialog again', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list-empty.json',
+      body: createOrganizationList({ items: [] }),
     });
     cy.visit('/');
     cy.get('#joinOrganizationDialogButton').should('exist');
@@ -72,13 +80,19 @@ describe('Test First Time Login', () => {
     cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members-nxt-without-current-username.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'miw' }],
+      }),
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {
-      fixture: 'organization-members-vshn.json',
+      body: createOrganizationMembers({
+        namespace: 'vshn',
+        userRefs: [{ name: 'tobru' }, { name: 'corvus' }],
+      }),
     });
     cy.visit('/');
     cy.get('#joinOrganizationDialogButton').should('exist');

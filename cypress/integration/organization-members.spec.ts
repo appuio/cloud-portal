@@ -1,4 +1,7 @@
 import { createUser } from './user.spec';
+import { organizationListNxtVshn } from './organizations.spec';
+import { OrganizationMembers } from '../../src/app/types/organization-members';
+import { UserRef } from '../../src/app/types/team';
 
 describe('Test organization members', () => {
   beforeEach(() => {
@@ -24,10 +27,13 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
@@ -44,13 +50,19 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     }).as('save');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
@@ -76,13 +88,19 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     }).as('save');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
@@ -103,9 +121,27 @@ describe('Test organization members', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');
   });
 });
+
+export interface OrganizationMembersConfig {
+  namespace: string;
+  userRefs: UserRef[];
+}
+
+export function createOrganizationMembers(organizationMembersConfig: OrganizationMembersConfig): OrganizationMembers {
+  return {
+    kind: 'OrganizationMembers',
+    apiVersion: 'appuio.io/v1',
+    metadata: {
+      namespace: organizationMembersConfig.namespace,
+    },
+    spec: {
+      userRefs: organizationMembersConfig.userRefs,
+    },
+  };
+}

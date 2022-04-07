@@ -1,1 +1,4 @@
 * xref:index.adoc[Home]
+
+.How-to guides
+** xref:how-to/organizations.adoc[Managing Organizations]

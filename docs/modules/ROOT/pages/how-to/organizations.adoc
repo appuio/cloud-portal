@@ -1,0 +1,43 @@
+= Managing Organizations
+
+One of the basic features of the {product} Portal is to provide a centralized location for users to manage access to their projects across all {product} zones.
+
+== Concepts
+
+{product} allows namespaces and projects to belong to a particular {product} organization, as explained in the xref:user:how-to/manage-projects-and-namespaces.adoc[Manage Projects and Namespaces] documentation page. On the other hand, the https://control.vshn.net/[VSHN Control Panel] also provides customer management features. Finally, OpenShift also provides a notion of Groups. How are all of these concepts related?
+
+{product} Organizations are related to OpenShift Groups in the sense that there will be a group for each organization on each zone. This makes them independent and cross-zones; this means that a {product} Organization spans across {product} zones automatically, allowing users to grant or deny access to projects from a central location.
+
+In order to be able to assign users to organizations, users need to xref:how-to/find-username.adoc[know their username]. Users not assigned to an organization are reminded to join one as soon as they log in to the {product} Portal for the first time.
+
+image::how-to/organizations/welcome.png[]
+
+By default, your list of organizations will be empty.
+
+image::how-to/organizations/empty.png[]
+
+== Creating an Organization
+
+To create an organization, click the menu:Organization[] item on the navigation, and then click on the btn:[Add new Organization] button.
+
+image::how-to/organizations/new.png[]
+
+Fill the form with the required information, and click the btn:[Save] button.
+
+The "Name" field is the same one that you must use in your YAML to request the creation of a namespace assigned to your organization. Once created, the organization will appear in your profile.
+
+CAUTION: The name of an organization can't be changed, but you can change its display name.
+
+image::how-to/organizations/list.png[]
+
+== Adding and Removing Users
+
+To add and remove members of an organization, you must be owner of the organization, and you need to know the username of the users you would like to add to it.
+
+Click on the icon:user-group[] "user group" icon next to the name of the organization, and enter the names of the members of your organization. The username of the organization owner appears as the first user.
+
+Click on the btn:[Save] button when done. After a few minutes, those users will be able to access {product} namespaces assigned to your organization.
+
+WARNING: At this time it isn't possible to remove organizations. If you would like to remove an organization, please contact VSHN support.
+
+image::how-to/organizations/members.png[]

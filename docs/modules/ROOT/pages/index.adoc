@@ -1,3 +1,15 @@
-= APPUiO Cloud Portal
+= APPUiO Cloud Portal Documentation
 
-This is the documentation of the https://portal.appuio.cloud/[APPUiO Cloud Portal].
+image::appuio-cloud.svg[APPUiO Cloud,400,link=https://www.appuio.ch/en/offering/cloud/]
+
+Welcome to the https://portal.appuio.cloud/[{product} Portal] documentation site.
+
+[TIP]
+====
+Contributions to the documentation are welcome.
+Just click on btn:[Edit this Page] top-right or head over to https://github.com/appuio/appuio-cloud-docs[GitHub] where the content source is stored.
+====
+
+Didn't find the information you were looking for?
+Would you like to suggest a new help topic?
+https://docs.appuio.cloud/user/contact.html[Get in touch with us.]

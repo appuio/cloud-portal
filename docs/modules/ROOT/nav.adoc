@@ -1,4 +1,5 @@
 * xref:index.adoc[Home]
 
 .How-to guides
+** xref:how-to/find-username.adoc[Find your Username]
 ** xref:how-to/organizations.adoc[Managing Organizations]

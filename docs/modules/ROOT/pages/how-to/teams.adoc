@@ -10,7 +10,7 @@ To create a team, click the menu:Teams[] item on the navigation, and then click 
 
 image::how-to/teams/new.png[]
 
-Fill the form with the required information, assign some users to your new team, and click the btn:[Save] button.
+Fill the form with the required information, assign some users to your new team, and click the btn:[Save] button. The team will belong to the organization shown in the selector at the top of the screen.
 
 CAUTION: The name of a team can't be changed, but you can change its display name.
 
@@ -30,6 +30,6 @@ image::how-to/teams/members.png[]
 
 == Joining a Team
 
-If you would like to join a team, send your username to the team admin, as explained when clicking on the btn:[Join Team] button.
+If you would like to join a team, send your username to the organization owner, as explained when clicking on the btn:[Join Team] button.
 
 image::how-to/teams/join.png[]

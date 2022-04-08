@@ -1,0 +1,5 @@
+= Find your Username
+
+Your current {product} username can be found in the user menu at the bottom left side of the screen.
+
+image::how-to/organizations/username.png[]

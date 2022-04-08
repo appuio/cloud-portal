@@ -1,0 +1,35 @@
+= Managing Teams
+
+The {product} Portal allows users to create teams, and assign users to them.
+
+In order to be able to assign users to teams, they need to xref:how-to/find-username.adoc[know their username].
+
+== Creating a Team
+
+To create a team, click the menu:Teams[] item on the navigation, and then click on the btn:[Add new Team] button.
+
+image::how-to/teams/new.png[]
+
+Fill the form with the required information, assign some users to your new team, and click the btn:[Save] button. The team will belong to the organization shown in the selector at the top of the screen.
+
+CAUTION: The name of a team can't be changed, but you can change its display name.
+
+image::how-to/teams/list.png[]
+
+== Adding and Removing Users
+
+To add and remove members of a team, you must be owner of the team, and you need to know the username of the users you would like to add to it.
+
+Click on the icon:edit[] "edit" icon next to the name of the team, and enter the names of the members of your team.
+
+Click on the btn:[Save] button when done.
+
+WARNING: At this time it isn't possible to remove teams. If you would like to remove a team, please contact VSHN support.
+
+image::how-to/teams/members.png[]
+
+== Joining a Team
+
+If you would like to join a team, send your username to the organization owner, as explained when clicking on the btn:[Join Team] button.
+
+image::how-to/teams/join.png[]

@@ -4,7 +4,7 @@ One of the basic features of the {product} Portal is to provide a centralized lo
 
 == Concepts
 
-{product} allows namespaces and projects to belong to a particular {product} organization, as explained in the xref:user:how-to/manage-projects-and-namespaces.adoc[Manage Projects and Namespaces] documentation page. On the other hand, the https://control.vshn.net/[VSHN Control Panel] also provides customer management features. Finally, OpenShift also provides a notion of Groups. How are all of these concepts related?
+{product} allows namespaces and projects to belong to a particular {product} organization, as explained in the xref:user::how-to/manage-projects-and-namespaces.adoc[Manage Projects and Namespaces] documentation page. On the other hand, the https://control.vshn.net/[VSHN Control Panel] also provides customer management features. Finally, OpenShift also provides a notion of Groups. How are all of these concepts related?
 
 {product} Organizations are related to OpenShift Groups in the sense that there will be a group for each organization on each zone. This makes them independent and cross-zones; this means that a {product} Organization spans across {product} zones automatically, allowing users to grant or deny access to projects from a central location.
 

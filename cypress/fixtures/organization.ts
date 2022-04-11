@@ -1,8 +1,8 @@
-import { Organization, OrganizationList } from '../../src/app/types/organization';
+import { Organization, OrganizationList, OrganizationSpec } from '../../src/app/types/organization';
 
 export interface OrganizationConfig {
   name: string;
-  displayName: string;
+  displayName?: string;
   viewMembers?: boolean;
   editOrganization?: boolean;
 }
@@ -24,21 +24,37 @@ export const organizationListNxtVshn = createOrganizationList({
     }),
     createOrganization({
       name: 'vshn',
+    }),
+  ],
+});
+
+export const organizationListNxtVshnWithDisplayName = createOrganizationList({
+  items: [
+    createOrganization({
+      name: 'nxt',
+      displayName: 'nxt Engineering GmbH',
+    }),
+    createOrganization({
+      name: 'vshn',
       displayName: 'VSHN AG',
     }),
   ],
 });
 
 export function createOrganization(organizationConfig: OrganizationConfig): Organization {
+  let spec: OrganizationSpec = {};
+  if (organizationConfig.displayName) {
+    spec = {
+      displayName: organizationConfig.displayName,
+    };
+  }
   return {
     kind: 'Organization',
     apiVersion: 'organization.appuio.io/v1',
     metadata: {
       name: organizationConfig.name,
     },
-    spec: {
-      displayName: organizationConfig.displayName,
-    },
+    spec,
     viewMembers: organizationConfig.viewMembers,
     editOrganization: organizationConfig.editOrganization,
   };

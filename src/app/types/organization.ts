@@ -1,3 +1,7 @@
+export interface OrganizationSpec {
+  displayName?: string;
+}
+
 export interface Organization {
   kind: 'Organization';
   apiVersion: 'organization.appuio.io/v1';
@@ -5,9 +9,7 @@ export interface Organization {
     name: string;
     [key: string]: unknown;
   };
-  spec: {
-    displayName: string;
-  };
+  spec: OrganizationSpec;
   viewMembers?: boolean;
   editOrganization?: boolean;
 }

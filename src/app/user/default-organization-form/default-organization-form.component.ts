@@ -63,7 +63,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
           (o) =>
             ({
               value: o.metadata.name,
-              label: o.spec?.displayName ?? o.metadata.name,
+              label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
             } as SelectItem)
         );
 

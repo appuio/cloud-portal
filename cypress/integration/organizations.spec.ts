@@ -1,5 +1,10 @@
 import { createUser } from '../fixtures/user';
-import { createOrganizationList, organizationListNxtVshn, organizationVshn } from '../fixtures/organization';
+import {
+  createOrganizationList,
+  organizationListNxtVshn,
+  organizationListNxtVshnWithDisplayName,
+  organizationVshn,
+} from '../fixtures/organization';
 
 describe('Test organization list', () => {
   beforeEach(() => {
@@ -65,7 +70,7 @@ describe('Test organization edit', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
+      body: organizationListNxtVshnWithDisplayName,
     });
     cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
       body: organizationVshn,

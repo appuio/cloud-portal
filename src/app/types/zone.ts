@@ -1,3 +1,22 @@
+export interface ZoneCloudProvider {
+  name: string;
+  zones: string[];
+  region: string;
+}
+
+export interface ZoneUrls {
+  console: string;
+  kubernetesAPI: string;
+  registry: string;
+  logging: string;
+}
+
+export interface ZoneFeatures {
+  openshiftVersion: string;
+  kubernetesVersion: string;
+  sdnPlugin: string;
+}
+
 export interface Zone {
   kind: 'Zone';
   apiVersion: 'appuio.io/v1';
@@ -7,25 +26,12 @@ export interface Zone {
   };
   data: {
     displayName: string;
-    features: {
-      openshiftVersion: string;
-      kubernetesVersion: string;
-      sdnPlugin: string;
-    };
-    urls: {
-      console: string;
-      kubernetesAPI: string;
-      registry: string;
-      logging: string;
-    };
+    features: ZoneFeatures;
+    urls: ZoneUrls;
     cname: string;
     defaultAppDomain: string;
     gatewayIPs: string[];
-    cloudProvider: {
-      name: string;
-      zones: string[];
-      region: string;
-    };
+    cloudProvider: ZoneCloudProvider;
   };
 }
 

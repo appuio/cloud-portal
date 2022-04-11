@@ -1,7 +1,18 @@
+import { createUser } from '../fixtures/user';
+import { organizationListNxtVshn } from '../fixtures/organization';
+import { createOrganizationMembers } from '../fixtures/organization-members';
+
 describe('Test organization members', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
   });
   it('readonly list with two entries', () => {
     cy.setPermission(
@@ -15,10 +26,13 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
@@ -35,13 +49,19 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     }).as('save');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
@@ -67,13 +87,19 @@ describe('Test organization members', () => {
     );
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
-      fixture: 'organization-members.json',
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
+      }),
     }).as('save');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
@@ -94,7 +120,7 @@ describe('Test organization members', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      fixture: 'organization-list.json',
+      body: organizationListNxtVshn,
     });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');

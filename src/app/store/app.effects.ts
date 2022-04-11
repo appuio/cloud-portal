@@ -5,18 +5,27 @@ import {
   loadOrganizations,
   loadOrganizationsFailure,
   loadOrganizationsSuccess,
+  loadUser,
+  loadUserFailure,
+  loadUserSuccess,
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
+  saveUserPreferences,
+  saveUserPreferencesFailure,
+  saveUserPreferencesSuccess,
   setOrganizationSelectionEnabled,
 } from './app.actions';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, filter, map, mergeMap, of, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, switchMap } from 'rxjs/operators';
 import { selectRouteData } from './router.selectors';
 import { Store } from '@ngrx/store';
 import { routerNavigatedAction } from '@ngrx/router-store';
+import { selectUser } from './app.selectors';
+import { EntityState } from '../types/entity';
+import { User } from '../types/user';
 
 @Injectable()
 export class AppEffects {
@@ -26,7 +35,7 @@ export class AppEffects {
       mergeMap(() =>
         this.kubernetesClientService.getZoneList().pipe(
           map((zoneList) => loadZonesSuccess({ zones: zoneList.items })),
-          catchError((error: HttpErrorResponse) => of(loadZonesFailure({ error })))
+          catchError((error: HttpErrorResponse) => of(loadZonesFailure({ errorMessage: error.message })))
         )
       )
     );
@@ -36,11 +45,11 @@ export class AppEffects {
     () => {
       return this.actions$.pipe(
         ofType(loadZonesFailure),
-        tap(({ error }) => {
+        tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: error.message,
+            detail: errorMessage,
           });
         })
       );
@@ -54,9 +63,62 @@ export class AppEffects {
       concatMap(() => {
         return this.kubernetesClientService.getOrganizationList().pipe(
           map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
-          catchError((error) => of(loadOrganizationsFailure({ error })))
+          catchError((error) => of(loadOrganizationsFailure({ errorMessage: error.message })))
         );
       })
+    );
+  });
+
+  loadUser$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(loadUser),
+      concatMap(({ username }) => {
+        return this.kubernetesClientService.getUser(username).pipe(
+          map((user) => loadUserSuccess({ user })),
+          catchError((error) => of(loadUserFailure({ errorMessage: error.message })))
+        );
+      })
+    );
+  });
+
+  saveUserPreferences$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(saveUserPreferences),
+      concatLatestFrom(() => this.store.select(selectUser)),
+      filter(([, userEntity]) => userEntity.state === EntityState.Loaded),
+      concatMap(([userPreferences, userEntity]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.kubernetesClientService.getUser(userEntity.value!.metadata.name).pipe(
+          switchMap((user) => {
+            const updatedUser: User = {
+              kind: 'User',
+              apiVersion: 'appuio.io/v1',
+              metadata: {
+                name: user.metadata.name,
+                resourceVersion: user.metadata.resourceVersion,
+              },
+              spec: {
+                ...user.spec,
+                preferences: {
+                  ...user.spec.preferences,
+                  defaultOrganizationRef: userPreferences.defaultOrganizationRef,
+                },
+              },
+            };
+            return this.kubernetesClientService.updateUser(updatedUser).pipe(
+              map((user) => saveUserPreferencesSuccess({ user })),
+              catchError((error) => of(saveUserPreferencesFailure({ errorMessage: error.message })))
+            );
+          })
+        );
+      })
+    );
+  });
+
+  saveUserPreferencesSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(saveUserPreferencesSuccess),
+      switchMap((user) => of(loadUserSuccess(user)))
     );
   });
 

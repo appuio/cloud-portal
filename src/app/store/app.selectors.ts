@@ -18,7 +18,7 @@ export const selectOrganizationSelectItems = createSelector(selectAppState, (sta
     (o) =>
       ({
         value: o.metadata.name,
-        label: o.spec?.displayName ?? o.metadata.name,
+        label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
       } as SelectItem)
   )
 );
@@ -27,3 +27,4 @@ export const selectOrganizationSelectionEnabled = createSelector(
   selectAppState,
   (state) => state.organizationSelectionEnabled
 );
+export const selectUser = createSelector(selectAppState, (state) => state.user);

@@ -30,7 +30,7 @@ export class TeamEffects {
         }
         return this.kubernetesClientService.getTeamList(organizationName).pipe(
           map((teamList) => loadTeamsSuccess({ teams: teamList.items })),
-          catchError((error) => of(loadTeamsFailure({ error })))
+          catchError((error) => of(loadTeamsFailure({ errorMessage: error.message })))
         );
       })
     );
@@ -46,7 +46,7 @@ export class TeamEffects {
         }
         return this.kubernetesClientService.getTeamsPermission(organizationName).pipe(
           map((verbs) => loadTeamPermissionsSuccess({ verbs })),
-          catchError((error) => of(loadTeamPermissionsFailure({ error })))
+          catchError((error) => of(loadTeamPermissionsFailure({ errorMessage: error.message })))
         );
       })
     );
@@ -60,7 +60,7 @@ export class TeamEffects {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.kubernetesClientService.deleteTeam(organizationName!, name).pipe(
           map(() => deleteTeamSuccess({ name })),
-          catchError((error) => of(loadTeamsFailure({ error: error.message })))
+          catchError((error) => of(deleteTeamFailure({ errorMessage: error.message })))
         );
       })
     );
@@ -70,11 +70,11 @@ export class TeamEffects {
     () => {
       return this.actions$.pipe(
         ofType(deleteTeamFailure),
-        tap(({ error }) => {
+        tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',
             summary: $localize`Error`,
-            detail: error,
+            detail: errorMessage,
           });
         })
       );

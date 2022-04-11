@@ -1,0 +1,28 @@
+<form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
+  <div class="col-12 mb-2">
+    <p-message
+      i18n-text
+      severity="info"
+      text="If an organization is missing, make sure you are a member of it."></p-message>
+  </div>
+  <div class="field mb-4 col-12">
+    <label for="defaultOrganizationRef" i18n>Default Organization</label>
+    <p-dropdown
+      [dataKey]="'value'"
+      [formControl]="defaultOrganizationRefControl"
+      [options]="organizationSelectItems"
+      placeholder="None"
+      i18n-placeholder
+      [filter]="true"
+      [showClear]="true"
+      [optionLabel]="'label'"
+      id="defaultOrganizationRef"></p-dropdown>
+  </div>
+
+  <div class="col-12">
+    <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+      <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
+      <span class="pr-2" i18n>Save</span>
+    </button>
+  </div>
+</form>

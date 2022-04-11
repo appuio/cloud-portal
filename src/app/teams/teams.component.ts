@@ -90,7 +90,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((u) => u.unsubscribe());
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   deleteTeam(team: Team): void {

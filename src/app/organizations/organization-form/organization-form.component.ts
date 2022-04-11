@@ -29,7 +29,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
-    private action: Actions,
+    private actions: Actions,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
@@ -73,7 +73,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private handleActions(): void {
-    this.handleActionsSubscription = this.action
+    this.handleActionsSubscription = this.actions
       .pipe(ofType(saveOrganizationSuccess, saveOrganizationFailure))
       .subscribe((action) => {
         this.saving = false;

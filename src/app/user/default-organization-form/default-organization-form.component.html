@@ -1,17 +1,22 @@
 <form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
+  <div class="col-12 mb-2">
+    <p-message
+      i18n-text
+      severity="info"
+      text="If an organization is missing, make sure you are a member of it."></p-message>
+  </div>
   <div class="field mb-4 col-12">
     <label for="defaultOrganizationRef" i18n>Default Organization</label>
-    <ng-container *ngrxLet="organizations$; let organizations">
-      <p-dropdown
-        [formControl]="defaultOrganizationRefControl"
-        [options]="organizations"
-        placeholder="None"
-        i18n-placeholder
-        [filter]="true"
-        [showClear]="true"
-        [optionLabel]="'label'"
-        id="defaultOrganizationRef"></p-dropdown>
-    </ng-container>
+    <p-dropdown
+      [dataKey]="'value'"
+      [formControl]="defaultOrganizationRefControl"
+      [options]="organizationSelectItems"
+      placeholder="None"
+      i18n-placeholder
+      [filter]="true"
+      [showClear]="true"
+      [optionLabel]="'label'"
+      id="defaultOrganizationRef"></p-dropdown>
   </div>
 
   <div class="col-12">

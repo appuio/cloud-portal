@@ -28,7 +28,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   defaultOrganizationRefControl = new FormControl();
   faSitemap = faSitemap;
 
-  private handleActionsSubscription?: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private identityService: IdentityService,
@@ -77,12 +77,14 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUser(): void {
-    // eslint-disable-next-line ngrx/no-store-subscription
-    this.store.select(selectUser).subscribe((user) => {
-      this.kubernetesClientService
-        .getOrganizationList()
-        .subscribe((organizationList) => this.loadOrganizations(organizationList, user));
-    });
+    this.subscriptions.push(
+      // eslint-disable-next-line ngrx/no-store-subscription
+      this.store.select(selectUser).subscribe((user) => {
+        this.kubernetesClientService
+          .getOrganizationList()
+          .subscribe((organizationList) => this.loadOrganizations(organizationList, user));
+      })
+    );
   }
 
   save(): void {
@@ -97,13 +99,12 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.handleActionsSubscription?.unsubscribe();
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   private handleActions(): void {
-    this.handleActionsSubscription = this.actions
-      .pipe(ofType(saveUserPreferencesSuccess, saveUserPreferencesFailure))
-      .subscribe((action) => {
+    this.subscriptions.push(
+      this.actions.pipe(ofType(saveUserPreferencesSuccess, saveUserPreferencesFailure)).subscribe((action) => {
         this.saving = false;
         if (action.type === saveUserPreferencesFailure.type) {
           this.messageService.add({
@@ -118,6 +119,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
           });
         }
         this.changeDetectorRef.markForCheck();
-      });
+      })
+    );
   }
 }

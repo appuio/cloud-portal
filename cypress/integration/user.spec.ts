@@ -43,7 +43,7 @@ describe('Test user', () => {
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
-    });
+    }).as('putUser');
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -52,7 +52,11 @@ describe('Test user', () => {
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH');
     cy.get('.p-dropdown-trigger-icon').click();
     cy.get('#pr_id_4_list > :nth-child(2)').click();
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
+    });
     cy.get('button[type=submit]').click();
+    cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'VSHN AG');
   });
 
@@ -64,7 +68,7 @@ describe('Test user', () => {
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
-    });
+    }).as('putUser');
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -72,7 +76,11 @@ describe('Test user', () => {
     });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH');
     cy.get('.p-dropdown-clear-icon').click();
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: userMigWithoutPreferences,
+    });
     cy.get('button[type=submit]').click();
+    cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'None');
   });
 });

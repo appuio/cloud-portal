@@ -25,6 +25,7 @@ import { Store } from '@ngrx/store';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { selectUser } from './app.selectors';
 import { EntityState } from '../types/entity';
+import { User } from '../types/user';
 
 @Injectable()
 export class AppEffects {
@@ -87,20 +88,28 @@ export class AppEffects {
       filter(([, userEntity]) => userEntity.state === EntityState.Loaded),
       concatMap(([userPreferences, userEntity]) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const user = userEntity.value!;
-        const updatedUser = {
-          ...user,
-          spec: {
-            ...user.spec,
-            preferences: {
-              ...user.spec.preferences,
-              defaultOrganizationRef: userPreferences.defaultOrganizationRef,
-            },
-          },
-        };
-        return this.kubernetesClientService.updateUser(updatedUser).pipe(
-          map((user) => saveUserPreferencesSuccess({ user })),
-          catchError((error) => of(saveUserPreferencesFailure({ errorMessage: error.message })))
+        return this.kubernetesClientService.getUser(userEntity.value!.metadata.name).pipe(
+          switchMap((user) => {
+            const updatedUser: User = {
+              kind: 'User',
+              apiVersion: 'appuio.io/v1',
+              metadata: {
+                name: user.metadata.name,
+                resourceVersion: user.metadata.resourceVersion,
+              },
+              spec: {
+                ...user.spec,
+                preferences: {
+                  ...user.spec.preferences,
+                  defaultOrganizationRef: userPreferences.defaultOrganizationRef,
+                },
+              },
+            };
+            return this.kubernetesClientService.updateUser(updatedUser).pipe(
+              map((user) => saveUserPreferencesSuccess({ user })),
+              catchError((error) => of(saveUserPreferencesFailure({ errorMessage: error.message })))
+            );
+          })
         );
       })
     );

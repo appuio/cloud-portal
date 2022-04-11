@@ -9,6 +9,7 @@ export interface User {
   apiVersion: 'appuio.io/v1';
   metadata: {
     name: string;
+    resourceVersion: string;
     [key: string]: unknown;
   };
   spec: UserSpec;
@@ -17,7 +18,7 @@ export interface User {
     displayName: string;
     username: string;
     email: string;
-    defaultOrganizationRef: string;
+    defaultOrganization: string;
   };
 }
 

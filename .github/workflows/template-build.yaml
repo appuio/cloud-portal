@@ -34,7 +34,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist
@@ -52,7 +52,7 @@ jobs:
       - uses: cypress-io/github-action@v2
         with:
           start: npm run http-server
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: e2e-videos

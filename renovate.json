@@ -9,18 +9,24 @@
   "npm": {
     "packageRules": [
       {
-        "matchPackageNames": [
-          "typescript"
+        "matchUpdateTypes": [
+          "minor",
+          "patch",
+          "pin",
+          "digest"
         ],
-        "allowedVersions": "4.4.*"
+        "automerge": true,
+        "schedule": [
+          "on the first day of the week"
+        ]
       },
       {
-        "matchPackagePatterns": [
-          "@.+\/.+"
+        "matchUpdateTypes": [
+          "major"
         ],
         "groupName": "npm",
         "schedule": [
-          "on the first day of the month"
+          "on the first day of the week"
         ]
       }
     ]

@@ -81,7 +81,7 @@ jobs:
         run: .github/keycloak-redirect-url.sh "${{ secrets.keycloak_user }}" "${{ secrets.keycloak_password }}" "https://${{ steps.deployment_info.outputs.route_host }}"
 
       - name: Notify on success
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
           issue-number: ${{ github.event.number }}

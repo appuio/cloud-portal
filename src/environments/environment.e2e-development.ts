@@ -1,4 +1,4 @@
-import { EnvironmentType } from './environment.type';
+import { defaultZonesConfig, EnvironmentType } from './environment.type';
 
 export const environment: EnvironmentType = {
   production: true,
@@ -8,5 +8,6 @@ export const environment: EnvironmentType = {
     issuer: 'https://id.dev.appuio.cloud/auth/realms/development',
     clientId: 'local-dev',
     glitchTipDsn: '',
+    zones: defaultZonesConfig,
   },
 };

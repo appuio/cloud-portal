@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { loadZones } from '../store/app.actions';
 import { Zone } from '../types/zone';
 import { Entity, EntityState } from '../types/entity';
+import { AppConfigService } from '../app-config.service';
 
 @Component({
   selector: 'app-zones',
@@ -20,8 +21,9 @@ export class ZonesComponent {
   codeMode: { [key: string]: boolean } = {};
   faInfo = faInfoCircle;
   faWarning = faWarning;
+  zones = this.appConfigService.getConfiguration().zones;
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private appConfigService: AppConfigService) {
     store.dispatch(loadZones());
   }
 

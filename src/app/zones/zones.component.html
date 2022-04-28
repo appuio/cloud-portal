@@ -64,14 +64,10 @@
             <div class="text-500 w-full md:w-3 font-medium" i18n>Features</div>
             <div class="text-900 w-full md:w-9">
               <p-tag
-                [style]="{ 'background-color': '#3371e3' }"
-                [value]="'Kubernetes: ' + zone.data.features.kubernetesVersion"
-                styleClass="mr-1 mb-1 text-white"></p-tag>
-              <p-tag
-                [style]="{ 'background-color': '#EE0000' }"
-                [value]="'OpenShift: ' + zone.data.features.openshiftVersion"
-                styleClass="mr-1 mb-1 text-white"></p-tag>
-              <p-tag [value]="'SDN Plugin: ' + zone.data.features.sdnPlugin" styleClass="mr-1 mb-1"></p-tag>
+                *ngFor="let feature of zone.data.features | zoneFeatures"
+                [style]="{ 'background-color': feature.backgroundColor, color: feature.textColor }"
+                [value]="feature.label"
+                styleClass="mr-1 mb-1"></p-tag>
             </div>
           </li>
 

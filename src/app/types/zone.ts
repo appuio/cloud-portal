@@ -11,12 +11,6 @@ export interface ZoneUrls {
   logging: string;
 }
 
-export interface ZoneFeatures {
-  openshiftVersion: string;
-  kubernetesVersion: string;
-  sdnPlugin: string;
-}
-
 export interface Zone {
   kind: 'Zone';
   apiVersion: 'appuio.io/v1';
@@ -26,7 +20,7 @@ export interface Zone {
   };
   data: {
     displayName: string;
-    features: ZoneFeatures;
+    features: { [key: string]: string };
     urls: ZoneUrls;
     cname: string;
     defaultAppDomain: string;

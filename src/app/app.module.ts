@@ -27,6 +27,7 @@ import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-t
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
+import { ZoneFeaturesPipe } from './zones/zone-features.pipe';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { OrganizationSelectionComponent } from './organization-selection/organiz
     StatusBadgeComponent,
     FirstTimeLoginDialogComponent,
     OrganizationSelectionComponent,
+    ZoneFeaturesPipe,
   ],
   imports: [
     BrowserModule,

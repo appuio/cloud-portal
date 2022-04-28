@@ -9,6 +9,13 @@ export interface AppConfig {
   issuer: string;
   clientId: string;
   glitchTipDsn: string;
+  zones: { [key: string]: ZoneConfig };
+}
+
+export interface ZoneConfig {
+  label: string;
+  textColor: string;
+  backgroundColor: string;
 }
 
 @Injectable({

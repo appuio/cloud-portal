@@ -4,7 +4,7 @@
 
 // this environment is used as a template for environment.development.ts which is developer-specific
 
-import { EnvironmentType } from './environment.type';
+import { defaultZonesConfig, EnvironmentType } from './environment.type';
 
 export const environment: EnvironmentType = {
   production: false,
@@ -14,6 +14,7 @@ export const environment: EnvironmentType = {
     issuer: 'https://id.dev.appuio.cloud/auth/realms/development',
     clientId: 'development',
     glitchTipDsn: '',
+    zones: defaultZonesConfig,
   },
 };
 

@@ -5,6 +5,7 @@ import { OrganizationEditComponent } from './organization-edit/organization-edit
 import { PermissionGuard } from '../permission.guard';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 import { OrganizationMembersResolver } from './organization-members-edit/organization-members.resolver';
+import { UsersRolesResolver } from './users-roles.resolver';
 
 const routes: Routes = [
   {
@@ -24,7 +25,7 @@ const routes: Routes = [
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
-    resolve: { organizationMembers: OrganizationMembersResolver },
+    resolve: { organizationMembers: OrganizationMembersResolver, usersRoles: UsersRolesResolver },
   },
 ];
 

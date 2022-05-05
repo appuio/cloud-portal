@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api';
 })
 export class OrganizationMembersEditComponent implements OnInit {
   organizationMembers!: OrganizationMembers;
+  usersRoles!: Record<string, string[]>;
   faClose = faClose;
   faSave = faSave;
   saving = false;
@@ -35,7 +36,10 @@ export class OrganizationMembersEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ organizationMembers }) => (this.organizationMembers = organizationMembers));
+    this.activatedRoute.data.subscribe(({ organizationMembers, usersRoles }) => {
+      this.organizationMembers = organizationMembers;
+      this.usersRoles = usersRoles;
+    });
     this.editPermission = this.organizationMembers.editMembers ?? false;
     const members = this.userRefs;
     this.organizationMembers.spec.userRefs?.forEach((userRef) => {

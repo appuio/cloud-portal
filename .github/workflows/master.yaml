@@ -35,7 +35,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.NAMESPACE}}/${{ env.IMAGE_NAME }}
 
       - name: Docker login
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}

@@ -23,6 +23,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     userRefs: new FormArray([]),
   });
   editPermission = false;
+  //TODO get all available roles from API
+  allRoles = ['control-api:organization-admin', 'control-api:organization-viewer'];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,7 +45,12 @@ export class OrganizationMembersEditComponent implements OnInit {
     this.editPermission = this.organizationMembers.editMembers ?? false;
     const members = this.userRefs;
     this.organizationMembers.spec.userRefs?.forEach((userRef) => {
-      members.push(new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required));
+      members.push(
+        new FormGroup({
+          userName: new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
+          selectedRoles: new FormControl(this.usersRoles[`appuio#${userRef.name}`]),
+        })
+      );
     });
     if (this.editPermission) {
       this.addEmptyFormControl();
@@ -56,7 +63,11 @@ export class OrganizationMembersEditComponent implements OnInit {
       emptyFormControl.addValidators(Validators.required);
       this.addEmptyFormControl();
     });
-    this.userRefs.push(emptyFormControl);
+    const emptyFormGroup = new FormGroup({
+      userName: emptyFormControl,
+      selectedRoles: new FormControl([]),
+    });
+    this.userRefs.push(emptyFormGroup);
   }
 
   save(): void {

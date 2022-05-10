@@ -16,12 +16,27 @@
           severity="info"
           text="List all user names that should have access to this organization."></p-message>
       </div>
-      <div *ngFor="let control of this.userRefs.controls; let i = index; let last = last" class="flex-auto flex mt-3">
-        <input [formControl]="$any(control)" class="flex-auto" pInputText tabindex="0" type="text" />
+      <div class="grid mt-3">
+        <label class="col-3" i18n>Name</label>
+        <label class="col-8" i18n>Roles</label>
+      </div>
+      <div
+        *ngFor="let control of this.userRefs.controls; let i = index; let last = last"
+        class="grid formgrid mb-3"
+        [formGroup]="$any(control)">
+        <input formControlName="userName" class="col-3" pInputText tabindex="0" type="text" />
+        <p-multiSelect
+          formControlName="selectedRoles"
+          class="col-8"
+          [options]="allRoles"
+          display="chip"
+          defaultLabel="Select Roles"
+          i18n-defaultLabel></p-multiSelect>
+
         <button
           (click)="removeFormControl(i)"
           *ngIf="!last && editPermission; else noButton"
-          class="p-button-icon-only ml-3"
+          class="col-1 p-button-icon-only ml-3"
           i18n-title
           pButton
           pRipple

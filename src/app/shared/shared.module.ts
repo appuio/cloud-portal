@@ -18,6 +18,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FocusTrapModule } from 'primeng/focustrap';
 import { MessageModule } from 'primeng/message';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [],
@@ -42,6 +43,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     FocusTrapModule,
     MessageModule,
     ConfirmDialogModule,
+    MultiSelectModule,
   ],
 })
 export class SharedModule {}

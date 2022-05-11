@@ -16,45 +16,47 @@
           severity="info"
           text="List all user names that should have access to this organization."></p-message>
       </div>
-      <div class="grid mt-3">
-        <label class="col-3" i18n>Name</label>
-        <label class="col-8" i18n>Roles</label>
-      </div>
-      <div
-        *ngFor="let control of this.userRefs.controls; let i = index; let last = last"
-        class="grid formgrid mb-3"
-        [formGroup]="$any(control)">
-        <input formControlName="userName" class="col-3" pInputText tabindex="0" type="text" />
-        <p-multiSelect
-          formControlName="selectedRoles"
-          class="col-8"
-          [options]="allRoleNames"
-          display="chip"
-          defaultLabel="Select Roles"
-          i18n-defaultLabel></p-multiSelect>
+      <div class="max-w-1200px">
+        <div class="grid mt-3">
+          <label class="col-3 ml-2" i18n>Name</label>
+          <label class="col-7" i18n>Roles</label>
+        </div>
+        <div
+          *ngFor="let control of this.userRefs.controls; let i = index; let last = last"
+          class="grid formgrid mb-3"
+          [formGroup]="$any(control)">
+          <input formControlName="userName" class="field col-3 ml-2" pInputText tabindex="0" type="text" />
+          <p-multiSelect
+            formControlName="selectedRoles"
+            class="field col-7"
+            [options]="allRoleNames"
+            display="chip"
+            defaultLabel="Select Roles"
+            i18n-defaultLabel></p-multiSelect>
 
-        <button
-          (click)="removeFormControl(i)"
-          *ngIf="!last && editPermission; else noButton"
-          class="col-1 p-button-icon-only ml-3"
-          i18n-title
-          pButton
-          pRipple
-          tabindex="1"
-          title="Remove"
-          type="button">
-          <fa-icon [icon]="faClose"></fa-icon>
-        </button>
-        <ng-template #noButton>
-          <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
-        </ng-template>
-      </div>
+          <button
+            (click)="removeFormControl(i)"
+            *ngIf="!last && editPermission; else noButton"
+            class="col-1 field p-button-icon-only ml-3"
+            i18n-title
+            pButton
+            pRipple
+            tabindex="1"
+            title="Remove"
+            type="button">
+            <fa-icon [icon]="faClose"></fa-icon>
+          </button>
+          <ng-template #noButton>
+            <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
+          </ng-template>
+        </div>
 
-      <div *ngIf="editPermission">
-        <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
-          <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
-          <span class="pr-2" i18n>Save</span>
-        </button>
+        <div *ngIf="editPermission">
+          <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+            <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
+            <span class="pr-2" i18n>Save</span>
+          </button>
+        </div>
       </div>
     </form>
   </div>

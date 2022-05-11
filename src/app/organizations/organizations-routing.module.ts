@@ -25,7 +25,7 @@ const routes: Routes = [
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
-    resolve: { organizationMembers: OrganizationMembersResolver, usersRoles: UsersRolesResolver },
+    resolve: { organizationMembers: OrganizationMembersResolver, roleBindings: UsersRolesResolver },
   },
 ];
 

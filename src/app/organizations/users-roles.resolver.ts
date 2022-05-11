@@ -7,13 +7,13 @@ import { RoleBindingList } from '../types/role-bindings';
 @Injectable({
   providedIn: 'root',
 })
-export class UsersRolesResolver implements Resolve<Record<string, string[]> | undefined> {
+export class UsersRolesResolver implements Resolve<RoleBindingList | undefined> {
   constructor(private kubernetesClientService: KubernetesClientService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Record<string, string[]> | undefined> {
+  resolve(route: ActivatedRouteSnapshot): Observable<RoleBindingList | undefined> {
     const name = route.paramMap.get('name');
     if (name) {
-      return this.kubernetesClientService.getRoleBindings(name).pipe(map(this.mapToUserRoles));
+      return this.kubernetesClientService.getRoleBindings(name); //.pipe(map(this.mapToUserRoles));
     }
     return of(undefined);
   }

@@ -26,6 +26,7 @@ export class OrganizationMembersEditComponent implements OnInit {
   editPermission = false;
 
   readonly allRoleNames = ['control-api:organization-admin', 'control-api:organization-viewer'];
+  readonly newUserDefaultRoles = ['control-api:organization-viewer'];
   readonly userNamePrefix = 'appuio#';
 
   constructor(
@@ -64,11 +65,13 @@ export class OrganizationMembersEditComponent implements OnInit {
     const emptyFormControl = new FormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
       emptyFormControl.addValidators(Validators.required);
+      emptyRoleDropdown.setValue(this.newUserDefaultRoles);
       this.addEmptyFormControl();
     });
+    const emptyRoleDropdown = new FormControl([]);
     const emptyFormGroup = new FormGroup({
       userName: emptyFormControl,
-      selectedRoles: new FormControl([]),
+      selectedRoles: emptyRoleDropdown,
     });
     this.userRefs.push(emptyFormGroup);
   }

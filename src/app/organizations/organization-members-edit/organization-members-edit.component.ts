@@ -16,7 +16,7 @@ import { RoleBindingList } from 'src/app/types/role-bindings';
 })
 export class OrganizationMembersEditComponent implements OnInit {
   organizationMembers!: OrganizationMembers;
-  usersRoles!: Record<string, string[]>;
+  roleBindings!: RoleBindingList;
   faClose = faClose;
   faSave = faSave;
   saving = false;
@@ -24,8 +24,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     userRefs: new FormArray([]),
   });
   editPermission = false;
-  //TODO get all available roles from API
-  allRoles = ['control-api:organization-admin', 'control-api:organization-viewer'];
+
+  readonly allRoleNames = ['control-api:organization-admin', 'control-api:organization-viewer'];
+  readonly userNamePrefix = 'appuio#';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -38,27 +39,19 @@ export class OrganizationMembersEditComponent implements OnInit {
     return this.form.get('userRefs') as FormArray;
   }
 
-  userRoles: Record<string, string[]> = {};
-  roleBindings!: RoleBindingList;
-
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ organizationMembers, roleBindings }) => {
       this.organizationMembers = organizationMembers;
       this.roleBindings = roleBindings;
     });
-    this.roleBindings.items.forEach((item) => {
-      item.subjects.forEach((subj) => {
-        if (!this.userRoles[subj.name]) this.userRoles[subj.name] = [];
-        this.userRoles[subj.name].push(item.roleRef.name);
-      });
-    });
+    const userRoles = this.mapRolesToUsers();
     this.editPermission = this.organizationMembers.editMembers ?? false;
     const members = this.userRefs;
     this.organizationMembers.spec.userRefs?.forEach((userRef) => {
       members.push(
         new FormGroup({
           userName: new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
-          selectedRoles: new FormControl(this.userRoles[`appuio#${userRef.name}`]),
+          selectedRoles: new FormControl(userRoles[`${this.userNamePrefix}${userRef.name}`]),
         })
       );
     });
@@ -80,16 +73,27 @@ export class OrganizationMembersEditComponent implements OnInit {
     this.userRefs.push(emptyFormGroup);
   }
 
+  mapRolesToUsers(): Record<string, string[]> {
+    const userRoles: Record<string, string[]> = {};
+    this.roleBindings.items.forEach((item) => {
+      item.subjects.forEach((subj) => {
+        if (!userRoles[subj.name]) userRoles[subj.name] = [];
+        userRoles[subj.name].push(item.roleRef.name);
+      });
+    });
+    return userRoles;
+  }
+
   save(): void {
     const userNames: string[] = this.form.value.userRefs
       .map((userDetails: { userName: string; selectedRoles: string[] }) => userDetails.userName)
       .filter((val: string) => val);
 
-    const allRoles: Record<string, string[]> = {};
+    const rolesToSubjects: Record<string, string[]> = {};
     this.form.value.userRefs.forEach((userDetails: { userName: string; selectedRoles: string[] }) => {
       userDetails.selectedRoles?.forEach((role) => {
-        if (!allRoles[role]) allRoles[role] = [];
-        allRoles[role].push(userDetails.userName);
+        if (!rolesToSubjects[role]) rolesToSubjects[role] = [];
+        rolesToSubjects[role].push(userDetails.userName);
       });
     });
 
@@ -108,8 +112,8 @@ export class OrganizationMembersEditComponent implements OnInit {
         this.kubernetesClientService.updateRoleBinding({
           metadata: { ...roleBinding.metadata },
           roleRef: { ...roleBinding.roleRef },
-          subjects: allRoles[roleBinding.roleRef.name].map((sub) => {
-            return { apiGroup: 'rbac.authorization.k8s.io', kind: 'User', name: `appuio#${sub}` };
+          subjects: rolesToSubjects[roleBinding.roleRef.name].map((sub) => {
+            return { apiGroup: 'rbac.authorization.k8s.io', kind: 'User', name: `${this.userNamePrefix}${sub}` };
           }),
         })
       ),

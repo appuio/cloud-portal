@@ -23,6 +23,8 @@ export class FirstTimeLoginDialogComponent implements OnInit {
   faSitemap = faSitemap;
   faAdd = faAdd;
   hideFirstTimeLoginDialogControl = new FormControl(false);
+  nextAddOrganisation = false;
+  nextJoinOrganisation = false;
 
   constructor(
     private oauthService: OAuthService,
@@ -66,12 +68,21 @@ export class FirstTimeLoginDialogComponent implements OnInit {
 
   addOrganization(): void {
     this.showFirstLoginDialog = false;
-    void this.router.navigate(['organizations/$new']);
+    this.nextAddOrganisation = true;
   }
 
   joinOrganization(): void {
     this.showFirstLoginDialog = false;
-    void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
+    this.nextJoinOrganisation = true;
+  }
+
+  onHide(): void {
+    this.firstTimeLoginDialogHide();
+    if (this.nextAddOrganisation) {
+      void this.router.navigate(['organizations/$new']);
+    } else if (this.nextJoinOrganisation) {
+      void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
+    }
   }
 
   firstTimeLoginDialogHide(): void {

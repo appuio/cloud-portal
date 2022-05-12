@@ -47,12 +47,15 @@ describe('Test organization members', () => {
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
-    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier');
-    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
-    cy.get(':nth-child(2) > p-multiselect')
+    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier').and('be.disabled');
+    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster').and('be.disabled');
+    cy.get(':nth-child(2) .p-multiselect')
       .should('contain', 'control-api:organization-admin')
-      .and('contain', 'control-api:organization-viewer');
-    cy.get(':nth-child(3) > p-multiselect').should('contain', 'control-api:organization-viewer');
+      .and('contain', 'control-api:organization-viewer')
+      .and('have.class', 'p-disabled');
+    cy.get(':nth-child(3) .p-multiselect')
+      .should('contain', 'control-api:organization-viewer')
+      .and('have.class', 'p-disabled');
     cy.get('button[type=submit]').should('not.exist');
   });
   it('edit list with two entries', () => {

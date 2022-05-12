@@ -52,7 +52,10 @@ export class OrganizationMembersEditComponent implements OnInit {
       members.push(
         new FormGroup({
           userName: new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
-          selectedRoles: new FormControl(userRoles[`${this.userNamePrefix}${userRef.name}`]),
+          selectedRoles: new FormControl({
+            value: userRoles[`${this.userNamePrefix}${userRef.name}`],
+            disabled: !this.editPermission,
+          }),
         })
       );
     });

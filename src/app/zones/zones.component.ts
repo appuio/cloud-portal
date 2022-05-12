@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { faClipboard, faCode, faInfoCircle, faList, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { selectZones } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { loadZones } from '../store/app.actions';
@@ -15,24 +15,14 @@ import { AppConfigService } from '../app-config.service';
 })
 export class ZonesComponent {
   zones$ = this.store.select(selectZones);
-  faCode = faCode;
-  faList = faList;
-  faClipboard = faClipboard;
-  codeMode: { [key: string]: boolean } = {};
+
+  zones = this.appConfigService.getConfiguration().zones;
+
   faInfo = faInfoCircle;
   faWarning = faWarning;
-  zones = this.appConfigService.getConfiguration().zones;
 
   constructor(private store: Store, private appConfigService: AppConfigService) {
     store.dispatch(loadZones());
-  }
-
-  switchToCodeMode(i: number): void {
-    this.codeMode[i] = true;
-  }
-
-  switchToNoCodeMode(i: number): void {
-    this.codeMode[i] = false;
   }
 
   isZoneListEmpty(zones: Entity<Zone[]>): boolean {

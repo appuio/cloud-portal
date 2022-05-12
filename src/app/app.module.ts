@@ -8,7 +8,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
 import { forkJoin, mergeMap, Observable, retry } from 'rxjs';
-import { ZonesComponent } from './zones/zones.component';
 import { IdTokenInterceptor } from './core/id-token.interceptor';
 import { Store, StoreModule } from '@ngrx/store';
 import { appReducer } from './store/app.reducer';
@@ -27,18 +26,15 @@ import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-t
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
-import { ZoneFeaturesPipe } from './zones/zone-features.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarItemComponent,
-    ZonesComponent,
     HomeComponent,
     StatusBadgeComponent,
     FirstTimeLoginDialogComponent,
     OrganizationSelectionComponent,
-    ZoneFeaturesPipe,
   ],
   imports: [
     BrowserModule,

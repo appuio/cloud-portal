@@ -1,0 +1,138 @@
+<div *ngIf="zone" class="surface-card p-4 shadow-2 border-round mb-4">
+  <div class="flex flex-row justify-content-between">
+    <div class="text-3xl font-medium text-900 mb-3" data-cy="zone-name">
+      {{ zone.data.displayName }}
+    </div>
+    <div>
+      <a
+        (click)="switchToCodeMode()"
+        *ngIf="!codeMode"
+        class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+        <fa-icon [icon]="faCode"></fa-icon>
+      </a>
+      <a
+        (click)="switchToNoCodeMode()"
+        *ngIf="codeMode"
+        class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+        <fa-icon [icon]="faList"></fa-icon>
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="!codeMode" class="flex flex-wrap border-top-1 surface-border">
+    <ul class="w-full list-none p-0 m-0 surface-border">
+      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Cloud Provider</div>
+        <div class="text-900 w-full md:w-9">
+          {{ zone.data.cloudProvider.name }} -
+          {{ zone.data.cloudProvider.region }}
+          <p-tag
+            *ngFor="let zone of zone.data.cloudProvider.zones"
+            [rounded]="true"
+            [value]="zone"
+            styleClass="mr-2"></p-tag>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>CName</div>
+        <div class="text-900 w-full md:w-9 relative">
+          {{ zone.data.cname }}
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.cname"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Default App Domain</div>
+        <div class="text-900 w-full md:w-9 line-height-3 relative">
+          {{ zone.data.defaultAppDomain }}
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.defaultAppDomain"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Features</div>
+        <div class="text-900 w-full md:w-9">
+          <p-tag
+            *ngFor="let feature of zone.data.features | zoneFeatures"
+            [style]="{ 'background-color': feature.backgroundColor, color: feature.textColor }"
+            [value]="feature.label"
+            styleClass="mr-1 mb-1"></p-tag>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Gateway IPs</div>
+        <div class="text-900 w-full md:w-9">
+          <p-tag *ngFor="let ip of zone.data.gatewayIPs" [value]="ip" styleClass="mr-1 mb-1"></p-tag>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Console</div>
+        <div class="text-900 w-full md:w-9 relative">
+          <a [href]="zone.data.urls.console" class="text-blue-500 no-underline">
+            {{ zone.data.urls.console }}
+          </a>
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.urls.console"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Kubernetes API</div>
+        <div class="text-900 w-full md:w-9 relative">
+          <a [href]="zone.data.urls.kubernetesAPI" class="text-blue-500 no-underline">
+            {{ zone.data.urls.kubernetesAPI }}
+          </a>
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.urls.kubernetesAPI"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Logging</div>
+        <div class="text-900 w-full md:w-9 relative">
+          <a [href]="zone.data.urls.logging" class="text-blue-500 no-underline">
+            {{ zone.data.urls.logging }}
+          </a>
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.urls.logging"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+
+      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>Registry</div>
+        <div class="text-900 w-full md:w-9 relative">
+          <a [href]="zone.data.urls.registry" class="text-blue-500 no-underline">
+            {{ zone.data.urls.registry }}
+          </a>
+          <fa-icon
+            [cdkCopyToClipboard]="zone.data.urls.registry"
+            [icon]="faClipboard"
+            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="codeMode" class="bg-gray-700 text-white p-3 border-round relative zone-row">
+    <pre>{{ zone.data | json }}</pre>
+    <fa-icon
+      [cdkCopyToClipboard]="zone.data | json"
+      [icon]="faClipboard"
+      class="text-400 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0 mr-3 mt-2"></fa-icon>
+  </div>
+</div>

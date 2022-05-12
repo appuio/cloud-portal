@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ZonesComponent } from './zones/zones.component';
 import { HomeComponent } from './home/home.component';
 import { PermissionGuard } from './permission.guard';
 
@@ -16,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'zones',
-    component: ZonesComponent,
+    loadChildren: () => import('./zones/zones.module').then((m) => m.ZonesModule),
     canActivate: [PermissionGuard],
     data: {
       permission: 'zones',

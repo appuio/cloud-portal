@@ -21,8 +21,8 @@ describe('Test zones', () => {
       body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
     });
     cy.get('#zones-title').should('contain.text', 'Zones');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 0');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'cloudscale.ch LPG 2');
+    cy.get('[data-cy=zone-name]').eq(0).should('contain.text', 'cloudscale.ch LPG 0');
+    cy.get('[data-cy=zone-name]').eq(1).should('contain.text', 'cloudscale.ch LPG 2');
   });
 
   it('empty list', () => {

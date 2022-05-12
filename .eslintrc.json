@@ -42,7 +42,8 @@
             "allowExpressions": true
           }
         ],
-        "semi": "error"
+        "semi": "error", 
+        "curly": "error"
       },
       "plugins": ["ngrx", "change-detection-strategy", "prettier"]
     },

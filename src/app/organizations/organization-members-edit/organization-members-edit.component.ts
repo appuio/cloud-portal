@@ -25,6 +25,8 @@ export class OrganizationMembersEditComponent implements OnInit {
   });
   editPermission = false;
 
+  // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
+  // clearly identifying these (e.g. tag or special field)
   readonly allRoleNames = ['control-api:organization-admin', 'control-api:organization-viewer'];
   readonly newUserDefaultRoles = ['control-api:organization-viewer'];
   readonly userNamePrefix = 'appuio#';
@@ -83,7 +85,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     const userRoles: Record<string, string[]> = {};
     this.roleBindings.items.forEach((item) => {
       item.subjects.forEach((subj) => {
-        if (!userRoles[subj.name]) userRoles[subj.name] = [];
+        if (!userRoles[subj.name]) {
+          userRoles[subj.name] = [];
+        }
         userRoles[subj.name].push(item.roleRef.name);
       });
     });
@@ -98,7 +102,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     const rolesToSubjects: Record<string, string[]> = {};
     this.form.value.userRefs.forEach((userDetails: { userName: string; selectedRoles: string[] }) => {
       userDetails.selectedRoles?.forEach((role) => {
-        if (!rolesToSubjects[role]) rolesToSubjects[role] = [];
+        if (!rolesToSubjects[role]) {
+          rolesToSubjects[role] = [];
+        }
         rolesToSubjects[role].push(userDetails.userName);
       });
     });

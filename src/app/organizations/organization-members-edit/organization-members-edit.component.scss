@@ -1,0 +1,13 @@
+::ng-deep p-multiselect {
+    .p-multiselect-label {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .p-multiselect {
+        width: 100%;
+    }
+}
+
+.max-w-1200px {
+    max-width: 1200px;
+}

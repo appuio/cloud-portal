@@ -23,12 +23,10 @@ export class FirstTimeLoginDialogComponent implements OnInit {
   faSitemap = faSitemap;
   faAdd = faAdd;
   hideFirstTimeLoginDialogControl = new FormControl(false);
+  nextAction?: 'join' | 'add';
 
   constructor(
-    private oauthService: OAuthService,
-    private store: Store,
     private router: Router,
-    private appConfigService: AppConfigService,
     private changeDetectorRef: ChangeDetectorRef,
     private kubernetesClientService: KubernetesClientService,
     private identityService: IdentityService
@@ -66,12 +64,21 @@ export class FirstTimeLoginDialogComponent implements OnInit {
 
   addOrganization(): void {
     this.showFirstLoginDialog = false;
-    void this.router.navigate(['organizations/$new']);
+    this.nextAction = 'add';
   }
 
   joinOrganization(): void {
     this.showFirstLoginDialog = false;
-    void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
+    this.nextAction = 'join';
+  }
+
+  onHide(): void {
+    this.firstTimeLoginDialogHide();
+    if (this.nextAction === 'add') {
+      void this.router.navigate(['organizations/$new']);
+    } else if (this.nextAction === 'join') {
+      void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
+    }
   }
 
   firstTimeLoginDialogHide(): void {

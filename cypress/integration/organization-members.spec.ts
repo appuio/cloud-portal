@@ -1,6 +1,7 @@
 import { createUser } from '../fixtures/user';
 import { organizationListNxtVshn } from '../fixtures/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
+import { createRoleBindingList } from 'cypress/fixtures/role-bindings';
 
 describe('Test organization members', () => {
   beforeEach(() => {
@@ -34,11 +35,27 @@ describe('Test organization members', () => {
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     });
+    cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
+      body: createRoleBindingList({
+        namespace: 'nxt',
+        roles: [
+          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+        ],
+      }),
+    });
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
-    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier');
-    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
+    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier').and('be.disabled');
+    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster').and('be.disabled');
+    cy.get(':nth-child(2) .p-multiselect')
+      .should('contain', 'control-api:organization-admin')
+      .and('contain', 'control-api:organization-viewer')
+      .and('have.class', 'p-disabled');
+    cy.get(':nth-child(3) .p-multiselect')
+      .should('contain', 'control-api:organization-viewer')
+      .and('have.class', 'p-disabled');
     cy.get('button[type=submit]').should('not.exist');
   });
   it('edit list with two entries', () => {
@@ -57,12 +74,35 @@ describe('Test organization members', () => {
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     });
+    cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
+      body: createRoleBindingList({
+        namespace: 'nxt',
+        roles: [
+          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+        ],
+      }),
+    });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     }).as('save');
+    cy.intercept(
+      'PUT',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-admin',
+      {
+        body: {},
+      }
+    ).as('save-admin-role');
+    cy.intercept(
+      'PUT',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-viewer',
+      {
+        body: {},
+      }
+    ).as('save-viewer-role');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('not.exist');
@@ -71,12 +111,25 @@ describe('Test organization members', () => {
     cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier');
     cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
     cy.get(':nth-child(3) > .p-inputtext').type('{selectall}test');
+    cy.get(':nth-child(3) p-multiselect').click().contains('control-api:organization-admin').click();
     cy.get('button[type=submit]').click();
     cy.get('@save')
       .its('request.body')
       .then((body) => {
         expect(body.spec.userRefs[0].name).to.eq('hans.meier');
         expect(body.spec.userRefs[1].name).to.eq('test');
+      });
+    cy.get('@save-admin-role')
+      .its('request.body')
+      .then((body) => {
+        expect(body.subjects[0].name).to.eq('appuio#hans.meier');
+        expect(body.subjects[1].name).to.eq('appuio#test');
+      });
+    cy.get('@save-viewer-role')
+      .its('request.body')
+      .then((body) => {
+        expect(body.subjects[0].name).to.eq('appuio#hans.meier');
+        expect(body.subjects[1].name).to.eq('appuio#test');
       });
   });
   it('add a new entry', () => {
@@ -95,12 +148,35 @@ describe('Test organization members', () => {
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     });
+    cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
+      body: createRoleBindingList({
+        namespace: 'nxt',
+        roles: [
+          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+        ],
+      }),
+    });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     }).as('save');
+    cy.intercept(
+      'PUT',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-admin',
+      {
+        body: {},
+      }
+    ).as('save-admin-role');
+    cy.intercept(
+      'PUT',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-viewer',
+      {
+        body: {},
+      }
+    ).as('save-viewer-role');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
@@ -114,6 +190,18 @@ describe('Test organization members', () => {
         expect(body.spec.userRefs[0].name).to.eq('hans.meier');
         expect(body.spec.userRefs[1].name).to.eq('peter.muster');
         expect(body.spec.userRefs[2].name).to.eq('test');
+      });
+    cy.get('@save-admin-role')
+      .its('request.body')
+      .then((body) => {
+        expect(body.subjects[0].name).to.eq('appuio#hans.meier');
+      });
+    cy.get('@save-viewer-role')
+      .its('request.body')
+      .then((body) => {
+        expect(body.subjects[0].name).to.eq('appuio#hans.meier');
+        expect(body.subjects[1].name).to.eq('appuio#peter.muster');
+        expect(body.subjects[2].name).to.eq('appuio#test');
       });
   });
   it('no list permission', () => {

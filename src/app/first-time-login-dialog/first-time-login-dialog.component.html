@@ -1,5 +1,5 @@
 <p-dialog
-  (onHide)="firstTimeLoginDialogHide()"
+  (onHide)="onHide()"
   [(visible)]="showFirstLoginDialog"
   [draggable]="false"
   [modal]="true"
@@ -14,8 +14,8 @@
     </div>
     <div class="text-700 line-height-3 pl-4 w-8">
       <p class="mt-0" i18n>
-        Unfortunately, you do not yet belong to an organization. You can either join an existing organization or create a new
-        one.
+        Unfortunately, you do not yet belong to an organization. You can either join an existing organization or create
+        a new one.
       </p>
 
       <p i18n>

@@ -1,14 +1,14 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { faClipboard, faCode, faList } from '@fortawesome/free-solid-svg-icons';
 import { Zone } from 'src/app/types/zone';
 
 @Component({
   selector: 'app-zone',
-  templateUrl: './zone.component.html',
-  styleUrls: ['./zone.component.scss'],
+  templateUrl: './zone-detail.component.html',
+  styleUrls: ['./zone-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZoneComponent {
+export class ZoneDetailComponent {
   @Input() zone?: Zone;
 
   faCode = faCode;

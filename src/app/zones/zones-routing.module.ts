@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionGuard } from '../permission.guard';
-import { ZoneComponent } from './zone/zone.component';
+import { SingleZoneComponent } from './single-zone/single-zone.component';
 import { ZonesComponent } from './zones.component';
 
 const routes: Routes = [
@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: ':name',
-    component: ZoneComponent,
+    component: SingleZoneComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'zones',

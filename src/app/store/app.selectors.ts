@@ -1,10 +1,15 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AppState, Permission, Verb } from './app.reducer';
 import { SelectItem } from 'primeng/api';
+import { selectRouteParams } from './router.selectors';
 
 export const selectAppState = createFeatureSelector<AppState>('app');
 
 export const selectZones = createSelector(selectAppState, (state) => state.zones);
+
+export const selectZoneByName = createSelector(selectZones, selectRouteParams, (zones, routeParams) =>
+  zones.value.find((z) => z.metadata.name === routeParams['name'])
+);
 
 export const selectPermission = createSelector(selectAppState, (state) => state.permission);
 

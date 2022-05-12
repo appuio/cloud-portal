@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
 import { faClipboard, faCode, faList } from '@fortawesome/free-solid-svg-icons';
 import { Zone } from 'src/app/types/zone';
 

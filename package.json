@@ -55,7 +55,7 @@
     "@angular/cli": "13.3.5",
     "@angular/compiler-cli": "13.3.8",
     "@angular/localize": "13.3.8",
-    "@cypress/schematic": "1.6.0",
+    "@cypress/schematic": "1.7.0",
     "@ngrx/schematics": "13.2.0",
     "@types/jest": "27.5.1",
     "@types/node": "16.11.35",

@@ -36,7 +36,7 @@ export const zoneCloudscale1 = createZone({
 });
 
 export const zoneCloudscale2 = createZone({
-  name: 'cloudscale.ch AG',
+  name: 'cloudscale-lpg-2',
   displayName: 'cloudscale.ch LPG 2',
   features: { kubernetesVersion: '1.21', openshiftVersion: '4.8', sdnPlugin: 'OVN-Kubernetes' },
   cname: 'cname.cloudscale-lpg-2.appuio.cloud',

@@ -14,28 +14,8 @@
           </li>
         </ul>
       </div>
-      <div class="mt-auto">
-        <hr class="mb-3 mx-3 border-top-1 border-none border-white" />
-        <ul class="list-none p-2 m-0 hidden origin-bottom animation-duration-150 overflow-hidden animation-ease-in-out">
-          <li *ngFor="let profileItem of profileItems">
-            <app-navbar-item [menuItem]="profileItem"></app-navbar-item>
-          </li>
-        </ul>
-        <a
-          class="m-3 px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer text-white hover:text-blue-50 transition-duration-150 transition-colors"
-          enterActiveClass="slidedown"
-          enterClass="hidden"
-          leaveActiveClass="slideup"
-          leaveToClass="hidden"
-          pRipple
-          pStyleClass="@prev">
-          <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
-          <div class="flex flex-column">
-            <span class="font-medium">{{ name }}</span>
-            <span class="text-xs">{{ username }}</span>
-          </div>
-          <i class="pi pi-chevron-up ml-auto"></i>
-        </a>
+      <div class="mt-auto mx-auto pb-5">
+        <app-status-badge></app-status-badge>
       </div>
     </div>
   </div>
@@ -57,7 +37,7 @@
         </a>
         <app-organization-selection *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"></app-organization-selection>
       </div>
-      <app-status-badge></app-status-badge>
+      <app-identity-menu [username]="username" [name]="name" [avatarSrc]="avatarSrc" class="h-full"></app-identity-menu>
     </div>
     <div class="p-5 flex flex-column flex-auto">
       <router-outlet></router-outlet>

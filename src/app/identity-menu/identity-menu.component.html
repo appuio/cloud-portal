@@ -1,0 +1,23 @@
+<div class="bg-blue-500 -mr-5 flex align-items-center flex-column relative z-1">
+  <a
+    class="px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer text-white hover:text-blue-50 transition-duration-150 transition-colors"
+    style="height: 60px"
+    enterActiveClass="slidedown"
+    enterClass="hidden"
+    leaveActiveClass="slideup"
+    leaveToClass="hidden"
+    pRipple
+    pStyleClass="@next">
+    <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
+    <div class="flex flex-column">
+      <span class="font-medium">{{ name }}</span>
+      <span class="text-xs">{{ username }}</span>
+    </div>
+    <i class="pi pi-chevron-down ml-5"></i>
+  </a>
+  <ul class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out">
+    <li *ngFor="let profileItem of profileItems">
+      <app-navbar-item [menuItem]="profileItem"></app-navbar-item>
+    </li>
+  </ul>
+</div>

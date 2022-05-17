@@ -2,7 +2,7 @@
 
 <ng-container *ngIf="zones$ | ngrxPush as zones">
   <ng-container *ngFor="let zone of zones.value; index as i">
-    <app-zone [zone]="zone" [isSingle]="false"></app-zone>
+    <app-zone [zone]="zone" [linkToDetailView]="true" [showCloseIcon]="false"></app-zone>
   </ng-container>
 
   <ng-container *ngIf="isZoneListEmpty(zones)">

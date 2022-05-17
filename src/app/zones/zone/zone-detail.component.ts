@@ -10,7 +10,8 @@ import { Zone } from 'src/app/types/zone';
 })
 export class ZoneDetailComponent {
   @Input() zone?: Zone;
-  @Input() isSingle = true;
+  @Input() linkToDetailView = false;
+  @Input() showCloseIcon = true;
 
   faCode = faCode;
   faList = faList;

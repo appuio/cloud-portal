@@ -2,12 +2,12 @@
   <div class="flex flex-row justify-content-between">
     <div class="text-3xl font-medium text-900 mb-3" data-cy="zone-name">
       <a
-        *ngIf="!isSingle"
+        *ngIf="linkToDetailView"
         class="text-blue-500 hover:text-primary no-underline"
         [routerLink]="['/', 'zones', zone.metadata.name]">
         {{ zone.data.displayName }}
       </a>
-      <ng-container *ngIf="isSingle">{{ zone.data.displayName }}</ng-container>
+      <ng-container *ngIf="!linkToDetailView">{{ zone.data.displayName }}</ng-container>
     </div>
     <div>
       <a
@@ -27,7 +27,7 @@
         <fa-icon [icon]="faList"></fa-icon>
       </a>
       <a
-        *ngIf="isSingle"
+        *ngIf="showCloseIcon"
         [routerLink]="['..']"
         class="text-blue-500 hover:text-primary text-2xl cursor-pointer ml-4"
         i18n-title

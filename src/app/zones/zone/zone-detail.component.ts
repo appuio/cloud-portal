@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { faClipboard, faCode, faList } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faClose, faCode, faList } from '@fortawesome/free-solid-svg-icons';
 import { Zone } from 'src/app/types/zone';
 
 @Component({
@@ -10,10 +10,12 @@ import { Zone } from 'src/app/types/zone';
 })
 export class ZoneDetailComponent {
   @Input() zone?: Zone;
+  @Input() isSingle = true;
 
   faCode = faCode;
   faList = faList;
   faClipboard = faClipboard;
+  faClose = faClose;
   codeMode = false;
 
   switchToCodeMode(): void {

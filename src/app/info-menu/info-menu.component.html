@@ -7,13 +7,14 @@
     leaveActiveClass="slideup"
     leaveToClass="hidden"
     pRipple
-    pStyleClass="@next">
+    pStyleClass="@next"
+    [hideOnOutsideClick]="true">
     <div i18n class="flex flex-column">
       <fa-icon [icon]="faQuestion" [size]="'lg'" i18-title title="Info"></fa-icon>
     </div>
   </a>
   <ul
-    class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500">
+    class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500 relative">
     <li *ngFor="let item of items">
       <app-navbar-item [menuItem]="item" [light]="false"></app-navbar-item>
     </li>

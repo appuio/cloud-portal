@@ -27,6 +27,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
 import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
+import { InfoMenuComponent } from './info-menu/info-menu.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
     FirstTimeLoginDialogComponent,
     OrganizationSelectionComponent,
     IdentityMenuComponent,
+    InfoMenuComponent,
   ],
   imports: [
     BrowserModule,

@@ -37,7 +37,14 @@
         </a>
         <app-organization-selection *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"></app-organization-selection>
       </div>
-      <app-identity-menu [username]="username" [name]="name" [avatarSrc]="avatarSrc" class="h-full"></app-identity-menu>
+      <div class="flex h-full">
+        <app-info-menu></app-info-menu>
+        <app-identity-menu
+          [username]="username"
+          [name]="name"
+          [avatarSrc]="avatarSrc"
+          class="h-full"></app-identity-menu>
+      </div>
     </div>
     <div class="p-5 flex flex-column flex-auto">
       <router-outlet></router-outlet>

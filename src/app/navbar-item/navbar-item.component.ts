@@ -9,4 +9,5 @@ import { NavMenuItem } from '../app.component';
 })
 export class NavbarItemComponent {
   @Input() menuItem!: NavMenuItem;
+  @Input() light = false;
 }

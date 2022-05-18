@@ -1,4 +1,4 @@
-<div class="text-white">
+<div [class]="light ? 'text-color' : 'text-white'">
   <ng-container *ngIf="!menuItem.items">
     <a
       (click)="menuItem.command()"
@@ -6,16 +6,17 @@
       class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors"
       pRipple>
       <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
-      <span class="font-medium">{{ menuItem.label }}</span>
+      <span i18n class="font-medium">{{ menuItem.label }}</span>
     </a>
     <a
       *ngIf="menuItem.routerLink"
       [routerLinkActive]="'active'"
       [routerLink]="menuItem.routerLink"
-      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline text-white"
+      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline"
+      [class]="light ? 'text-color' : 'text-white'"
       pRipple>
       <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
-      <span class="font-medium">{{ menuItem.label }}</span>
+      <span i18n class="font-medium">{{ menuItem.label }}</span>
     </a>
   </ng-container>
 </div>
@@ -30,7 +31,7 @@
   pRipple
   pStyleClass="@next">
   <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
-  <span class="font-medium">{{ menuItem.label }}</span>
+  <span i18n class="font-medium">{{ menuItem.label }}</span>
   <i class="pi pi-chevron-down ml-auto"></i>
 </a>
 <ul

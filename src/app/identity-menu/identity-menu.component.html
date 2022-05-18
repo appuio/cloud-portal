@@ -1,30 +1,10 @@
-<div class="-mr-5 flex align-items-center flex-column relative z-1 bg-white text-color">
-  <a
-    class="px-3 py-2 flex align-items-center hover:bg-primary cursor-pointer hover:text-blue-50 transition-duration-150 transition-colors"
-    style="height: 60px"
-    enterActiveClass="slidedown"
-    enterClass="hidden"
-    leaveActiveClass="slideup"
-    leaveToClass="hidden"
-    pRipple
-    pStyleClass="#dropdown-container"
-    [hideOnOutsideClick]="true">
-    <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
-    <div class="flex flex-column">
-      <span class="font-medium">{{ name }}</span>
-      <span class="text-xs">{{ username }}</span>
-    </div>
-    <i class="pi pi-chevron-down ml-5"></i>
-  </a>
-  <ul
-    id="dropdown-container"
-    class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500 relative">
-    <li
-      *ngFor="let profileItem of profileItems"
-      leaveToClass="hidden"
-      pStyleClass="#dropdown-container"
-      leaveActiveClass="slideup">
-      <app-navbar-item [menuItem]="profileItem" [light]="false"></app-navbar-item>
-    </li>
-  </ul>
-</div>
+<app-dropdown-menu [items]="profileItems" [headerElement]="menuHeader"></app-dropdown-menu>
+
+<ng-template #menuHeader>
+  <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
+  <div class="flex flex-column">
+    <span class="font-medium">{{ name }}</span>
+    <span class="text-xs">{{ username }}</span>
+  </div>
+  <i class="pi pi-chevron-down ml-5"></i>
+</ng-template>

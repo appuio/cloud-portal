@@ -15,7 +15,7 @@
     [id]="dropdownContainerId"
     class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500 relative">
     <li *ngFor="let item of items" leaveToClass="hidden" pStyleClass="#dropdown-container" leaveActiveClass="slideup">
-      <app-navbar-item [menuItem]="item" [light]="false"></app-navbar-item>
+      <app-navbar-item [menuItem]="item"></app-navbar-item>
     </li>
   </ul>
 </div>

@@ -1,4 +1,4 @@
-<div [class]="light ? 'text-color' : 'text-white'">
+<div class="text-white">
   <ng-container *ngIf="!menuItem.items">
     <a
       (click)="menuItem.command()"
@@ -12,8 +12,7 @@
       *ngIf="menuItem.routerLink"
       [routerLinkActive]="'active'"
       [routerLink]="menuItem.routerLink"
-      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline"
-      [class]="light ? 'text-color' : 'text-white'"
+      class="flex align-items-center cursor-pointer p-3 hover:bg-primary hover:text-blue-50 transition-duration-150 transition-colors no-underline text-white"
       pRipple>
       <fa-icon [icon]="menuItem.icon" class="mr-2 w-2rem text-center"></fa-icon>
       <span i18n class="font-medium">{{ menuItem.label }}</span>

@@ -17,7 +17,11 @@
     id="info-dropdown"
     class="hidden m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out absolute top-100 bg-blue-500">
     <ul class="w-full list-none p-0 m-0 surface-border">
-      <a *ngFor="let reference of references; let even = even" [href]="reference.href" class="no-underline text-white">
+      <a
+        *ngFor="let reference of references; let even = even"
+        [href]="reference.href"
+        target="_blank"
+        class="no-underline text-white">
         <li
           [class.bg-blue-500]="even"
           [class.bg-blue-700]="!even"

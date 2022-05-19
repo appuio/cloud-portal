@@ -1,0 +1,29 @@
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { faClipboard, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-kubeconfig-download',
+  templateUrl: './kubeconfig-download.component.html',
+  styleUrls: ['./kubeconfig-download.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class KubeconfigDownloadComponent implements OnInit {
+  faClipboard = faClipboard;
+  faDownload = faDownload;
+  configYml$!: Observable<string>;
+
+  constructor(private httpClient: HttpClient, private sanitizer: DomSanitizer) {}
+
+  ngOnInit(): void {
+    this.configYml$ = this.httpClient.get('/assets/kubectl-config-integration.yml', { responseType: 'text' });
+  }
+
+  getDataUri(data: string): SafeResourceUrl {
+    const blob = new Blob([data], { type: 'text/x-yaml' });
+    const url = (window.webkitURL || window.URL).createObjectURL(blob);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+}

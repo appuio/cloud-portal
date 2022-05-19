@@ -42,6 +42,11 @@ const routes: Routes = [
     path: 'user',
     loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
   },
+  {
+    path: 'kubeconfig',
+    loadChildren: () =>
+      import('./kubeconfig-download/kubeconfig-download.module').then((m) => m.KubeconfigDownloadModule),
+  },
 ];
 
 @NgModule({

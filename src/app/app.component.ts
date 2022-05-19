@@ -3,7 +3,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
@@ -91,6 +91,11 @@ export class AppComponent implements OnInit {
       label: $localize`Teams`,
       icon: faUserGroup,
       routerLink: ['teams'],
+    });
+    this.menuItems.push({
+      label: $localize`Get Kubeconfig`,
+      icon: faFile,
+      routerLink: ['kubeconfig'],
     });
   }
 }

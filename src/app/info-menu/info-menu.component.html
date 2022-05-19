@@ -22,11 +22,7 @@
         [href]="reference.href"
         target="_blank"
         class="no-underline text-white">
-        <li
-          [class.bg-blue-500]="even"
-          [class.bg-blue-700]="!even"
-          class="flex py-2 px-2 flex-column hover:bg-blue-400"
-          style="overflow-wrap: break-word">
+        <li [class.bg-blue-500]="even" [class.bg-blue-700]="!even" class="flex py-3 px-3 flex-column hover:bg-blue-400">
           <div class="font-medium mb-2 text-primary">{{ reference.label }}</div>
           <div class="">
             {{ reference.href }}

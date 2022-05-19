@@ -1,7 +1,34 @@
-<app-dropdown-menu [items]="items" [headerElement]="menuHeader"></app-dropdown-menu>
-
-<ng-template #menuHeader>
-  <div i18n class="flex flex-column">
-    <fa-icon [icon]="faQuestion" [size]="'lg'" i18-title title="Info"></fa-icon>
+<div class="flex align-items-center flex-column z-1 relative bg-white text-color">
+  <a
+    class="px-3 py-2 flex align-items-center align-self-end hover:bg-primary cursor-pointer hover:text-blue-50 transition-duration-150 transition-colors"
+    style="height: 59px"
+    enterActiveClass="slidedown"
+    enterClass="hidden"
+    leaveActiveClass="slideup"
+    leaveToClass="hidden"
+    pRipple
+    pStyleClass="#info-dropdown"
+    [hideOnOutsideClick]="true">
+    <div i18n class="flex flex-column">
+      <fa-icon [icon]="faQuestion" [size]="'lg'" i18-title title="Info"></fa-icon>
+    </div>
+  </a>
+  <div
+    id="info-dropdown"
+    class="hidden m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out absolute top-100 bg-blue-500">
+    <ul class="w-full list-none p-0 m-0 surface-border">
+      <a *ngFor="let reference of references; let even = even" [href]="reference.href" class="no-underline text-white">
+        <li
+          [class.bg-blue-500]="even"
+          [class.bg-blue-700]="!even"
+          class="flex py-2 px-2 flex-column hover:bg-blue-400"
+          style="overflow-wrap: break-word">
+          <div class="font-medium mb-2 text-primary">{{ reference.label }}</div>
+          <div class="">
+            {{ reference.href }}
+          </div>
+        </li>
+      </a>
+    </ul>
   </div>
-</ng-template>
+</div>

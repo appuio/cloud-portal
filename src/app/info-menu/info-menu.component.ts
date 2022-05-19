@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { faQuestionCircle, faBook } from '@fortawesome/free-solid-svg-icons';
-import { NavMenuItem } from '../app.component';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { Reference, ReferencesService } from '../core/references.service';
 
 @Component({
   selector: 'app-info-menu',
@@ -9,13 +9,11 @@ import { NavMenuItem } from '../app.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoMenuComponent {
-  items: NavMenuItem[] = [
-    {
-      label: $localize`References`,
-      icon: faBook,
-      routerLink: ['references'],
-    },
-  ];
+  references: Reference[];
 
   faQuestion = faQuestionCircle;
+
+  constructor(private refService: ReferencesService) {
+    this.references = refService.getReferences();
+  }
 }

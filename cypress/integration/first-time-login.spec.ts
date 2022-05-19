@@ -71,8 +71,8 @@ describe('Test First Time Login', () => {
     cy.get('label[for=hideFirstTimeLoginDialogCheckbox]').click();
     cy.get('#addOrganizationDialogButton').click();
     cy.get('.text-3xl > .ng-star-inserted').should('contain.text', 'New Organization');
-    cy.visit('/references');
-    cy.get('#references-title').should('contain.text', 'References');
+    cy.visit('/teams');
+    cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get('.p-dialog-header').should('not.exist');
   });
 

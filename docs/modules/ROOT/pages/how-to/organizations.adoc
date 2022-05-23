@@ -41,3 +41,12 @@ Click on the btn:[Save] button when done. After a few minutes, those users will 
 WARNING: At this time it isn't possible to remove organizations. If you would like to remove an organization, please contact VSHN support.
 
 image::how-to/organizations/members.png[]
+
+== Assigning User Roles
+
+Every user in an organization can have any of the following roles:
+
+* The `admin` role allows to edit an organization, and to change user membership (to add, remove, or change roles of users).
+* The `viewer` role only allows a user to see the structure and contents of an organization, but not to change its current state.
+
+The user interface provides a drop-down component allowing to easily select and deselect the roles required for any particular user.

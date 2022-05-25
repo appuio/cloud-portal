@@ -20,6 +20,7 @@ export class KubeconfigDownloadComponent implements OnInit {
     oidcClientId: environment.appConfig?.clientId ?? '',
     server: environment.appConfig?.server ?? '',
   };
+  envName = environment.appConfig?.environment;
 
   constructor(private httpClient: HttpClient, private sanitizer: DomSanitizer) {}
 

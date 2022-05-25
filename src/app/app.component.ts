@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
       routerLink: ['teams'],
     });
     this.menuItems.push({
-      label: $localize`Get Kubeconfig`,
+      label: $localize`APPUiO Control API`,
       icon: faFile,
       routerLink: ['kubeconfig'],
     });

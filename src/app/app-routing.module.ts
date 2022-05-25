@@ -44,8 +44,7 @@ const routes: Routes = [
   },
   {
     path: 'kubeconfig',
-    loadChildren: () =>
-      import('./kubeconfig-download/kubeconfig-download.module').then((m) => m.KubeconfigDownloadModule),
+    loadChildren: () => import('./kubeconfig/kubeconfig.module').then((m) => m.KubeconfigDownloadModule),
   },
 ];
 

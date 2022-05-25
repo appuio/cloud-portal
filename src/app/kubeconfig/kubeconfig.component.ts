@@ -7,8 +7,8 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-kubeconfig-download',
-  templateUrl: './kubeconfig-download.component.html',
-  styleUrls: ['./kubeconfig-download.component.scss'],
+  templateUrl: './kubeconfig.component.html',
+  styleUrls: ['./kubeconfig.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KubeconfigDownloadComponent implements OnInit {

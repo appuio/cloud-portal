@@ -9,6 +9,7 @@ export interface AppConfig {
   issuer: string;
   clientId: string;
   glitchTipDsn: string;
+  server: string;
   zones: { [key: string]: ZoneConfig };
 }
 

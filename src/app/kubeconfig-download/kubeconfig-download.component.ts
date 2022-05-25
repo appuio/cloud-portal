@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { faClipboard, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-kubeconfig-download',
@@ -14,11 +15,16 @@ export class KubeconfigDownloadComponent implements OnInit {
   faClipboard = faClipboard;
   faDownload = faDownload;
   configYml$!: Observable<string>;
+  replacements = {
+    oidcIssuerUrl: environment.appConfig?.issuer ?? '',
+    oidcClientId: environment.appConfig?.clientId ?? '',
+    server: environment.appConfig?.server ?? '',
+  };
 
   constructor(private httpClient: HttpClient, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    this.configYml$ = this.httpClient.get('/assets/kubectl-config-integration.yml', { responseType: 'text' });
+    this.configYml$ = this.httpClient.get('/assets/kubectl-config.template', { responseType: 'text' });
   }
 
   getDataUri(data: string): SafeResourceUrl {

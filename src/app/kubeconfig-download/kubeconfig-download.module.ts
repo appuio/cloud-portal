@@ -4,9 +4,10 @@ import { KubeconfigDownloadComponent } from './kubeconfig-download.component';
 
 import { KubeconfigDownloadRoutingModule } from './kubeconfig-download-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { ReplaceValuesPipe } from './replace-values.pipe';
 
 @NgModule({
-  declarations: [KubeconfigDownloadComponent],
+  declarations: [KubeconfigDownloadComponent, ReplaceValuesPipe],
   imports: [CommonModule, SharedModule, KubeconfigDownloadRoutingModule],
 })
 export class KubeconfigDownloadModule {}

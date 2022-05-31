@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { faClipboard, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { AppConfig, AppConfigService } from '../app-config.service';
 
 @Component({
   selector: 'app-kubeconfig-download',
@@ -16,13 +16,26 @@ export class KubeconfigDownloadComponent implements OnInit {
   faDownload = faDownload;
   configYml$!: Observable<string>;
   replacements = {
-    oidcIssuerUrl: environment.appConfig?.issuer ?? '',
-    oidcClientId: environment.appConfig?.clientId ?? '',
-    server: environment.appConfig?.server ?? '',
+    oidcIssuerUrl: '',
+    oidcClientId: '',
+    server: '',
   };
-  envName = environment.appConfig?.environment;
+  envName = '';
+  appConfig: AppConfig;
 
-  constructor(private httpClient: HttpClient, private sanitizer: DomSanitizer) {}
+  constructor(
+    private httpClient: HttpClient,
+    private sanitizer: DomSanitizer,
+    private appConfigService: AppConfigService
+  ) {
+    this.appConfig = this.appConfigService.getConfiguration();
+    this.replacements = {
+      oidcIssuerUrl: this.appConfig?.issuer ?? '',
+      oidcClientId: this.appConfig?.clientId ?? '',
+      server: this.appConfig?.server ?? '',
+    };
+    this.envName = this.appConfig.environment;
+  }
 
   ngOnInit(): void {
     this.configYml$ = this.httpClient.get('/assets/kubectl-config.template', { responseType: 'text' });

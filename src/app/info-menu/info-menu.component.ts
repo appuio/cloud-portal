@@ -10,6 +10,10 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 export class InfoMenuComponent {
   references: Reference[] = [
     {
+      label: $localize`APPUiO Control API`,
+      routerLink: ['kubeconfig'],
+    },
+    {
       label: $localize`APPUiO Cloud Website`,
       href: 'https://www.appuio.cloud',
     },
@@ -48,5 +52,6 @@ export class InfoMenuComponent {
 
 export interface Reference {
   label: string;
-  href: string;
+  href?: string;
+  routerLink?: string[];
 }

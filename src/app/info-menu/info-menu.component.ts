@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-references',
-  templateUrl: './references.component.html',
-  styleUrls: ['./references.component.scss'],
+  selector: 'app-info-menu',
+  templateUrl: './info-menu.component.html',
+  styleUrls: ['./info-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReferencesComponent {
+export class InfoMenuComponent {
   references: Reference[] = [
     {
       label: $localize`APPUiO Cloud Website`,
@@ -41,6 +42,8 @@ export class ReferencesComponent {
       href: 'https://kb.vshn.ch/appuio-cloud',
     },
   ];
+
+  faQuestion = faQuestionCircle;
 }
 
 export interface Reference {

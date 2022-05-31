@@ -3,7 +3,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faBook, faSignOut, faSitemap, faUser, faUserGear, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
@@ -21,30 +21,6 @@ import { take } from 'rxjs';
 export class AppComponent implements OnInit {
   menuItems: NavMenuItem[] = [];
 
-  profileItems: NavMenuItem[] = [
-    {
-      label: $localize`User Settings`,
-      icon: faUserGear,
-      routerLink: ['user'],
-    },
-    {
-      label: $localize`Edit Account`,
-      command: () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const iss = this.oauthService.getIdentityClaims().iss;
-        const referrer = encodeURI(this.appConfigService.getConfiguration().clientId);
-        const referrerUri = `${encodeURI(window.location.href)}`;
-        window.location.href = `${iss}/account?referrer=${referrer}&referrer_uri=${referrerUri}`;
-      },
-      icon: faUser,
-    },
-    {
-      label: $localize`Sign out`,
-      icon: faSignOut,
-      command: () => this.oauthService.logOut(),
-    },
-  ];
   name = '';
   username = '';
   avatarSrc = '';
@@ -115,12 +91,6 @@ export class AppComponent implements OnInit {
       label: $localize`Teams`,
       icon: faUserGroup,
       routerLink: ['teams'],
-    });
-
-    this.menuItems.push({
-      label: $localize`References`,
-      icon: faBook,
-      routerLink: ['references'],
     });
   }
 }

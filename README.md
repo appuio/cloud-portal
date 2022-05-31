@@ -23,6 +23,9 @@ Run `npm run e2e` to execute the end-to-end tests with cypress.
 
 Use the dev instance from VSHN: https://id.dev.appuio.cloud
 
+To add a new dev realm for yourself, follow the instructions in the [control-api](https://github.com/appuio/control-api) under 'local-env'.
+Note: Once the setup is done, login to keycloak, select the new realm on the top left, and under clients -> 'local-dev' -> Settings add `localhost:4200` (or `*`) to both 'Valid Redirct URIs' and 'Web Origins'.
+
 ## Configuration
 
 The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.

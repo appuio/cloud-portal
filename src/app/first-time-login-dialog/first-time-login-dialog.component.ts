@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { AppConfigService } from '../app-config.service';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
-import { faAdd, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faSitemap, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { OrganizationList } from '../types/organization';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
+import { User } from '../types/user';
+import { selectUser } from '../store/app.selectors';
+import { Entity } from '../types/entity';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -18,30 +19,46 @@ export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
   styleUrls: ['./first-time-login-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FirstTimeLoginDialogComponent implements OnInit {
+export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   showFirstLoginDialog = false;
   faSitemap = faSitemap;
   faAdd = faAdd;
+  faCoq = faCog;
   hideFirstTimeLoginDialogControl = new FormControl(false);
-  nextAction?: 'join' | 'add';
+  nextAction?: 'join' | 'add' | 'setDefault';
+  userHasDefaultOrganization = true;
+  userBelongsToOrganization = true;
+  getOrgSub?: Subscription;
+  selectUserSub?: Subscription;
 
   constructor(
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private kubernetesClientService: KubernetesClientService,
-    private identityService: IdentityService
+    private identityService: IdentityService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.kubernetesClientService
-        .getOrganizationList()
-        .subscribe((organizationList) => this.showFirstLoginDialogIfNecessary(organizationList));
+      this.getOrgSub = this.kubernetesClientService.getOrganizationList().subscribe((organizationList) => {
+        // eslint-disable-next-line ngrx/no-store-subscription
+        this.selectUserSub = this.store.select(selectUser).subscribe((user: Entity<User | null>) => {
+          this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
+          this.showFirstLoginDialogIfNecessary(organizationList);
+        });
+      });
     }
   }
 
+  ngOnDestroy(): void {
+    this.getOrgSub?.unsubscribe();
+    this.selectUserSub?.unsubscribe();
+  }
+
   private showFirstLoginDialogIfNecessary(organizationList: OrganizationList): void {
-    if (organizationList.items.length === 0) {
+    this.userBelongsToOrganization = organizationList.items.length > 0;
+    if (!this.userBelongsToOrganization || !this.userHasDefaultOrganization) {
       this.showFirstLoginDialog = true;
       this.changeDetectorRef.markForCheck();
       return;
@@ -56,10 +73,15 @@ export class FirstTimeLoginDialogComponent implements OnInit {
         .map((organizationMembers) => (organizationMembers.spec.userRefs ?? []).map((userRef) => userRef.name))
         .flatMap((usernames) => usernames);
       if (!usernames.includes(this.identityService.getUsername())) {
+        this.userBelongsToOrganization = false;
         this.showFirstLoginDialog = true;
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  getDefaultOrganization(user: Entity<User | null>): string | null | undefined {
+    return user?.value?.spec.preferences?.defaultOrganizationRef;
   }
 
   addOrganization(): void {
@@ -72,12 +94,19 @@ export class FirstTimeLoginDialogComponent implements OnInit {
     this.nextAction = 'join';
   }
 
+  setDefaultOrganization(): void {
+    this.showFirstLoginDialog = false;
+    this.nextAction = 'setDefault';
+  }
+
   onHide(): void {
     this.firstTimeLoginDialogHide();
     if (this.nextAction === 'add') {
       void this.router.navigate(['organizations/$new']);
     } else if (this.nextAction === 'join') {
       void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
+    } else if (this.nextAction === 'setDefault') {
+      void this.router.navigate(['user']);
     }
   }
 

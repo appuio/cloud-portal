@@ -32,10 +32,6 @@ const routes: Routes = [
     },
   },
   {
-    path: 'references',
-    loadChildren: () => import('./references/references.module').then((m) => m.ReferencesModule),
-  },
-  {
     path: 'teams',
     loadChildren: () => import('./teams/teams.module').then((m) => m.TeamsModule),
     data: {

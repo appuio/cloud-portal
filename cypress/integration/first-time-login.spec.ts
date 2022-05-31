@@ -71,8 +71,8 @@ describe('Test First Time Login', () => {
     cy.get('label[for=hideFirstTimeLoginDialogCheckbox]').click();
     cy.get('#addOrganizationDialogButton').click();
     cy.get('.text-3xl > .ng-star-inserted').should('contain.text', 'New Organization');
-    cy.visit('/references');
-    cy.get('#references-title').should('contain.text', 'References');
+    cy.visit('/teams');
+    cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get('.p-dialog-header').should('not.exist');
   });
 
@@ -97,5 +97,33 @@ describe('Test First Time Login', () => {
     cy.visit('/');
     cy.get('#joinOrganizationDialogButton').should('exist');
     cy.get('#addOrganizationDialogButton').should('exist');
+    cy.get('#setDefaultOrganizationDialogButton').should('not.exist');
+  });
+
+  it('show dialog with button to set default org because user has no default organization yet', () => {
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig' }),
+    }).as('getUser');
+    cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: organizationListNxtVshn,
+    });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
+      body: createOrganizationMembers({
+        namespace: 'nxt',
+        userRefs: [{ name: 'mig' }],
+      }),
+    });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {
+      body: createOrganizationMembers({
+        namespace: 'vshn',
+        userRefs: [{ name: 'tobru' }, { name: 'corvus' }],
+      }),
+    });
+    cy.visit('/');
+    cy.get('#joinOrganizationDialogButton').should('not.exist');
+    cy.get('#addOrganizationDialogButton').should('not.exist');
+    cy.get('#setDefaultOrganizationDialogButton').should('exist');
   });
 });

@@ -13,9 +13,12 @@
       <img alt="Image" class="w-9" src="assets/logo_appuio_cloud_rgb.svg" />
     </div>
     <div class="text-700 line-height-3 pl-4 w-8">
-      <p class="mt-0" i18n>
+      <p class="mt-0" i18n *ngIf="!userBelongsToOrganization">
         Unfortunately, you do not yet belong to an organization. You can either join an existing organization or create
         a new one.
+      </p>
+      <p class="mt-0" i18n *ngIf="userBelongsToOrganization && !userHasDefaultOrganization">
+        You don't yet have a default organization set in your settings. Do you want to do that now?
       </p>
 
       <p i18n>
@@ -34,14 +37,34 @@
   </div>
   <ng-template pTemplate="footer">
     <div class="pt-3">
-      <button (click)="joinOrganization()" id="joinOrganizationDialogButton" pButton pRipple>
+      <button
+        *ngIf="!userBelongsToOrganization"
+        (click)="joinOrganization()"
+        id="joinOrganizationDialogButton"
+        pButton
+        pRipple>
         <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
         <span i18n>Join Organization</span>
       </button>
 
-      <button (click)="addOrganization()" id="addOrganizationDialogButton" pButton pRipple>
+      <button
+        *ngIf="!userBelongsToOrganization"
+        (click)="addOrganization()"
+        id="addOrganizationDialogButton"
+        pButton
+        pRipple>
         <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
         <span i18n>Add new Organization</span>
+      </button>
+
+      <button
+        *ngIf="userBelongsToOrganization && !userHasDefaultOrganization"
+        (click)="setDefaultOrganization()"
+        id="setDefaultOrganizationDialogButton"
+        pButton
+        pRipple>
+        <fa-icon [icon]="faCoq" class="mr-2"></fa-icon>
+        <span i18n>Set Default Organization</span>
       </button>
     </div>
   </ng-template>

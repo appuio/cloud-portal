@@ -8,5 +8,6 @@ portal:
   config:
     issuer: https://id.test.vshn.net/auth/realms/VSHN-main-dev-realm
     clientId: appuio-control-api
+    server: https://api-integration.apps.cloudscale-lpg-2.appuio.cloud/
   env:
     APPUIO_API: https://api-integration.apps.cloudscale-lpg-2.appuio.cloud/

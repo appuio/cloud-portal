@@ -28,6 +28,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
 import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
 import { InfoMenuComponent } from './info-menu/info-menu.component';
+import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { InfoMenuComponent } from './info-menu/info-menu.component';
     OrganizationSelectionComponent,
     IdentityMenuComponent,
     InfoMenuComponent,
+    InfoMenuItemComponent,
   ],
   imports: [
     BrowserModule,

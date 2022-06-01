@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle, faTerminal } from '@fortawesome/free-solid-svg-icons';
+import { Item } from '../info-menu-item/info-menu-item.component';
 
 @Component({
   selector: 'app-info-menu',
@@ -8,7 +9,13 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoMenuComponent {
-  references: Reference[] = [
+  references: Item[] = [
+    {
+      label: $localize`APPUiO Control API`,
+      subTitle: $localize`How to Connect to the APPUiO Control API via kubectl`,
+      routerLink: ['kubeconfig'],
+      icon: faTerminal,
+    },
     {
       label: $localize`APPUiO Cloud Website`,
       href: 'https://www.appuio.cloud',
@@ -44,9 +51,4 @@ export class InfoMenuComponent {
   ];
 
   faQuestion = faQuestionCircle;
-}
-
-export interface Reference {
-  label: string;
-  href: string;
 }

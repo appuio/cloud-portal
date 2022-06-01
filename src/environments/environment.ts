@@ -13,6 +13,7 @@ export const environment: EnvironmentType = {
     environment: 'Development',
     issuer: 'https://id.dev.appuio.cloud/auth/realms/development',
     clientId: 'development',
+    server: '',
     glitchTipDsn: '',
     zones: defaultZonesConfig,
   },

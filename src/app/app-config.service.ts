@@ -9,7 +9,7 @@ export interface AppConfig {
   issuer: string;
   clientId: string;
   glitchTipDsn: string;
-  zones: { [key: string]: ZoneConfig };
+  zones: { zoneFeatures: { [key: string]: ZoneConfig }; zoneURLLabels: { [key: string]: string } };
 }
 
 export interface ZoneConfig {

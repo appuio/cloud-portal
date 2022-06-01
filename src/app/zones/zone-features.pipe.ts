@@ -13,7 +13,7 @@ export class ZoneFeaturesPipe implements PipeTransform {
 
   transform(value: { [key: string]: string }): ZoneFeature[] {
     return Object.entries(value).map(([key, value]) => {
-      const config = this.appConfig.zones[key];
+      const config = this.appConfig.zones.zoneFeatures[key];
       return {
         label: `${config?.label ?? key}: ${value}`,
         backgroundColor: config?.backgroundColor ?? '#0b3046',

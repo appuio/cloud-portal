@@ -6,24 +6,30 @@ export interface EnvironmentType {
 }
 
 export const defaultZonesConfig = {
-  kubernetesVersion: {
-    textColor: 'white',
-    backgroundColor: '#3371e3',
-    label: 'Kubernetes',
+  zoneFeatures: {
+    kubernetesVersion: {
+      textColor: 'white',
+      backgroundColor: '#3371e3',
+      label: 'Kubernetes',
+    },
+    openshiftVersion: {
+      textColor: 'white',
+      backgroundColor: '#EE0000',
+      label: 'OpenShift',
+    },
+    sdnPlugin: {
+      textColor: '#0b3046',
+      backgroundColor: '#ffd902',
+      label: 'SDN Plugin',
+    },
+    memoryCPUratio: {
+      label: 'Memory CPU Ratio',
+      textColor: 'white',
+      backgroundColor: '#0b3046',
+    },
   },
-  openshiftVersion: {
-    textColor: 'white',
-    backgroundColor: '#EE0000',
-    label: 'OpenShift',
-  },
-  sdnPlugin: {
-    textColor: '#0b3046',
-    backgroundColor: '#ffd902',
-    label: 'SDN Plugin',
-  },
-  memoryCPUratio: {
-    label: 'Memory CPU Ratio',
-    textColor: 'white',
-    backgroundColor: '#0b3046',
+  zoneURLLabels: {
+    kubernetesAPI: 'Kubernetes API',
+    oauth: 'API Token',
   },
 };

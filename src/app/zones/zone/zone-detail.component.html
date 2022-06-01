@@ -92,53 +92,14 @@
         </div>
       </li>
 
-      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
-        <div class="text-500 w-full md:w-3 font-medium" i18n>Console</div>
+      <li *ngFor="let url of zone.data.urls | keyvalue" class="flex align-items-center py-2 px-2 flex-wrap zone-row">
+        <div class="text-500 w-full md:w-3 font-medium" i18n>{{ url.key | titlecase }}</div>
         <div class="text-900 w-full md:w-9 relative">
-          <a [href]="zone.data.urls.console" class="text-blue-500 no-underline">
-            {{ zone.data.urls.console }}
+          <a [href]="url.value" class="text-blue-500 no-underline">
+            {{ url.value }}
           </a>
           <fa-icon
-            [cdkCopyToClipboard]="zone.data.urls.console"
-            [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
-        </div>
-      </li>
-
-      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
-        <div class="text-500 w-full md:w-3 font-medium" i18n>Kubernetes API</div>
-        <div class="text-900 w-full md:w-9 relative">
-          <a [href]="zone.data.urls.kubernetesAPI" class="text-blue-500 no-underline">
-            {{ zone.data.urls.kubernetesAPI }}
-          </a>
-          <fa-icon
-            [cdkCopyToClipboard]="zone.data.urls.kubernetesAPI"
-            [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
-        </div>
-      </li>
-
-      <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
-        <div class="text-500 w-full md:w-3 font-medium" i18n>Logging</div>
-        <div class="text-900 w-full md:w-9 relative">
-          <a [href]="zone.data.urls.logging" class="text-blue-500 no-underline">
-            {{ zone.data.urls.logging }}
-          </a>
-          <fa-icon
-            [cdkCopyToClipboard]="zone.data.urls.logging"
-            [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
-        </div>
-      </li>
-
-      <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
-        <div class="text-500 w-full md:w-3 font-medium" i18n>Registry</div>
-        <div class="text-900 w-full md:w-9 relative">
-          <a [href]="zone.data.urls.registry" class="text-blue-500 no-underline">
-            {{ zone.data.urls.registry }}
-          </a>
-          <fa-icon
-            [cdkCopyToClipboard]="zone.data.urls.registry"
+            [cdkCopyToClipboard]="url.value"
             [icon]="faClipboard"
             class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
         </div>

@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
-import { Reference } from '../info-menu/info-menu.component';
+import { faArrowUpRightFromSquare, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-info-menu-item',
@@ -10,10 +9,17 @@ import { Reference } from '../info-menu/info-menu.component';
 })
 export class InfoMenuItemComponent {
   @Input()
-  item!: Reference;
+  item!: Item;
 
   @Input()
   even = false;
 
   faExternal = faArrowUpRightFromSquare;
+}
+export interface Item {
+  label: string;
+  subTitle?: string;
+  href?: string;
+  routerLink?: string[];
+  icon?: IconDefinition;
 }

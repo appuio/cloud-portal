@@ -93,7 +93,7 @@
       </li>
 
       <li *ngFor="let url of zone.data.urls | keyvalue" class="flex align-items-center py-2 px-2 flex-wrap zone-row">
-        <div class="text-500 w-full md:w-3 font-medium" i18n>{{ url.key | titlecase }}</div>
+        <div class="text-500 w-full md:w-3 font-medium" i18n>{{ url.key | zoneUrlLabel }}</div>
         <div class="text-900 w-full md:w-9 relative">
           <a [href]="url.value" class="text-blue-500 no-underline">
             {{ url.value }}

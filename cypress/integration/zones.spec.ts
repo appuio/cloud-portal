@@ -72,6 +72,8 @@ describe('Test single zone', () => {
     });
     cy.get('#zone-details-title').should('contain.text', 'Zone Details');
     cy.get('[data-cy=zone-name]').eq(0).should('contain.text', 'cloudscale.ch LPG 2');
+    cy.contains('API Token').should('exist');
+    cy.contains('Logging').should('exist');
   });
 
   it('displays zone details of zone with non-url conform name', () => {

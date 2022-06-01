@@ -1,4 +1,4 @@
-import { Zone, ZoneCloudProvider, ZoneFeatures, ZoneList, ZoneUrls } from '../../src/app/types/zone';
+import { Zone, ZoneCloudProvider, ZoneList } from '../../src/app/types/zone';
 
 export interface ZoneListConfig {
   items: Zone[];
@@ -7,8 +7,8 @@ export interface ZoneListConfig {
 export interface ZoneConfig {
   name: string;
   displayName: string;
-  features: ZoneFeatures;
-  urls: ZoneUrls;
+  features: { [key: string]: string };
+  urls: { [key: string]: string };
   cname: string;
   defaultAppDomain: string;
   gatewayIPs: string[];
@@ -32,6 +32,7 @@ export const zoneCloudscale1 = createZone({
     kubernetesAPI: 'https://api.cloudscale-lpg-0.appuio.cloud:6443/',
     logging: 'https://logging.cloudscale-lpg-0.appuio.cloud/',
     registry: 'https://registry.cloudscale-lpg-0.appuio.cloud',
+    oauth: 'https://oauth-openshift.cloudscale-lpg-0.appuio.cloud/oauth/token/display',
   },
 });
 
@@ -52,6 +53,7 @@ export const zoneCloudscale2 = createZone({
     kubernetesAPI: 'https://api.cloudscale-lpg-2.appuio.cloud:6443/',
     logging: 'https://logging.cloudscale-lpg-2.appuio.cloud/',
     registry: 'https://registry.cloudscale-lpg-2.appuio.cloud',
+    oauth: 'https://oauth-openshift.cloudscale-lpg-2.appuio.cloud/oauth/token/display',
   },
 });
 

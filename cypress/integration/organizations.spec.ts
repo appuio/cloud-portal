@@ -48,6 +48,24 @@ describe('Test organization list', () => {
     cy.get('#organization-failure-message').should('contain.text', 'Organizations could not be loaded.');
   });
 
+  it('failed requests are retried', () => {
+    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
+    cy.visit('/organizations');
+
+    let interceptCount = 0;
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', (req) => {
+      if (interceptCount === 0) {
+        interceptCount++;
+        req.reply({ statusCode: 503 });
+      } else {
+        req.reply(organizationListNxtVshn);
+      }
+    });
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+  });
+
   it('no permission', () => {
     cy.visit('/organizations');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');

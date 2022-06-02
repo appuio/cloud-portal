@@ -1,6 +1,6 @@
 <div class="min-h-screen flex surface-ground">
   <div
-    class="bg-blue-500 h-screen hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 select-none"
+    class="bg-blue-500 h-screen hidden-on-mobile flex-shrink-0 absolute lg:sticky left-0 top-0 z-1 select-none"
     id="app-sidebar"
     style="width: 280px">
     <div class="flex flex-column h-full">
@@ -9,7 +9,11 @@
       </div>
       <div class="overflow-y-auto mt-3">
         <ul class="list-none p-3 m-0">
-          <li *ngFor="let menuItem of menuItems">
+          <li
+            *ngFor="let menuItem of menuItems"
+            leaveToClass="hidden-on-mobile"
+            leaveActiveClass="fadeoutleft-mobile-only"
+            pStyleClass="#app-sidebar">
             <app-navbar-item [menuItem]="menuItem"></app-navbar-item>
           </li>
         </ul>
@@ -28,9 +32,9 @@
           [hideOnOutsideClick]="true"
           class="cursor-pointer block lg:hidden text-700 mr-3"
           enterActiveClass="fadeinleft"
-          enterClass="hidden"
-          leaveActiveClass="fadeoutleft"
-          leaveToClass="hidden"
+          enterClass="hidden-on-mobile"
+          leaveActiveClass="fadeoutleft-mobile-only"
+          leaveToClass="hidden-on-mobile"
           pRipple
           pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>

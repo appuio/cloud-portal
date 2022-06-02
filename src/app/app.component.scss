@@ -1,0 +1,28 @@
+/** 
+CSS classes so the animation to hide/show the menu drawer looks good on both small and larger screens. 
+Using e.g. hidden & lg:block classes - like we usually do - leads to ugly flickering 
+*/
+.hidden-on-mobile {
+  display: none;
+  @media screen and (min-width: 992px) {
+    display: block;
+  }
+}
+
+.fadeoutleft-mobile-only {
+  @media screen and (max-width: 991px) {
+    animation: fadeoutleft 0.15s linear;
+
+    @keyframes fadeoutleft {
+      0% {
+        opacity: 1;
+        transform: translateX(0%);
+        transition: transform 0.12s cubic-bezier(0, 0, 0.2, 1), opacity 0.12s cubic-bezier(0, 0, 0.2, 1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-100%);
+      }
+    }
+  }
+}

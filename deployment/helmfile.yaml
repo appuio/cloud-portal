@@ -49,5 +49,5 @@ releases:
                   textColor: 'white'
                   backgroundColor: '#0b3046'
               zoneURLLabels:
-                kubernetes: Kubernetes API
+                kubernetesAPI: Kubernetes API
                 oauth: API Token

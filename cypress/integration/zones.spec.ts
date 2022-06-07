@@ -45,6 +45,24 @@ describe('Test zones', () => {
     cy.get('#zone-failure-message').should('contain.text', 'Zones could not be loaded.');
   });
 
+  it('failed requests are retried', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.visit('/zones');
+
+    let interceptCount = 0;
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', (req) => {
+      if (interceptCount === 0) {
+        interceptCount++;
+        req.reply({ statusCode: 504 });
+      } else {
+        req.reply(createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }));
+      }
+    }).as('getZones');
+
+    cy.get('#zones-title').should('contain.text', 'Zones');
+    cy.get('[data-cy=zone-name]').eq(0).should('contain.text', 'cloudscale.ch LPG 0');
+  });
+
   it('no permission', () => {
     cy.visit('/zones');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');

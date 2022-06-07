@@ -28,6 +28,32 @@ describe('Test teams list', () => {
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
   });
 
+  it('failed requests are retried', () => {
+    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: userMigWithoutPreferences,
+    });
+
+    cy.visit('/teams');
+
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: organizationListNxtVshn,
+    });
+    let interceptCount = 0;
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', (req) => {
+      if (interceptCount === 0) {
+        interceptCount++;
+        req.reply({ statusCode: 501 });
+      } else {
+        req.reply(teamListNxt);
+      }
+    });
+
+    cy.get('#teams-title').should('contain.text', 'Teams');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
+  });
+
   it('list with one team and user with default organization', () => {
     // needed for initial getUser request
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });

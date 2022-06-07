@@ -29,6 +29,7 @@ import { OrganizationSelectionComponent } from './organization-selection/organiz
 import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
 import { InfoMenuComponent } from './info-menu/info-menu.component';
 import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component';
+import { RetryInterceptor } from './core/retry.interceptor';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component
       multi: true,
     },
     { provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: RetryInterceptor, multi: true },
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({

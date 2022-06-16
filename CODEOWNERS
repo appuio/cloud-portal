@@ -1,12 +1,12 @@
 * @appuio/tarazed
 
-*.json @gerbermichi @mircowidmer
-*.ts @gerbermichi @mircowidmer
-.browserslistrc @gerbermichi @mircowidmer
-.editorconfig @gerbermichi @mircowidmer
-.eslintrc.json @gerbermichi @mircowidmer
-.prettierignore @gerbermichi @mircowidmer
-cypress/ @gerbermichi @mircowidmer
-src/ @gerbermichi @mircowidmer
+*.json @appuio/nxt-engineering
+*.ts @appuio/nxt-engineering
+.browserslistrc @appuio/nxt-engineering
+.editorconfig @appuio/nxt-engineering
+.eslintrc.json @appuio/nxt-engineering
+.prettierignore @appuio/nxt-engineering
+cypress/ @appuio/nxt-engineering
+src/ @appuio/nxt-engineering
 
 docs/ @akosma

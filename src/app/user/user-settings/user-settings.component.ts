@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { selectUser } from '../../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { EntityState } from '../../types/entity';
+import { faWarning } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-user-settings',
@@ -15,4 +16,6 @@ export class UserSettingsComponent {
   constructor(private store: Store) {}
 
   user$ = this.store.select(selectUser);
+
+  faWarning = faWarning;
 }

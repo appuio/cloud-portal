@@ -43,7 +43,7 @@
     "rxjs": "7.5.5",
     "ts-md5": "1.2.11",
     "tslib": "2.4.0",
-    "zone.js": "0.11.5"
+    "zone.js": "0.11.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "13.3.8",

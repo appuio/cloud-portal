@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Organization } from '../../types/organization';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { saveOrganization, saveOrganizationFailure, saveOrganizationSuccess } from '../store/organization.actions';
@@ -21,13 +21,13 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   @Input()
   new = true;
 
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   faSave = faSave;
   saving = false;
   private handleActionsSubscription?: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private actions: Actions,
     private router: Router,

@@ -4,7 +4,7 @@ import { SelectItem } from 'primeng/api';
 import { selectFocusOrganizationName, selectOrganizationSelectItems } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { setFocusOrganization } from '../store/app.actions';
 
 @Component({
@@ -16,7 +16,7 @@ import { setFocusOrganization } from '../store/app.actions';
 export class OrganizationSelectionComponent implements OnInit, OnDestroy {
   organizations$: Observable<SelectItem[]> = this.store.select(selectOrganizationSelectItems);
   faSitemap = faSitemap;
-  organizationControl = new FormControl();
+  organizationControl = new UntypedFormControl();
 
   private subscriptions: Subscription[] = [];
 

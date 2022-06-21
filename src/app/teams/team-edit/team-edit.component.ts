@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { faClose, faSave } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Actions } from '@ngrx/effects';
 import { MessageService } from 'primeng/api';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
@@ -18,13 +18,13 @@ import { take } from 'rxjs';
 export class TeamEditComponent implements OnInit {
   team!: Team;
   new = true;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   faSave = faSave;
   saving = false;
   faClose = faClose;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private action: Actions,
     private router: Router,
@@ -34,8 +34,8 @@ export class TeamEditComponent implements OnInit {
     private kubernetesClientService: KubernetesClientService
   ) {}
 
-  get userRefs(): FormArray {
-    return this.form.get('userRefs') as FormArray;
+  get userRefs(): UntypedFormArray {
+    return this.form.get('userRefs') as UntypedFormArray;
   }
 
   ngOnInit(): void {
@@ -49,7 +49,7 @@ export class TeamEditComponent implements OnInit {
         this.team.metadata.name,
         [Validators.required, Validators.pattern('[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')],
       ],
-      userRefs: new FormArray(this.team.spec.userRefs.map((u) => new FormControl(u.name))),
+      userRefs: new UntypedFormArray(this.team.spec.userRefs.map((u) => new UntypedFormControl(u.name))),
     });
     this.addEmptyFormControl();
   }
@@ -106,7 +106,7 @@ export class TeamEditComponent implements OnInit {
   }
 
   addEmptyFormControl(): void {
-    const emptyFormControl = new FormControl();
+    const emptyFormControl = new UntypedFormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
       emptyFormControl.addValidators(Validators.required);
       this.addEmptyFormControl();

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { forkJoin, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -21,11 +21,11 @@ import { Entity } from '../../types/entity';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   faSave = faSave;
   saving = false;
   organizationSelectItems: SelectItem[] = [];
-  defaultOrganizationRefControl = new FormControl();
+  defaultOrganizationRefControl = new UntypedFormControl();
   faSitemap = faSitemap;
 
   private subscriptions: Subscription[] = [];
@@ -33,7 +33,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   constructor(
     private identityService: IdentityService,
     private kubernetesClientService: KubernetesClientService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private actions: Actions,
     private router: Router,
@@ -43,7 +43,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({
+    this.form = new UntypedFormGroup({
       defaultOrganizationRef: this.defaultOrganizationRefControl,
     });
     this.subscribeToUser();

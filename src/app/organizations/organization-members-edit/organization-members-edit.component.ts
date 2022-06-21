@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faClose, faSave } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { forkJoin, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
@@ -20,8 +20,8 @@ export class OrganizationMembersEditComponent implements OnInit {
   faClose = faClose;
   faSave = faSave;
   saving = false;
-  form = new FormGroup({
-    userRefs: new FormArray([]),
+  form = new UntypedFormGroup({
+    userRefs: new UntypedFormArray([]),
   });
   editPermission = false;
 
@@ -38,8 +38,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     private router: Router
   ) {}
 
-  get userRefs(): FormArray {
-    return this.form.get('userRefs') as FormArray;
+  get userRefs(): UntypedFormArray {
+    return this.form.get('userRefs') as UntypedFormArray;
   }
 
   ngOnInit(): void {
@@ -52,9 +52,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     const members = this.userRefs;
     this.organizationMembers.spec.userRefs?.forEach((userRef) => {
       members.push(
-        new FormGroup({
-          userName: new FormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
-          selectedRoles: new FormControl({
+        new UntypedFormGroup({
+          userName: new UntypedFormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
+          selectedRoles: new UntypedFormControl({
             value: userRoles[`${this.userNamePrefix}${userRef.name}`],
             disabled: !this.editPermission,
           }),
@@ -67,14 +67,14 @@ export class OrganizationMembersEditComponent implements OnInit {
   }
 
   addEmptyFormControl(): void {
-    const emptyFormControl = new FormControl();
+    const emptyFormControl = new UntypedFormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
       emptyFormControl.addValidators(Validators.required);
       emptyRoleDropdown.setValue(this.newUserDefaultRoles);
       this.addEmptyFormControl();
     });
-    const emptyRoleDropdown = new FormControl([]);
-    const emptyFormGroup = new FormGroup({
+    const emptyRoleDropdown = new UntypedFormControl([]);
+    const emptyFormGroup = new UntypedFormGroup({
       userName: emptyFormControl,
       selectedRoles: emptyRoleDropdown,
     });

@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { faAdd, faSitemap, faCog } from '@fortawesome/free-solid-svg-icons';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { OrganizationList } from '../types/organization';
 import { forkJoin, Subscription } from 'rxjs';
@@ -24,7 +24,7 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   faSitemap = faSitemap;
   faAdd = faAdd;
   faCoq = faCog;
-  hideFirstTimeLoginDialogControl = new FormControl(false);
+  hideFirstTimeLoginDialogControl = new UntypedFormControl(false);
   nextAction?: 'join' | 'add' | 'setDefault';
   userHasDefaultOrganization = true;
   userBelongsToOrganization = true;

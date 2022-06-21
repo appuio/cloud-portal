@@ -29,7 +29,7 @@ on:
         required: true
 
 env:
-  OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
+  OPENSHIFT_API: https://api.cloudscale-lpg-2.appuio.cloud:6443
 
 jobs:
   install:

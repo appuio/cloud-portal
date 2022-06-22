@@ -41,7 +41,6 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('hello');
     this.subscribeToUser();
     this.handleActions();
   }

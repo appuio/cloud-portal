@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { forkJoin, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService, SelectItem } from 'primeng/api';
 import { faSave, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { saveUserPreferences, saveUserPreferencesFailure, saveUserPreferencesSuccess } from '../../store/app.actions';
@@ -21,11 +20,13 @@ import { Entity } from '../../types/entity';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
-  form!: UntypedFormGroup;
   faSave = faSave;
   saving = false;
-  organizationSelectItems: SelectItem[] = [];
-  defaultOrganizationRefControl = new UntypedFormControl();
+  organizationSelectItems: SelectItem<string>[] = [];
+  defaultOrganizationRefControl = new FormControl<SelectItem<string> | null>(null);
+  form = new FormGroup({
+    defaultOrganizationRef: this.defaultOrganizationRefControl,
+  });
   faSitemap = faSitemap;
 
   private subscriptions: Subscription[] = [];
@@ -33,19 +34,14 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   constructor(
     private identityService: IdentityService,
     private kubernetesClientService: KubernetesClientService,
-    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private actions: Actions,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    this.form = new UntypedFormGroup({
-      defaultOrganizationRef: this.defaultOrganizationRefControl,
-    });
+    console.log('hello');
     this.subscribeToUser();
     this.handleActions();
   }
@@ -59,13 +55,10 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
       const username = this.identityService.getUsername();
       this.organizationSelectItems = organizationList.items
         .filter((o, index) => (members[index].spec.userRefs ?? []).map((userRef) => userRef.name).includes(username))
-        .map(
-          (o) =>
-            ({
-              value: o.metadata.name,
-              label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
-            } as SelectItem)
-        );
+        .map((o) => ({
+          value: o.metadata.name,
+          label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
+        }));
 
       const organization = this.organizationSelectItems.find(
         (organization) => organization.value === user.value?.spec.preferences?.defaultOrganizationRef

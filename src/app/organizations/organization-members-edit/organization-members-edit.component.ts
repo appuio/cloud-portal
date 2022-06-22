@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faClose, faSave } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
@@ -20,9 +20,14 @@ export class OrganizationMembersEditComponent implements OnInit {
   faClose = faClose;
   faSave = faSave;
   saving = false;
-  form = new UntypedFormGroup({
-    userRefs: new UntypedFormArray([]),
-  });
+  form?: FormGroup<{
+    userRefs: FormArray<
+      FormGroup<{
+        userName: FormControl<string>;
+        selectedRoles: FormControl<string[]>;
+      }>
+    >;
+  }>;
   editPermission = false;
 
   // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
@@ -38,8 +43,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     private router: Router
   ) {}
 
-  get userRefs(): UntypedFormArray {
-    return this.form.get('userRefs') as UntypedFormArray;
+  get userRefs(): FormArray | undefined {
+    return this.form?.get('userRefs') as FormArray;
   }
 
   ngOnInit(): void {
@@ -49,36 +54,46 @@ export class OrganizationMembersEditComponent implements OnInit {
     });
     const userRoles = this.mapRolesToUsers();
     this.editPermission = this.organizationMembers.editMembers ?? false;
-    const members = this.userRefs;
-    this.organizationMembers.spec.userRefs?.forEach((userRef) => {
-      members.push(
-        new UntypedFormGroup({
-          userName: new UntypedFormControl({ value: userRef.name, disabled: !this.editPermission }, Validators.required),
-          selectedRoles: new UntypedFormControl({
-            value: userRoles[`${this.userNamePrefix}${userRef.name}`],
-            disabled: !this.editPermission,
-          }),
-        })
-      );
+    const members =
+      this.organizationMembers.spec.userRefs?.map(
+        (userRef) =>
+          new FormGroup({
+            userName: new FormControl(
+              { value: userRef.name, disabled: !this.editPermission },
+              { validators: Validators.required, nonNullable: true }
+            ),
+            selectedRoles: new FormControl(
+              {
+                value: userRoles[`${this.userNamePrefix}${userRef.name}`],
+                disabled: !this.editPermission,
+              },
+              { nonNullable: true }
+            ),
+          })
+      ) ?? [];
+
+    this.form = new FormGroup({
+      userRefs: new FormArray(members),
     });
+
     if (this.editPermission) {
       this.addEmptyFormControl();
     }
   }
 
   addEmptyFormControl(): void {
-    const emptyFormControl = new UntypedFormControl();
+    const emptyFormControl = new FormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
       emptyFormControl.addValidators(Validators.required);
       emptyRoleDropdown.setValue(this.newUserDefaultRoles);
       this.addEmptyFormControl();
     });
-    const emptyRoleDropdown = new UntypedFormControl([]);
-    const emptyFormGroup = new UntypedFormGroup({
+    const emptyRoleDropdown = new FormControl<string[]>([]);
+    const emptyFormGroup = new FormGroup({
       userName: emptyFormControl,
       selectedRoles: emptyRoleDropdown,
     });
-    this.userRefs.push(emptyFormGroup);
+    this.userRefs?.push(emptyFormGroup);
   }
 
   mapRolesToUsers(): Record<string, string[]> {
@@ -95,12 +110,16 @@ export class OrganizationMembersEditComponent implements OnInit {
   }
 
   save(): void {
-    const userNames: string[] = this.form.value.userRefs
-      .map((userDetails: { userName: string; selectedRoles: string[] }) => userDetails.userName)
+    if (!this.form) {
+      return;
+    }
+    const userNames: string[] = this.form
+      .getRawValue()
+      .userRefs?.map((userDetails: { userName: string; selectedRoles: string[] }) => userDetails.userName)
       .filter((val: string) => val);
 
     const rolesToSubjects: Record<string, string[]> = {};
-    this.form.value.userRefs.forEach((userDetails: { userName: string; selectedRoles: string[] }) => {
+    this.form.getRawValue().userRefs?.forEach((userDetails: { userName: string; selectedRoles: string[] }) => {
       userDetails.selectedRoles?.forEach((role) => {
         if (!rolesToSubjects[role]) {
           rolesToSubjects[role] = [];
@@ -148,6 +167,6 @@ export class OrganizationMembersEditComponent implements OnInit {
   }
 
   removeFormControl(index: number): void {
-    this.userRefs.removeAt(index);
+    this.userRefs?.removeAt(index);
   }
 }

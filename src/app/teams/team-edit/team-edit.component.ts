@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { faClose, faSave } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { Actions } from '@ngrx/effects';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { take } from 'rxjs';
@@ -18,15 +16,13 @@ import { take } from 'rxjs';
 export class TeamEditComponent implements OnInit {
   team!: Team;
   new = true;
-  form!: UntypedFormGroup;
+  form!: FormGroup<{ displayName: FormControl<string>; name: FormControl<string>; userRefs: FormArray }>;
   faSave = faSave;
   saving = false;
   faClose = faClose;
 
   constructor(
-    private formBuilder: UntypedFormBuilder,
-    private store: Store,
-    private action: Actions,
+    private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
@@ -34,8 +30,8 @@ export class TeamEditComponent implements OnInit {
     private kubernetesClientService: KubernetesClientService
   ) {}
 
-  get userRefs(): UntypedFormArray {
-    return this.form.get('userRefs') as UntypedFormArray;
+  get userRefs(): FormArray {
+    return this.form.get('userRefs') as FormArray;
   }
 
   ngOnInit(): void {
@@ -43,13 +39,13 @@ export class TeamEditComponent implements OnInit {
       this.team = data['team'];
       this.new = this.team.metadata.name === '';
     });
-    this.form = this.formBuilder.group({
+    this.form = this.formBuilder.nonNullable.group({
       displayName: [this.team.spec.displayName],
       name: [
         this.team.metadata.name,
         [Validators.required, Validators.pattern('[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')],
       ],
-      userRefs: new UntypedFormArray(this.team.spec.userRefs.map((u) => new UntypedFormControl(u.name))),
+      userRefs: new FormArray(this.team.spec.userRefs.map((u) => new FormControl(u.name))),
     });
     this.addEmptyFormControl();
   }
@@ -95,18 +91,21 @@ export class TeamEditComponent implements OnInit {
       ...this.team,
       metadata: {
         ...this.team.metadata,
-        name: this.form.value.name,
+        name: this.form.getRawValue().name,
       },
       spec: {
         ...this.team.spec,
-        displayName: this.form.value.displayName,
-        userRefs: this.form.value.userRefs.filter((name?: string) => !!name).map((name: string) => ({ name })),
+        displayName: this.form.getRawValue().displayName,
+        userRefs: this.form
+          .getRawValue()
+          .userRefs.filter((name?: string) => !!name)
+          .map((name: string) => ({ name })),
       },
     };
   }
 
   addEmptyFormControl(): void {
-    const emptyFormControl = new UntypedFormControl();
+    const emptyFormControl = new FormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
       emptyFormControl.addValidators(Validators.required);
       this.addEmptyFormControl();

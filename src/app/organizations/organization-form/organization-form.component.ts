@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Organization } from '../../types/organization';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { saveOrganization, saveOrganizationFailure, saveOrganizationSuccess } from '../store/organization.actions';
@@ -21,13 +21,13 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   @Input()
   new = true;
 
-  form!: UntypedFormGroup;
+  form!: FormGroup<{ displayName: FormControl<string | undefined>; name: FormControl<string> }>;
   faSave = faSave;
   saving = false;
   private handleActionsSubscription?: Subscription;
 
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private store: Store,
     private actions: Actions,
     private router: Router,
@@ -37,12 +37,12 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      displayName: [this.organization.spec.displayName],
-      name: [
-        this.organization.metadata.name,
-        [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9]*)?[a-z0-9])?')],
-      ],
+    this.form = this.formBuilder.nonNullable.group({
+      displayName: this.organization.spec.displayName,
+      name: new FormControl(this.organization.metadata.name, {
+        validators: [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9]*)?[a-z0-9])?')],
+        nonNullable: true,
+      }),
     });
     this.handleActions();
   }
@@ -57,10 +57,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
             kind: 'Organization',
             apiVersion: 'organization.appuio.io/v1',
             metadata: {
-              name: this.form.value.name,
+              name: this.form.getRawValue().name,
             },
             spec: {
-              displayName: this.form.value.displayName,
+              displayName: this.form.getRawValue().displayName,
             },
           },
         })

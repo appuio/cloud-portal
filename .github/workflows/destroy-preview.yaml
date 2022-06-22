@@ -7,7 +7,7 @@ on:
 
 env:
   ENVIRONMENT: preview
-  OPENSHIFT_API: https://api.c-appuio-cloudscale-lpg-2.appuio.cloud:6443
+  OPENSHIFT_API: https://api.cloudscale-lpg-2.appuio.cloud:6443
   HELM_RELEASE_NAME: portal-pr-${{ github.event.number }}
   IMG_TAG: pr-${{ github.event.number }}
   NAMESPACE: appuio-control-api-preview

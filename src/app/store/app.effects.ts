@@ -26,6 +26,7 @@ import { routerNavigatedAction } from '@ngrx/router-store';
 import { selectUser } from './app.selectors';
 import { EntityState } from '../types/entity';
 import { User } from '../types/user';
+import { loadTeamsFailure } from '../teams/store/team.actions';
 
 @Injectable()
 export class AppEffects {
@@ -44,7 +45,7 @@ export class AppEffects {
   loadZonesFailure$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(loadZonesFailure),
+        ofType(loadZonesFailure, loadOrganizationsFailure, loadUserFailure, loadTeamsFailure),
         tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',

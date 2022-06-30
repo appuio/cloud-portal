@@ -2,6 +2,7 @@ import { Team } from '../../src/app/types/team';
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
 import { createTeamList, team1, teamListNxt, teamListVshn } from '../fixtures/team';
 import { organizationListNxtVshn } from '../fixtures/organization';
+import * as exp from 'constants';
 
 describe('Test teams list', () => {
   beforeEach(() => {
@@ -183,6 +184,7 @@ describe('Test team edit', () => {
     cy.get(':nth-child(3) > :nth-child(3) > .p-ripple').click();
     cy.get(':nth-child(3) > .p-inputtext').type('cma');
     cy.get('button[type=submit]').click();
+    cy.wait('@update');
     cy.get('@update')
       .its('request.body')
       .then((body) => {
@@ -264,6 +266,7 @@ describe('Test teams add', () => {
 
     cy.get('.flex > .p-inputtext').type('test');
     cy.get('button[type=submit]').click();
+    cy.wait('@create');
     cy.get('@create')
       .its('request.body')
       .then((body) => {

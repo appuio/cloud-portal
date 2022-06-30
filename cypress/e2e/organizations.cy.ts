@@ -110,6 +110,7 @@ describe('Test organization edit', () => {
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('button[type=submit]').click();
+    cy.wait('@update');
     cy.get('@update')
       .its('request.body')
       .then((body) => {
@@ -169,6 +170,7 @@ describe('Test organization add', () => {
     cy.get('#name').type('vshn');
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('button[type=submit]').click();
+    cy.wait('@add');
     cy.get('@add')
       .its('request.body')
       .then((body) => {

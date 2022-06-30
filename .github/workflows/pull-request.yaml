@@ -11,7 +11,7 @@ env:
 jobs:
 
   build:
-    uses: appuio/cloud-portal/.github/workflows/template-build.yaml@master
+    uses: ./.github/workflows/template-build.yaml
 
   docker:
     runs-on: ubuntu-latest

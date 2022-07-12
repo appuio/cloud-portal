@@ -8,7 +8,7 @@
       <fa-icon [icon]="faClose"></fa-icon>
     </a>
   </div>
-  <div class="border-top-1 surface-border">
+  <div class="border-top-1 surface-border" *ngIf="form">
     <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
       <div class="mt-2">
         <p-message
@@ -22,7 +22,7 @@
           <label class="col-7" i18n>Roles</label>
         </div>
         <div
-          *ngFor="let control of this.userRefs.controls; let i = index; let last = last"
+          *ngFor="let control of this.userRefs?.controls; let i = index; let last = last"
           class="grid formgrid mb-3"
           [formGroup]="$any(control)">
           <input formControlName="userName" class="field col-3 ml-2" pInputText tabindex="0" type="text" />

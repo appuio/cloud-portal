@@ -21,6 +21,7 @@ const routes: Routes = [
       permission: 'zones',
       verb: 'list',
     },
+    title: $localize`Zones`,
   },
   {
     path: 'organizations',
@@ -30,6 +31,7 @@ const routes: Routes = [
       permission: 'organizations',
       verb: 'list',
     },
+    title: $localize`Organizations`,
   },
   {
     path: 'teams',
@@ -37,14 +39,17 @@ const routes: Routes = [
     data: {
       organizationSelectionEnabled: true,
     },
+    title: $localize`Teams`,
   },
   {
     path: 'user',
     loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
+    title: $localize`User Settings`,
   },
   {
     path: 'kubeconfig',
     loadChildren: () => import('./kubeconfig/kubeconfig.module').then((m) => m.KubeconfigDownloadModule),
+    title: $localize`Kubeconfig`,
   },
 ];
 

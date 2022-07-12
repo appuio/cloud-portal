@@ -113,18 +113,21 @@ describe('Test organization members', () => {
     cy.get(':nth-child(3) > .p-inputtext').type('{selectall}test');
     cy.get(':nth-child(3) p-multiselect').click().contains('control-api:organization-admin').click();
     cy.get('button[type=submit]').click();
+    cy.wait('@save');
     cy.get('@save')
       .its('request.body')
       .then((body) => {
         expect(body.spec.userRefs[0].name).to.eq('hans.meier');
         expect(body.spec.userRefs[1].name).to.eq('test');
       });
+    cy.wait('@save-admin-role');
     cy.get('@save-admin-role')
       .its('request.body')
       .then((body) => {
         expect(body.subjects[0].name).to.eq('appuio#hans.meier');
         expect(body.subjects[1].name).to.eq('appuio#test');
       });
+    cy.wait('@save-viewer-role');
     cy.get('@save-viewer-role')
       .its('request.body')
       .then((body) => {
@@ -184,6 +187,7 @@ describe('Test organization members', () => {
     cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
     cy.get(':nth-child(4) > .p-inputtext').type('{selectall}test');
     cy.get('button[type=submit]').click();
+    cy.wait('@save');
     cy.get('@save')
       .its('request.body')
       .then((body) => {
@@ -191,11 +195,13 @@ describe('Test organization members', () => {
         expect(body.spec.userRefs[1].name).to.eq('peter.muster');
         expect(body.spec.userRefs[2].name).to.eq('test');
       });
+    cy.wait('@save-admin-role');
     cy.get('@save-admin-role')
       .its('request.body')
       .then((body) => {
         expect(body.subjects[0].name).to.eq('appuio#hans.meier');
       });
+    cy.wait('@save-viewer-role');
     cy.get('@save-viewer-role')
       .its('request.body')
       .then((body) => {

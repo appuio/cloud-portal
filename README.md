@@ -10,7 +10,7 @@ Run `npm run test` to execute the unit tests with jest.
 
 ## Running End-to-End Tests
 
-Run `npm run e2e` to execute the end-to-end tests with cypress.
+Run `npm run e2e-dev` to execute the end-to-end tests with cypress.
 
 ## Development
 

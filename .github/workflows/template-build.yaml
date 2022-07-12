@@ -49,7 +49,7 @@ jobs:
         with:
           name: dist
           path: dist
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v4
         with:
           start: npm run http-server
       - uses: actions/upload-artifact@v3

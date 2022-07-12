@@ -30,6 +30,8 @@ import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
 import { InfoMenuComponent } from './info-menu/info-menu.component';
 import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component';
 import { RetryInterceptor } from './core/retry.interceptor';
+import { TitleStrategy } from '@angular/router';
+import { AppAndPageTitleStrategy } from './title-strategy';
 
 @NgModule({
   declarations: [
@@ -74,6 +76,7 @@ import { RetryInterceptor } from './core/retry.interceptor';
         logErrors: true,
       }),
     },
+    { provide: TitleStrategy, useClass: AppAndPageTitleStrategy },
   ],
   bootstrap: [AppComponent],
 })

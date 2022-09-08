@@ -1,6 +1,8 @@
-* xref:index.adoc[Home]
-* xref:user:ROOT:index.adoc[APPUiO Cloud User Docs 🔗^]
-* xref:appcat:ROOT:index.adoc[VSHN AppCat Docs 🔗^]
+* xref:user:ROOT:contact.adoc[Contact]
+* https://status.appuio.cloud[Status 🔗^]
+* https://portal.appuio.cloud[Portal 🔗^]
+* xref:user:ROOT:index.adoc[User Docs 🔗^]
+* xref:appcat:ROOT:index.adoc[AppCat Docs 🔗^]
 
 .How-to guides
 ** xref:how-to/find-username.adoc[Find your Username]

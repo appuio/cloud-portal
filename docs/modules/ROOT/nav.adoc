@@ -1,4 +1,6 @@
 * xref:index.adoc[Home]
+* xref:user:ROOT:index.adoc[APPUiO Cloud User Documentation 🔗^]
+* xref:appcat:ROOT:index.adoc[VSHN AppCat Documentation 🔗^]
 
 .How-to guides
 ** xref:how-to/find-username.adoc[Find your Username]

@@ -1,6 +1,5 @@
 include::user:ROOT:partial$shared-nav.adoc[]
 
-.How-to guides
-** xref:how-to/find-username.adoc[Find your Username]
-** xref:how-to/organizations.adoc[Managing Organizations]
-** xref:how-to/teams.adoc[Managing Teams]
+* xref:how-to/find-username.adoc[Find your Username]
+* xref:how-to/organizations.adoc[Managing Organizations]
+* xref:how-to/teams.adoc[Managing Teams]

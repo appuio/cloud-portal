@@ -18,12 +18,13 @@
   </a>
   <ul
     id="identity-dropdown-menu"
-    class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500 relative">
+    class="hidden list-none p-2 m-0 z-1 w-full origin-top animation-duration-150 overflow-hidden animation-ease-in-out bg-blue-500 absolute top-100">
     <li
       *ngFor="let item of profileItems"
       leaveToClass="hidden"
       pStyleClass="#identity-dropdown-menu"
-      leaveActiveClass="slideup">
+      leaveActiveClass="slideup"
+      class="white-space-nowrap">
       <app-navbar-item [menuItem]="item"></app-navbar-item>
     </li>
   </ul>

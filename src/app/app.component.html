@@ -39,7 +39,10 @@
           pStyleClass="#app-sidebar">
           <i class="pi pi-bars text-4xl"></i>
         </a>
-        <app-organization-selection *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"></app-organization-selection>
+
+        <app-organization-selection
+          *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"
+          class="hidden sm:block"></app-organization-selection>
       </div>
       <div class="flex h-full">
         <app-info-menu></app-info-menu>
@@ -51,6 +54,9 @@
       </div>
     </div>
     <div class="p-5 flex flex-column flex-auto">
+      <app-organization-selection
+        *ngIf="selectOrganizationSelectionEnabled$ | ngrxPush"
+        class="sm:hidden mb-5 w-full"></app-organization-selection>
       <router-outlet></router-outlet>
     </div>
   </div>

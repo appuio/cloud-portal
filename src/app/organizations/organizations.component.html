@@ -1,7 +1,7 @@
-<div class="flex flex-row justify-content-between">
-  <h1 class="pt-0 mt-0" i18n id="organizations-title">Organizations</h1>
+<div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
+  <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
 
-  <div>
+  <div class="flex gap-1 flex-wrap">
     <button (click)="openJoinOrganizationDialog()" class="mr-2" id="joinOrganizationButton" pButton pRipple>
       <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
       <span i18n>Join Organization</span>

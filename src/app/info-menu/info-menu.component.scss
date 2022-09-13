@@ -1,1 +1,11 @@
+@import 'primeflex/primeflex.scss';
 
+.info-dropdown {
+  @media screen and (max-width: $md) {
+    ul {
+      position: fixed;
+      left: 0;
+      right: 0;
+    }
+  }
+}

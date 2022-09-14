@@ -9,10 +9,10 @@
   header="Welcome to the APPUiO Cloud Portal"
   i18n-header>
   <div class="flex flex-wrap pt-4">
-    <div class="bg-blue-50 flex align-items-center justify-content-center w-4 border-round">
+    <div class="hidden sm:flex bg-blue-50 align-items-center justify-content-center w-4 border-round">
       <img alt="Image" class="w-9" src="assets/logo_appuio_cloud_rgb.svg" />
     </div>
-    <div class="text-700 line-height-3 pl-4 w-8">
+    <div class="text-700 line-height-3 pl-4 sm:w-8">
       <p class="mt-0" i18n *ngIf="!userBelongsToOrganization">
         Unfortunately, you do not yet belong to an organization. You can either join an existing organization or create
         a new one.
@@ -36,7 +36,7 @@
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <div class="pt-3">
+    <div class="pt-3 flex">
       <button
         *ngIf="!userBelongsToOrganization"
         (click)="joinOrganization()"

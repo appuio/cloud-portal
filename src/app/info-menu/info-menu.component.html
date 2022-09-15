@@ -16,7 +16,7 @@
   <div
     id="info-dropdown"
     class="hidden m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out absolute top-100 bg-blue-500">
-    <ul class="w-full list-none p-0 m-0 surface-border">
+    <ul class="list-none fixed left-0 right-0 sm:static sm:min-w-max p-0 m-0 surface-border">
       <ng-container *ngFor="let reference of references; let even = even">
         <a *ngIf="reference.href" [href]="reference.href" target="_blank" class="no-underline text-white">
           <app-info-menu-item [item]="reference" [even]="even"></app-info-menu-item>

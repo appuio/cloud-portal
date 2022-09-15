@@ -18,7 +18,11 @@
           </li>
         </ul>
       </div>
-      <div class="mt-auto mx-auto pb-5">
+      <div class="mt-auto pb-5 flex flex-column align-items-center">
+        <div class="mb-1">
+          <app-navbar-item
+            [menuItem]="{ label: 'Feedback', icon: faComment, routerLink: ['feedback'] }"></app-navbar-item>
+        </div>
         <app-status-badge></app-status-badge>
       </div>
     </div>

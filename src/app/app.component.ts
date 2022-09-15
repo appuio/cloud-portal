@@ -3,7 +3,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faSitemap, faUserGroup, faComment } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import * as Sentry from '@sentry/browser';
@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   avatarSrc = '';
   selectOrganizationSelectionEnabled$ = this.store.select(selectOrganizationSelectionEnabled);
   faSitemap = faSitemap;
+  faComment = faComment;
 
   constructor(
     private oauthService: OAuthService,

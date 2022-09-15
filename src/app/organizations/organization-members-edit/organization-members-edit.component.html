@@ -10,42 +10,59 @@
   </div>
   <div class="border-top-1 surface-border" *ngIf="form">
     <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
-      <div class="mt-2">
-        <p-message
-          i18n-text
-          severity="info"
-          text="List all user names that should have access to this organization."></p-message>
-      </div>
       <div class="max-w-1200px">
-        <div class="grid mt-3">
-          <label class="col-3 ml-2" i18n>Name</label>
+        <div class="grid mb-2 mt-2">
+          <p-message
+            i18n-text
+            class="col-11"
+            styleClass="w-full"
+            severity="info"
+            text="List all user names that should have access to this organization."></p-message>
+        </div>
+        <div class="hidden md:grid md:flex">
+          <label class="col-3" i18n>Name</label>
           <label class="col-7" i18n>Roles</label>
         </div>
         <div
           *ngFor="let control of this.userRefs?.controls; let i = index; let last = last"
           class="grid formgrid mb-3"
           [formGroup]="$any(control)">
-          <input formControlName="userName" class="field col-3 ml-2" pInputText tabindex="0" type="text" />
-          <p-multiSelect
-            formControlName="selectedRoles"
-            class="field col-7"
-            [options]="allRoleNames"
-            display="chip"
-            defaultLabel="Select Roles"
-            i18n-defaultLabel></p-multiSelect>
+          <div class="field col-11 md:col-3">
+            <label i18n for="username" class="md:hidden">Name</label>
+            <input
+              formControlName="userName"
+              class="w-full"
+              pInputText
+              tabindex="0"
+              type="text"
+              [attr.data-cy]="'name-input-' + i" />
+          </div>
+          <div class="field col-11 md:col-7">
+            <label i18n for="selectedRoles" class="md:hidden">Roles</label>
+            <p-multiSelect
+              formControlName="selectedRoles"
+              [options]="allRoleNames"
+              defaultLabel="Select Roles"
+              [maxSelectedLabels]="1"
+              [styleClass]="'w-full'"
+              i18n-defaultLabel></p-multiSelect>
+          </div>
 
-          <button
-            (click)="removeFormControl(i)"
-            *ngIf="!last && editPermission; else noButton"
-            class="col-1 field p-button-icon-only ml-3"
-            i18n-title
-            pButton
-            pRipple
-            tabindex="1"
-            title="Remove"
-            type="button">
-            <fa-icon [icon]="faClose"></fa-icon>
-          </button>
+          <div class="field col-11 md:col-1">
+            <button
+              (click)="removeFormControl(i)"
+              *ngIf="!last && editPermission; else noButton"
+              class="p-button"
+              i18n-title
+              pButton
+              pRipple
+              tabindex="1"
+              title="Remove"
+              type="button">
+              <fa-icon [icon]="faClose"></fa-icon>
+              <span class="ml-1 md:hidden" i18n>Remove Member</span>
+            </button>
+          </div>
           <ng-template #noButton>
             <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
           </ng-template>

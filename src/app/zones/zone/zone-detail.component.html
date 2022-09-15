@@ -54,23 +54,23 @@
 
       <li class="flex align-items-center py-2 px-2 flex-wrap zone-row">
         <div class="text-500 w-full md:w-3 font-medium" i18n>CName</div>
-        <div class="text-900 w-full md:w-9 relative">
+        <div class="text-900 w-full md:w-9 flex">
           {{ zone.data.cname }}
           <fa-icon
             [cdkCopyToClipboard]="zone.data.cname"
             [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            class="text-300 cursor-pointer hover:text-500 ml-2"></fa-icon>
         </div>
       </li>
 
       <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
         <div class="text-500 w-full md:w-3 font-medium" i18n>Default App Domain</div>
-        <div class="text-900 w-full md:w-9 line-height-3 relative">
+        <div class="text-900 w-full md:w-9 line-height-3 flex">
           {{ zone.data.defaultAppDomain }}
           <fa-icon
             [cdkCopyToClipboard]="zone.data.defaultAppDomain"
             [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            class="text-300 cursor-pointer hover:text-500 ml-2"></fa-icon>
         </div>
       </li>
 
@@ -94,20 +94,20 @@
 
       <li *ngFor="let url of zone.data.urls | keyvalue" class="flex align-items-center py-2 px-2 flex-wrap zone-row">
         <div class="text-500 w-full md:w-3 font-medium" i18n>{{ url.key | zoneUrlLabel }}</div>
-        <div class="text-900 w-full md:w-9 relative">
+        <div class="text-900 w-full md:w-9 flex break-word">
           <a [href]="url.value" class="text-blue-500 no-underline">
             {{ url.value }}
           </a>
           <fa-icon
             [cdkCopyToClipboard]="url.value"
             [icon]="faClipboard"
-            class="text-300 cursor-pointer hover:text-500 ml-2 absolute right-0 top-0"></fa-icon>
+            class="text-300 cursor-pointer hover:text-500 ml-2"></fa-icon>
         </div>
       </li>
     </ul>
   </div>
 
-  <div *ngIf="codeMode" class="bg-gray-700 text-white p-3 border-round relative zone-row">
+  <div *ngIf="codeMode" class="bg-gray-700 text-white p-3 border-round relative zone-row overflow-scroll">
     <pre>{{ zone.data | json }}</pre>
     <fa-icon
       [cdkCopyToClipboard]="zone.data | json"

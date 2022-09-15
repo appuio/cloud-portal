@@ -24,7 +24,7 @@ body {
 }
 
 .blink {
-  animation: blink 2500ms ease-in-out infinite
+  animation: blink 2500ms ease-in-out infinite;
 }
 
 .required {
@@ -37,4 +37,13 @@ body {
 
 .p-inline-message {
   justify-content: left !important;
+}
+
+.break-word {
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.max-h-90vh {
+  max-height: 90vh;
 }

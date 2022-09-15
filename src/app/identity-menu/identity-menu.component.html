@@ -10,20 +10,21 @@
     pStyleClass="#identity-dropdown-menu"
     [hideOnOutsideClick]="true">
     <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
-    <div class="flex flex-column">
+    <div class="hidden sm:flex flex-column">
       <span class="font-medium">{{ name }}</span>
       <span class="text-xs">{{ username }}</span>
     </div>
-    <i class="pi pi-chevron-down ml-5"></i>
+    <i class="pi pi-chevron-down ml-2 sm:ml-5"></i>
   </a>
   <ul
     id="identity-dropdown-menu"
-    class="list-none hidden p-2 m-0 z-1 origin-top animation-duration-150 overflow-hidden animation-ease-in-out w-full bg-blue-500 relative">
+    class="hidden list-none p-2 m-0 z-1 w-full min-w-min origin-top animation-duration-150 overflow-hidden animation-ease-in-out bg-blue-500 absolute top-100">
     <li
       *ngFor="let item of profileItems"
       leaveToClass="hidden"
       pStyleClass="#identity-dropdown-menu"
-      leaveActiveClass="slideup">
+      leaveActiveClass="slideup"
+      class="white-space-nowrap">
       <app-navbar-item [menuItem]="item"></app-navbar-item>
     </li>
   </ul>

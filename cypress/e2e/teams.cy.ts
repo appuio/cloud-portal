@@ -92,7 +92,7 @@ describe('Test teams list', () => {
     });
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
-    cy.get('.p-dropdown-trigger-icon').click();
+    cy.get('app-organization-selection:visible').click();
     cy.get('#pr_id_4_list > :nth-child(1)').click();
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');

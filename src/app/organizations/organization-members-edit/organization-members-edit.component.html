@@ -29,7 +29,13 @@
           [formGroup]="$any(control)">
           <div class="field col-11 md:col-3">
             <label i18n for="username" class="md:hidden">Name</label>
-            <input formControlName="userName" class="w-full" pInputText tabindex="0" type="text" />
+            <input
+              formControlName="userName"
+              class="w-full"
+              pInputText
+              tabindex="0"
+              type="text"
+              [attr.data-cy]="'name-input-' + i" />
           </div>
           <div class="field col-11 md:col-7">
             <label i18n for="selectedRoles" class="md:hidden">Roles</label>

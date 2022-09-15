@@ -47,8 +47,8 @@ describe('Test organization members', () => {
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
-    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier').and('be.disabled');
-    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster').and('be.disabled');
+    cy.get('[data-cy="name-input-0"]').should('have.value', 'hans.meier').and('be.disabled');
+    cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster').and('be.disabled');
     cy.get(':nth-child(2) .p-multiselect')
       .should('contain', 'control-api:organization-admin')
       .and('contain', 'control-api:organization-viewer')
@@ -108,10 +108,10 @@ describe('Test organization members', () => {
     cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('not.exist');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
-    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier');
-    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
-    cy.get(':nth-child(3) > .p-inputtext').type('{selectall}test');
-    cy.get(':nth-child(3) p-multiselect').click().contains('control-api:organization-admin').click();
+    cy.get('[data-cy="name-input-0"]').should('have.value', 'hans.meier');
+    cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
+    cy.get('[data-cy="name-input-1"]').type('{selectall}test');
+    cy.get('p-multiselect').eq(1).click().contains('control-api:organization-admin').click();
     cy.get('button[type=submit]').click();
     cy.wait('@save');
     cy.get('@save')
@@ -183,9 +183,9 @@ describe('Test organization members', () => {
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
-    cy.get(':nth-child(2) > .p-inputtext').should('have.value', 'hans.meier');
-    cy.get(':nth-child(3) > .p-inputtext').should('have.value', 'peter.muster');
-    cy.get(':nth-child(4) > .p-inputtext').type('{selectall}test');
+    cy.get('[data-cy="name-input-0"]').first().should('have.value', 'hans.meier');
+    cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
+    cy.get('[data-cy="name-input-2"]').type('{selectall}test');
     cy.get('button[type=submit]').click();
     cy.wait('@save');
     cy.get('@save')

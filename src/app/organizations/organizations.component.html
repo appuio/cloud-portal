@@ -1,8 +1,8 @@
 <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
   <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
 
-  <div class="grid">
-    <div class="col-10 sm:col-6">
+  <div class="flex flex-wrap gap-2">
+    <div>
       <button
         (click)="openJoinOrganizationDialog()"
         class="mr-2 w-full white-space-nowrap"
@@ -15,7 +15,7 @@
     </div>
 
     <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
-      <div class="col-10 sm:col-6">
+      <div>
         <button [routerLink]="['$new']" class="w-full white-space-nowrap" id="addOrganizationButton" pButton pRipple>
           <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
           <span i18n>Add new Organization</span>

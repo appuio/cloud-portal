@@ -51,6 +51,11 @@ const routes: Routes = [
     loadChildren: () => import('./kubeconfig/kubeconfig.module').then((m) => m.KubeconfigDownloadModule),
     title: $localize`Kubeconfig`,
   },
+  {
+    path: 'feedback',
+    loadChildren: () => import('./productboard/productboard.module').then((m) => m.ProductboardModule),
+    title: $localize`Feedback`,
+  },
 ];
 
 @NgModule({

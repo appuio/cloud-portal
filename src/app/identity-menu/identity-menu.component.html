@@ -10,11 +10,11 @@
     pStyleClass="#identity-dropdown-menu"
     [hideOnOutsideClick]="true">
     <img [src]="avatarSrc" alt="Avatar" class="mr-2" style="width: 35px; height: 35px; border-radius: 50%" />
-    <div class="flex flex-column">
+    <div class="hidden sm:flex flex-column">
       <span class="font-medium">{{ name }}</span>
       <span class="text-xs">{{ username }}</span>
     </div>
-    <i class="pi pi-chevron-down ml-5"></i>
+    <i class="pi pi-chevron-down ml-2 sm:ml-5"></i>
   </a>
   <ul
     id="identity-dropdown-menu"

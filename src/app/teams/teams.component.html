@@ -1,17 +1,21 @@
 <div class="flex flex-row flex-wrap justify-content-between mb-4">
   <h1 class="pt-0 mt-0" i18n id="teams-title">Teams</h1>
 
-  <div>
-    <button (click)="openJoinTeamDialog()" class="mr-2" id="joinTeamButton" pButton pRipple>
-      <fa-icon [icon]="faUserGroup" class="mr-2"></fa-icon>
-      <span i18n>Join Team</span>
-    </button>
+  <div class="flex flex-wrap gap-2">
+    <div>
+      <button (click)="openJoinTeamDialog()" class="mr-2" id="joinTeamButton" pButton pRipple>
+        <fa-icon [icon]="faUserGroup" class="mr-2"></fa-icon>
+        <span i18n>Join Team</span>
+      </button>
+    </div>
 
     <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
-      <button [routerLink]="[organizationName, '$new']" class="" id="addTeamButton" pButton pRipple>
-        <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-        <span i18n>Add new Team</span>
-      </button>
+      <div>
+        <button [routerLink]="[organizationName, '$new']" class="" id="addTeamButton" pButton pRipple>
+          <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
+          <span i18n>Add new Team</span>
+        </button>
+      </div>
     </ng-container>
   </div>
 </div>

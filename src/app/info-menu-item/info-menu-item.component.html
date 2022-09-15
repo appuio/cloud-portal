@@ -1,6 +1,6 @@
 <li [class.bg-blue-500]="even" [class.bg-blue-700]="!even" class="flex py-3 px-3 flex-column hover:bg-blue-400">
   <div class="font-medium mb-2 text-primary">{{ item.label }}</div>
-  <div *ngIf="item.href" class="flex text-sm font-italic">
+  <div *ngIf="item.href" class="flex text-sm font-italic break-word">
     <fa-icon [icon]="faExternal" class="mr-1"></fa-icon>
     {{ item.href }}
   </div>

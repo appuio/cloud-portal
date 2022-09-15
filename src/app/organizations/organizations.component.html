@@ -1,17 +1,26 @@
-<div class="flex flex-row justify-content-between">
-  <h1 class="pt-0 mt-0" i18n id="organizations-title">Organizations</h1>
+<div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
+  <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
 
-  <div>
-    <button (click)="openJoinOrganizationDialog()" class="mr-2" id="joinOrganizationButton" pButton pRipple>
-      <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
-      <span i18n>Join Organization</span>
-    </button>
+  <div class="flex flex-wrap gap-2">
+    <div>
+      <button
+        (click)="openJoinOrganizationDialog()"
+        class="mr-2 w-full white-space-nowrap"
+        id="joinOrganizationButton"
+        pButton
+        pRipple>
+        <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
+        <span i18n>Join Organization</span>
+      </button>
+    </div>
 
     <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
-      <button [routerLink]="['$new']" class="" id="addOrganizationButton" pButton pRipple>
-        <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-        <span i18n>Add new Organization</span>
-      </button>
+      <div>
+        <button [routerLink]="['$new']" class="w-full white-space-nowrap" id="addOrganizationButton" pButton pRipple>
+          <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
+          <span i18n>Add new Organization</span>
+        </button>
+      </div>
     </ng-container>
   </div>
 </div>

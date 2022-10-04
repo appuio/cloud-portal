@@ -4,6 +4,7 @@ import { createUser } from '../fixtures/user';
 describe('Test zones', () => {
   beforeEach(() => {
     cy.setupAuth();
+    cy.disableCookieBanner();
   });
   beforeEach(() => {
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });

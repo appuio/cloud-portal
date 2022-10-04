@@ -10,6 +10,7 @@ describe('Test organization list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -80,6 +81,7 @@ describe('Test organization edit', () => {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
   it('edit organization with button', () => {
     cy.setPermission(
@@ -147,6 +149,7 @@ describe('Test organization add', () => {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
   it('add organization with button', () => {
     cy.setPermission(

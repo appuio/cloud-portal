@@ -2,12 +2,12 @@ import { Team } from '../../src/app/types/team';
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
 import { createTeamList, team1, teamListNxt, teamListVshn } from '../fixtures/team';
 import { organizationListNxtVshn } from '../fixtures/organization';
-import * as exp from 'constants';
 
 describe('Test teams list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
 
   it('list with two entries', () => {
@@ -140,6 +140,7 @@ describe('Test team edit', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
 
   it('edit team with button', () => {
@@ -219,6 +220,7 @@ describe('Test teams add', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
 
   it('add team with button', () => {
@@ -300,6 +302,7 @@ describe('Test teams delete', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
 
   it('delete team with button', () => {

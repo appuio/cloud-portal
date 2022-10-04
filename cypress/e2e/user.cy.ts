@@ -7,6 +7,7 @@ describe('Test user', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
   });
 
   it('without preferences', () => {

@@ -6,6 +6,7 @@ describe('Test First Time Login', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.removeItem('hideFirstTimeLoginDialog');
+    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

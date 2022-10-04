@@ -7,6 +7,8 @@ declare namespace Cypress {
     setPermission(
       ...permission: { verb: string; resource: string; group: string; namespace?: string }[]
     ): typeof setPermission;
+
+    disableCookieBanner(): typeof disableCookieBanner;
   }
 }
 
@@ -74,5 +76,10 @@ function setupAuth(): void {
   window.sessionStorage.setItem('id_token_stored_at', time);
 }
 
+function disableCookieBanner(): void {
+  cy.setCookie('__hs_opt_out', 'yes');
+}
+
 Cypress.Commands.add('setupAuth', setupAuth);
 Cypress.Commands.add('setPermission', setPermission);
+Cypress.Commands.add('disableCookieBanner', disableCookieBanner);

@@ -5,6 +5,7 @@ describe('Test Productboard embed', () => {
   beforeEach(() => {
     // needed for initial getUser request
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.disableCookieBanner();
   });
 
   it('shows kubeconfig', () => {

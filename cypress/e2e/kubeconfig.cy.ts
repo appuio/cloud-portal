@@ -3,6 +3,7 @@ import * as path from 'path';
 describe('Test kubeconfig', () => {
   beforeEach(() => {
     cy.setupAuth();
+    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

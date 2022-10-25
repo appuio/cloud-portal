@@ -46,7 +46,7 @@ jobs:
       - name: Gather deployment status
         id: deployment_info
         run: |
-          echo ::set-output name=route_host::"$(oc -n ${{ env.NAMESPACE }} get route ${{ env.HELM_RELEASE_NAME }} -o jsonpath='{.spec.host}')"
+          echo route_host="$(oc -n ${{ env.NAMESPACE }} get route ${{ env.HELM_RELEASE_NAME }} -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
 
       - name: Uninstall app
         run: helmfile --namespace ${{ env.NAMESPACE }} --file deployment/helmfile.yaml -e ${{ env.ENVIRONMENT }} destroy --args --wait

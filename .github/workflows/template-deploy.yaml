@@ -74,7 +74,7 @@ jobs:
       - name: Gather deployment status
         id: deployment_info
         run: |
-          echo ::set-output name=route_host::"$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')"
+          echo route_host="$(oc -n ${{ inputs.namespace }} get route ${{ inputs.helm_release_name }} -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
 
       - name: Add route URL to Keycloak client
         if: ${{ github.event_name == 'pull_request' }}

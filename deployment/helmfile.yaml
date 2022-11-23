@@ -48,6 +48,10 @@ releases:
                   label: 'Memory CPU Ratio'
                   textColor: 'white'
                   backgroundColor: '#0b3046'
+                nodeGroups:
+                  label: 'Node Groups'
+                  textColor: 'white'
+                  backgroundColor: '#22c55e'
               zoneURLLabels:
                 kubernetesAPI: Kubernetes API
                 oauth: API Token

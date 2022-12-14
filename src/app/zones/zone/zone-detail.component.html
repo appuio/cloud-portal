@@ -1,6 +1,6 @@
 <div *ngIf="zone" class="surface-card p-4 shadow-2 border-round mb-4">
-  <div class="flex flex-row justify-content-between">
-    <div class="text-3xl font-medium text-900 mb-3" data-cy="zone-name">
+  <div class="flex flex-row justify-content-between align-items-center mb-3">
+    <div class="text-3xl font-medium text-900" data-cy="zone-name">
       <a
         *ngIf="linkToDetailView"
         class="text-blue-500 hover:text-primary no-underline"
@@ -8,6 +8,19 @@
         {{ zone.data.displayName }}
       </a>
       <ng-container *ngIf="!linkToDetailView">{{ zone.data.displayName }}</ng-container>
+    </div>
+    <div *ngIf="zone.data.urls[consoleUrlKey]">
+      <a
+        [href]="zone.data.urls[consoleUrlKey]"
+        target="_blank"
+        pButton
+        role="buttom"
+        class="no-underline"
+        title="Opens the OpenShift Web Console for this zone."
+        i18n
+        i18n-title>
+        OpenShift Web Console
+      </a>
     </div>
     <div>
       <a

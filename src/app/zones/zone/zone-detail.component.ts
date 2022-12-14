@@ -19,6 +19,8 @@ export class ZoneDetailComponent {
   faClose = faClose;
   codeMode = false;
 
+  consoleUrlKey = 'console';
+
   switchToCodeMode(): void {
     this.codeMode = true;
   }

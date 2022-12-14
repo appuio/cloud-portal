@@ -3,7 +3,7 @@ import { faClipboard, faClose, faCode, faList } from '@fortawesome/free-solid-sv
 import { Zone } from 'src/app/types/zone';
 
 @Component({
-  selector: 'app-zone',
+  selector: 'app-zone-detail',
   templateUrl: './zone-detail.component.html',
   styleUrls: ['./zone-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

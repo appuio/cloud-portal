@@ -1,26 +1,19 @@
 import { Injectable } from '@angular/core';
+import slugify from '@sindresorhus/slugify';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrganizationNameService {
   MAX_LENGTH = 63;
-  validationPattern = /(([a-z0-9][-a-z0-9]*)?[a-z0-9])?/;
-  allWhitespaces = /[\s-]+/g;
-  invalidStartingCharacters = /^[^a-z0-9]+/;
-  invalidEndingCharacters = /[^a-z0-9]+$/;
+  validationPattern = '(([a-z0-9][-a-z0-9]*)?[a-z0-9])?';
 
   tranformToKubeName(displayName: string): string {
-    return displayName
-      .trim()
-      .toLowerCase()
-      .replace(this.allWhitespaces, '-')
-      .replace(this.invalidStartingCharacters, '')
-      .replace(this.invalidEndingCharacters, '')
-      .substring(0, this.MAX_LENGTH);
+    const slug = slugify(displayName.trim());
+    return slug.substring(0, this.MAX_LENGTH);
   }
 
-  getValidationPattern(): RegExp {
+  getValidationPattern(): string {
     return this.validationPattern;
   }
 }

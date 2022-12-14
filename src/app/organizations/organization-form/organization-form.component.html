@@ -11,10 +11,10 @@
   <div *ngIf="new" class="field mb-4 col-12">
     <label class="required font-normal" for="id" i18n>Organization ID</label>
     <input formControlName="organizationId" id="id" pInputText type="text" />
-    <small *ngIf="form.get('id')?.hasError('alreadyExists')" class="block p-error" i18n>
+    <small *ngIf="form.get('organizationId')?.hasError('alreadyExists')" class="block p-error" i18n>
       An organization with the same ID already exists.
     </small>
-    <small *ngIf="form.get('id')?.hasError('pattern')" class="block p-error" i18n>
+    <small *ngIf="form.get('organizationId')?.hasError('pattern')" class="block p-error" i18n>
       The organization ID must be a lowercase RFC 1123 label with the pattern
       <code>(([a-z0-9][-a-z0-9]*)?[a-z0-9])?</code>
       .

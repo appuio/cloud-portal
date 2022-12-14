@@ -36,6 +36,7 @@
     "@ngrx/store": "14.3.2",
     "@ngrx/store-devtools": "14.3.2",
     "@sentry/angular": "7.22.0",
+    "@sindresorhus/slugify": "2.1.1",
     "angular-oauth2-oidc": "13.0.1",
     "primeflex": "3.3.0",
     "primeicons": "6.0.1",

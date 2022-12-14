@@ -101,8 +101,8 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           if ('AlreadyExists' === action.error.reason) {
-            this.form.get('name')?.setErrors({ alreadyExists: true });
-            detail = $localize`Organization "${this.form.get('name')?.value}" already exists.`;
+            this.form.get('organizationId')?.setErrors({ alreadyExists: true });
+            detail = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
           }
           this.messageService.add({
             severity: 'error',

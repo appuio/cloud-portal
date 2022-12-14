@@ -1,23 +1,24 @@
 <form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
-  <div *ngIf="new" class="col-12 mb-2">
-    <p-message i18n-text severity="info" text="The name of an organization can not be changed later."></p-message>
+  <div class="field mb-4 col-12">
+    <label for="displayName" class="font-bold" i18n>Display Name</label>
+    <input formControlName="displayName" id="displayName" pInputText type="text" autofocus />
   </div>
+
+  <div *ngIf="new" class="col-12 mb-2">
+    <p-message i18n-text severity="info" text="The ID of an organization can not be changed later."></p-message>
+  </div>
+
   <div *ngIf="new" class="field mb-4 col-12">
-    <label class="required" for="name" i18n>Name</label>
-    <input formControlName="name" id="name" pInputText type="text" />
-    <small *ngIf="form.get('name')?.hasError('alreadyExists')" class="block p-error" i18n>
-      An organization with the same name already exists.
+    <label class="required font-normal" for="id" i18n>Organization ID</label>
+    <input formControlName="organizationId" id="id" pInputText type="text" />
+    <small *ngIf="form.get('id')?.hasError('alreadyExists')" class="block p-error" i18n>
+      An organization with the same ID already exists.
     </small>
-    <small *ngIf="form.get('name')?.hasError('pattern')" class="block p-error" i18n>
-      The organization name must be a lowercase RFC 1123 label with the pattern
+    <small *ngIf="form.get('id')?.hasError('pattern')" class="block p-error" i18n>
+      The organization ID must be a lowercase RFC 1123 label with the pattern
       <code>(([a-z0-9][-a-z0-9]*)?[a-z0-9])?</code>
       .
     </small>
-  </div>
-
-  <div class="field mb-4 col-12">
-    <label for="displayName" i18n>Display Name</label>
-    <input formControlName="displayName" id="displayName" pInputText type="text" />
   </div>
 
   <div class="col-12">

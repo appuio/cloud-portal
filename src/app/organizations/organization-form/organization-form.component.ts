@@ -8,6 +8,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { OrganizationNameService } from '../organization-name.service';
 
 @Component({
   selector: 'app-organization-form',
@@ -21,10 +22,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   @Input()
   new = true;
 
-  form!: FormGroup<{ displayName: FormControl<string | undefined>; name: FormControl<string> }>;
+  form!: FormGroup<{ displayName: FormControl<string | undefined>; organizationId: FormControl<string> }>;
   faSave = faSave;
   saving = false;
-  private handleActionsSubscription?: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,18 +34,31 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private organizationNameService: OrganizationNameService
   ) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.nonNullable.group({
       displayName: this.organization.spec.displayName,
-      name: new FormControl(this.organization.metadata.name, {
-        validators: [Validators.required, Validators.pattern('(([a-z0-9][-a-z0-9]*)?[a-z0-9])?')],
+      organizationId: new FormControl(this.organization.metadata.name, {
+        validators: [Validators.required, Validators.pattern(this.organizationNameService.getValidationPattern())],
         nonNullable: true,
       }),
     });
+    if (this.new) {
+      const sub = this.form.controls.displayName.valueChanges.subscribe((value) => this.setNameFromDisplayName(value));
+      this.subscriptions.push(sub);
+    }
     this.handleActions();
+  }
+
+  setNameFromDisplayName(displayName: string | undefined): void {
+    const orgIdInput = this.form.get('organizationId');
+    if (displayName && orgIdInput?.pristine) {
+      const name = this.organizationNameService.tranformToKubeName(displayName);
+      this.form.get('organizationId')?.setValue(name);
+    }
   }
 
   save(): void {
@@ -57,7 +71,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
             kind: 'Organization',
             apiVersion: 'organization.appuio.io/v1',
             metadata: {
-              name: this.form.getRawValue().name,
+              name: this.form.getRawValue().organizationId,
             },
             spec: {
               displayName: this.form.getRawValue().displayName,
@@ -69,11 +83,11 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.handleActionsSubscription?.unsubscribe();
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   private handleActions(): void {
-    this.handleActionsSubscription = this.actions
+    const handleActionsSubscription = this.actions
       .pipe(ofType(saveOrganizationSuccess, saveOrganizationFailure))
       .subscribe((action) => {
         this.saving = false;
@@ -104,5 +118,6 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
         }
         this.changeDetectorRef.markForCheck();
       });
+    this.subscriptions.push(handleActionsSubscription);
   }
 }

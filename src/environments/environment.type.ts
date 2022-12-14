@@ -32,4 +32,5 @@ export const defaultZonesConfig = {
     kubernetesAPI: 'Kubernetes API',
     oauth: 'API Token',
   },
+  consoleUrlKey: 'console',
 };

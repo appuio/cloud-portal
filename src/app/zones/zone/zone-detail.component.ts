@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { faClipboard, faClose, faCode, faList } from '@fortawesome/free-solid-svg-icons';
+import { AppConfigService } from 'src/app/app-config.service';
 import { Zone } from 'src/app/types/zone';
 
 @Component({
@@ -19,7 +20,11 @@ export class ZoneDetailComponent {
   faClose = faClose;
   codeMode = false;
 
-  consoleUrlKey = 'console';
+  consoleUrlKey;
+
+  constructor(private appConfigService: AppConfigService) {
+    this.consoleUrlKey = this.appConfigService.getConfiguration().zones.consoleUrlKey;
+  }
 
   switchToCodeMode(): void {
     this.codeMode = true;

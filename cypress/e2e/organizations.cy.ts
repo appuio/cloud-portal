@@ -171,13 +171,13 @@ describe('Test organization add', () => {
     cy.get('#addOrganizationButton').click();
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
-    cy.get('#id').should('contain.value', 'vshn-the-devops-company');
+    cy.get('#id').should('contain.value', 'vshn-the-dev-ops-company');
     cy.get('button[type=submit]').click();
     cy.wait('@add');
     cy.get('@add')
       .its('request.body')
       .then((body) => {
-        expect(body.metadata.name).to.eq('vshn-the-devops-company');
+        expect(body.metadata.name).to.eq('vshn-the-dev-ops-company');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');

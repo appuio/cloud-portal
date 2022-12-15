@@ -170,14 +170,14 @@ describe('Test organization add', () => {
 
     cy.get('#addOrganizationButton').click();
 
-    cy.get('#name').type('vshn');
     cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#id').should('contain.value', 'vshn-the-dev-ops-company');
     cy.get('button[type=submit]').click();
     cy.wait('@add');
     cy.get('@add')
       .its('request.body')
       .then((body) => {
-        expect(body.metadata.name).to.eq('vshn');
+        expect(body.metadata.name).to.eq('vshn-the-dev-ops-company');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
@@ -187,6 +187,75 @@ describe('Test organization add', () => {
     );
     cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('exist');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
+  });
+  it('add organization with invalid id', () => {
+    cy.setPermission(
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'create', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io' }
+    );
+    cy.visit('/organizations');
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: createOrganizationList({ items: [] }),
+    });
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
+
+    cy.get('#addOrganizationButton').click();
+
+    cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#id').clear().type('VSHN $a');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
+  });
+  it('add organization with invalid id - cannot start or end with a dash, spaces, upper cases', () => {
+    cy.setPermission(
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'create', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io' }
+    );
+    cy.visit('/organizations');
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: createOrganizationList({ items: [] }),
+    });
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
+
+    cy.get('#addOrganizationButton').click();
+
+    cy.get('#displayName').type('VSHN - the DevOps Company');
+
+    cy.get('#id').clear().type('-1-vshn');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
+
+    cy.get('#id').clear();
+    cy.get('.p-error').should('not.exist');
+
+    cy.get('#id').clear().type('1-vshn-');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
+
+    cy.get('#id').clear();
+    cy.get('.p-error').should('not.exist');
+
+    cy.get('#id').clear().type('VSHN');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
+
+    cy.get('#id').clear();
+    cy.get('.p-error').should('not.exist');
+
+    cy.get('#id').clear().type('vshn 1');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
+
+    cy.get('#id').clear();
+    cy.get('.p-error').should('not.exist');
+
+    cy.get('#id').clear().type('vshn_1');
+    cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
+    cy.get('button[type=submit]').should('be.disabled');
   });
   it('no create permission', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });

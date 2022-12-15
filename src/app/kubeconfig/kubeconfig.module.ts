@@ -10,4 +10,4 @@ import { ReplaceValuesPipe } from './replace-values.pipe';
   declarations: [KubeconfigDownloadComponent, ReplaceValuesPipe],
   imports: [CommonModule, SharedModule, KubeconfigDownloadRoutingModule],
 })
-export class KubeconfigDownloadModule {}
+export default class KubeconfigDownloadModule {}

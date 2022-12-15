@@ -9,4 +9,4 @@ import { DefaultOrganizationFormComponent } from './default-organization-form/de
   declarations: [UserSettingsComponent, DefaultOrganizationFormComponent],
   imports: [UserRoutingModule, CommonModule, SharedModule],
 })
-export class UserModule {}
+export default class UserModule {}

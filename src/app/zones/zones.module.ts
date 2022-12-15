@@ -15,7 +15,7 @@ import { ZoneUrlLabelPipe } from './zone-url-label.pipe';
   imports: [CommonModule, SharedModule, ZonesRoutingModule],
   providers: [TitleCasePipe],
 })
-export class ZonesModule {
+export default class ZonesModule {
   constructor(private store: Store) {
     this.store.dispatch(loadZones());
   }

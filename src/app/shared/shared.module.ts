@@ -10,7 +10,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
-import { ReactiveComponentModule } from '@ngrx/component';
+import { LetModule, PushModule } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -36,7 +36,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ClipboardModule,
     ToastModule,
     MessagesModule,
-    ReactiveComponentModule,
+    LetModule,
+    PushModule,
     ReactiveFormsModule,
     DialogModule,
     CheckboxModule,

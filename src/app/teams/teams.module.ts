@@ -18,4 +18,4 @@ import { TeamEditComponent } from './team-edit/team-edit.component';
     EffectsModule.forFeature([TeamEffects]),
   ],
 })
-export class TeamsModule {}
+export default class TeamsModule {}

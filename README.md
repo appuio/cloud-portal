@@ -22,6 +22,7 @@ Run `npm run e2e-dev` to execute the end-to-end tests with cypress.
 ## Keycloak
 
 Use the dev instance from VSHN: https://id.dev.appuio.cloud
+(if that returns a 404, use https://id.dev.appuio.cloud/auth/admin/master/console/)
 
 To add a new dev realm for yourself, follow the instructions in the [control-api](https://github.com/appuio/control-api) under 'local-env'.
 Note: Once the setup is done, login to keycloak, select the new realm on the top left, and under clients -> 'local-dev' -> Settings add `localhost:4200` (or `*`) to both 'Valid Redirct URIs' and 'Web Origins'.

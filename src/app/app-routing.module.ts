@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'zones',
-    loadChildren: () => import('./zones/zones.module').then((m) => m.ZonesModule),
+    loadChildren: () => import('./zones/zones.module'),
     canActivate: [PermissionGuard],
     data: {
       permission: 'zones',
@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'organizations',
-    loadChildren: () => import('./organizations/organizations.module').then((m) => m.OrganizationsModule),
+    loadChildren: () => import('./organizations/organizations.module'),
     canActivate: [PermissionGuard],
     data: {
       permission: 'organizations',
@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: 'teams',
-    loadChildren: () => import('./teams/teams.module').then((m) => m.TeamsModule),
+    loadChildren: () => import('./teams/teams.module'),
     data: {
       organizationSelectionEnabled: true,
     },
@@ -43,17 +43,17 @@ const routes: Routes = [
   },
   {
     path: 'user',
-    loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
+    loadChildren: () => import('./user/user.module'),
     title: $localize`User Settings`,
   },
   {
     path: 'kubeconfig',
-    loadChildren: () => import('./kubeconfig/kubeconfig.module').then((m) => m.KubeconfigDownloadModule),
+    loadChildren: () => import('./kubeconfig/kubeconfig.module'),
     title: $localize`Kubeconfig`,
   },
   {
     path: 'feedback',
-    loadChildren: () => import('./productboard/productboard.module').then((m) => m.ProductboardModule),
+    loadChildren: () => import('./productboard/productboard.module'),
     title: $localize`Feedback`,
   },
 ];

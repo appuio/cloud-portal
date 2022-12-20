@@ -55,3 +55,4 @@ releases:
               zoneURLLabels:
                 kubernetesAPI: Kubernetes API
                 oauth: API Token
+              consoleUrlKey: 'console'

@@ -10,7 +10,11 @@ export interface AppConfig {
   clientId: string;
   glitchTipDsn: string;
   server: string;
-  zones: { zoneFeatures: { [key: string]: ZoneConfig }; zoneURLLabels: { [key: string]: string } };
+  zones: {
+    zoneFeatures: { [key: string]: ZoneConfig };
+    zoneURLLabels: { [key: string]: string };
+    consoleUrlKey: string;
+  };
 }
 
 export interface ZoneConfig {

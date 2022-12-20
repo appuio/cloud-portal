@@ -28,7 +28,7 @@ import { JoinOrganizationDialogComponent } from './join-organization-dialog/join
     EffectsModule.forFeature([OrganizationEffects]),
   ],
 })
-export class OrganizationsModule {
+export default class OrganizationsModule {
   constructor(store: Store) {
     store.dispatch(loadOrganizations());
   }

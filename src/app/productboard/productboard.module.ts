@@ -8,4 +8,4 @@ import { ProductboardRoutingModule } from './productboard-routing.module';
   declarations: [ProductboardComponent],
   imports: [CommonModule, SharedModule, ProductboardRoutingModule],
 })
-export class ProductboardModule {}
+export default class ProductboardModule {}

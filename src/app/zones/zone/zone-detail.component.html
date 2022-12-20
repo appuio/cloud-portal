@@ -92,6 +92,7 @@
         <div class="text-900 w-full md:w-9">
           <p-tag
             *ngFor="let feature of zone.data.features | zoneFeatures"
+            [rounded]="true"
             [style]="{ 'background-color': feature.backgroundColor, color: feature.textColor }"
             [value]="feature.label"
             styleClass="mr-1 mb-1"></p-tag>
@@ -101,7 +102,7 @@
       <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground zone-row">
         <div class="text-500 w-full md:w-3 font-medium" i18n>Gateway IPs</div>
         <div class="text-900 w-full md:w-9">
-          <p-tag *ngFor="let ip of zone.data.gatewayIPs" [value]="ip" styleClass="mr-1 mb-1"></p-tag>
+          <p-tag *ngFor="let ip of zone.data.gatewayIPs" [rounded]="true" [value]="ip" styleClass="mr-1 mb-1"></p-tag>
         </div>
       </li>
 

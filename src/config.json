@@ -32,6 +32,6 @@
       "kubernetesAPI": "Kubernetes API",
       "oauth": "API Token"
     },
-    "consoleUrlKey": "consoleUrl"
+    "consoleUrlKey": "console"
   }
 }

@@ -23,7 +23,7 @@ export class ZoneDetailComponent {
   consoleUrlKey;
 
   constructor(private appConfigService: AppConfigService) {
-    this.consoleUrlKey = this.appConfigService.getConfiguration().zones.consoleUrlKey;
+    this.consoleUrlKey = this.appConfigService.getConfiguration()?.zones?.consoleUrlKey || 'console';
   }
 
   switchToCodeMode(): void {

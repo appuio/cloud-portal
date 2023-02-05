@@ -63,7 +63,7 @@
     "@typescript-eslint/eslint-plugin": "5.49.0",
     "@typescript-eslint/parser": "5.49.0",
     "angular-http-server": "1.11.1",
-    "cypress": "12.4.1",
+    "cypress": "12.5.1",
     "eslint": "8.33.0",
     "eslint-plugin-change-detection-strategy": "0.1.1",
     "eslint-plugin-ngrx": "2.1.4",

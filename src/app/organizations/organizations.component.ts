@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { selectHasPermission } from '../store/app.selectors';
-import { Verb } from '../store/app.reducer';
 import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { Organization } from '../types/organization';
-import { organizationEntityKey } from '../store/entity-metadata-map';
+import { OrganizationCollectionService } from './organization-collection.service';
+import { Verb } from '../store/app.reducer';
+import { selectHasPermission } from '../store/app.selectors';
 
 @Component({
   selector: 'app-organizations',
@@ -27,17 +25,14 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   hasCreatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Create));
   faUserGroup = faUserGroup;
   private showJoinDialogSubscription?: Subscription;
-  organizationService: EntityCollectionService<Organization>;
 
   constructor(
     private store: Store,
     private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private organizationServiceFactory: EntityCollectionServiceFactory
-  ) {
-    this.organizationService = organizationServiceFactory.create<Organization>(organizationEntityKey);
-  }
+    public organizationCollectionService: OrganizationCollectionService
+  ) {}
 
   ngOnInit(): void {
     this.showJoinDialogSubscription = this.store
@@ -53,7 +48,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
           });
         }
       });
-    this.organizationService.getAll();
   }
 
   openJoinOrganizationDialog(): void {
@@ -62,18 +56,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       closable: true,
       header: $localize`Join Organization`,
     });
-  }
-
-  isEmptyAndLoaded(): Observable<boolean> {
-    return combineLatest(
-      [this.organizationService.loading$, this.organizationService.entities$],
-      (loading, entities) => {
-        if (loading) {
-          return false;
-        }
-        return entities.length === 0;
-      }
-    );
   }
 
   ngOnDestroy(): void {

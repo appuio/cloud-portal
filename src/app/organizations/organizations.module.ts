@@ -10,6 +10,7 @@ import { JoinOrganizationDialogComponent } from './join-organization-dialog/join
 import { EntityDataService, EntityDefinitionService } from '@ngrx/data';
 import { entityMetadataMap, organizationEntityKey } from '../store/entity-metadata-map';
 import { OrganizationDataService } from './organization-data.service';
+import { OrganizationCollectionService } from './organization-collection.service';
 
 @NgModule({
   declarations: [
@@ -20,15 +21,17 @@ import { OrganizationDataService } from './organization-data.service';
     JoinOrganizationDialogComponent,
   ],
   imports: [SharedModule, OrganizationsRoutingModule],
-  providers: [OrganizationDataService],
+  providers: [OrganizationDataService, OrganizationCollectionService],
 })
 export default class OrganizationsModule {
   constructor(
     entityDefinitionService: EntityDefinitionService,
     organizationDataService: OrganizationDataService,
+    organizationCollectionService: OrganizationCollectionService,
     entityDataService: EntityDataService
   ) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(organizationEntityKey, organizationDataService);
+    organizationCollectionService.getAll(); // get initial data upon module load, maybe not the perfect place here...
   }
 }

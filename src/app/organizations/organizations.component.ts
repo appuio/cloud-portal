@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, Observable, of, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { selectHasPermission } from '../store/app.selectors';
 import { Verb } from '../store/app.reducer';
@@ -28,7 +28,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faUserGroup = faUserGroup;
   private showJoinDialogSubscription?: Subscription;
   organizationService: EntityCollectionService<Organization>;
-  private loaded: boolean = false;
 
   constructor(
     private store: Store,
@@ -54,9 +53,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
           });
         }
       });
-    this.organizationService.getAll().subscribe(() => {
-      this.loaded = true;
-    });
+    this.organizationService.getAll();
   }
 
   openJoinOrganizationDialog(): void {
@@ -67,12 +64,16 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     });
   }
 
-  isEmpty(): Observable<boolean> {
-    if (this.loaded) {
-      return this.organizationService.entities$.pipe(map((o) => o.length === 0));
-    } else {
-      return of(false);
-    }
+  isEmptyAndLoaded(): Observable<boolean> {
+    return combineLatest(
+      [this.organizationService.loading$, this.organizationService.entities$],
+      (loading, entities) => {
+        if (loading) {
+          return false;
+        }
+        return entities.length === 0;
+      }
+    );
   }
 
   ngOnDestroy(): void {

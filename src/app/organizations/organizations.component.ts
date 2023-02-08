@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Organization } from '../types/organization';
-import { Entity, EntityState } from '../types/entity';
-import { Observable, Subscription } from 'rxjs';
-import { selectOrganizations } from './store/organization.selectors';
+import { map, Observable, of, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { selectHasPermission } from '../store/app.selectors';
 import { Verb } from '../store/app.reducer';
@@ -11,6 +8,9 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
+import { Organization } from '../types/organization';
+import { organizationEntityKey } from '../store/entity-metadata-map';
 
 @Component({
   selector: 'app-organizations',
@@ -19,7 +19,6 @@ import { ActivatedRoute, Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationsComponent implements OnInit, OnDestroy {
-  organizations$: Observable<Entity<Organization[]>> = this.store.select(selectOrganizations);
   faInfo = faInfoCircle;
   faWarning = faWarning;
   faEdit = faEdit;
@@ -28,13 +27,18 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   hasCreatePermission$ = this.store.select(selectHasPermission('organizations', Verb.Create));
   faUserGroup = faUserGroup;
   private showJoinDialogSubscription?: Subscription;
+  organizationService: EntityCollectionService<Organization>;
+  private loaded: boolean = false;
 
   constructor(
     private store: Store,
     private dialogService: DialogService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
-  ) {}
+    private activatedRoute: ActivatedRoute,
+    private organizationServiceFactory: EntityCollectionServiceFactory
+  ) {
+    this.organizationService = organizationServiceFactory.create<Organization>(organizationEntityKey);
+  }
 
   ngOnInit(): void {
     this.showJoinDialogSubscription = this.store
@@ -50,18 +54,9 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
           });
         }
       });
-  }
-
-  isLoading(organizations: Entity<Organization[]>): boolean {
-    return organizations.state === EntityState.Loading;
-  }
-
-  isListEmpty(organizations: Entity<Organization[]>): boolean {
-    return organizations.state === EntityState.Loaded && organizations.value.length === 0;
-  }
-
-  hasLoadingFailed(organizations: Entity<Organization[]>): boolean {
-    return organizations.state === EntityState.Failed;
+    this.organizationService.getAll().subscribe(() => {
+      this.loaded = true;
+    });
   }
 
   openJoinOrganizationDialog(): void {
@@ -70,6 +65,14 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       closable: true,
       header: $localize`Join Organization`,
     });
+  }
+
+  isEmpty(): Observable<boolean> {
+    if (this.loaded) {
+      return this.organizationService.entities$.pipe(map((o) => o.length === 0));
+    } else {
+      return of(false);
+    }
   }
 
   ngOnDestroy(): void {

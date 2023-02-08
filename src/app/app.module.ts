@@ -32,6 +32,8 @@ import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component
 import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
+import { EntityDataModule } from '@ngrx/data';
+import { entityConfig } from './store/entity-metadata-map';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { AppAndPageTitleStrategy } from './title-strategy';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
     StoreRouterConnectingModule.forRoot(),
+    EntityDataModule.forRoot(entityConfig),
   ],
   providers: [
     MessageService,

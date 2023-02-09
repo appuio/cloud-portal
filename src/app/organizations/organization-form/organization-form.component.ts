@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Organization } from '../../types/organization';
+import { newOrganization, Organization } from '../../types/organization';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import { Store } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
 import { filter, map, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -29,8 +27,6 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private store: Store,
-    private actions: Actions,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
@@ -100,23 +96,15 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private addOrg(): void {
-    this.organizationCollectionService.add(this.getOrg()).subscribe(() => this.saveOrUpdateSuccess());
+    this.organizationCollectionService.add(this.getOrgFromForm()).subscribe(() => this.saveOrUpdateSuccess());
   }
 
   private updateOrg(): void {
-    this.organizationCollectionService.update(this.getOrg()).subscribe(() => this.saveOrUpdateSuccess());
+    this.organizationCollectionService.update(this.getOrgFromForm()).subscribe(() => this.saveOrUpdateSuccess());
   }
-  private getOrg(): Organization {
-    return {
-      kind: 'Organization',
-      apiVersion: 'organization.appuio.io/v1',
-      metadata: {
-        name: this.form.getRawValue().organizationId,
-      },
-      spec: {
-        displayName: this.form.getRawValue().displayName,
-      },
-    };
+
+  private getOrgFromForm(): Organization {
+    return newOrganization(this.form.getRawValue().organizationId, this.form.getRawValue().displayName ?? '');
   }
 
   private saveOrUpdateSuccess(): void {

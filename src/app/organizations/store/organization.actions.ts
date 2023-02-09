@@ -11,17 +11,7 @@ export const loadOrganizationsFailure = createAction(
   props<{ errorMessage: string }>()
 );
 
-export const saveOrganization = createAction(
-  '[Organization] Save Organization',
-  props<{ organization: Organization; isNew: boolean }>()
-);
-
 export const saveOrganizationSuccess = createAction(
   '[Organization] Save Organization Success',
   props<{ organization: Organization }>()
-);
-
-export const saveOrganizationFailure = createAction(
-  '[Organization] Save Organization Failure',
-  props<{ error: object }>()
 );

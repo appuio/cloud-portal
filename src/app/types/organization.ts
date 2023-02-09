@@ -20,3 +20,16 @@ export interface OrganizationList {
   metadata: object;
   items: Organization[];
 }
+
+export function newOrganization(name: string, displayName: string): Organization {
+  return {
+    kind: 'Organization',
+    apiVersion: 'organization.appuio.io/v1',
+    metadata: {
+      name: name,
+    },
+    spec: {
+      displayName: displayName,
+    },
+  };
+}

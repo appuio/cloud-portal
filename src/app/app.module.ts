@@ -55,6 +55,7 @@ import { entityConfig } from './store/entity-metadata-map';
     HttpClientModule,
     OAuthModule.forRoot(),
     StoreModule.forRoot({ app: appReducer, router: routerReducer }),
+    StoreModule.forFeature('organization', {}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
     StoreRouterConnectingModule.forRoot(),

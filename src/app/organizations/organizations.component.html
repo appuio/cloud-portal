@@ -91,7 +91,7 @@
   </p-messages>
 </ng-container>
 
-<ng-container *ngIf="organizationCollectionService.errors$ | async">
+<ng-container *ngIf="loadErrors() | async">
   <p-messages severity="error">
     <ng-template pTemplate="content">
       <fa-icon [icon]="faWarning"></fa-icon>

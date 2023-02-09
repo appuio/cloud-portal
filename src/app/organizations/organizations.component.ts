@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { filter, map, Observable, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from './organization-collection.service';
 import { Verb } from '../store/app.reducer';
 import { selectHasPermission } from '../store/app.selectors';
+import { EntityOp } from '@ngrx/data';
 
 @Component({
   selector: 'app-organizations',
@@ -50,6 +51,16 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       });
   }
 
+  loadErrors(): Observable<Error> {
+    return this.organizationCollectionService.errors$.pipe(
+      filter((action) => {
+        return action.payload.entityOp == EntityOp.QUERY_ALL_ERROR;
+      }),
+      map((action) => {
+        return action.payload.data.error.error satisfies Error;
+      })
+    );
+  }
   openJoinOrganizationDialog(): void {
     this.dialogService.open(JoinOrganizationDialogComponent, {
       modal: true,

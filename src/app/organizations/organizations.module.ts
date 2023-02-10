@@ -30,6 +30,6 @@ export default class OrganizationsModule {
     entityDataService: EntityDataService
   ) {
     entityDataService.registerService(organizationEntityKey, organizationDataService);
-    organizationCollectionService.getAll(); // get initial data upon module load, maybe not the perfect place here...
+    organizationCollectionService.getAll().subscribe(); // get initial data upon module load, maybe not the perfect place here...
   }
 }

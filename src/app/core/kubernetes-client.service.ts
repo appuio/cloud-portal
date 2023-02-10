@@ -136,4 +136,16 @@ export class KubernetesClientService {
     );
     return forkJoin(requests).pipe(map((results) => verbs.filter((verb, index) => results[index])));
   }
+
+  getSelfSubjectAccessReview(
+    namespace: string,
+    resource: string,
+    group: string,
+    verb: string
+  ): Observable<SelfSubjectAccessReview> {
+    return this.httpClient.post<SelfSubjectAccessReview>(
+      'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
+      new SelfSubjectAccessReview(verb, resource, group, namespace)
+    );
+  }
 }

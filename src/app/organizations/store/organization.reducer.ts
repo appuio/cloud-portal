@@ -20,27 +20,6 @@ export const reducer = createReducer(
   initialState,
 
   on(
-    OrganizationActions.loadOrganizations,
-    (state): OrganizationState => ({
-      ...state,
-      organizations: { value: [], state: EntityState.Loading },
-    })
-  ),
-  on(
-    OrganizationActions.loadOrganizationsSuccess,
-    (state, { organizations }): OrganizationState => ({
-      ...state,
-      organizations: { value: organizations, state: EntityState.Loaded },
-    })
-  ),
-  on(
-    OrganizationActions.loadOrganizationsFailure,
-    (state): OrganizationState => ({
-      ...state,
-      organizations: { value: [], state: EntityState.Failed },
-    })
-  ),
-  on(
     OrganizationActions.saveOrganizationSuccess,
     (state, { organization }): OrganizationState => ({
       ...state,

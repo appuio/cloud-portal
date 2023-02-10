@@ -7,8 +7,8 @@ import { SharedModule } from '../shared/shared.module';
 import { OrganizationFormComponent } from './organization-form/organization-form.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
-import { EntityDataService, EntityDefinitionService } from '@ngrx/data';
-import { entityMetadataMap, organizationEntityKey } from '../store/entity-metadata-map';
+import { EntityDataService } from '@ngrx/data';
+import { organizationEntityKey } from '../store/entity-metadata-map';
 import { OrganizationDataService } from './organization-data.service';
 import { OrganizationCollectionService } from './organization-collection.service';
 
@@ -25,12 +25,10 @@ import { OrganizationCollectionService } from './organization-collection.service
 })
 export default class OrganizationsModule {
   constructor(
-    entityDefinitionService: EntityDefinitionService,
     organizationDataService: OrganizationDataService,
     organizationCollectionService: OrganizationCollectionService,
     entityDataService: EntityDataService
   ) {
-    entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(organizationEntityKey, organizationDataService);
     organizationCollectionService.getAll(); // get initial data upon module load, maybe not the perfect place here...
   }

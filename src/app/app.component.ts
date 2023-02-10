@@ -3,11 +3,11 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faSitemap, faUserGroup, faDatabase, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faDatabase, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { loadOrganizations, loadUser } from './store/app.actions';
+import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
 import { take } from 'rxjs';
 
@@ -35,9 +35,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-    this.store.dispatch(loadOrganizations());
-
     // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));
 

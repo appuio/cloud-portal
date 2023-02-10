@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import {
-  loadOrganizations,
-  loadOrganizationsFailure,
-  loadOrganizationsSuccess,
   loadUser,
   loadUserFailure,
   loadUserSuccess,
@@ -45,7 +42,7 @@ export class AppEffects {
   loadZonesFailure$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(loadZonesFailure, loadOrganizationsFailure, loadUserFailure, loadTeamsFailure),
+        ofType(loadZonesFailure, loadUserFailure, loadTeamsFailure),
         tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',
@@ -57,18 +54,6 @@ export class AppEffects {
     },
     { dispatch: false }
   );
-
-  loadOrganizations$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(loadOrganizations),
-      concatMap(() => {
-        return this.kubernetesClientService.getOrganizationList().pipe(
-          map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
-          catchError((error) => of(loadOrganizationsFailure({ errorMessage: error.message })))
-        );
-      })
-    );
-  });
 
   loadUser$ = createEffect(() => {
     return this.actions$.pipe(

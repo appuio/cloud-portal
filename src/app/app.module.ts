@@ -33,9 +33,16 @@ import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
 import { EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
-import { entityConfig, entityMetadataMap, selfSubjectAccessReviewEntityKey } from './store/entity-metadata-map';
+import {
+  entityConfig,
+  entityMetadataMap,
+  organizationEntityKey,
+  selfSubjectAccessReviewEntityKey,
+} from './store/entity-metadata-map';
 import { clusterOrganizationSsarIDs, SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
+import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { OrganizationDataService } from './organizations/organization-data.service';
 
 @NgModule({
   declarations: [
@@ -68,9 +75,18 @@ import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collectio
     DialogService,
     ConfirmationService,
     SelfSubjectAccessReviewDataService,
+    OrganizationCollectionService,
+    OrganizationDataService,
     {
       provide: APP_INITIALIZER,
-      deps: [AppConfigService, OAuthService, KubernetesClientService, Store, SelfSubjectAccessReviewCollectionService],
+      deps: [
+        AppConfigService,
+        OAuthService,
+        KubernetesClientService,
+        Store,
+        SelfSubjectAccessReviewCollectionService,
+        OrganizationCollectionService,
+      ],
       useFactory: initializeAppFactory,
       multi: true,
     },
@@ -91,10 +107,12 @@ export class AppModule {
   constructor(
     entityDefinitionService: EntityDefinitionService,
     entityDataService: EntityDataService,
-    ssarDataService: SelfSubjectAccessReviewDataService
+    ssarDataService: SelfSubjectAccessReviewDataService,
+    organizationDataService: OrganizationDataService
   ) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(selfSubjectAccessReviewEntityKey, ssarDataService);
+    entityDataService.registerService(organizationEntityKey, organizationDataService);
   }
 }
 
@@ -103,7 +121,8 @@ export function initializeAppFactory(
   oauthService: OAuthService,
   kubernetesClientService: KubernetesClientService,
   store: Store,
-  ssarCollectionService: SelfSubjectAccessReviewCollectionService
+  ssarCollectionService: SelfSubjectAccessReviewCollectionService,
+  organizationCollectionService: OrganizationCollectionService
 ): () => Observable<boolean> {
   return () => {
     return appConfigService.loadConfig().pipe(
@@ -120,6 +139,8 @@ export function initializeAppFactory(
           }
           oauthService.setupAutomaticSilentRefresh();
           clusterOrganizationSsarIDs.forEach((s) => ssarCollectionService.getByKey(s)); // fetch permissions
+          organizationCollectionService.getAll().subscribe(); // get initial data upon module load, maybe not the perfect place here...
+
           return new Promise<boolean>((resolve) => {
             forkJoin([
               kubernetesClientService.getZonePermission(),

@@ -34,7 +34,7 @@
         </div>
         <div>
           <a
-            *ngIf="organization?.viewMembers"
+            *ngIf="permissionService.canViewMembers(organization) | ngrxPush"
             [routerLink]="[organization.metadata.name, 'members']"
             class="text-blue-500 hover:text-primary cursor-pointer mr-2"
             i18n-title

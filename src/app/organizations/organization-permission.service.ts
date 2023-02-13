@@ -19,6 +19,21 @@ export class OrganizationPermissionService {
   }
 
   canAddOrganizations$: Observable<boolean>;
+  canViewMembers(org: Organization): Observable<boolean> {
+    return this.ssarCollectionService.entities$.pipe(
+      map((ssars) =>
+        ssars.some((ssar) =>
+          this.ssarCollectionService.isMatchingAndAllowed(
+            ssar,
+            'appuio.io',
+            'organizationmembers',
+            org.metadata.name,
+            Verb.List
+          )
+        )
+      )
+    );
+  }
 
   canEditOrganization(org: Organization): Observable<boolean> {
     return this.ssarCollectionService.entities$.pipe(

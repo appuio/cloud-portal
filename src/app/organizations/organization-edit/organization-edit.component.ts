@@ -5,7 +5,7 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationCollectionService } from '../organization-collection.service';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
-import { organizationNameFilter } from '../../store/entity-metadata-map';
+import { organizationNameFilter } from '../../store/entity-filter';
 
 @Component({
   selector: 'app-organization-edit',

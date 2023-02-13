@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
+import { composeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -36,5 +37,10 @@ export class SelfSubjectAccessReviewCollectionService extends EntityCollectionSe
       isMatching = isMatching && attr.namespace === namespace;
     }
     return isMatching;
+  }
+
+  getBySelfSubjectAccessReview(ssar: SelfSubjectAccessReview): Observable<SelfSubjectAccessReview> {
+    const key = composeSsarId(ssar);
+    return super.getByKey(key);
   }
 }

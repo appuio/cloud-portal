@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Organization } from '../types/organization';
-import { composeSsarId, organizationEntityKey } from '../store/entity-metadata-map';
+import { organizationEntityKey } from '../store/entity-metadata-map';
 import { combineLatest, Observable, tap } from 'rxjs';
 import { SelfSubjectAccessReviewCollectionService } from '../store/ssar-collection.service';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
@@ -22,14 +22,12 @@ export class OrganizationCollectionService extends EntityCollectionServiceBase<O
     return super.getAll(options).pipe(
       tap((orgs) => {
         return orgs.forEach((org) => {
-          const editSsar = new SelfSubjectAccessReview(
-            Verb.Update,
-            'organizations',
-            'rbac.appuio.io',
-            org.metadata.name
+          this.ssarCollectionService.getBySelfSubjectAccessReview(
+            new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', org.metadata.name)
           );
-          const key = composeSsarId(editSsar);
-          this.ssarCollectionService.getByKey(key);
+          this.ssarCollectionService.getBySelfSubjectAccessReview(
+            new SelfSubjectAccessReview(Verb.List, 'organizationmembers', 'appuio.io', org.metadata.name)
+          );
         });
       })
     );
@@ -43,9 +41,9 @@ export class OrganizationCollectionService extends EntityCollectionServiceBase<O
       tap((org) => {
         // theoretically, we could just add the SSAR to the cache with addOneToCache,
         //  but just because we could create an organization, doesn't strictly mean we can also edit it.
-        const editSsar = new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', org.metadata.name);
-        const key = composeSsarId(editSsar);
-        this.ssarCollectionService.getByKey(key);
+        this.ssarCollectionService.getBySelfSubjectAccessReview(
+          new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', org.metadata.name)
+        );
       })
     );
   }

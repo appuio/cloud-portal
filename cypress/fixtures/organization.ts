@@ -3,8 +3,6 @@ import { Organization, OrganizationList, OrganizationSpec } from '../../src/app/
 export interface OrganizationConfig {
   name: string;
   displayName?: string;
-  viewMembers?: boolean;
-  editOrganization?: boolean;
 }
 
 export interface OrganizationListConfig {
@@ -55,8 +53,6 @@ export function createOrganization(organizationConfig: OrganizationConfig): Orga
       name: organizationConfig.name,
     },
     spec,
-    viewMembers: organizationConfig.viewMembers,
-    editOrganization: organizationConfig.editOrganization,
   };
 }
 

@@ -10,7 +10,6 @@ export interface OrganizationMembers {
       name: string;
     }[];
   };
-  editMembers?: boolean;
 }
 
 export interface OrganizationMemberList {

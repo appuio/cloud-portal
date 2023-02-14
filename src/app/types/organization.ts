@@ -10,8 +10,6 @@ export interface Organization {
     [key: string]: unknown;
   };
   spec: OrganizationSpec;
-  viewMembers?: boolean;
-  editOrganization?: boolean;
 }
 
 export interface OrganizationList {

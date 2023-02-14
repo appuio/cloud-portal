@@ -14,8 +14,8 @@ export const entityMetadataMap: EntityMetadataMap = {
     entityName: organizationEntityKey,
     sortComparer: (a: Organization, b: Organization) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
-    filterFn: (entities: Organization[], filterFn: (org: Organization) => boolean) => {
-      return entities.filter((org) => filterFn(org));
+    filterFn: (entities: Organization[], filterFn: (orgs: Organization[]) => Organization[]) => {
+      return filterFn(entities);
     },
   },
   SelfSubjectAccessReview: {

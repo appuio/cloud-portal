@@ -44,6 +44,9 @@ export class OrganizationCollectionService extends EntityCollectionServiceBase<O
         this.ssarCollectionService.getBySelfSubjectAccessReview(
           new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', org.metadata.name)
         );
+        this.ssarCollectionService.getBySelfSubjectAccessReview(
+          new SelfSubjectAccessReview(Verb.List, 'organizationmembers', 'appuio.io', org.metadata.name)
+        );
       })
     );
   }

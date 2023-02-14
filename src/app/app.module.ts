@@ -39,8 +39,7 @@ import {
   organizationEntityKey,
   selfSubjectAccessReviewEntityKey,
 } from './store/entity-metadata-map';
-import { clusterOrganizationSsarIDs, SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
-import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
+import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { OrganizationCollectionService } from './organizations/organization-collection.service';
 import { OrganizationDataService } from './organizations/organization-data.service';
 
@@ -79,14 +78,7 @@ import { OrganizationDataService } from './organizations/organization-data.servi
     OrganizationDataService,
     {
       provide: APP_INITIALIZER,
-      deps: [
-        AppConfigService,
-        OAuthService,
-        KubernetesClientService,
-        Store,
-        SelfSubjectAccessReviewCollectionService,
-        OrganizationCollectionService,
-      ],
+      deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
       useFactory: initializeAppFactory,
       multi: true,
     },
@@ -120,9 +112,7 @@ export function initializeAppFactory(
   appConfigService: AppConfigService,
   oauthService: OAuthService,
   kubernetesClientService: KubernetesClientService,
-  store: Store,
-  ssarCollectionService: SelfSubjectAccessReviewCollectionService,
-  organizationCollectionService: OrganizationCollectionService
+  store: Store
 ): () => Observable<boolean> {
   return () => {
     return appConfigService.loadConfig().pipe(
@@ -138,8 +128,6 @@ export function initializeAppFactory(
             return Promise.reject('Not logged in');
           }
           oauthService.setupAutomaticSilentRefresh();
-          clusterOrganizationSsarIDs.forEach((s) => ssarCollectionService.getByKey(s)); // fetch permissions
-          organizationCollectionService.getAll().subscribe(); // get initial data upon module load, maybe not the perfect place here...
 
           return new Promise<boolean>((resolve) => {
             forkJoin([

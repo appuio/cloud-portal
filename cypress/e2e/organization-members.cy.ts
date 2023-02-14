@@ -26,7 +26,6 @@ describe('Test organization members', () => {
         namespace: 'nxt',
       }
     );
-    cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
@@ -45,6 +44,7 @@ describe('Test organization members', () => {
         ],
       }),
     });
+    cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
@@ -65,7 +65,6 @@ describe('Test organization members', () => {
       { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
       { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
     );
-    cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
@@ -104,6 +103,7 @@ describe('Test organization members', () => {
         body: {},
       }
     ).as('save-viewer-role');
+    cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('not.exist');

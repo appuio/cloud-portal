@@ -10,6 +10,10 @@ import { AppConfigService } from './app-config.service';
 import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
 import { take } from 'rxjs';
+import { clusterOrganizationSsarIDs } from './store/ssar-data.service';
+import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
+import { firstInList } from './store/entity-filter';
 
 @Component({
   selector: 'app-root',
@@ -31,10 +35,18 @@ export class AppComponent implements OnInit {
     private oauthService: OAuthService,
     private store: Store,
     private appConfigService: AppConfigService,
-    private identityService: IdentityService
+    private identityService: IdentityService,
+    private organizationService: OrganizationCollectionService,
+    private ssarCollectionService: SelfSubjectAccessReviewCollectionService
   ) {}
 
   ngOnInit(): void {
+    // pre-load some entities into cache
+    clusterOrganizationSsarIDs.forEach((s) => this.ssarCollectionService.getByKey(s));
+    // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
+    this.organizationService.setFilter(firstInList());
+    this.organizationService.getAll().subscribe();
+
     // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));
 

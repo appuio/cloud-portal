@@ -1,14 +1,22 @@
 import { Organization } from '../types/organization';
-import { OrganizationMembers } from '../types/organization-members';
 
-export function organizationNameFilter(name: string): (org: Organization) => boolean {
-  return function (org) {
-    return org.metadata.name === name;
+export function organizationNameFilter(name: string): (orgs: Organization[]) => Organization[] {
+  return function (orgs) {
+    return orgs.filter((org) => org.metadata.name === name);
   };
 }
 
-export function memberNameFilter(name: string): (members: OrganizationMembers) => boolean {
-  return function (members) {
-    return members.metadata.namespace === name;
+export function noFilter<T>(): (entities: T[]) => T[] {
+  return function (entities) {
+    return entities;
+  };
+}
+
+export function firstInList<T>(): (entity: T[]) => T[] {
+  return function (entities) {
+    if (entities.length === 0) {
+      return [];
+    }
+    return [entities[0]];
   };
 }

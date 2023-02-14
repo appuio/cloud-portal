@@ -3,7 +3,6 @@ import { Organization } from '../../types/organization';
 import { map, Observable, of } from 'rxjs';
 import { OrganizationCollectionService } from '../organization-collection.service';
 import { Injectable } from '@angular/core';
-import { organizationNameFilter } from '../../store/entity-filter';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationResolver implements Resolve<Organization | undefined> {
@@ -15,6 +14,6 @@ export class OrganizationResolver implements Resolve<Organization | undefined> {
     if (!name) {
       return of(undefined);
     }
-    return this.organizationService.entities$.pipe(map((orgs) => orgs.find(organizationNameFilter(name))));
+    return this.organizationService.entities$.pipe(map((orgs) => orgs.find((org) => org.metadata.name === name)));
   }
 }

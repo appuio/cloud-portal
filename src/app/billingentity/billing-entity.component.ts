@@ -16,6 +16,6 @@ export class BillingEntityComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.billingEntityService.getAll().subscribe();
+    this.billingEntityService.getByKey('be-2345').subscribe();
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Operation } from './kubernetes-data.service';
-import { billingEntityEntityKey } from './entity-metadata-map';
 import { QueryParams } from '@ngrx/data';
 
 @Injectable({
@@ -13,12 +12,8 @@ export class KubernetesUrlGenerator {
     { apiVersion: string; kind: string }
   >();
 
-  constructor() {
-    this.knownEntities.set(billingEntityEntityKey, { apiVersion: 'billing.appuio.io/v1', kind: 'billingentities' });
-  }
-
   getEntity(entityName: string, id: string, op: Operation): string {
-    const meta = this.knownEntities.get(entityName);
+    const meta = this.getKubeObjectMeta(entityName);
     if (!meta) {
       throw new Error(`Entity "${entityName}" is not registered in the Kubernetes URL generator`);
     }
@@ -40,7 +35,7 @@ export class KubernetesUrlGenerator {
   }
 
   getEntityList(entityName: string, op: Operation, queryParams?: QueryParams | string): string {
-    const meta = this.knownEntities.get(entityName);
+    const meta = this.getKubeObjectMeta(entityName);
     if (!meta) {
       throw new Error(`Entity "${entityName}" is not registered in the Kubernetes URL generator`);
     }
@@ -66,5 +61,22 @@ export class KubernetesUrlGenerator {
       return { name: arr[1], namespace: arr[0] };
     }
     throw new Error(`id is an invalid Kubernetes name, must be one of ["name", "namespace/name"], : ${id}`);
+  }
+
+  protected getKubeObjectMeta(entityName: string): { apiVersion: string; kind: string } {
+    let meta = this.knownEntities.get(entityName);
+    if (meta) {
+      return meta;
+    }
+    const arr = entityName.split('/');
+    if (arr.length !== 3) {
+      throw new Error(`invalid entity name given, must be formatted like "group/version/kind": ${entityName}`);
+    }
+    meta = {
+      apiVersion: `${arr[0]}/${arr[1]}`,
+      kind: arr[2],
+    };
+    this.knownEntities.set(entityName, meta);
+    return meta;
   }
 }

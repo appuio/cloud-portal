@@ -7,7 +7,7 @@ import { BillingEntity } from '../types/billing-entity';
 export const organizationEntityKey = 'Organization';
 export const organizationMembersEntityKey = 'OrganizationMembers';
 export const selfSubjectAccessReviewEntityKey = 'SelfSubjectAccessReview';
-export const billingEntityEntityKey = 'BillingEntity';
+export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {

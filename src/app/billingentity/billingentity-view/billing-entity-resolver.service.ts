@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { BillingEntity } from '../types/billing-entity';
+import { BillingEntity } from '../../types/billing-entity';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { billingEntityEntityKey } from '../store/entity-metadata-map';
+import { billingEntityEntityKey } from '../../store/entity-metadata-map';
 
 @Injectable({
   providedIn: 'root',

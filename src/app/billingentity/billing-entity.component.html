@@ -3,7 +3,7 @@
 </div>
 
 <ng-container *ngIf="(billingEntityService.loading$ | ngrxPush) === false">
-  <ng-container *ngFor="let billingEntity of billingEntityService.entities$ | ngrxPush; index as i">
+  <ng-container *ngFor="let billingEntity of billingEntityService.entities$ | ngrxPush">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
@@ -18,44 +18,11 @@
               {{ billingEntity.spec.name }}
             </div>
           </li>
-          <li *ngIf="billingEntity.spec.emails" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Company Email</div>
-            <div class="text-900 w-full md:w-9">
-              <ul *ngFor="let email of billingEntity.spec.emails" class="pl-0 list-none">
-                <li>{{ email }}</li>
-              </ul>
-            </div>
-          </li>
-          <li *ngIf="billingEntity.spec.phone" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Phone</div>
-            <div class="text-900 w-full md:w-9">
-              {{ billingEntity.spec.phone }}
-            </div>
-          </li>
-          <li *ngIf="billingEntity.spec.address" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Address</div>
-            <div class="text-900 w-full md:w-9">
-              <div>{{ billingEntity.spec.address.line1 }}</div>
-              <div>{{ billingEntity.spec.address.line2 }}</div>
-              <div>{{ billingEntity.spec.address.postalCode }} {{ billingEntity.spec.address.city }}</div>
-              <div>{{ billingEntity.spec.address.country }}</div>
-            </div>
-          </li>
           <li *ngIf="billingEntity.spec.accountingContact"
               class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
             <div class="text-500 w-full md:w-3 font-medium" i18n>Invoice Recipient</div>
             <div class="text-900 w-full md:w-9">
               {{ billingEntity.spec.accountingContact.name }}
-              <ul *ngFor="let email of billingEntity.spec.accountingContact.emails" class="pl-0 list-none">
-                <li>{{ email }}</li>
-              </ul>
-            </div>
-          </li>
-          <li *ngIf="billingEntity.spec.languagePreference"
-              class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Language Preference</div>
-            <div class="text-900 w-full md:w-9">
-              {{ billingEntity.spec.languagePreference }}
             </div>
           </li>
         </ul>

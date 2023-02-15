@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { AuthConfig, OAuthModule, OAuthService } from 'angular-oauth2-oidc';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
 import { forkJoin, mergeMap, Observable, retry } from 'rxjs';
@@ -34,6 +34,7 @@ import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
 import { EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
 import {
+  billingEntityEntityKey,
   entityConfig,
   entityMetadataMap,
   organizationEntityKey,
@@ -42,6 +43,9 @@ import {
 import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { OrganizationCollectionService } from './organizations/organization-collection.service';
 import { OrganizationDataService } from './organizations/organization-data.service';
+import { KubernetesDataService } from './store/kubernetes-data.service';
+import { KubernetesUrlGenerator } from './store/kubernetes-url-generator.service';
+import { BillingEntity } from './types/billing-entity';
 
 @NgModule({
   declarations: [
@@ -95,10 +99,19 @@ import { OrganizationDataService } from './organizations/organization-data.servi
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
+  constructor(
+    entityDefinitionService: EntityDefinitionService,
+    entityDataService: EntityDataService,
+    http: HttpClient,
+    urlGenerator: KubernetesUrlGenerator
+  ) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
     entityDataService.registerService(organizationEntityKey, inject(OrganizationDataService));
+    entityDataService.registerService(
+      billingEntityEntityKey,
+      new KubernetesDataService<BillingEntity>(billingEntityEntityKey, http, urlGenerator)
+    );
   }
 }
 

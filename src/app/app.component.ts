@@ -3,7 +3,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faComment, faDatabase, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faDatabase, faDollarSign, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
@@ -100,6 +100,11 @@ export class AppComponent implements OnInit {
       label: $localize`Teams`,
       icon: faUserGroup,
       routerLink: ['teams'],
+    });
+    this.menuItems.push({
+      label: $localize`Billing Entities`,
+      icon: faDollarSign,
+      routerLink: ['billingentities'],
     });
   }
 }

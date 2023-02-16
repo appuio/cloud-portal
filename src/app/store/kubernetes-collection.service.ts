@@ -50,7 +50,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
   public getAllMemoized(options?: EntityActionOptions): Observable<T[]> {
     return this.entities$.pipe(
       take(1),
-      switchMap((entities) => {
+      switchMap(() => {
         if (this.memoizedAllEntities) {
           return this.entities$;
         }

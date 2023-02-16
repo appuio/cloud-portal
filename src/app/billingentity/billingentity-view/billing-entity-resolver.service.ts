@@ -18,6 +18,7 @@ export class BillingEntityResolver implements Resolve<BillingEntity | undefined>
     this.billingService = entityFactory.create(billingEntityEntityKey);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<BillingEntity | undefined> {
     const name = route.paramMap.get('name');
     if (!name) {

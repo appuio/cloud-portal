@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { composeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of, take } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,25 @@ export class SelfSubjectAccessReviewCollectionService extends EntityCollectionSe
   }
 
   public isAllowed(group: string, resource: string, verb: string, namespace?: string): Observable<boolean> {
+    return this.getBySelfSubjectAccessReviewLazy(
+      new SelfSubjectAccessReview(verb, resource, group, namespace ?? '')
+    ).pipe(map((ssar) => ssar.status.allowed));
+  }
+
+  public getBySelfSubjectAccessReviewLazy(
+    ssarKey: SelfSubjectAccessReview,
+    options?: EntityActionOptions
+  ): Observable<SelfSubjectAccessReview> {
+    const key = ssarKey.spec.resourceAttributes;
     return this.entities$.pipe(
-      map((ssars) => ssars.some((ssar) => this.isMatchingAndAllowed(ssar, group, resource, namespace ?? '', verb)))
+      take(1),
+      switchMap((ssars: SelfSubjectAccessReview[]) => {
+        const ssar = ssars.find((ssar) => this.isMatching(ssar, key.group, key.resource, key.namespace, key.verb));
+        if (ssar) {
+          return of(ssar);
+        }
+        return super.getByKey(composeSsarId(ssarKey), options);
+      })
     );
   }
 

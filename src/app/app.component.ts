@@ -104,12 +104,7 @@ export class AppComponent implements OnInit {
     });
     this.ssarCollectionService
       .isAllowed('billing.appuio.io', 'billingentities', Verb.List, '')
-      .pipe(
-        // The underlying SSAR collection may change as they get loaded at app start, so we limit to only 1 if allowed,
-        // otherwise there could be multiple menuitems for the same.
-        filter((allowed) => allowed),
-        take(1)
-      )
+      .pipe(filter((allowed) => allowed))
       .subscribe(() => {
         this.menuItems.push({
           label: $localize`Billing Entities`,

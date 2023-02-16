@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
 import { Observable, of } from 'rxjs';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-billingentity-view',
@@ -11,6 +12,9 @@ import { Observable, of } from 'rxjs';
 })
 export class BillingentityViewComponent implements OnInit {
   billingEntity$?: Observable<BillingEntity>;
+
+  faClose = faClose;
+
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {

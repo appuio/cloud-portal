@@ -3,7 +3,7 @@ import { EntityCollectionService, EntityCollectionServiceFactory, EntityOp } fro
 import { BillingEntity } from '../types/billing-entity';
 import { billingEntityEntityKey } from '../store/entity-metadata-map';
 
-import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { filter, map, Observable } from 'rxjs';
 
 @Component({
@@ -17,6 +17,7 @@ export class BillingEntityComponent implements OnInit {
 
   faWarning = faWarning;
   faInfo = faInfo;
+  faEdit = faEdit;
 
   constructor(private factory: EntityCollectionServiceFactory) {
     this.billingEntityService = factory.create<BillingEntity>(billingEntityEntityKey);

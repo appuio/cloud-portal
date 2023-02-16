@@ -1,13 +1,21 @@
 import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { KubeObject } from '../types/entity';
-import { Observable, of, take } from 'rxjs';
+import { Observable, of, take, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { buildId } from './kubernetes-data.service';
 import { Injectable } from '@angular/core';
 
 export class KubernetesCollectionService<T extends KubeObject> extends EntityCollectionServiceBase<T> {
+  // this flags holds the value true where there was an initial collection load.
+  // Ideally this can be done with rxJS, but it's not easy to accomplish this if there is no initial QUERY_ALL action dispatched.
+  private memoizedAllEntities = false;
+
   constructor(entityName: string, private serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super(entityName, serviceElementsFactory);
+  }
+
+  override getAll(options?: EntityActionOptions): Observable<T[]> {
+    return super.getAll(options).pipe(tap(() => (this.memoizedAllEntities = true)));
   }
 
   /**
@@ -40,9 +48,10 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
    * @returns Observable of the queried entities after server reports successful query or the query error.
    */
   public getAllMemoized(options?: EntityActionOptions): Observable<T[]> {
-    return this.loaded$.pipe(
-      switchMap((isLoaded) => {
-        if (isLoaded) {
+    return this.entities$.pipe(
+      take(1),
+      switchMap((entities) => {
+        if (this.memoizedAllEntities) {
           return this.entities$;
         }
         return this.getAll(options);
@@ -62,10 +71,20 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
 }
 
 @Injectable()
-export class KubernetesCollectionServiceFactory {
+export class KubernetesCollectionServiceFactory<T extends KubeObject> {
+  protected knownCollectionServices: Map<string, KubernetesCollectionService<T>> = new Map<
+    string,
+    KubernetesCollectionService<T>
+  >();
   constructor(protected entityCollectionServiceElementsFactory: EntityCollectionServiceElementsFactory) {}
 
-  create<T extends KubeObject>(entityName: string): KubernetesCollectionService<T> {
-    return new KubernetesCollectionService(entityName, this.entityCollectionServiceElementsFactory);
+  create(entityName: string): KubernetesCollectionService<T> {
+    let knownService = this.knownCollectionServices.get(entityName);
+    if (knownService) {
+      return knownService;
+    }
+    knownService = new KubernetesCollectionService(entityName, this.entityCollectionServiceElementsFactory);
+    this.knownCollectionServices.set(entityName, knownService);
+    return knownService;
   }
 }

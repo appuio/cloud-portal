@@ -14,8 +14,8 @@ import {
 export class BillingEntityResolver implements Resolve<BillingEntity | undefined> {
   private billingService: KubernetesCollectionService<BillingEntity>;
 
-  constructor(private entityFactory: KubernetesCollectionServiceFactory) {
-    this.billingService = entityFactory.create<BillingEntity>(billingEntityEntityKey);
+  constructor(private entityFactory: KubernetesCollectionServiceFactory<BillingEntity>) {
+    this.billingService = entityFactory.create(billingEntityEntityKey);
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<BillingEntity | undefined> {

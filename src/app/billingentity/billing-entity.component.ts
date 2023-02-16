@@ -22,9 +22,11 @@ export class BillingEntityComponent {
   faWarning = faWarning;
   faInfo = faInfo;
   faEdit = faEdit;
+  billingEntities$: Observable<BillingEntity[]>;
 
-  constructor(private factory: KubernetesCollectionServiceFactory) {
-    this.billingEntityService = factory.create<BillingEntity>(billingEntityEntityKey);
+  constructor(private factory: KubernetesCollectionServiceFactory<BillingEntity>) {
+    this.billingEntityService = factory.create(billingEntityEntityKey);
+    this.billingEntities$ = this.billingEntityService.getAllMemoized();
   }
 
   loadErrors(): Observable<Error> {

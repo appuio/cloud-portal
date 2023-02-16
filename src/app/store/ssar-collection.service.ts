@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { composeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +10,12 @@ import { Observable } from 'rxjs';
 export class SelfSubjectAccessReviewCollectionService extends EntityCollectionServiceBase<SelfSubjectAccessReview> {
   constructor(private elementsFactory: EntityCollectionServiceElementsFactory) {
     super(selfSubjectAccessReviewEntityKey, elementsFactory);
+  }
+
+  public isAllowed(group: string, resource: string, verb: string, namespace?: string): Observable<boolean> {
+    return this.entities$.pipe(
+      map((ssars) => ssars.some((ssar) => this.isMatchingAndAllowed(ssar, group, resource, namespace ?? '', verb)))
+    );
   }
 
   public isMatchingAndAllowed(

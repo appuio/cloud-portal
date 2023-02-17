@@ -1,9 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Zone } from '../types/zone';
 import {
-  loadOrganizations,
-  loadOrganizationsFailure,
-  loadOrganizationsSuccess,
   loadUser,
   loadUserFailure,
   loadUserSuccess,
@@ -71,30 +68,6 @@ export const appReducer = createReducer(
     (state): AppState => ({
       ...state,
       zones: { value: [], state: EntityState.Failed },
-    })
-  ),
-  on(
-    loadOrganizations,
-    (state): AppState => ({
-      ...state,
-      organizations: { value: [], state: EntityState.Loading },
-      focusOrganizationName: undefined,
-    })
-  ),
-  on(
-    loadOrganizationsSuccess,
-    (state, { organizations }): AppState => ({
-      ...state,
-      organizations: { value: organizations, state: EntityState.Loaded },
-      focusOrganizationName: state.user.value?.spec.preferences?.defaultOrganizationRef ?? undefined,
-    })
-  ),
-  on(
-    loadOrganizationsFailure,
-    (state): AppState => ({
-      ...state,
-      organizations: { value: [], state: EntityState.Failed },
-      focusOrganizationName: undefined,
     })
   ),
   on(

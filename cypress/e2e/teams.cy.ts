@@ -16,14 +16,14 @@ describe('Test teams list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-
-    cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
+
+    cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
@@ -35,11 +35,10 @@ describe('Test teams list', () => {
       body: userMigWithoutPreferences,
     });
 
-    cy.visit('/teams');
-
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
+
     let interceptCount = 0;
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', (req) => {
       if (interceptCount === 0) {
@@ -49,6 +48,7 @@ describe('Test teams list', () => {
         req.reply(teamListNxt);
       }
     });
+    cy.visit('/teams');
 
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
@@ -61,14 +61,14 @@ describe('Test teams list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });
-
-    cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
       body: teamListVshn,
     });
+
+    cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
   });
@@ -79,8 +79,6 @@ describe('Test teams list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });
-
-    cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
@@ -90,6 +88,8 @@ describe('Test teams list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
+
+    cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
     cy.get('app-organization-selection:visible').click();
@@ -105,13 +105,14 @@ describe('Test teams list', () => {
       body: userMigWithoutPreferences,
     });
 
-    cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: createTeamList({ items: [] }),
     });
+
+    cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get('#no-teams-message').should('contain.text', 'No teams available.');
   });

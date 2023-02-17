@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectFocusOrganizationName } from '../store/app.selectors';
-import { Observable, Subscription } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { Entity, EntityState } from '../types/entity';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Verb } from '../store/app.reducer';
@@ -13,6 +13,8 @@ import { selectHasTeamPermission, selectTeams } from './store/team.selectors';
 import { deleteTeam, loadTeamPermissions, loadTeams } from './store/team.actions';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
 import { ConfirmationService } from 'primeng/api';
+import { OrganizationCollectionService } from '../organizations/organization-collection.service';
+import { setFocusOrganization } from '../store/app.actions';
 
 @Component({
   selector: 'app-teams',
@@ -39,17 +41,28 @@ export class TeamsComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private organizationService: OrganizationCollectionService
   ) {}
 
   ngOnInit(): void {
     // eslint-disable-next-line ngrx/no-store-subscription
     this.store.select(selectFocusOrganizationName).subscribe((organizationName) => {
-      this.organizationName = organizationName;
-      // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-      this.store.dispatch(loadTeams());
-      // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-      this.store.dispatch(loadTeamPermissions());
+      // special hook: If user has no default organization set, this selection never happens and teams do not get loaded.
+      if (!organizationName) {
+        this.subscriptions.push(
+          this.organizationService.filteredEntities$.pipe(map((orgs) => orgs[0])).subscribe((org) => {
+            this.organizationName = org.metadata.name;
+            this.store.dispatch(setFocusOrganization({ focusOrganizationName: this.organizationName }));
+          })
+        );
+      } else {
+        this.organizationName = organizationName;
+        // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
+        this.store.dispatch(loadTeams());
+        // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
+        this.store.dispatch(loadTeamPermissions());
+      }
     });
 
     this.subscriptions.push(

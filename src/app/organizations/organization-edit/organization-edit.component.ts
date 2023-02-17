@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { selectIsNewOrganization, selectOrganization } from '../store/organization.selectors';
-import { Observable } from 'rxjs';
-import { Organization } from '../../types/organization';
+import { newOrganization, Organization } from '../../types/organization';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { OrganizationCollectionService } from '../organization-collection.service';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-organization-edit',
@@ -12,9 +12,21 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationEditComponent {
-  organization$: Observable<Organization | undefined> = this.store.select(selectOrganization);
-  isNew$ = this.store.select(selectIsNewOrganization);
+  organization$?: Observable<Organization>;
+  isNew$ = of(false);
   faClose = faClose;
 
-  constructor(private store: Store) {}
+  constructor(
+    private organizationCollectionService: OrganizationCollectionService,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.activatedRoute.data.subscribe(({ organization }) => {
+      this.isNew$ = of(organization === undefined);
+      if (organization) {
+        this.organization$ = of(organization);
+      } else {
+        this.organization$ = of(newOrganization('', ''));
+      }
+    });
+  }
 }

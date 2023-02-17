@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +32,16 @@ import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component
 import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
+import { EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
+import {
+  entityConfig,
+  entityMetadataMap,
+  organizationEntityKey,
+  selfSubjectAccessReviewEntityKey,
+} from './store/entity-metadata-map';
+import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
+import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { OrganizationDataService } from './organizations/organization-data.service';
 
 @NgModule({
   declarations: [
@@ -56,11 +66,15 @@ import { AppAndPageTitleStrategy } from './title-strategy';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
     StoreRouterConnectingModule.forRoot(),
+    EntityDataModule.forRoot(entityConfig),
   ],
   providers: [
     MessageService,
     DialogService,
     ConfirmationService,
+    SelfSubjectAccessReviewDataService,
+    OrganizationCollectionService,
+    OrganizationDataService,
     {
       provide: APP_INITIALIZER,
       deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
@@ -80,7 +94,13 @@ import { AppAndPageTitleStrategy } from './title-strategy';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
+    entityDefinitionService.registerMetadataMap(entityMetadataMap);
+    entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
+    entityDataService.registerService(organizationEntityKey, inject(OrganizationDataService));
+  }
+}
 
 export function initializeAppFactory(
   appConfigService: AppConfigService,

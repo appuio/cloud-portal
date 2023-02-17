@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import {
-  loadOrganizations,
-  loadOrganizationsFailure,
-  loadOrganizationsSuccess,
   loadUser,
   loadUserFailure,
   loadUserSuccess,
@@ -27,6 +24,8 @@ import { selectUser } from './app.selectors';
 import { EntityState } from '../types/entity';
 import { User } from '../types/user';
 import { loadTeamsFailure } from '../teams/store/team.actions';
+import { OrganizationCollectionService } from '../organizations/organization-collection.service';
+import { organizationNameFilter } from './entity-filter';
 
 @Injectable()
 export class AppEffects {
@@ -45,7 +44,7 @@ export class AppEffects {
   loadZonesFailure$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(loadZonesFailure, loadOrganizationsFailure, loadUserFailure, loadTeamsFailure),
+        ofType(loadZonesFailure, loadUserFailure, loadTeamsFailure),
         tap(({ errorMessage }) => {
           this.messageService.add({
             severity: 'error',
@@ -58,23 +57,18 @@ export class AppEffects {
     { dispatch: false }
   );
 
-  loadOrganizations$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(loadOrganizations),
-      concatMap(() => {
-        return this.kubernetesClientService.getOrganizationList().pipe(
-          map((organizationList) => loadOrganizationsSuccess({ organizations: organizationList.items })),
-          catchError((error) => of(loadOrganizationsFailure({ errorMessage: error.message })))
-        );
-      })
-    );
-  });
-
   loadUser$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(loadUser),
       concatMap(({ username }) => {
         return this.kubernetesClientService.getUser(username).pipe(
+          tap((user) => {
+            // this is the link between @ngrx/data and older custom ngrx reducers
+            const defaultOrg = user.spec.preferences?.defaultOrganizationRef ?? '';
+            if (defaultOrg !== '') {
+              this.organizationService.setFilter(organizationNameFilter(defaultOrg));
+            }
+          }),
           map((user) => loadUserSuccess({ user })),
           catchError((error) => of(loadUserFailure({ errorMessage: error.message })))
         );
@@ -139,6 +133,7 @@ export class AppEffects {
     private actions$: Actions,
     private kubernetesClientService: KubernetesClientService,
     private messageService: MessageService,
-    private store: Store
+    private store: Store,
+    private organizationService: OrganizationCollectionService
   ) {}
 }

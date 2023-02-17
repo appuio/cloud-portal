@@ -14,7 +14,7 @@
       </button>
     </div>
 
-    <ng-container *ngIf="hasCreatePermission$ | ngrxPush">
+    <ng-container *ngIf="permissionService.canAddOrganizations$ | ngrxPush">
       <div>
         <button [routerLink]="['$new']" class="w-full white-space-nowrap" id="addOrganizationButton" pButton pRipple>
           <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
@@ -25,8 +25,8 @@
   </div>
 </div>
 
-<ng-container *ngIf="organizations$ | ngrxPush as organizations">
-  <ng-container *ngFor="let organization of organizations.value; index as i">
+<ng-container *ngIf="(organizationCollectionService.loading$ | ngrxPush) === false">
+  <ng-container *ngFor="let organization of organizationCollectionService.entities$ | ngrxPush; index as i">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
@@ -34,7 +34,7 @@
         </div>
         <div>
           <a
-            *ngIf="organization?.viewMembers"
+            *ngIf="permissionService.canViewMembers(organization) | ngrxPush"
             [routerLink]="[organization.metadata.name, 'members']"
             class="text-blue-500 hover:text-primary cursor-pointer mr-2"
             i18n-title
@@ -42,7 +42,7 @@
             <fa-icon [icon]="faUserGroup"></fa-icon>
           </a>
           <a
-            *ngIf="organization?.editOrganization"
+            *ngIf="permissionService.canEditOrganization(organization) | ngrxPush"
             [routerLink]="[organization.metadata.name]"
             class="text-blue-500 hover:text-primary cursor-pointer"
             i18n-title
@@ -51,7 +51,6 @@
           </a>
         </div>
       </div>
-
       <div class="flex flex-wrap border-top-1 surface-border">
         <ul class="w-full list-none p-0 m-0 surface-border">
           <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
@@ -64,39 +63,39 @@
       </div>
     </div>
   </ng-container>
+</ng-container>
 
-  <ng-container *ngIf="isLoading(organizations)">
-    <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
-      <div class="flex flex-row justify-content-between">
-        <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
-      </div>
-
-      <div class="flex flex-wrap border-top-1 surface-border">
-        <ul class="w-full list-none p-0 m-0 surface-border">
-          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
-            <div class="text-900 w-full md:w-9">&#8230;</div>
-          </li>
-        </ul>
-      </div>
+<ng-container *ngIf="organizationCollectionService.loading$ | ngrxPush">
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
     </div>
-  </ng-container>
 
-  <ng-container *ngIf="isListEmpty(organizations)">
-    <p-messages severity="info">
-      <ng-template pTemplate="content">
-        <fa-icon [icon]="faInfo"></fa-icon>
-        <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
-      </ng-template>
-    </p-messages>
-  </ng-container>
+    <div class="flex flex-wrap border-top-1 surface-border">
+      <ul class="w-full list-none p-0 m-0 surface-border">
+        <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+          <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
+          <div class="text-900 w-full md:w-9">&#8230;</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-container>
 
-  <ng-container *ngIf="hasLoadingFailed(organizations)">
-    <p-messages severity="error">
-      <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="organization-failure-message">Organizations could not be loaded.</div>
-      </ng-template>
-    </p-messages>
-  </ng-container>
+<ng-container *ngIf="organizationCollectionService.isEmptyAndLoaded() | ngrxPush">
+  <p-messages severity="info">
+    <ng-template pTemplate="content">
+      <fa-icon [icon]="faInfo"></fa-icon>
+      <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
+    </ng-template>
+  </p-messages>
+</ng-container>
+
+<ng-container *ngIf="loadErrors() | ngrxPush">
+  <p-messages severity="error">
+    <ng-template pTemplate="content">
+      <fa-icon [icon]="faWarning"></fa-icon>
+      <div class="ml-2" i18n id="organization-failure-message">Organizations could not be loaded.</div>
+    </ng-template>
+  </p-messages>
 </ng-container>

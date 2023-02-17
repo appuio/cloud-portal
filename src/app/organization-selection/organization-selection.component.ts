@@ -1,11 +1,12 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { map, Observable, Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api';
-import { selectFocusOrganizationName, selectOrganizationSelectItems } from '../store/app.selectors';
+import { selectOrganizationSelectItems } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { setFocusOrganization } from '../store/app.actions';
+import { OrganizationCollectionService } from '../organizations/organization-collection.service';
 
 @Component({
   selector: 'app-organization-selection',
@@ -20,7 +21,18 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private organizationService: OrganizationCollectionService) {
+    this.organizations$ = organizationService.entities$.pipe(
+      map((orgs) =>
+        orgs.map((o) => {
+          return {
+            value: o.metadata.name,
+            label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
+          } as SelectItem;
+        })
+      )
+    );
+  }
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -29,14 +41,11 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
       )
     );
 
-    this.subscriptions.push(
-      this.store
-        .select(selectFocusOrganizationName)
-        // eslint-disable-next-line ngrx/no-store-subscription
-        .subscribe((organizationName) =>
-          this.organizationControl.setValue(organizationName ?? '', { emitEvent: false })
-        )
-    );
+    this.organizationService.filteredEntities$
+      .pipe(map((orgs) => orgs[0]?.metadata.name))
+      .subscribe((organizationName) => {
+        this.organizationControl.setValue(organizationName ?? '', { emitEvent: false });
+      });
   }
 
   ngOnDestroy(): void {

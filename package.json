@@ -31,6 +31,7 @@
     "@fortawesome/fontawesome-svg-core": "6.3.0",
     "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@ngrx/component": "15.2.1",
+    "@ngrx/data": "15.2.1",
     "@ngrx/effects": "15.2.1",
     "@ngrx/router-store": "15.2.1",
     "@ngrx/store": "15.2.1",

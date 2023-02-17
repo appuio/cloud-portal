@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AppState, Permission, Verb } from './app.reducer';
+import { AppState } from './app.reducer';
 import { SelectItem } from 'primeng/api';
 import { selectRouteParams } from './router.selectors';
 import { Entity } from '../types/entity';
@@ -16,11 +16,6 @@ export const selectZoneByName = createSelector(selectZones, selectRouteParams, (
 });
 
 export const selectPermission = createSelector(selectAppState, (state) => state.permission);
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const selectHasPermission = (permission: keyof Permission, verb: Verb) => {
-  return createSelector(selectAppState, (state) => state.permission[permission].includes(verb));
-};
 
 export const selectOrganizationSelectItems = createSelector(selectAppState, (state) =>
   state.organizations.value.map(

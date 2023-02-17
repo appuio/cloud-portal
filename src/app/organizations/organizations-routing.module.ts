@@ -6,6 +6,8 @@ import { PermissionGuard } from '../permission.guard';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 import { OrganizationMembersResolver } from './organization-members-edit/organization-members.resolver';
 import { UsersRolesResolver } from './users-roles.resolver';
+import { OrganizationMembersEditResolver } from './organization-members-edit/organization-members-edit.resolver';
+import { OrganizationResolver } from './organization-edit/organization.resolver';
 
 const routes: Routes = [
   {
@@ -21,11 +23,18 @@ const routes: Routes = [
     path: ':name',
     component: OrganizationEditComponent,
     canActivate: [PermissionGuard],
+    resolve: {
+      organization: OrganizationResolver,
+    },
   },
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
-    resolve: { organizationMembers: OrganizationMembersResolver, roleBindings: UsersRolesResolver },
+    resolve: {
+      organizationMembers: OrganizationMembersResolver,
+      roleBindings: UsersRolesResolver,
+      organizationMembersEditPermission: OrganizationMembersEditResolver,
+    },
   },
 ];
 

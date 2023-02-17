@@ -10,8 +10,6 @@ export interface Organization {
     [key: string]: unknown;
   };
   spec: OrganizationSpec;
-  viewMembers?: boolean;
-  editOrganization?: boolean;
 }
 
 export interface OrganizationList {
@@ -19,4 +17,17 @@ export interface OrganizationList {
   apiVersion: 'organization.appuio.io/v1';
   metadata: object;
   items: Organization[];
+}
+
+export function newOrganization(name: string, displayName: string): Organization {
+  return {
+    kind: 'Organization',
+    apiVersion: 'organization.appuio.io/v1',
+    metadata: {
+      name: name,
+    },
+    spec: {
+      displayName: displayName,
+    },
+  };
 }

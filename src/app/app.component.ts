@@ -3,13 +3,17 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faSitemap, faUserGroup, faDatabase, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faDatabase, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { loadOrganizations, loadUser } from './store/app.actions';
+import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
 import { take } from 'rxjs';
+import { clusterOrganizationSsarIDs } from './store/ssar-data.service';
+import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
+import { firstInList } from './store/entity-filter';
 
 @Component({
   selector: 'app-root',
@@ -31,12 +35,17 @@ export class AppComponent implements OnInit {
     private oauthService: OAuthService,
     private store: Store,
     private appConfigService: AppConfigService,
-    private identityService: IdentityService
+    private identityService: IdentityService,
+    private organizationService: OrganizationCollectionService,
+    private ssarCollectionService: SelfSubjectAccessReviewCollectionService
   ) {}
 
   ngOnInit(): void {
-    // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-    this.store.dispatch(loadOrganizations());
+    // pre-load some entities into cache
+    clusterOrganizationSsarIDs.forEach((s) => this.ssarCollectionService.getByKey(s));
+    // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
+    this.organizationService.setFilter(firstInList());
+    this.organizationService.getAll().subscribe();
 
     // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));

@@ -1,7 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable, Subscription } from 'rxjs';
-import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faDollarSign,
+  faEdit,
+  faInfoCircle,
+  faSitemap,
+  faUserGroup,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
@@ -23,6 +31,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faAdd = faAdd;
   faSitemap = faSitemap;
   faUserGroup = faUserGroup;
+  faDollarSign = faDollarSign;
   private showJoinDialogSubscription?: Subscription;
 
   constructor(

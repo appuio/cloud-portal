@@ -1,5 +1,6 @@
 export interface OrganizationSpec {
   displayName?: string;
+  billingEntityRef?: string;
 }
 
 export interface Organization {
@@ -10,6 +11,11 @@ export interface Organization {
     [key: string]: unknown;
   };
   spec: OrganizationSpec;
+  status?: OrganizationStatus;
+}
+
+export interface OrganizationStatus {
+  billingEntityName?: string;
 }
 
 export interface OrganizationList {

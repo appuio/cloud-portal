@@ -4,7 +4,7 @@ import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { OrganizationMembers } from '../types/organization-members';
 import { BillingEntity } from '../types/billing-entity';
 
-export const organizationEntityKey = 'Organization';
+export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'OrganizationMembers';
 export const selfSubjectAccessReviewEntityKey = 'SelfSubjectAccessReview';
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
@@ -16,9 +16,7 @@ export const entityMetadataMap: EntityMetadataMap = {
     entityName: organizationEntityKey,
     sortComparer: (a: Organization, b: Organization) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
-    filterFn: (entities: Organization[], filterFn: (orgs: Organization[]) => Organization[]) => {
-      return filterFn(entities);
-    },
+    filterFn: (entities: Organization[], filterFn: (orgs: Organization[]) => Organization[]) => filterFn(entities),
   },
   SelfSubjectAccessReview: {
     selectId: (ssar: SelfSubjectAccessReview) => composeSsarId(ssar),
@@ -29,9 +27,8 @@ export const entityMetadataMap: EntityMetadataMap = {
     selectId: (members: OrganizationMembers) => members.metadata.namespace,
     sortComparer: (a: OrganizationMembers, b: OrganizationMembers) =>
       a.metadata.namespace.localeCompare(b.metadata.namespace, undefined, { sensitivity: 'base' }),
-    filterFn: (entities: OrganizationMembers[], filterFn: (members: OrganizationMembers) => boolean) => {
-      return entities.filter((members) => filterFn(members));
-    },
+    filterFn: (entities: OrganizationMembers[], filterFn: (members: OrganizationMembers) => boolean) =>
+      entities.filter((members) => filterFn(members)),
   },
   BillingEntity: {
     entityName: billingEntityEntityKey,

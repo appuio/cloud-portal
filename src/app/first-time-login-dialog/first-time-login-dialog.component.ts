@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
-import { faAdd, faSitemap, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
-import { OrganizationList } from '../types/organization';
+import { Organization } from '../types/organization';
 import { forkJoin, Subscription } from 'rxjs';
 import { User } from '../types/user';
 import { selectUser } from '../store/app.selectors';
@@ -36,13 +36,14 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private kubernetesClientService: KubernetesClientService,
+    private organizationService: OrganizationCollectionService,
     private identityService: IdentityService,
     private store: Store
   ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.getOrgSub = this.kubernetesClientService.getOrganizationList().subscribe((organizationList) => {
+      this.getOrgSub = this.organizationService.getAllMemoized().subscribe((organizationList) => {
         // eslint-disable-next-line ngrx/no-store-subscription
         this.selectUserSub = this.store.select(selectUser).subscribe((user: Entity<User | null>) => {
           this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
@@ -57,15 +58,15 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
     this.selectUserSub?.unsubscribe();
   }
 
-  private showFirstLoginDialogIfNecessary(organizationList: OrganizationList): void {
-    this.userBelongsToOrganization = organizationList.items.length > 0;
+  private showFirstLoginDialogIfNecessary(organizationList: Organization[]): void {
+    this.userBelongsToOrganization = organizationList.length > 0;
     if (!this.userBelongsToOrganization || !this.userHasDefaultOrganization) {
       this.showFirstLoginDialog = true;
       this.changeDetectorRef.markForCheck();
       return;
     }
 
-    const getOrganizationMembersRequests = organizationList.items.map((organization) =>
+    const getOrganizationMembersRequests = organizationList.map((organization) =>
       this.kubernetesClientService.getOrganizationMembers(organization.metadata.name)
     );
 

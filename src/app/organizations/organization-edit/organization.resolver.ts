@@ -14,6 +14,8 @@ export class OrganizationResolver implements Resolve<Organization | undefined> {
     if (!name) {
       return of(undefined);
     }
-    return this.organizationService.entities$.pipe(map((orgs) => orgs.find((org) => org.metadata.name === name)));
+    return this.organizationService
+      .getAllMemoized()
+      .pipe(map((orgs) => orgs.find((org) => org.metadata.name === name)));
   }
 }

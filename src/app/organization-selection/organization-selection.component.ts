@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api';
-import { selectOrganizationSelectItems } from '../store/app.selectors';
 import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
@@ -15,14 +14,16 @@ import { OrganizationCollectionService } from '../store/organization-collection.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationSelectionComponent implements OnInit, OnDestroy {
-  organizations$: Observable<SelectItem[]> = this.store.select(selectOrganizationSelectItems);
+  organizations$?: Observable<SelectItem[]>;
   faSitemap = faSitemap;
   organizationControl = new FormControl<string>('', { nonNullable: true });
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private organizationService: OrganizationCollectionService) {
-    this.organizations$ = organizationService.entities$.pipe(
+  constructor(private store: Store, private organizationService: OrganizationCollectionService) {}
+
+  ngOnInit(): void {
+    this.organizations$ = this.organizationService.getAllMemoized().pipe(
       map((orgs) =>
         orgs.map((o) => {
           return {
@@ -32,9 +33,6 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
         })
       )
     );
-  }
-
-  ngOnInit(): void {
     this.subscriptions.push(
       this.organizationControl.valueChanges.subscribe((focusOrganizationName) =>
         this.store.dispatch(setFocusOrganization({ focusOrganizationName }))

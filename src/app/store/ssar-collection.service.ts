@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { EntityActionOptions, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { composeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { map, Observable, of, take } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { KubernetesCollectionService } from './kubernetes-collection.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SelfSubjectAccessReviewCollectionService extends EntityCollectionServiceBase<SelfSubjectAccessReview> {
+export class SelfSubjectAccessReviewCollectionService extends KubernetesCollectionService<SelfSubjectAccessReview> {
   constructor(private elementsFactory: EntityCollectionServiceElementsFactory) {
     super(selfSubjectAccessReviewEntityKey, elementsFactory);
   }

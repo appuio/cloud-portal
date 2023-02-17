@@ -46,7 +46,6 @@ export class AppComponent implements OnInit {
     clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKey(s));
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
-    this.organizationService.getAll().subscribe();
 
     // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));

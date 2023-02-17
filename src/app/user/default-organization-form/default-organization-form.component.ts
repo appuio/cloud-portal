@@ -8,10 +8,11 @@ import { faSave, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { saveUserPreferences, saveUserPreferencesFailure, saveUserPreferencesSuccess } from '../../store/app.actions';
 import { selectUser } from '../../store/app.selectors';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
-import { OrganizationList } from '../../types/organization';
+import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
 import { User } from '../../types/user';
 import { Entity } from '../../types/entity';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
 
 @Component({
   selector: 'app-default-organization-form',
@@ -34,6 +35,7 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   constructor(
     private identityService: IdentityService,
     private kubernetesClientService: KubernetesClientService,
+    private organizationService: OrganizationCollectionService,
     private store: Store,
     private actions: Actions,
     private changeDetectorRef: ChangeDetectorRef,
@@ -45,14 +47,14 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
     this.handleActions();
   }
 
-  private loadOrganizations(organizationList: OrganizationList, user: Entity<User | null>): void {
-    const getOrganizationMembersRequests = organizationList.items.map((organization) =>
+  private loadOrganizations(organizationList: Organization[], user: Entity<User | null>): void {
+    const getOrganizationMembersRequests = organizationList.map((organization) =>
       this.kubernetesClientService.getOrganizationMembers(organization.metadata.name)
     );
 
     forkJoin(getOrganizationMembersRequests).subscribe((members) => {
       const username = this.identityService.getUsername();
-      this.organizationSelectItems = organizationList.items
+      this.organizationSelectItems = organizationList
         .filter((o, index) => (members[index].spec.userRefs ?? []).map((userRef) => userRef.name).includes(username))
         .map((o) => ({
           value: o.metadata.name,
@@ -72,8 +74,8 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       // eslint-disable-next-line ngrx/no-store-subscription
       this.store.select(selectUser).subscribe((user) => {
-        this.kubernetesClientService
-          .getOrganizationList()
+        this.organizationService
+          .getAllMemoized()
           .subscribe((organizationList) => this.loadOrganizations(organizationList, user));
       })
     );

@@ -33,15 +33,9 @@ import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
 import { DefaultDataServiceFactory, EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
-import {
-  entityConfig,
-  entityMetadataMap,
-  organizationEntityKey,
-  selfSubjectAccessReviewEntityKey,
-} from './store/entity-metadata-map';
+import { entityConfig, entityMetadataMap, selfSubjectAccessReviewEntityKey } from './store/entity-metadata-map';
 import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { OrganizationCollectionService } from './store/organization-collection.service';
-import { OrganizationDataService } from './organizations/organization-data.service';
 import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
 
@@ -76,7 +70,6 @@ import { KubernetesCollectionServiceFactory } from './store/kubernetes-collectio
     ConfirmationService,
     SelfSubjectAccessReviewDataService,
     OrganizationCollectionService,
-    OrganizationDataService,
     KubernetesCollectionServiceFactory,
     {
       provide: APP_INITIALIZER,
@@ -102,7 +95,6 @@ export class AppModule {
   constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
-    entityDataService.registerService(organizationEntityKey, inject(OrganizationDataService));
   }
 }
 

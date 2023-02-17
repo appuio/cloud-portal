@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { EntityOp } from '@ngrx/data';
 import { OrganizationPermissionService } from './organization-permission.service';
+import { Organization } from '../types/organization';
 
 @Component({
   selector: 'app-organizations',
@@ -33,6 +34,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faUserGroup = faUserGroup;
   faDollarSign = faDollarSign;
   private showJoinDialogSubscription?: Subscription;
+  organizations$?: Observable<Organization[]>;
 
   constructor(
     private store: Store,
@@ -44,6 +46,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.organizations$ = this.organizationCollectionService.getAllMemoized();
     this.showJoinDialogSubscription = this.store
       .select(selectQueryParam('showJoinDialog'))
       // eslint-disable-next-line ngrx/no-store-subscription

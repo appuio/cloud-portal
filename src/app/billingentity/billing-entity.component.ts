@@ -1,10 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { EntityCollectionService, EntityCollectionServiceFactory, EntityOp } from '@ngrx/data';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { EntityOp } from '@ngrx/data';
 import { BillingEntity } from '../types/billing-entity';
 import { billingEntityEntityKey } from '../store/entity-metadata-map';
 
 import { faEdit, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { filter, map, Observable } from 'rxjs';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../store/kubernetes-collection.service';
 
 @Component({
   selector: 'app-billing-entity',
@@ -12,19 +16,15 @@ import { filter, map, Observable } from 'rxjs';
   styleUrls: ['./billing-entity.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingEntityComponent implements OnInit {
-  billingEntityService: EntityCollectionService<BillingEntity>;
+export class BillingEntityComponent {
+  billingEntityService: KubernetesCollectionService<BillingEntity>;
 
   faWarning = faWarning;
   faInfo = faInfo;
   faEdit = faEdit;
 
-  constructor(private factory: EntityCollectionServiceFactory) {
+  constructor(private factory: KubernetesCollectionServiceFactory) {
     this.billingEntityService = factory.create<BillingEntity>(billingEntityEntityKey);
-  }
-
-  ngOnInit(): void {
-    this.billingEntityService.getAll().subscribe(); // initial load to cache
   }
 
   loadErrors(): Observable<Error> {

@@ -127,5 +127,4 @@ const clusterStartupAccessChecks = [
   composeSsarId(new SelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
   composeSsarId(new SelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
   composeSsarId(new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
-  composeSsarId(new SelfSubjectAccessReview(Verb.List, 'billingentities', 'billing.appuio.io', '')),
 ];

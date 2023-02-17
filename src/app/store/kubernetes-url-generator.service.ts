@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Operation } from './kubernetes-data.service';
+import { Operation, splitID } from './kubernetes-data.service';
 import { QueryParams } from '@ngrx/data';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class KubernetesUrlGenerator {
     if (!meta) {
       throw new Error(`Entity "${entityName}" is not registered in the Kubernetes URL generator`);
     }
-    const idSplit = this.splitID(id);
+    const idSplit = splitID(id);
     if (idSplit.namespace && idSplit.namespace !== '') {
       // we have an ID that contains name + namespace.
       const base = `${this.apiPrefix}/apis/${meta.apiVersion}/namespaces/${idSplit.namespace}/${meta.kind}`;
@@ -50,17 +50,6 @@ export class KubernetesUrlGenerator {
     }
     // all cluster-scoped objects, or objects from all namespaces.
     return `${this.apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
-  }
-
-  protected splitID(id: string): { name: string; namespace?: string } {
-    const arr = id.split('/');
-    if (arr.length === 1) {
-      return { name: arr[0] };
-    }
-    if (arr.length === 2) {
-      return { name: arr[1], namespace: arr[0] };
-    }
-    throw new Error(`id is an invalid Kubernetes name, must be one of ["name", "namespace/name"], : ${id}`);
   }
 
   protected getKubeObjectMeta(entityName: string): { apiVersion: string; kind: string } {

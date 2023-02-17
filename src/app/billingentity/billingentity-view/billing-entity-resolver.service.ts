@@ -2,16 +2,19 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { BillingEntity } from '../../types/billing-entity';
-import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { billingEntityEntityKey } from '../../store/entity-metadata-map';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../../store/kubernetes-collection.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BillingEntityResolver implements Resolve<BillingEntity | undefined> {
-  private billingService: EntityCollectionService<BillingEntity>;
+  private billingService: KubernetesCollectionService<BillingEntity>;
 
-  constructor(private entityFactory: EntityCollectionServiceFactory) {
+  constructor(private entityFactory: KubernetesCollectionServiceFactory) {
     this.billingService = entityFactory.create<BillingEntity>(billingEntityEntityKey);
   }
 
@@ -20,6 +23,6 @@ export class BillingEntityResolver implements Resolve<BillingEntity | undefined>
     if (!name) {
       return of(undefined);
     }
-    return this.billingService.getByKey(name);
+    return this.billingService.getByKeyMemoized(name);
   }
 }

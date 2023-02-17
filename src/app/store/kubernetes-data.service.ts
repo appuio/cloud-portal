@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { Update } from '@ngrx/entity';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { KubernetesUrlGenerator } from './kubernetes-url-generator.service';
+import { Injectable } from '@angular/core';
 
 export declare type Operation = 'CREATE' | 'READ' | 'UPDATE' | 'DELETE';
 
@@ -27,7 +28,10 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   }
 
   add(entity: T): Observable<T> {
-    return this.execute('POST', this.urlGenerator.getEntity(this.name, this.buildId(entity), 'CREATE'));
+    return this.execute(
+      'POST',
+      this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'CREATE')
+    );
   }
 
   delete(id: number | string): Observable<number | string> {
@@ -36,11 +40,11 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
     );
   }
 
-  /*
-  Gets all entities across the cluster.
-  Note: This doesn't work for namespaced collections.
-  For namespaced collections, use "getWithQuery" and set the "namespace" parameter.
-  */
+  /**
+   *   Gets all entities across the cluster.
+   *   Note: This doesn't work for namespaced collections.
+   *   For namespaced collections, use "getWithQuery" and set the "namespace" parameter.
+   */
   getAll(): Observable<T[]> {
     return this.executeCollection('GET', this.urlGenerator.getEntityList(this.name, 'READ'));
   }
@@ -88,12 +92,31 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
       }
     }
   }
+}
 
-  protected buildId(entity: T): string {
-    let id = entity.metadata.name;
-    if (entity.metadata.namespace) {
-      id = `${entity.metadata.namespace}/${entity.metadata.name}`;
-    }
-    return id;
+export function buildId(name: string, namespace?: string): string {
+  if (namespace && namespace !== '') {
+    return `${namespace}/${name}`;
+  }
+  return name;
+}
+
+export function splitID(id: string): { name: string; namespace?: string } {
+  const arr = id.split('/');
+  if (arr.length === 1) {
+    return { name: arr[0] };
+  }
+  if (arr.length === 2) {
+    return { name: arr[1], namespace: arr[0] };
+  }
+  throw new Error(`id is an invalid Kubernetes name, must be one of ["name", "namespace/name"], : ${id}`);
+}
+
+@Injectable()
+export class KubernetesDataServiceFactory {
+  constructor(protected http: HttpClient, protected urlGenerator: KubernetesUrlGenerator) {}
+
+  create<T extends KubeObject>(entityName: string): EntityCollectionDataService<T> {
+    return new KubernetesDataService<T>(entityName, this.http, this.urlGenerator);
   }
 }

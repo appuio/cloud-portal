@@ -3,7 +3,7 @@
 </div>
 
 <ng-container *ngIf="(billingEntityService.loading$ | ngrxPush) === false">
-  <ng-container *ngFor="let billingEntity of billingEntityService.entities$ | ngrxPush">
+  <ng-container *ngFor="let billingEntity of billingEntityService.getAllMemoized() | ngrxPush">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">

@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Organization } from '../../types/organization';
 import { map, Observable, of } from 'rxjs';
-import { OrganizationCollectionService } from '../organization-collection.service';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })

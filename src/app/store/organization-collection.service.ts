@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { EntityActionOptions, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Organization } from '../types/organization';
-import { organizationEntityKey } from '../store/entity-metadata-map';
+import { organizationEntityKey } from './entity-metadata-map';
 import { combineLatest, Observable, tap } from 'rxjs';
-import { SelfSubjectAccessReviewCollectionService } from '../store/ssar-collection.service';
+import { SelfSubjectAccessReviewCollectionService } from './ssar-collection.service';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
-import { Verb } from '../store/app.reducer';
+import { Verb } from './app.reducer';
+import { KubernetesCollectionService } from './kubernetes-collection.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class OrganizationCollectionService extends EntityCollectionServiceBase<Organization> {
+export class OrganizationCollectionService extends KubernetesCollectionService<Organization> {
   constructor(
     private elementsFactory: EntityCollectionServiceElementsFactory,
     private ssarCollectionService: SelfSubjectAccessReviewCollectionService

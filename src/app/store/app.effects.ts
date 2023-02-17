@@ -24,7 +24,7 @@ import { selectUser } from './app.selectors';
 import { EntityState } from '../types/entity';
 import { User } from '../types/user';
 import { loadTeamsFailure } from '../teams/store/team.actions';
-import { OrganizationCollectionService } from '../organizations/organization-collection.service';
+import { OrganizationCollectionService } from './organization-collection.service';
 import { organizationNameFilter } from './entity-filter';
 
 @Injectable()

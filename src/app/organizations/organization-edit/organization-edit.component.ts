@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { newOrganization, Organization } from '../../types/organization';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
-import { OrganizationCollectionService } from '../organization-collection.service';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 

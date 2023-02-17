@@ -6,7 +6,7 @@ import { filter, map, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
-import { OrganizationCollectionService } from '../organization-collection.service';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { EntityOp } from '@ngrx/data';
 
 @Component({

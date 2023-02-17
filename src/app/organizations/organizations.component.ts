@@ -14,7 +14,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrganizationCollectionService } from './organization-collection.service';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { EntityOp } from '@ngrx/data';
 import { OrganizationPermissionService } from './organization-permission.service';
 

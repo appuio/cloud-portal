@@ -13,7 +13,7 @@ import { selectHasTeamPermission, selectTeams } from './store/team.selectors';
 import { deleteTeam, loadTeamPermissions, loadTeams } from './store/team.actions';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
 import { ConfirmationService } from 'primeng/api';
-import { OrganizationCollectionService } from '../organizations/organization-collection.service';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { setFocusOrganization } from '../store/app.actions';
 
 @Component({

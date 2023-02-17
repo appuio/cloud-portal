@@ -9,8 +9,6 @@ import { OrganizationMembersEditComponent } from './organization-members-edit/or
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { EntityDataService } from '@ngrx/data';
 import { organizationMembersEntityKey } from '../store/entity-metadata-map';
-import { OrganizationDataService } from './organization-data.service';
-import { OrganizationCollectionService } from './organization-collection.service';
 import { OrganizationMembersCollectionService } from './organization-members/organization-members-collection.service';
 import { OrganizationMembersDataService } from './organization-members/organization-members-data.service';
 
@@ -23,7 +21,7 @@ import { OrganizationMembersDataService } from './organization-members/organizat
     JoinOrganizationDialogComponent,
   ],
   imports: [SharedModule, OrganizationsRoutingModule],
-  providers: [OrganizationDataService, OrganizationCollectionService, OrganizationMembersCollectionService],
+  providers: [OrganizationMembersCollectionService],
 })
 export default class OrganizationsModule {
   constructor(organizationMembersDataService: OrganizationMembersDataService, entityDataService: EntityDataService) {

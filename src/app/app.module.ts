@@ -40,7 +40,7 @@ import {
   selfSubjectAccessReviewEntityKey,
 } from './store/entity-metadata-map';
 import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
-import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { OrganizationCollectionService } from './store/organization-collection.service';
 import { OrganizationDataService } from './organizations/organization-data.service';
 import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';

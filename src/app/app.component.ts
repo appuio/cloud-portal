@@ -10,7 +10,7 @@ import { AppConfigService } from './app-config.service';
 import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
 import { filter, take } from 'rxjs';
-import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
 import { composeSsarId } from './store/entity-metadata-map';

@@ -10,6 +10,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { User } from '../types/user';
 import { selectUser } from '../store/app.selectors';
 import { Entity } from '../types/entity';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 

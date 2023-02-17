@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { setFocusOrganization } from '../store/app.actions';
-import { OrganizationCollectionService } from '../organizations/organization-collection.service';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
 
 @Component({
   selector: 'app-organization-selection',

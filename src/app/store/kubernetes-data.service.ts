@@ -31,7 +31,8 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   add(entity: T): Observable<T> {
     return this.execute(
       'POST',
-      this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'CREATE')
+      this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'CREATE'),
+      entity
     );
   }
 
@@ -74,19 +75,21 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
     }
   }
 
-  protected execute(method: HttpMethods, url: string, data?: T): Observable<T> {
+  protected execute(method: HttpMethods, url: string, data?: T, queryParams?: QueryParams | string): Observable<T> {
+    const qParams = typeof queryParams === 'string' ? { fromString: queryParams } : { fromObject: queryParams };
+    const params = new HttpParams(qParams);
     switch (method) {
       case 'DELETE': {
-        return this.http.delete<T>(url);
+        return this.http.delete<T>(url, { params: params, responseType: 'json' });
       }
       case 'GET': {
-        return this.http.get<T>(url);
+        return this.http.get<T>(url, { params: params, responseType: 'json' });
       }
       case 'POST': {
-        return this.http.post<T>(url, data);
+        return this.http.post<T>(url, data, { params: params, responseType: 'json' });
       }
       case 'PUT': {
-        return this.http.put<T>(url, data);
+        return this.http.put<T>(url, data, { params: params, responseType: 'json' });
       }
       default: {
         throw new Error(`Unimplemented HTTP method: ${method}`);

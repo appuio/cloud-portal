@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -63,7 +63,6 @@ import { OrganizationDataService } from './organizations/organization-data.servi
     HttpClientModule,
     OAuthModule.forRoot(),
     StoreModule.forRoot({ app: appReducer, router: routerReducer }),
-    StoreModule.forFeature('', {}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
     StoreRouterConnectingModule.forRoot(),
@@ -96,15 +95,10 @@ import { OrganizationDataService } from './organizations/organization-data.servi
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(
-    entityDefinitionService: EntityDefinitionService,
-    entityDataService: EntityDataService,
-    ssarDataService: SelfSubjectAccessReviewDataService,
-    organizationDataService: OrganizationDataService
-  ) {
+  constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
-    entityDataService.registerService(selfSubjectAccessReviewEntityKey, ssarDataService);
-    entityDataService.registerService(organizationEntityKey, organizationDataService);
+    entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
+    entityDataService.registerService(organizationEntityKey, inject(OrganizationDataService));
   }
 }
 

@@ -23,14 +23,14 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store, private organizationService: OrganizationCollectionService) {
     this.organizations$ = organizationService.entities$.pipe(
-      map((orgs) => {
-        return orgs.map((o) => {
+      map((orgs) =>
+        orgs.map((o) => {
           return {
             value: o.metadata.name,
             label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
           } as SelectItem;
-        });
-      })
+        })
+      )
     );
   }
 

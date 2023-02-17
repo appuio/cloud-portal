@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
 })
 export class OrganizationEditComponent {
   organization$?: Observable<Organization>;
-  isNew$: Observable<boolean> = of(false);
+  isNew$ = of(false);
   faClose = faClose;
 
   constructor(

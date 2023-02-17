@@ -52,12 +52,8 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
 
   loadErrors(): Observable<Error> {
     return this.organizationCollectionService.errors$.pipe(
-      filter((action) => {
-        return action.payload.entityOp == EntityOp.QUERY_ALL_ERROR;
-      }),
-      map((action) => {
-        return action.payload.data.error.error satisfies Error;
-      })
+      filter((action) => action.payload.entityOp == EntityOp.QUERY_ALL_ERROR),
+      map((action) => action.payload.data.error.error satisfies Error)
     );
   }
   openJoinOrganizationDialog(): void {

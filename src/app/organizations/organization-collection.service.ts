@@ -20,16 +20,16 @@ export class OrganizationCollectionService extends EntityCollectionServiceBase<O
 
   override getAll(options?: EntityActionOptions): Observable<Organization[]> {
     return super.getAll(options).pipe(
-      tap((orgs) => {
-        return orgs.forEach((org) => {
+      tap((orgs) =>
+        orgs.forEach((org) => {
           this.ssarCollectionService.getBySelfSubjectAccessReview(
             new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', org.metadata.name)
           );
           this.ssarCollectionService.getBySelfSubjectAccessReview(
             new SelfSubjectAccessReview(Verb.List, 'organizationmembers', 'appuio.io', org.metadata.name)
           );
-        });
-      })
+        })
+      )
     );
   }
 

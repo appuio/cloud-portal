@@ -17,7 +17,7 @@ import { billingEntityEntityKey } from '../../store/entity-metadata-map';
 })
 export class BillingentityViewComponent implements OnInit {
   billingEntity$?: Observable<BillingEntity>;
-  billingEntityName: string;
+  billingEntityName = '';
 
   faClose = faClose;
   faWarning = faWarning;
@@ -26,14 +26,14 @@ export class BillingentityViewComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private entityFactory: KubernetesCollectionServiceFactory<BillingEntity>) {
     this.billingService = entityFactory.create(billingEntityEntityKey);
+  }
+
+  ngOnInit(): void {
+    this.billingEntity$ = this.billingService.getByKeyMemoized(this.billingEntityName);
     const name = this.route.snapshot.paramMap.get('name');
     if (!name) {
       throw new Error('name is required');
     }
     this.billingEntityName = name;
-  }
-
-  ngOnInit(): void {
-    this.billingEntity$ = this.billingService.getByKeyMemoized(this.billingEntityName);
   }
 }

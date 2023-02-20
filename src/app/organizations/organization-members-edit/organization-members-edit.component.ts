@@ -7,8 +7,11 @@ import { forkJoin, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
 import { RoleBindingList } from 'src/app/types/role-bindings';
-import { OrganizationPermissionService } from '../organization-permission.service';
-import { OrganizationMembersCollectionService } from '../organization-members/organization-members-collection.service';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../../store/kubernetes-collection.service';
+import { organizationMembersEntityKey } from '../../store/entity-metadata-map';
 
 @Component({
   selector: 'app-organization-members-edit',
@@ -37,15 +40,17 @@ export class OrganizationMembersEditComponent implements OnInit {
   readonly allRoleNames = ['control-api:organization-admin', 'control-api:organization-viewer'];
   readonly newUserDefaultRoles = ['control-api:organization-viewer'];
   readonly userNamePrefix = 'appuio#';
+  private membersCollectionService: KubernetesCollectionService<OrganizationMembers>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private kubernetesClientService: KubernetesClientService,
     private messageService: MessageService,
     private router: Router,
-    private organizationPermissionService: OrganizationPermissionService,
-    private membersCollectionService: OrganizationMembersCollectionService
-  ) {}
+    private kubernetesServiceFactory: KubernetesCollectionServiceFactory<OrganizationMembers>
+  ) {
+    this.membersCollectionService = kubernetesServiceFactory.create(organizationMembersEntityKey);
+  }
 
   get userRefs(): FormArray | undefined {
     return this.form?.get('userRefs') as FormArray;

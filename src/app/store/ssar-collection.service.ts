@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { EntityActionOptions, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { composeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
-import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
+import { selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
+import {
+  newIdFromSelfSubjectAccessReview,
+  newSelfSubjectAccessReview,
+  SelfSubjectAccessReview,
+} from '../types/self-subject-access-review';
 import { map, Observable, of, take } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { KubernetesCollectionService } from './kubernetes-collection.service';
@@ -16,8 +20,8 @@ export class SelfSubjectAccessReviewCollectionService extends KubernetesCollecti
 
   public isAllowed(group: string, resource: string, verb: string, namespace?: string): Observable<boolean> {
     return this.getBySelfSubjectAccessReviewLazy(
-      new SelfSubjectAccessReview(verb, resource, group, namespace ?? '')
-    ).pipe(map((ssar) => ssar.status.allowed));
+      newSelfSubjectAccessReview(verb, resource, group, namespace ?? '')
+    ).pipe(map((ssar) => ssar.status?.allowed ?? false));
   }
 
   public getBySelfSubjectAccessReviewLazy(
@@ -32,20 +36,9 @@ export class SelfSubjectAccessReviewCollectionService extends KubernetesCollecti
         if (ssar) {
           return of(ssar);
         }
-        return super.getByKey(composeSsarId(ssarKey), options);
+        return super.getByKey(newIdFromSelfSubjectAccessReview(ssarKey), options);
       })
     );
-  }
-
-  public isMatchingAndAllowed(
-    ssar: SelfSubjectAccessReview,
-    group: string,
-    respource: string,
-    namespace: string,
-    verb: string
-  ): boolean {
-    const isMatching = this.isMatching(ssar, group, respource, namespace, verb);
-    return isMatching ? ssar.status.allowed : false;
   }
 
   public isMatching(
@@ -62,10 +55,5 @@ export class SelfSubjectAccessReviewCollectionService extends KubernetesCollecti
       isMatching = isMatching && attr.namespace === namespace;
     }
     return isMatching;
-  }
-
-  getBySelfSubjectAccessReview(ssar: SelfSubjectAccessReview): Observable<SelfSubjectAccessReview> {
-    const key = composeSsarId(ssar);
-    return super.getByKey(key);
   }
 }

@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, Observable } from 'rxjs';
 import { ZoneList } from '../types/zone';
-import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
+import { newSelfSubjectAccessReview, SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { Verb } from '../store/app.reducer';
-import { OrganizationMembers } from '../types/organization-members';
 import { Team } from '../types/team';
 import { List } from '../types/list';
 import { User } from '../types/user';
@@ -60,19 +59,6 @@ export class KubernetesClientService {
     return this.httpClient.delete(`${this.apiPrefix}/apis/appuio.io/v1/namespaces/${namespace}/teams/${name}`);
   }
 
-  getOrganizationMembers(namespace: string): Observable<OrganizationMembers> {
-    return this.httpClient.get<OrganizationMembers>(
-      `appuio-api/apis/appuio.io/v1/namespaces/${namespace}/organizationmembers/members`
-    );
-  }
-
-  updateOrganizationMembers(organizationMembers: OrganizationMembers): Observable<OrganizationMembers> {
-    return this.httpClient.put<OrganizationMembers>(
-      `appuio-api/apis/appuio.io/v1/namespaces/${organizationMembers.metadata.namespace}/organizationmembers/members`,
-      organizationMembers
-    );
-  }
-
   getRoleBindings(namespace: string): Observable<RoleBindingList> {
     return this.httpClient.get<RoleBindingList>(`${this.authApi}/namespaces/${namespace}/rolebindings`);
   }
@@ -101,22 +87,10 @@ export class KubernetesClientService {
       this.httpClient
         .post<SelfSubjectAccessReview>(
           'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
-          new SelfSubjectAccessReview(verb, resource, group, namespace)
+          newSelfSubjectAccessReview(verb, resource, group, namespace)
         )
         .pipe(map((result) => result.status?.allowed ?? false))
     );
     return forkJoin(requests).pipe(map((results) => verbs.filter((verb, index) => results[index])));
-  }
-
-  getSelfSubjectAccessReview(
-    namespace: string,
-    resource: string,
-    group: string,
-    verb: string
-  ): Observable<SelfSubjectAccessReview> {
-    return this.httpClient.post<SelfSubjectAccessReview>(
-      'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews',
-      new SelfSubjectAccessReview(verb, resource, group, namespace)
-    );
   }
 }

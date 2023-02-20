@@ -12,6 +12,7 @@ export function createOrganizationMembers(organizationMembersConfig: Organizatio
     apiVersion: 'appuio.io/v1',
     metadata: {
       namespace: organizationMembersConfig.namespace,
+      name: '',
     },
     spec: {
       userRefs: organizationMembersConfig.userRefs,

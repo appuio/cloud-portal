@@ -11,6 +11,12 @@ import { User } from '../types/user';
 import { selectUser } from '../store/app.selectors';
 import { Entity } from '../types/entity';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../store/kubernetes-collection.service';
+import { OrganizationMembers } from '../types/organization-members';
+import { organizationMembersEntityKey } from '../store/entity-metadata-map';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -31,15 +37,19 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   userBelongsToOrganization = true;
   getOrgSub?: Subscription;
   selectUserSub?: Subscription;
+  private organizationMembersService: KubernetesCollectionService<OrganizationMembers>;
 
   constructor(
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private kubernetesClientService: KubernetesClientService,
+    private kubernetesServiceFactory: KubernetesCollectionServiceFactory<OrganizationMembers>,
     private organizationService: OrganizationCollectionService,
     private identityService: IdentityService,
     private store: Store
-  ) {}
+  ) {
+    this.organizationMembersService = kubernetesServiceFactory.create(organizationMembersEntityKey);
+  }
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
@@ -67,7 +77,7 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
     }
 
     const getOrganizationMembersRequests = organizationList.map((organization) =>
-      this.kubernetesClientService.getOrganizationMembers(organization.metadata.name)
+      this.organizationMembersService.getByKeyMemoized(`${organization.metadata.name}/members`)
     );
 
     forkJoin(getOrganizationMembersRequests).subscribe((members) => {

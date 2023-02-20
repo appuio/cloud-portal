@@ -38,6 +38,7 @@ import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
+import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 
 @NgModule({
   declarations: [
@@ -68,9 +69,9 @@ import { KubernetesCollectionServiceFactory } from './store/kubernetes-collectio
     MessageService,
     DialogService,
     ConfirmationService,
-    SelfSubjectAccessReviewDataService,
     OrganizationCollectionService,
     KubernetesCollectionServiceFactory,
+    SelfSubjectAccessReviewCollectionService,
     {
       provide: APP_INITIALIZER,
       deps: [AppConfigService, OAuthService, KubernetesClientService, Store],

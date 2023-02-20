@@ -1,6 +1,5 @@
 import { createUser } from '../fixtures/user';
 import {
-  createOrganizationList,
   organizationListNxtVshn,
   organizationListNxtVshnWithDisplayName,
   organizationVshn,
@@ -34,7 +33,7 @@ describe('Test organization list', () => {
   it('empty list', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
+      body: { items: [] },
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -168,14 +167,14 @@ describe('Test organization add', () => {
       { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: organizationVshn.metadata.name }
     );
 
-    cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
+      body: { items: [] },
     });
     cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationVshn,
       statusCode: 201,
     }).as('add');
+    cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
 
@@ -207,7 +206,7 @@ describe('Test organization add', () => {
       { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
+      body: { items: [] },
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -228,7 +227,7 @@ describe('Test organization add', () => {
       { verb: 'update', resource: 'organizations', group: 'rbac.appuio.io' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
+      body: { items: [] },
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -274,7 +273,7 @@ describe('Test organization add', () => {
   it('no create permission', () => {
     cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
+      body: { items: [] },
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');

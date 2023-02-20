@@ -13,8 +13,7 @@ import { filter, take } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
-import { composeSsarId } from './store/entity-metadata-map';
-import { SelfSubjectAccessReview } from './types/self-subject-access-review';
+import { newIdFromSelfSubjectAccessReview, newSelfSubjectAccessReview } from './types/self-subject-access-review';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +42,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // pre-load some entities into cache
-    clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKey(s));
+    clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKeyMemoized(s));
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
 
@@ -123,7 +122,7 @@ export interface NavMenuItem {
 }
 
 const clusterStartupAccessChecks = [
-  composeSsarId(new SelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
-  composeSsarId(new SelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
-  composeSsarId(new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
+  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
+  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
+  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
 ];

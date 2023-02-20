@@ -1,19 +1,23 @@
-import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
-import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
+import { newSelfSubjectAccessReviewFromId, SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
-import { decomposeSsarId, selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
+import { selfSubjectAccessReviewEntityKey } from './entity-metadata-map';
 import { HttpClient } from '@angular/common/http';
+import { KubernetesDataService } from './kubernetes-data.service';
+import { KubernetesUrlGenerator } from './kubernetes-url-generator.service';
 
 @Injectable({ providedIn: 'root' })
-export class SelfSubjectAccessReviewDataService extends DefaultDataService<SelfSubjectAccessReview> {
-  constructor(private kubeService: KubernetesClientService, http: HttpClient, urlGenerator: HttpUrlGenerator) {
+export class SelfSubjectAccessReviewDataService extends KubernetesDataService<SelfSubjectAccessReview> {
+  constructor(private kubeService: KubernetesClientService, http: HttpClient, urlGenerator: KubernetesUrlGenerator) {
     super(selfSubjectAccessReviewEntityKey, http, urlGenerator);
   }
 
   override getById(key: number | string): Observable<SelfSubjectAccessReview> {
-    const attr = decomposeSsarId(key.toString());
-    return this.kubeService.getSelfSubjectAccessReview(attr.namespace, attr.resource, attr.group, attr.verb);
+    return this.execute(
+      'POST',
+      this.urlGenerator.getEntity(this.name, '', 'CREATE'),
+      newSelfSubjectAccessReviewFromId(key.toString())
+    );
   }
 }

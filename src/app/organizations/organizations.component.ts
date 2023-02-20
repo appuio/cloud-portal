@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, map, Observable, Subscription } from 'rxjs';
+import { filter, map, Observable, Subscription, take } from 'rxjs';
 import {
   faAdd,
   faDollarSign,
@@ -16,8 +16,15 @@ import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { EntityOp } from '@ngrx/data';
-import { OrganizationPermissionService } from './organization-permission.service';
 import { Organization } from '../types/organization';
+import { Verb } from '../store/app.reducer';
+import { SelfSubjectAccessReviewCollectionService } from '../store/ssar-collection.service';
+
+interface OrganizationConfig {
+  organization: Organization;
+  canEdit$: Observable<boolean>;
+  canViewMembers$: Observable<boolean>;
+}
 
 @Component({
   selector: 'app-organizations',
@@ -34,7 +41,8 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faUserGroup = faUserGroup;
   faDollarSign = faDollarSign;
   private showJoinDialogSubscription?: Subscription;
-  organizations$?: Observable<Organization[]>;
+  organizations$?: Observable<OrganizationConfig[]>;
+  canAddOrganizations$?: Observable<boolean>;
 
   constructor(
     private store: Store,
@@ -42,11 +50,34 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public organizationCollectionService: OrganizationCollectionService,
-    public permissionService: OrganizationPermissionService
+    private ssarCollectionService: SelfSubjectAccessReviewCollectionService
   ) {}
 
   ngOnInit(): void {
-    this.organizations$ = this.organizationCollectionService.getAllMemoized();
+    this.canAddOrganizations$ = this.ssarCollectionService.isAllowed('rbac.appuio.io', 'organizations', Verb.Create);
+
+    this.organizations$ = this.organizationCollectionService.getAllMemoized().pipe(
+      take(1),
+      map((orgs) =>
+        orgs.map((org) => {
+          return {
+            organization: org,
+            canEdit$: this.ssarCollectionService.isAllowed(
+              'rbac.appuio.io',
+              'organizations',
+              Verb.Update,
+              org.metadata.name
+            ),
+            canViewMembers$: this.ssarCollectionService.isAllowed(
+              'appuio.io',
+              'organizationmembers',
+              Verb.List,
+              org.metadata.name
+            ),
+          } as OrganizationConfig;
+        })
+      )
+    );
     this.showJoinDialogSubscription = this.store
       .select(selectQueryParam('showJoinDialog'))
       // eslint-disable-next-line ngrx/no-store-subscription

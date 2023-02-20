@@ -1,12 +1,8 @@
-import { Organization, OrganizationList, OrganizationSpec } from '../../src/app/types/organization';
+import { Organization, OrganizationSpec } from '../../src/app/types/organization';
 
 export interface OrganizationConfig {
   name: string;
   displayName?: string;
-}
-
-export interface OrganizationListConfig {
-  items: Organization[];
 }
 
 export const organizationVshn = createOrganization({
@@ -14,7 +10,7 @@ export const organizationVshn = createOrganization({
   displayName: 'VSHN - the DevOps Company',
 });
 
-export const organizationListNxtVshn = createOrganizationList({
+export const organizationListNxtVshn = {
   items: [
     createOrganization({
       name: 'nxt',
@@ -24,9 +20,9 @@ export const organizationListNxtVshn = createOrganizationList({
       name: 'vshn',
     }),
   ],
-});
+};
 
-export const organizationListNxtVshnWithDisplayName = createOrganizationList({
+export const organizationListNxtVshnWithDisplayName = {
   items: [
     createOrganization({
       name: 'nxt',
@@ -37,7 +33,7 @@ export const organizationListNxtVshnWithDisplayName = createOrganizationList({
       displayName: 'VSHN AG',
     }),
   ],
-});
+};
 
 export function createOrganization(organizationConfig: OrganizationConfig): Organization {
   let spec: OrganizationSpec = {};
@@ -53,14 +49,5 @@ export function createOrganization(organizationConfig: OrganizationConfig): Orga
       name: organizationConfig.name,
     },
     spec,
-  };
-}
-
-export function createOrganizationList(organizationListConfig: OrganizationListConfig): OrganizationList {
-  return {
-    kind: 'OrganizationList',
-    apiVersion: 'organization.appuio.io/v1',
-    metadata: {},
-    items: organizationListConfig.items,
   };
 }

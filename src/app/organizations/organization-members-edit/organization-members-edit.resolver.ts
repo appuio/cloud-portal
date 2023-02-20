@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { SelfSubjectAccessReviewCollectionService } from '../../store/ssar-collection.service';
 import { Observable, of } from 'rxjs';
-import { SelfSubjectAccessReview } from '../../types/self-subject-access-review';
+import { newSelfSubjectAccessReview, SelfSubjectAccessReview } from '../../types/self-subject-access-review';
 import { Verb } from '../../store/app.reducer';
 
 @Injectable({
@@ -17,8 +17,8 @@ export class OrganizationMembersEditResolver implements Resolve<SelfSubjectAcces
     if (!name) {
       return of(undefined);
     }
-    return this.ssarCollectionService.getBySelfSubjectAccessReview(
-      new SelfSubjectAccessReview(Verb.Update, 'organizationmembers', 'appuio.io', name)
+    return this.ssarCollectionService.getBySelfSubjectAccessReviewLazy(
+      newSelfSubjectAccessReview(Verb.Update, 'organizationmembers', 'appuio.io', name)
     );
   }
 }

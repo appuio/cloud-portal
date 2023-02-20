@@ -107,7 +107,7 @@ export class AppComponent implements OnInit {
       .pipe(filter((allowed) => allowed))
       .subscribe(() => {
         this.menuItems.push({
-          label: $localize`Billing Entities`,
+          label: $localize`Billing`,
           icon: faDollarSign,
           routerLink: ['billingentities'],
         });

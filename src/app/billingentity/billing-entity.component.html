@@ -1,5 +1,5 @@
 <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
-  <h1 class="pt-0 mt-0 mb-0" i18n id="billingentities-title">Billing Entities</h1>
+  <h1 class="pt-0 mt-0 mb-0" i18n id="billingentities-title">Billing</h1>
 </div>
 
 <ng-container *ngIf="(billingEntityService.loading$ | ngrxPush) === false">
@@ -14,7 +14,7 @@
             [routerLink]="[billingEntity.metadata.name]"
             class="text-blue-500 hover:text-primary cursor-pointer mr-2"
             i18n-title
-            title="Edit members">
+            title="Edit details">
             <fa-icon [icon]="faEdit"></fa-icon>
           </a>
         </div>

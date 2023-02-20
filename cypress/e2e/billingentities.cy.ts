@@ -21,7 +21,7 @@ describe('Test billing entity list', () => {
       body: { items: [billingEntityNxt, billingEntityVshn] },
     });
     cy.visit('/billingentities');
-    cy.get('#billingentities-title').should('contain.text', 'Billing Entities');
+    cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
   });
@@ -32,7 +32,7 @@ describe('Test billing entity list', () => {
       body: { items: [] },
     });
     cy.visit('/billingentities');
-    cy.get('#billingentities-title').should('contain.text', 'Billing Entities');
+    cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get('#no-billingentity-message').should('contain.text', 'No billing entities available.');
   });
 
@@ -42,7 +42,7 @@ describe('Test billing entity list', () => {
       statusCode: 403,
     });
     cy.visit('/billingentities');
-    cy.get('#billingentities-title').should('contain.text', 'Billing Entities');
+    cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get('#billingentity-failure-message').should('contain.text', 'Billing entities could not be loaded.');
   });
 
@@ -60,7 +60,7 @@ describe('Test billing entity list', () => {
     });
     cy.visit('/billingentities');
 
-    cy.get('#billingentities-title').should('contain.text', 'Billing Entities');
+    cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
   });

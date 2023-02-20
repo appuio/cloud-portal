@@ -44,7 +44,7 @@ const routes: Routes = [
   {
     path: 'billingentities',
     loadChildren: () => import('./billingentity/billing-entity.module'),
-    title: $localize`Billing Entities`,
+    title: $localize`Billing`,
   },
   {
     path: 'user',

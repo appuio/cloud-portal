@@ -1,8 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
-import { Observable, of } from 'rxjs';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
+import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../../store/kubernetes-collection.service';
+import { billingEntityEntityKey } from '../../store/entity-metadata-map';
 
 @Component({
   selector: 'app-billingentity-view',
@@ -12,14 +17,23 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 })
 export class BillingentityViewComponent implements OnInit {
   billingEntity$?: Observable<BillingEntity>;
+  billingEntityName: string;
 
   faClose = faClose;
+  faWarning = faWarning;
 
-  constructor(private route: ActivatedRoute) {}
+  private billingService: KubernetesCollectionService<BillingEntity>;
+
+  constructor(private route: ActivatedRoute, private entityFactory: KubernetesCollectionServiceFactory<BillingEntity>) {
+    this.billingService = entityFactory.create(billingEntityEntityKey);
+    const name = this.route.snapshot.paramMap.get('name');
+    if (!name) {
+      throw new Error('name is required');
+    }
+    this.billingEntityName = name;
+  }
 
   ngOnInit(): void {
-    this.route.data.subscribe(({ billingEntity }) => {
-      this.billingEntity$ = of(billingEntity);
-    });
+    this.billingEntity$ = this.billingService.getByKeyMemoized(this.billingEntityName);
   }
 }

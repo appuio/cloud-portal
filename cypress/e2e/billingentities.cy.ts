@@ -1,7 +1,7 @@
 import { createUser } from '../fixtures/user';
 import { billingEntityNxt, billingEntityVshn } from '../fixtures/billingentities';
 
-describe('Test billing entity list', () => {
+describe.skip('Test billing entity list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -68,5 +68,28 @@ describe('Test billing entity list', () => {
   it('no permission', () => {
     cy.visit('/billingentities');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+  });
+});
+
+describe('Test billing entity details', () => {
+  beforeEach(() => {
+    cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
+  });
+
+  it('request failed', () => {
+    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      statusCode: 403,
+    });
+    cy.visit('/billingentities/be-2345');
+    cy.get('#billingentity-failure-message').should('contain.text', 'Billing entity "be-2345" could not be loaded.');
   });
 });

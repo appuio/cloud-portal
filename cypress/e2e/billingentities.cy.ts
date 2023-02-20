@@ -1,7 +1,7 @@
 import { createUser } from '../fixtures/user';
 import { billingEntityNxt, billingEntityVshn } from '../fixtures/billingentities';
 
-describe.skip('Test billing entity list', () => {
+describe('Test billing entity list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -91,5 +91,19 @@ describe('Test billing entity details', () => {
     });
     cy.visit('/billingentities/be-2345');
     cy.get('#billingentity-failure-message').should('contain.text', 'Billing entity "be-2345" could not be loaded.');
+  });
+
+  it('list details', () => {
+    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+    cy.visit('/billingentities/be-2345');
+    cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', 'NXT Engineering');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', '📧');
+    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️🇨🇭');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig 📧');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
   });
 });

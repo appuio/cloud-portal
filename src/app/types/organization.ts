@@ -1,3 +1,5 @@
+export const OrganizationPermissions = { group: 'organization.appuio.io', resource: 'organizations' };
+
 export interface OrganizationSpec {
   displayName?: string;
   billingEntityRef?: string;
@@ -16,13 +18,6 @@ export interface Organization {
 
 export interface OrganizationStatus {
   billingEntityName?: string;
-}
-
-export interface OrganizationList {
-  kind: 'OrganizationList';
-  apiVersion: 'organization.appuio.io/v1';
-  metadata: object;
-  items: Organization[];
 }
 
 export function newOrganization(name: string, displayName: string): Organization {

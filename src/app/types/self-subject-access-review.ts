@@ -1,5 +1,12 @@
 import { KubeObject } from './entity';
 
+export declare type SelfSubjectAccessReviewAttributes = {
+  group: string;
+  resource: string;
+  verb: string;
+  namespace?: string;
+};
+
 export interface SelfSubjectAccessReview extends KubeObject {
   kind: 'SelfSubjectAccessReview';
   apiVersion: 'authorization.k8s.io/v1';

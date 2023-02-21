@@ -14,6 +14,8 @@ import { OrganizationCollectionService } from './store/organization-collection.s
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
 import { newIdFromSelfSubjectAccessReview, newSelfSubjectAccessReview } from './types/self-subject-access-review';
+import { OrganizationPermissions } from './types/organization';
+import { BillingEntityPermissions } from './types/billing-entity';
 
 @Component({
   selector: 'app-root',
@@ -88,20 +90,23 @@ export class AppComponent implements OnInit {
         routerLink: ['zones'],
       });
     }
-    if (permission.organizations.includes(Verb.List)) {
-      this.menuItems.push({
-        label: $localize`Organizations`,
-        icon: faSitemap,
-        routerLink: ['organizations'],
+    this.ssarCollectionService
+      .isAllowed(OrganizationPermissions.group, OrganizationPermissions.resource, Verb.List)
+      .pipe(filter((allowed) => allowed))
+      .subscribe(() => {
+        this.menuItems.push({
+          label: $localize`Organizations`,
+          icon: faSitemap,
+          routerLink: ['organizations'],
+        });
       });
-    }
     this.menuItems.push({
       label: $localize`Teams`,
       icon: faUserGroup,
       routerLink: ['teams'],
     });
     this.ssarCollectionService
-      .isAllowed('billing.appuio.io', 'billingentities', Verb.List, '')
+      .isAllowed(BillingEntityPermissions.group, BillingEntityPermissions.resource, Verb.List)
       .pipe(filter((allowed) => allowed))
       .subscribe(() => {
         this.menuItems.push({
@@ -122,7 +127,6 @@ export interface NavMenuItem {
 }
 
 const clusterStartupAccessChecks = [
-  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
   newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
   newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
 ];

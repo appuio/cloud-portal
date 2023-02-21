@@ -121,14 +121,11 @@ export function initializeAppFactory(
           oauthService.setupAutomaticSilentRefresh();
 
           return new Promise<boolean>((resolve) => {
-            forkJoin([
-              kubernetesClientService.getZonePermission(),
-              kubernetesClientService.getOrganizationsPermission(),
-            ])
+            forkJoin([kubernetesClientService.getZonePermission()])
               .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
-                next: ([zones, organizations]) => {
-                  store.dispatch(setPermission({ permission: { zones, organizations } }));
+                next: ([zones]) => {
+                  store.dispatch(setPermission({ permission: { zones } }));
                   resolve(true);
                 },
                 error: () => {

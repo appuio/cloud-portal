@@ -1,5 +1,6 @@
 import { createUser } from '../fixtures/user';
 import { billingEntityNxt, billingEntityVshn } from '../fixtures/billingentities';
+import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
 
 describe('Test billing entity list', () => {
   beforeEach(() => {
@@ -9,14 +10,13 @@ describe('Test billing entity list', () => {
   });
   beforeEach(() => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
   });
 
   it('list with two entries', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
       body: { items: [billingEntityNxt, billingEntityVshn] },
     });
@@ -27,7 +27,7 @@ describe('Test billing entity list', () => {
   });
 
   it('empty list', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
       body: { items: [] },
     });
@@ -37,7 +37,7 @@ describe('Test billing entity list', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
       statusCode: 403,
     });
@@ -47,7 +47,7 @@ describe('Test billing entity list', () => {
   });
 
   it('failed requests are retried', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
 
     let interceptCount = 0;
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', (req) => {
@@ -85,7 +85,7 @@ describe('Test billing entity details', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
       statusCode: 403,
     });
@@ -94,7 +94,7 @@ describe('Test billing entity details', () => {
   });
 
   it('list details', () => {
-    cy.setPermission({ verb: 'list', resource: 'billingentities', group: 'billing.appuio.io' });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
       body: billingEntityNxt,
     });

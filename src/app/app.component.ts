@@ -13,7 +13,6 @@ import { filter, take } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
-import { newIdFromSelfSubjectAccessReview, newSelfSubjectAccessReview } from './types/self-subject-access-review';
 import { OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
 
@@ -43,8 +42,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // pre-load some entities into cache
-    clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKeyMemoized(s));
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
 
@@ -125,8 +122,3 @@ export interface NavMenuItem {
   command?: () => void;
   routerLink?: string[];
 }
-
-const clusterStartupAccessChecks = [
-  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
-  newIdFromSelfSubjectAccessReview(newSelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
-];

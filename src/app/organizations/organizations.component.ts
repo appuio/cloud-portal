@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, map, Observable, Subscription, take } from 'rxjs';
+import { map, Observable, Subscription, take } from 'rxjs';
 import {
   faAdd,
   faDollarSign,
@@ -15,10 +15,8 @@ import { JoinOrganizationDialogComponent } from './join-organization-dialog/join
 import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
-import { EntityOp } from '@ngrx/data';
 import { Organization } from '../types/organization';
-import { Verb } from '../store/app.reducer';
-import { SelfSubjectAccessReviewCollectionService } from '../store/ssar-collection.service';
+import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
 
 interface OrganizationConfig {
   organization: Organization;
@@ -49,31 +47,21 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    public organizationCollectionService: OrganizationCollectionService,
-    private ssarCollectionService: SelfSubjectAccessReviewCollectionService
+    public organizationService: OrganizationCollectionService,
+    private organizationMembersService: OrganizationMembersCollectionService
   ) {}
 
   ngOnInit(): void {
-    this.canAddOrganizations$ = this.ssarCollectionService.isAllowed('rbac.appuio.io', 'organizations', Verb.Create);
+    this.canAddOrganizations$ = this.organizationService.canAddOrganizations$;
 
-    this.organizations$ = this.organizationCollectionService.getAllMemoized().pipe(
+    this.organizations$ = this.organizationService.getAllMemoized().pipe(
       take(1),
       map((orgs) =>
         orgs.map((org) => {
           return {
             organization: org,
-            canEdit$: this.ssarCollectionService.isAllowed(
-              'rbac.appuio.io',
-              'organizations',
-              Verb.Update,
-              org.metadata.name
-            ),
-            canViewMembers$: this.ssarCollectionService.isAllowed(
-              'appuio.io',
-              'organizationmembers',
-              Verb.List,
-              org.metadata.name
-            ),
+            canEdit$: this.organizationService.canEditOrganization(org),
+            canViewMembers$: this.organizationMembersService.canViewMembers(org.metadata.name),
           } as OrganizationConfig;
         })
       )
@@ -93,12 +81,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadErrors(): Observable<Error> {
-    return this.organizationCollectionService.errors$.pipe(
-      filter((action) => action.payload.entityOp == EntityOp.QUERY_ALL_ERROR),
-      map((action) => action.payload.data.error.error satisfies Error)
-    );
-  }
   openJoinOrganizationDialog(): void {
     this.dialogService.open(JoinOrganizationDialogComponent, {
       modal: true,

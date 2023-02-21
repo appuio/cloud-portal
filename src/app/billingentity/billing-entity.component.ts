@@ -1,14 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { EntityOp } from '@ngrx/data';
 import { BillingEntity } from '../types/billing-entity';
-import { billingEntityEntityKey } from '../store/entity-metadata-map';
 
 import { faEdit, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { filter, map, Observable } from 'rxjs';
-import {
-  KubernetesCollectionService,
-  KubernetesCollectionServiceFactory,
-} from '../store/kubernetes-collection.service';
+import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 
 @Component({
   selector: 'app-billing-entity',
@@ -17,15 +13,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingEntityComponent {
-  billingEntityService: KubernetesCollectionService<BillingEntity>;
-
   faWarning = faWarning;
   faInfo = faInfo;
   faEdit = faEdit;
   billingEntities$: Observable<BillingEntity[]>;
 
-  constructor(private factory: KubernetesCollectionServiceFactory<BillingEntity>) {
-    this.billingEntityService = factory.create(billingEntityEntityKey);
+  constructor(public billingEntityService: BillingEntityCollectionService) {
     this.billingEntities$ = this.billingEntityService.getAllMemoized();
   }
 

@@ -3,12 +3,8 @@
 
   <div class="flex flex-wrap gap-2">
     <div>
-      <button
-        (click)="openJoinOrganizationDialog()"
-        class="mr-2 w-full white-space-nowrap"
-        id="joinOrganizationButton"
-        pButton
-        pRipple>
+      <button (click)="openJoinOrganizationDialog()" class="mr-2 w-full white-space-nowrap" id="joinOrganizationButton"
+        pButton pRipple>
         <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
         <span i18n>Join Organization</span>
       </button>
@@ -25,55 +21,67 @@
   </div>
 </div>
 
-<ng-container *ngIf="(organizationCollectionService.loading$ | ngrxPush) === false">
-  <ng-container *ngFor="let dto of organizations$ | ngrxPush; index as i">
-    <div class="surface-card p-4 shadow-2 border-round mb-4">
-      <div class="flex flex-row justify-content-between">
-        <div class="text-3xl font-medium text-900 mb-3">
-          {{ dto.organization.metadata.name }}
+<ng-container *ngrxLet="organizations$ as orgPayload; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="orgPayload">
+    <ng-container *ngFor="let dto of orgPayload; index as i">
+      <div class="surface-card p-4 shadow-2 border-round mb-4">
+        <div class="flex flex-row justify-content-between">
+          <div class="text-3xl font-medium text-900 mb-3">
+            {{ dto.organization.metadata.name }}
+          </div>
+          <div>
+            <a *ngIf="dto.organization.spec.billingEntityRef"
+              [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
+              class="text-blue-500 hover:text-primary cursor-pointer mr-1" i18n-title
+              title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'">
+              <fa-icon [icon]="faDollarSign"></fa-icon>
+            </a>
+            <a *ngIf="dto.canViewMembers$ | ngrxPush" [routerLink]="[dto.organization.metadata.name, 'members']"
+              class="text-blue-500 hover:text-primary cursor-pointer mr-2" i18n-title title="Edit members">
+              <fa-icon [icon]="faUserGroup"></fa-icon>
+            </a>
+            <a *ngIf="dto.canEdit$ | ngrxPush" [routerLink]="[dto.organization.metadata.name]"
+              class="text-blue-500 hover:text-primary cursor-pointer" i18n-title title="Edit organization">
+              <fa-icon [icon]="faEdit"></fa-icon>
+            </a>
+          </div>
         </div>
-        <div>
-          <a
-            *ngIf="dto.organization.spec.billingEntityRef"
-            [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
-            class="text-blue-500 hover:text-primary cursor-pointer mr-1"
-            i18n-title
-            title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'">
-            <fa-icon [icon]="faDollarSign"></fa-icon>
-          </a>
-          <a
-            *ngIf="dto.canViewMembers$ | ngrxPush"
-            [routerLink]="[dto.organization.metadata.name, 'members']"
-            class="text-blue-500 hover:text-primary cursor-pointer mr-2"
-            i18n-title
-            title="Edit members">
-            <fa-icon [icon]="faUserGroup"></fa-icon>
-          </a>
-          <a
-            *ngIf="dto.canEdit$ | ngrxPush"
-            [routerLink]="[dto.organization.metadata.name]"
-            class="text-blue-500 hover:text-primary cursor-pointer"
-            i18n-title
-            title="Edit organization">
-            <fa-icon [icon]="faEdit"></fa-icon>
-          </a>
+        <div class="flex flex-wrap border-top-1 surface-border">
+          <ul class="w-full list-none p-0 m-0 surface-border">
+            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
+              <div class="text-900 w-full md:w-9">
+                {{ dto.organization.spec.displayName }}
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="flex flex-wrap border-top-1 surface-border">
-        <ul class="w-full list-none p-0 m-0 surface-border">
-          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-            <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
-            <div class="text-900 w-full md:w-9">
-              {{ dto.organization.spec.displayName }}
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
+    </ng-container>
   </ng-container>
+
+  <ng-container *ngIf="orgPayload?.length === 0 && !err">
+    <p-messages severity="info">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faInfo"></fa-icon>
+        <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="organization-failure-message">Organizations could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
 </ng-container>
 
-<ng-container *ngIf="organizationCollectionService.loading$ | ngrxPush">
+<ng-template #loading>
   <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
     <div class="flex flex-row justify-content-between">
       <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
@@ -88,22 +96,4 @@
       </ul>
     </div>
   </div>
-</ng-container>
-
-<ng-container *ngIf="organizationCollectionService.isEmptyAndLoaded$ | ngrxPush">
-  <p-messages severity="info">
-    <ng-template pTemplate="content">
-      <fa-icon [icon]="faInfo"></fa-icon>
-      <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
-    </ng-template>
-  </p-messages>
-</ng-container>
-
-<ng-container *ngIf="loadErrors() | ngrxPush">
-  <p-messages severity="error">
-    <ng-template pTemplate="content">
-      <fa-icon [icon]="faWarning"></fa-icon>
-      <div class="ml-2" i18n id="organization-failure-message">Organizations could not be loaded.</div>
-    </ng-template>
-  </p-messages>
-</ng-container>
+</ng-template>

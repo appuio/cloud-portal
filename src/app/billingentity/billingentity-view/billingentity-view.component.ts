@@ -3,11 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
 import { Observable } from 'rxjs';
 import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
-import {
-  KubernetesCollectionService,
-  KubernetesCollectionServiceFactory,
-} from '../../store/kubernetes-collection.service';
-import { billingEntityEntityKey } from '../../store/entity-metadata-map';
+import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 
 @Component({
   selector: 'app-billingentity-view',
@@ -22,18 +18,14 @@ export class BillingentityViewComponent implements OnInit {
   faClose = faClose;
   faWarning = faWarning;
 
-  private billingService: KubernetesCollectionService<BillingEntity>;
-
-  constructor(private route: ActivatedRoute, private entityFactory: KubernetesCollectionServiceFactory<BillingEntity>) {
-    this.billingService = entityFactory.create(billingEntityEntityKey);
-  }
+  constructor(private route: ActivatedRoute, private billingService: BillingEntityCollectionService) {}
 
   ngOnInit(): void {
-    this.billingEntity$ = this.billingService.getByKeyMemoized(this.billingEntityName);
     const name = this.route.snapshot.paramMap.get('name');
     if (!name) {
       throw new Error('name is required');
     }
     this.billingEntityName = name;
+    this.billingEntity$ = this.billingService.getByKeyMemoized(this.billingEntityName);
   }
 }

@@ -1,17 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faClose, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, take } from 'rxjs';
+import { combineLatestWith, forkJoin, map, Observable, Subscription, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
 import { RoleBindingList } from 'src/app/types/role-bindings';
-import {
-  KubernetesCollectionService,
-  KubernetesCollectionServiceFactory,
-} from '../../store/kubernetes-collection.service';
-import { organizationMembersEntityKey } from '../../store/entity-metadata-map';
+import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 
 @Component({
   selector: 'app-organization-members-edit',
@@ -19,11 +15,12 @@ import { organizationMembersEntityKey } from '../../store/entity-metadata-map';
   styleUrls: ['./organization-members-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationMembersEditComponent implements OnInit {
-  organizationMembers?: OrganizationMembers;
+export class OrganizationMembersEditComponent implements OnInit, OnDestroy {
+  private organizationMembers?: OrganizationMembers;
   roleBindings!: RoleBindingList;
   faClose = faClose;
   faSave = faSave;
+  faWarning = faWarning;
   saving = false;
   form?: FormGroup<{
     userRefs: FormArray<
@@ -34,36 +31,49 @@ export class OrganizationMembersEditComponent implements OnInit {
     >;
   }>;
   editPermission = false;
+  organizationMembers$?: Observable<OrganizationMembers>;
+
+  private subscriptions: Subscription[] = [];
 
   // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
   // clearly identifying these (e.g. tag or special field)
   readonly allRoleNames = ['control-api:organization-admin', 'control-api:organization-viewer'];
   readonly newUserDefaultRoles = ['control-api:organization-viewer'];
   readonly userNamePrefix = 'appuio#';
-  private membersCollectionService: KubernetesCollectionService<OrganizationMembers>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private kubernetesClientService: KubernetesClientService,
     private messageService: MessageService,
     private router: Router,
-    private kubernetesServiceFactory: KubernetesCollectionServiceFactory<OrganizationMembers>
-  ) {
-    this.membersCollectionService = kubernetesServiceFactory.create(organizationMembersEntityKey);
-  }
+    private membersService: OrganizationMembersCollectionService
+  ) {}
 
   get userRefs(): FormArray | undefined {
     return this.form?.get('userRefs') as FormArray;
   }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ organizationMembers, roleBindings, organizationMembersEditPermission }) => {
-      this.organizationMembers = organizationMembers;
+    this.activatedRoute.data.subscribe(({ roleBindings }) => {
       this.roleBindings = roleBindings;
-      this.editPermission = organizationMembersEditPermission.status.allowed;
-      this.initForm();
     });
+
+    const name = this.activatedRoute.snapshot.paramMap.get('name');
+    if (!name) {
+      throw new Error('name is required');
+    }
+
+    this.organizationMembers$ = this.membersService.getByKeyMemoized(`${name}/members`).pipe(
+      combineLatestWith(this.membersService.canEditMembers(name)),
+      map(([members, canEdit]) => {
+        this.organizationMembers = members;
+        this.editPermission = canEdit;
+        this.initForm();
+        return members;
+      })
+    );
   }
+
   initForm(): void {
     const userRoles = this.mapRolesToUsers();
     const members =
@@ -140,7 +150,7 @@ export class OrganizationMembersEditComponent implements OnInit {
     });
 
     forkJoin([
-      this.membersCollectionService.update(this.newOrganizationMembers(this.organizationMembers, userNames)),
+      this.membersService.update(this.newOrganizationMembers(this.organizationMembers, userNames)),
       ...this.roleBindings.items.map((roleBinding) =>
         this.kubernetesClientService.updateRoleBinding({
           metadata: { ...roleBinding.metadata },
@@ -183,5 +193,9 @@ export class OrganizationMembersEditComponent implements OnInit {
 
   removeFormControl(index: number): void {
     this.userRefs?.removeAt(index);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

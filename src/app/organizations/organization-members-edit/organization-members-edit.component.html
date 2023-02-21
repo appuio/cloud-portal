@@ -1,80 +1,111 @@
-<div class="surface-card p-4 shadow-2 border-round mb-4">
-  <div class="flex flex-row justify-content-between">
-    <div class="text-3xl font-medium text-900 mb-3">
-      {{ organizationMembers?.metadata?.namespace }}
-      <span i18n>Members</span>
-    </div>
-    <a [routerLink]="['../..']" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
-      <fa-icon [icon]="faClose"></fa-icon>
-    </a>
-  </div>
-  <div class="border-top-1 surface-border" *ngIf="form">
-    <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
-      <div class="max-w-1200px">
-        <div class="grid mb-2 mt-2">
-          <p-message
-            i18n-text
-            class="col-11"
-            styleClass="w-full"
-            severity="info"
-            text="List all user names that should have access to this organization."></p-message>
+<ng-container *ngrxLet="organizationMembers$ as organizationMembers; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="organizationMembers">
+    <div class="surface-card p-4 shadow-2 border-round mb-4">
+      <div class="flex flex-row justify-content-between">
+        <div class="text-3xl font-medium text-900 mb-3">
+          {{ organizationMembers.metadata.namespace }}
+          <span i18n>Members</span>
         </div>
-        <div class="hidden md:grid md:flex">
-          <label class="col-3" i18n>Name</label>
-          <label class="col-7" i18n>Roles</label>
-        </div>
-        <div
-          *ngFor="let control of this.userRefs?.controls; let i = index; let last = last"
-          class="grid formgrid mb-3"
-          [formGroup]="$any(control)">
-          <div class="field col-11 md:col-3">
-            <label i18n for="username" class="md:hidden">Name</label>
-            <input
-              formControlName="userName"
-              class="w-full"
-              pInputText
-              tabindex="0"
-              type="text"
-              [attr.data-cy]="'name-input-' + i" />
-          </div>
-          <div class="field col-11 md:col-7">
-            <label i18n for="selectedRoles" class="md:hidden">Roles</label>
-            <p-multiSelect
-              formControlName="selectedRoles"
-              [options]="allRoleNames"
-              defaultLabel="Select Roles"
-              [maxSelectedLabels]="1"
-              [styleClass]="'w-full'"
-              i18n-defaultLabel></p-multiSelect>
-          </div>
-
-          <div class="field col-11 md:col-1">
-            <button
-              (click)="removeFormControl(i)"
-              *ngIf="!last && editPermission; else noButton"
-              class="p-button"
-              i18n-title
-              pButton
-              pRipple
-              tabindex="1"
-              title="Remove"
-              type="button">
-              <fa-icon [icon]="faClose"></fa-icon>
-              <span class="ml-1 md:hidden" i18n>Remove Member</span>
-            </button>
-          </div>
-          <ng-template #noButton>
-            <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
-          </ng-template>
-        </div>
-
-        <div *ngIf="editPermission">
-          <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
-            <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
-            <span class="pr-2" i18n>Save</span>
-          </button>
-        </div>
+        <a [routerLink]="['../..']" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+          <fa-icon [icon]="faClose"></fa-icon>
+        </a>
       </div>
-    </form>
+      <div class="border-top-1 surface-border" *ngIf="form">
+        <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
+          <div class="max-w-1200px">
+            <div class="grid mb-2 mt-2">
+              <p-message
+                i18n-text
+                class="col-11"
+                styleClass="w-full"
+                severity="info"
+                text="List all user names that should have access to this organization."></p-message>
+            </div>
+            <div class="hidden md:grid md:flex">
+              <label class="col-3" i18n>Name</label>
+              <label class="col-7" i18n>Roles</label>
+            </div>
+            <div
+              *ngFor="let control of this.userRefs?.controls; let i = index; let last = last"
+              class="grid formgrid mb-3"
+              [formGroup]="$any(control)">
+              <div class="field col-11 md:col-3">
+                <label i18n for="username" class="md:hidden">Name</label>
+                <input
+                  formControlName="userName"
+                  class="w-full"
+                  pInputText
+                  tabindex="0"
+                  type="text"
+                  [attr.data-cy]="'name-input-' + i"/>
+              </div>
+              <div class="field col-11 md:col-7">
+                <label i18n for="selectedRoles" class="md:hidden">Roles</label>
+                <p-multiSelect
+                  formControlName="selectedRoles"
+                  [options]="allRoleNames"
+                  defaultLabel="Select Roles"
+                  [maxSelectedLabels]="1"
+                  [styleClass]="'w-full'"
+                  i18n-defaultLabel></p-multiSelect>
+              </div>
+
+              <div class="field col-11 md:col-1">
+                <button
+                  (click)="removeFormControl(i)"
+                  *ngIf="!last && editPermission; else noButton"
+                  class="p-button"
+                  i18n-title
+                  pButton
+                  pRipple
+                  tabindex="1"
+                  title="Remove"
+                  type="button">
+                  <fa-icon [icon]="faClose"></fa-icon>
+                  <span class="ml-1 md:hidden" i18n>Remove Member</span>
+                </button>
+              </div>
+              <ng-template #noButton>
+                <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
+              </ng-template>
+            </div>
+
+            <div *ngIf="editPermission">
+              <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+                <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
+                <span class="pr-2" i18n>Save</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="organization-failure-message">Organization members could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+
+    <div class="flex flex-wrap border-top-1 surface-border">
+      <ul class="w-full list-none p-0 m-0 surface-border">
+        <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+          <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
+          <div class="text-900 w-full md:w-9">&#8230;</div>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
+</ng-template>

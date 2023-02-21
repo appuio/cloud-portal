@@ -2,6 +2,8 @@ import { createUser } from '../fixtures/user';
 import { organizationListNxtVshn } from '../fixtures/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
 import { createRoleBindingList } from 'cypress/fixtures/role-bindings';
+import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
+import { OrganizationPermissions } from '../../src/app/types/organization';
 
 describe('Test organization members', () => {
   beforeEach(() => {
@@ -11,18 +13,17 @@ describe('Test organization members', () => {
   });
   beforeEach(() => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
   });
+
   it('readonly list with two entries', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
+      { verb: 'list', ...OrganizationPermissions },
       {
         verb: 'list',
-        resource: 'organizationmembers',
-        group: 'appuio.io',
+        ...OrganizationMembersPermissions,
         namespace: 'nxt',
       }
     );
@@ -59,11 +60,12 @@ describe('Test organization members', () => {
       .and('have.class', 'p-disabled');
     cy.get('button[type=submit]').should('not.exist');
   });
+
   it('edit list with two entries', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
-      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
-      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: 'nxt' },
+      { verb: 'update', ...OrganizationMembersPermissions, namespace: 'nxt' }
     );
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
@@ -136,13 +138,13 @@ describe('Test organization members', () => {
         expect(body.subjects[1].name).to.eq('appuio#test');
       });
   });
+
   it('add a new entry', () => {
     cy.setPermission(
-      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' },
-      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' },
-      { verb: 'update', resource: 'organizationmembers', group: 'appuio.io', namespace: 'nxt' }
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: 'nxt' },
+      { verb: 'update', ...OrganizationMembersPermissions, namespace: 'nxt' }
     );
-    cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
@@ -181,6 +183,7 @@ describe('Test organization members', () => {
         body: {},
       }
     ).as('save-viewer-role');
+    cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
     cy.get('.text-3xl').should('contain.text', 'nxt Members');
@@ -211,12 +214,14 @@ describe('Test organization members', () => {
         expect(body.subjects[2].name).to.eq('appuio#test');
       });
   });
+
   it('no list permission', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
     cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
-    });
+    }).as('list');
+    cy.wait('@list');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');
   });

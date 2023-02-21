@@ -3,9 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
-import { OrganizationMembersResolver } from './organization-members-edit/organization-members.resolver';
 import { UsersRolesResolver } from './users-roles.resolver';
-import { OrganizationMembersEditResolver } from './organization-members-edit/organization-members-edit.resolver';
 import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { OrganizationPermissions } from '../types/organization';
 import { BillingEntityPermissions } from '../types/billing-entity';
@@ -34,9 +32,7 @@ const routes: Routes = [
     path: ':name/members',
     component: OrganizationMembersEditComponent,
     resolve: {
-      organizationMembers: OrganizationMembersResolver,
       roleBindings: UsersRolesResolver,
-      organizationMembersEditPermission: OrganizationMembersEditResolver,
     },
   },
 ];

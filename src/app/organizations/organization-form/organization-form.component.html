@@ -21,6 +21,15 @@
     </small>
   </div>
 
+  <div class="field mb-4 col-12">
+    <label i18n for="selectedBillingEntity" class="md:hidden">Billing</label>
+    <p-dropdown
+      formControlName="selectedBillingEntity"
+      [options]="billingEntities"
+      [styleClass]="'w-full'"
+      i18n></p-dropdown>
+  </div>
+
   <div class="col-12">
     <button [disabled]="form.invalid" [loading]="(organizationCollectionService.loading$ | ngrxPush) ?? false" class="w-auto mt-3" pButton pRipple type="submit">
       <fa-icon [icon]="faSave" class="pr-2"></fa-icon>

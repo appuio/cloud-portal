@@ -4,6 +4,8 @@ import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { BillingEntity } from '../../types/billing-entity';
+import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 
 @Component({
   selector: 'app-organization-edit',
@@ -13,12 +15,15 @@ import { Observable, of } from 'rxjs';
 })
 export class OrganizationEditComponent implements OnInit {
   organization$?: Observable<Organization>;
+  billingEntities$?: Observable<BillingEntity[]>;
+
   isNew = false;
   faClose = faClose;
   faWarning = faWarning;
 
   constructor(
     private organizationCollectionService: OrganizationCollectionService,
+    private billingService: BillingEntityCollectionService,
     private activatedRoute: ActivatedRoute
   ) {}
 
@@ -29,6 +34,7 @@ export class OrganizationEditComponent implements OnInit {
       this.organization$ = of(newOrganization('', ''));
     } else {
       this.organization$ = this.organizationCollectionService.getByKeyMemoized(name);
+      this.billingEntities$ = this.billingService.getAllMemoized();
     }
   }
 }

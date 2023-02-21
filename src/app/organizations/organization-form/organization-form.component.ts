@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { EntityOp } from '@ngrx/data';
+import { BillingEntity } from '../../types/billing-entity';
 
 @Component({
   selector: 'app-organization-form',
@@ -20,6 +21,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   organization!: Organization;
   @Input()
   new = true;
+  @Input()
+  billingEntities!: BillingEntity[];
+  @Input()
+  canEditBe = false;
 
   form!: FormGroup<{ displayName: FormControl<string | undefined>; organizationId: FormControl<string> }>;
   faSave = faSave;

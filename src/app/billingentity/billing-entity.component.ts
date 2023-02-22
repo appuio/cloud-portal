@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BillingEntity } from '../types/billing-entity';
 
 import { faEdit, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
@@ -11,13 +11,14 @@ import { BillingEntityCollectionService } from '../store/billingentity-collectio
   styleUrls: ['./billing-entity.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingEntityComponent {
+export class BillingEntityComponent implements OnInit {
   faWarning = faWarning;
   faInfo = faInfo;
   faEdit = faEdit;
-  billingEntities$: Observable<BillingEntity[]>;
+  billingEntities$?: Observable<BillingEntity[]>;
 
-  constructor(public billingEntityService: BillingEntityCollectionService) {
+  constructor(public billingEntityService: BillingEntityCollectionService) {}
+  ngOnInit(): void {
     this.billingEntities$ = this.billingEntityService.getAllMemoized();
   }
 }

@@ -3,9 +3,11 @@ import {
   organizationListNxtVshn,
   organizationListNxtVshnWithDisplayName,
   organizationVshn,
+  setOrganization,
 } from '../fixtures/organization';
 import { OrganizationPermissions } from '../../src/app/types/organization';
 import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
+import { billingEntityNxt, billingEntityVshn, setBillingEntities } from '../fixtures/billingentities';
 
 describe('Test organization list', () => {
   beforeEach(() => {
@@ -33,10 +35,9 @@ describe('Test organization list', () => {
 
   it('empty list', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
     cy.visit('/organizations');
+    cy.wait('@organizationList');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
   });
@@ -71,6 +72,9 @@ describe('Test organization list', () => {
   });
 
   it('no permission', () => {
+    cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', {
+      body: { spec: { resourceAttributes: { resource: '', group: '', verb: '' } }, status: { allowed: false } },
+    });
     cy.visit('/organizations');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
@@ -96,6 +100,9 @@ describe('Test organization edit', () => {
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshnWithDisplayName,
     });
+
+    setBillingEntities(cy, billingEntityVshn, billingEntityNxt);
+
     cy.visit('/organizations');
     cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
       body: organizationVshn,
@@ -114,8 +121,12 @@ describe('Test organization edit', () => {
     cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('not.exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
     cy.get('.text-3xl').should('contain.text', 'vshn');
+    cy.get('#selectedBillingEntity').should('contain.text', '👁️ AG');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#selectedBillingEntity').click();
+    cy.get('#selectedBillingEntity').should('contain.text', '➡️ Engineering GmbH');
+    cy.get('#selectedBillingEntity').click();
     cy.get('button[type=submit]').click();
     cy.wait('@update');
     cy.get('@update')
@@ -123,6 +134,7 @@ describe('Test organization edit', () => {
       .then((body) => {
         expect(body.metadata.name).to.eq('vshn');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
+        expect(body.spec.billingEntityRef).to.eq('be-2347');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
     cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
@@ -150,6 +162,8 @@ describe('Test organization edit', () => {
       { verb: 'list', ...OrganizationPermissions },
       { verb: 'update', ...OrganizationPermissions, namespace: organizationVshn.metadata.name }
     );
+
+    setBillingEntities(cy);
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
@@ -179,9 +193,9 @@ describe('Test organization add', () => {
       { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: organizationVshn.metadata.name }
     );
 
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
+    setBillingEntities(cy, billingEntityNxt, billingEntityVshn);
+
     cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationVshn,
       statusCode: 201,
@@ -194,13 +208,19 @@ describe('Test organization add', () => {
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('#id').should('contain.value', 'vshn-the-dev-ops-company');
-    cy.get('button[type=submit]').click();
+    const button = cy.get('button[type=submit]');
+    button.should('be.disabled');
+
+    cy.get('#selectedBillingEntity').click();
+    cy.get('#selectedBillingEntity').find('ul li').eq(1).click();
+    button.click();
     cy.wait('@add');
     cy.get('@add')
       .its('request.body')
       .then((body) => {
         expect(body.metadata.name).to.eq('vshn-the-dev-ops-company');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
+        expect(body.spec.billingEntityRef).to.eq('be-2347');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
     cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
@@ -217,9 +237,8 @@ describe('Test organization add', () => {
       { verb: 'create', ...OrganizationPermissions },
       { verb: 'list', ...BillingEntityPermissions }
     );
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
+    setBillingEntities(cy);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -238,9 +257,8 @@ describe('Test organization add', () => {
       { verb: 'create', ...OrganizationPermissions },
       { verb: 'list', ...BillingEntityPermissions }
     );
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
+    setBillingEntities(cy);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -284,9 +302,9 @@ describe('Test organization add', () => {
 
   it('no create permission', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'list', ...BillingEntityPermissions });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
+    setBillingEntities(cy);
+
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -294,9 +312,8 @@ describe('Test organization add', () => {
   });
   it('no list billing permission', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'create', ...OrganizationPermissions });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: { items: [] },
-    });
+    setOrganization(cy);
+
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');

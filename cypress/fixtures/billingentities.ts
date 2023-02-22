@@ -7,7 +7,7 @@ export const billingEntityNxt: BillingEntity = {
     name: 'be-2345',
   },
   spec: {
-    name: 'NXT Engineering',
+    name: '➡️ Engineering GmbH',
     address: {
       line1: '📃',
       line2: '📋',
@@ -32,7 +32,7 @@ export const billingEntityVshn: BillingEntity = {
     name: 'be-2347',
   },
   spec: {
-    name: 'VSHN AG',
+    name: '👁️ AG',
     address: {
       line1: '📃',
       line2: '📋',
@@ -49,3 +49,9 @@ export const billingEntityVshn: BillingEntity = {
     },
   },
 };
+
+export function setBillingEntities(cy: Cypress.cy, ...be: BillingEntity[]): void {
+  cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
+    body: { items: [...be] },
+  });
+}

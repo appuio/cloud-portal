@@ -1,5 +1,5 @@
 import { createUser } from '../fixtures/user';
-import { billingEntityNxt, billingEntityVshn } from '../fixtures/billingentities';
+import { billingEntityNxt, billingEntityVshn, setBillingEntities } from '../fixtures/billingentities';
 import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
 
 describe('Test billing entity list', () => {
@@ -17,9 +17,7 @@ describe('Test billing entity list', () => {
 
   it('list with two entries', () => {
     cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
-    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
-      body: { items: [billingEntityNxt, billingEntityVshn] },
-    });
+    setBillingEntities(cy, billingEntityNxt, billingEntityVshn);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
@@ -28,9 +26,7 @@ describe('Test billing entity list', () => {
 
   it('empty list', () => {
     cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
-    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
-      body: { items: [] },
-    });
+    setBillingEntities(cy);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get('#no-billingentity-message').should('contain.text', 'No billing entities available.');
@@ -66,6 +62,9 @@ describe('Test billing entity list', () => {
   });
 
   it('no permission', () => {
+    cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', {
+      body: { spec: { resourceAttributes: { resource: '', group: '', verb: '' } }, status: { allowed: false } },
+    });
     cy.visit('/billingentities');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
@@ -99,7 +98,7 @@ describe('Test billing entity details', () => {
       body: billingEntityNxt,
     });
     cy.visit('/billingentities/be-2345');
-    cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', 'NXT Engineering');
+    cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
     cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', '📧');
     cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
     cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️🇨🇭');

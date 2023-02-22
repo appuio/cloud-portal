@@ -3,6 +3,7 @@ import { Organization, OrganizationSpec } from '../../src/app/types/organization
 export interface OrganizationConfig {
   name: string;
   displayName?: string;
+  billingRef?: string;
 }
 
 export const organizationVshn = createOrganization({
@@ -27,10 +28,12 @@ export const organizationListNxtVshnWithDisplayName = {
     createOrganization({
       name: 'nxt',
       displayName: 'nxt Engineering GmbH',
+      billingRef: 'be-2345',
     }),
     createOrganization({
       name: 'vshn',
       displayName: 'VSHN AG',
+      billingRef: 'be-2347',
     }),
   ],
 };
@@ -40,6 +43,7 @@ export function createOrganization(organizationConfig: OrganizationConfig): Orga
   if (organizationConfig.displayName) {
     spec = {
       displayName: organizationConfig.displayName,
+      billingEntityRef: organizationConfig.billingRef,
     };
   }
   return {
@@ -50,4 +54,10 @@ export function createOrganization(organizationConfig: OrganizationConfig): Orga
     },
     spec,
   };
+}
+
+export function setOrganization(cy: Cypress.cy, ...org: Organization[]): void {
+  cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+    body: { items: [...org] },
+  }).as('organizationList');
 }

@@ -1,11 +1,11 @@
-<ng-container *ngrxLet="organization$ as organization; suspenseTpl: loading; error as err">
-  <ng-container *ngIf="organization">
+<ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="payload">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
           <span *ngIf="isNew; else isNotNew" i18n>New Organization</span>
           <ng-template #isNotNew>
-            {{ organization.metadata.name }}
+            {{ payload.organization.metadata.name }}
           </ng-template>
         </div>
         <a [routerLink]="['..']" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
@@ -13,7 +13,7 @@
         </a>
       </div>
       <div class="border-top-1 surface-border">
-        <app-organization-form [new]="isNew" [organization]="organization"></app-organization-form>
+        <app-organization-form [new]="isNew" [organization]="payload.organization" [billingEntities]="payload.billingEntities"></app-organization-form>
       </div>
     </div>
   </ng-container>
@@ -22,7 +22,7 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="failure-message">Organization could not be loaded.</div>
+        <div class="ml-2" i18n id="failure-message">Organization or Billing entities could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>

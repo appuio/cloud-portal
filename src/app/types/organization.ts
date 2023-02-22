@@ -20,7 +20,7 @@ export interface OrganizationStatus {
   billingEntityName?: string;
 }
 
-export function newOrganization(name: string, displayName: string): Organization {
+export function newOrganization(name: string, displayName: string, billingEntityRef: string): Organization {
   return {
     kind: 'Organization',
     apiVersion: 'organization.appuio.io/v1',
@@ -29,6 +29,7 @@ export function newOrganization(name: string, displayName: string): Organization
     },
     spec: {
       displayName: displayName,
+      billingEntityRef: billingEntityRef,
     },
   };
 }

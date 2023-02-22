@@ -22,11 +22,13 @@
   </div>
 
   <div class="field mb-4 col-12">
-    <label i18n for="selectedBillingEntity" class="md:hidden">Billing</label>
+    <label i18n for="selectedBillingEntity" class="required font-normal">Billing</label>
     <p-dropdown
-      formControlName="selectedBillingEntity"
+      formControlName="billingEntity"
+      optionLabel="spec.name"
       [options]="billingEntities"
       [styleClass]="'w-full'"
+      placeholder="Select Billing"
       i18n></p-dropdown>
   </div>
 

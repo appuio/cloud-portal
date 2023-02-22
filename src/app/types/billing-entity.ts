@@ -1,6 +1,6 @@
 import { KubeObject } from './entity';
 
-export const BillingEntityPermissions = { group: 'billing.appuio.io', resource: 'billingentities' };
+export const BillingEntityPermissions = { group: 'rbac.appuio.io', resource: 'billingentities' };
 
 export interface BillingEntity extends KubeObject {
   kind: 'BillingEntity';

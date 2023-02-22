@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { combineLatestWith, forkJoin, map, Observable, Subscription, take } from 'rxjs';
+import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
 import { RoleBindingList } from 'src/app/types/role-bindings';
@@ -15,7 +15,7 @@ import { OrganizationMembersCollectionService } from '../../store/organizationme
   styleUrls: ['./organization-members-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationMembersEditComponent implements OnInit, OnDestroy {
+export class OrganizationMembersEditComponent implements OnInit {
   private organizationMembers?: OrganizationMembers;
   roleBindings!: RoleBindingList;
   faClose = faClose;
@@ -32,8 +32,6 @@ export class OrganizationMembersEditComponent implements OnInit, OnDestroy {
   }>;
   editPermission = false;
   organizationMembers$?: Observable<OrganizationMembers>;
-
-  private subscriptions: Subscription[] = [];
 
   // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
   // clearly identifying these (e.g. tag or special field)
@@ -193,9 +191,5 @@ export class OrganizationMembersEditComponent implements OnInit, OnDestroy {
 
   removeFormControl(index: number): void {
     this.userRefs?.removeAt(index);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

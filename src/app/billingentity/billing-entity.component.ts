@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { EntityOp } from '@ngrx/data';
 import { BillingEntity } from '../types/billing-entity';
 
 import { faEdit, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { filter, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 
 @Component({
@@ -20,16 +19,5 @@ export class BillingEntityComponent {
 
   constructor(public billingEntityService: BillingEntityCollectionService) {
     this.billingEntities$ = this.billingEntityService.getAllMemoized();
-  }
-
-  loadErrors(): Observable<Error> {
-    return this.billingEntityService.errors$.pipe(
-      filter((action) => {
-        return action.payload.entityOp == EntityOp.QUERY_ALL_ERROR;
-      }),
-      map((action) => {
-        return action.payload.data.error.error satisfies Error;
-      })
-    );
   }
 }

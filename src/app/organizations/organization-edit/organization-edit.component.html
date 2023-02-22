@@ -22,7 +22,7 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="organization-failure-message">Organization could not be loaded.</div>
+        <div class="ml-2" i18n id="failure-message">Organization could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>
@@ -33,15 +33,6 @@
   <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
     <div class="flex flex-row justify-content-between">
       <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
-    </div>
-
-    <div class="flex flex-wrap border-top-1 surface-border">
-      <ul class="w-full list-none p-0 m-0 surface-border">
-        <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
-          <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
-          <div class="text-900 w-full md:w-9">&#8230;</div>
-        </li>
-      </ul>
     </div>
   </div>
 </ng-template>

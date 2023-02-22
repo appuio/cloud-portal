@@ -43,7 +43,7 @@ describe('Test billing entity list', () => {
     });
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
-    cy.get('#billingentity-failure-message').should('contain.text', 'Billing entities could not be loaded.');
+    cy.get('#failure-message').should('contain.text', 'Billing entities could not be loaded.');
   });
 
   it('failed requests are retried', () => {
@@ -90,7 +90,7 @@ describe('Test billing entity details', () => {
       statusCode: 403,
     });
     cy.visit('/billingentities/be-2345');
-    cy.get('#billingentity-failure-message').should('contain.text', 'Billing entity "be-2345" could not be loaded.');
+    cy.get('#failure-message').should('contain.text', 'Billing entity "be-2345" could not be loaded.');
   });
 
   it('list details', () => {

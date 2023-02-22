@@ -48,7 +48,7 @@ describe('Test organization list', () => {
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#organization-failure-message').should('contain.text', 'Organizations could not be loaded.');
+    cy.get('#failure-message').should('contain.text', 'Organizations could not be loaded.');
   });
 
   it('failed requests are retried', () => {

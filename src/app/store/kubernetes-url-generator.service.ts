@@ -51,7 +51,6 @@ export class KubernetesUrlGenerator {
     if (queryParams && typeof queryParams !== 'string') {
       const namespace = queryParams['namespace'];
       if (namespace && namespace !== '') {
-        delete queryParams['namespace'];
         // Scope the list to a specific namespace for namespace-scoped resources.
         return `${this.apiPrefix}/apis/${meta.apiVersion}/namespaces/${namespace}/${meta.kind}`;
       }

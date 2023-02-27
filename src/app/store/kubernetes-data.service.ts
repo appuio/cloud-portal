@@ -20,7 +20,16 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   }
 
   getWithQuery(params: QueryParams | string): Observable<T[]> {
-    return this.executeCollection('GET', this.urlGenerator.getEntityList(this.name, 'READ', params), params);
+    const url = this.urlGenerator.getEntityList(this.name, 'READ', params);
+    let p = params;
+    if (typeof params !== 'string') {
+      // Since the EntityCollectionDataService doesn't support path parameter out-of-the-box,
+      //  we include the namespace in the query parameter, but remove it before requesting, as this is actually a path parameter.
+      const clone = Object.assign({}, params);
+      delete clone['namespace'];
+      p = clone;
+    }
+    return this.executeCollection('GET', url, p);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

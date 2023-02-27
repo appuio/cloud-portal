@@ -7,7 +7,7 @@ import { Verb } from '../store/app.reducer';
 import { Team } from '../types/team';
 import { List } from '../types/list';
 import { User } from '../types/user';
-import { RoleBindingList, RoleBindings } from '../types/role-bindings';
+import { RoleBinding, RoleBindingList } from '../types/role-binding';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,6 @@ export class KubernetesClientService {
   private readonly apiPrefix = 'appuio-api';
   private readonly zonesApi = `${this.apiPrefix}/apis/appuio.io/v1/zones`;
   private readonly usersApi = `${this.apiPrefix}/apis/appuio.io/v1/users`;
-  private readonly organizationsApi = `${this.apiPrefix}/apis/organization.appuio.io/v1/organizations`;
   private readonly authApi = `${this.apiPrefix}/apis/rbac.authorization.k8s.io/v1`;
 
   constructor(private httpClient: HttpClient) {}
@@ -63,8 +62,8 @@ export class KubernetesClientService {
     return this.httpClient.get<RoleBindingList>(`${this.authApi}/namespaces/${namespace}/rolebindings`);
   }
 
-  updateRoleBinding(roleBinding: RoleBindings): Observable<RoleBindings> {
-    return this.httpClient.put<RoleBindings>(
+  updateRoleBinding(roleBinding: RoleBinding): Observable<RoleBinding> {
+    return this.httpClient.put<RoleBinding>(
       `${this.authApi}/namespaces/${roleBinding.metadata.namespace}/rolebindings/${roleBinding.metadata.name}`,
       roleBinding
     );

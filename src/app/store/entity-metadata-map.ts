@@ -3,11 +3,13 @@ import { Organization } from '../types/organization';
 import { newIdFromSelfSubjectAccessReview, SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { OrganizationMembers } from '../types/organization-members';
 import { BillingEntity } from '../types/billing-entity';
+import { RoleBinding } from '../types/role-binding';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
 export const selfSubjectAccessReviewEntityKey = 'authorization.k8s.io/v1/selfsubjectaccessreviews';
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
+export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -35,6 +37,16 @@ export const entityMetadataMap: EntityMetadataMap = {
     selectId: (bEntity: BillingEntity) => bEntity.metadata.name, // cluster-scoped
     sortComparer: (a: BillingEntity, b: BillingEntity) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
+  },
+  RoleBinding: {
+    entityName: rolebindingEntityKey,
+    selectId: (rb: RoleBinding) => `${rb.metadata.namespace}/${rb.metadata.name}`,
+    sortComparer: (a: RoleBinding, b: RoleBinding) =>
+      `${a.metadata.namespace}/${a.metadata.name}`.localeCompare(
+        `${b.metadata.namespace}/${b.metadata.name}`,
+        undefined,
+        { sensitivity: 'base' }
+      ),
   },
 };
 

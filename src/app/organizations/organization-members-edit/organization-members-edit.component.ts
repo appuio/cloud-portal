@@ -6,7 +6,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
-import { RoleBindingList } from 'src/app/types/role-bindings';
+import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 
 @Component({
@@ -17,7 +17,7 @@ import { OrganizationMembersCollectionService } from '../../store/organizationme
 })
 export class OrganizationMembersEditComponent implements OnInit {
   private organizationMembers?: OrganizationMembers;
-  roleBindings!: RoleBindingList;
+  roleBindings!: RoleBinding[];
   faClose = faClose;
   faSave = faSave;
   faWarning = faWarning;
@@ -117,7 +117,7 @@ export class OrganizationMembersEditComponent implements OnInit {
 
   mapRolesToUsers(): Record<string, string[]> {
     const userRoles: Record<string, string[]> = {};
-    this.roleBindings.items.forEach((item) => {
+    this.roleBindings.forEach((item) => {
       item.subjects.forEach((subj) => {
         if (!userRoles[subj.name]) {
           userRoles[subj.name] = [];
@@ -149,7 +149,7 @@ export class OrganizationMembersEditComponent implements OnInit {
 
     forkJoin([
       this.membersService.update(this.newOrganizationMembers(this.organizationMembers, userNames)),
-      ...this.roleBindings.items.map((roleBinding) =>
+      ...this.roleBindings.map((roleBinding) =>
         this.kubernetesClientService.updateRoleBinding({
           metadata: { ...roleBinding.metadata },
           roleRef: { ...roleBinding.roleRef },

@@ -1,4 +1,6 @@
-export interface RoleBindings {
+import { KubeObject } from './entity';
+
+export interface RoleBinding extends KubeObject {
   metadata: {
     namespace: string;
     name: string;
@@ -14,5 +16,5 @@ export interface RoleBindingList {
   metadata: {
     resourceVersion: string;
   };
-  items: RoleBindings[];
+  items: RoleBinding[];
 }

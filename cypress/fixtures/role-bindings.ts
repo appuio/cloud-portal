@@ -1,6 +1,6 @@
 import { UserRef } from '../../src/app/types/team';
 
-import { RoleBindingList } from 'src/app/types/role-bindings';
+import { RoleBindingList } from 'src/app/types/role-binding';
 
 export interface RoleBindingConfig {
   namespace: string;

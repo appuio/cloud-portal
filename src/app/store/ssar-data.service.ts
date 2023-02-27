@@ -14,6 +14,7 @@ export class SelfSubjectAccessReviewDataService extends KubernetesDataService<Se
   }
 
   override getById(key: number | string): Observable<SelfSubjectAccessReview> {
+    // Getting a permission entity is actually a create/POST operation in Kubernetes, thus we extend the default KubernetesDataService.
     return this.execute(
       'POST',
       this.urlGenerator.getEntity(this.name, '', 'CREATE'),

@@ -81,7 +81,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
    * @returns Observable of the queried entities after server reports successful query or the query error.
    */
   public getAllInNamespace(namespace: string, options?: EntityActionOptions): Observable<T[]> {
-    return this.getWithQuery({ namespace: namespace }, options);
+    return this.getWithQuery({ namespace }, options);
   }
 
   /**

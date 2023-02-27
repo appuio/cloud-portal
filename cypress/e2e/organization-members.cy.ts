@@ -1,5 +1,5 @@
 import { createUser } from '../fixtures/user';
-import { organizationListNxtVshn } from '../fixtures/organization';
+import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
 import { createRoleBindingList } from 'cypress/fixtures/role-bindings';
 import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
@@ -27,9 +27,7 @@ describe('Test organization members', () => {
         namespace: 'nxt',
       }
     );
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
@@ -37,13 +35,15 @@ describe('Test organization members', () => {
       }),
     });
     cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
-      body: createRoleBindingList({
-        namespace: 'nxt',
-        roles: [
-          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
-          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
-        ],
-      }),
+      body: {
+        items: createRoleBindingList({
+          namespace: 'nxt',
+          roles: [
+            { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+            { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+          ],
+        }),
+      },
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
@@ -77,13 +77,15 @@ describe('Test organization members', () => {
       }),
     });
     cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
-      body: createRoleBindingList({
-        namespace: 'nxt',
-        roles: [
-          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
-          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
-        ],
-      }),
+      body: {
+        items: createRoleBindingList({
+          namespace: 'nxt',
+          roles: [
+            { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+            { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+          ],
+        }),
+      },
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
@@ -155,13 +157,15 @@ describe('Test organization members', () => {
       }),
     });
     cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings', {
-      body: createRoleBindingList({
-        namespace: 'nxt',
-        roles: [
-          { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
-          { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
-        ],
-      }),
+      body: {
+        items: createRoleBindingList({
+          namespace: 'nxt',
+          roles: [
+            { name: 'control-api:organization-admin', userRefs: [{ name: 'hans.meier' }] },
+            { name: 'control-api:organization-viewer', userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }] },
+          ],
+        }),
+      },
     });
     cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({

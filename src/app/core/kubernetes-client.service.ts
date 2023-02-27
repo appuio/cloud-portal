@@ -7,7 +7,6 @@ import { Verb } from '../store/app.reducer';
 import { Team } from '../types/team';
 import { List } from '../types/list';
 import { User } from '../types/user';
-import { RoleBinding, RoleBindingList } from '../types/role-binding';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +15,6 @@ export class KubernetesClientService {
   private readonly apiPrefix = 'appuio-api';
   private readonly zonesApi = `${this.apiPrefix}/apis/appuio.io/v1/zones`;
   private readonly usersApi = `${this.apiPrefix}/apis/appuio.io/v1/users`;
-  private readonly authApi = `${this.apiPrefix}/apis/rbac.authorization.k8s.io/v1`;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -56,21 +54,6 @@ export class KubernetesClientService {
 
   deleteTeam(namespace: string, name: string): Observable<unknown> {
     return this.httpClient.delete(`${this.apiPrefix}/apis/appuio.io/v1/namespaces/${namespace}/teams/${name}`);
-  }
-
-  getRoleBindings(namespace: string): Observable<RoleBindingList> {
-    return this.httpClient.get<RoleBindingList>(`${this.authApi}/namespaces/${namespace}/rolebindings`);
-  }
-
-  updateRoleBinding(roleBinding: RoleBinding): Observable<RoleBinding> {
-    return this.httpClient.put<RoleBinding>(
-      `${this.authApi}/namespaces/${roleBinding.metadata.namespace}/rolebindings/${roleBinding.metadata.name}`,
-      roleBinding
-    );
-  }
-
-  getOrganizationsPermission(): Observable<Verb[]> {
-    return this.getPermissions('', 'organizations', 'rbac.appuio.io', Verb.List, Verb.Create);
   }
 
   getTeamsPermission(namespace: string): Observable<Verb[]> {

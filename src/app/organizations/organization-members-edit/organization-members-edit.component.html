@@ -1,9 +1,9 @@
-<ng-container *ngrxLet="organizationMembers$ as organizationMembers; suspenseTpl: loading; error as err">
-  <ng-container *ngIf="organizationMembers">
+<ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="payload as p">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
-          {{ organizationMembers.metadata.namespace }}
+          {{ payload.members.metadata.namespace }}
           <span i18n>Members</span>
         </div>
         <a [routerLink]="['../..']" class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
@@ -11,7 +11,7 @@
         </a>
       </div>
       <div class="border-top-1 surface-border" *ngIf="form">
-        <form (submit)="save()" [formGroup]="form" class="flex flex-column" novalidate>
+        <form (submit)="save(payload)" [formGroup]="form" class="flex flex-column" novalidate>
           <div class="max-w-1200px">
             <div class="grid mb-2 mt-2">
               <p-message
@@ -53,7 +53,7 @@
               <div class="field col-11 md:col-1">
                 <button
                   (click)="removeFormControl(i)"
-                  *ngIf="!last && editPermission; else noButton"
+                  *ngIf="!last && payload.canEdit; else noButton"
                   class="p-button"
                   i18n-title
                   pButton
@@ -66,11 +66,11 @@
                 </button>
               </div>
               <ng-template #noButton>
-                <div *ngIf="editPermission" class="ml-3 w-3rem"></div>
+                <div *ngIf="payload.canEdit" class="ml-3 w-3rem"></div>
               </ng-template>
             </div>
 
-            <div *ngIf="editPermission">
+            <div *ngIf="payload.canEdit">
               <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
                 <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
                 <span class="pr-2" i18n>Save</span>

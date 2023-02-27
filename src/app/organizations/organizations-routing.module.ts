@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
-import { UsersRolesResolver } from './users-roles.resolver';
 import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { OrganizationPermissions } from '../types/organization';
 import { BillingEntityPermissions } from '../types/billing-entity';
@@ -31,9 +30,6 @@ const routes: Routes = [
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
-    resolve: {
-      roleBindings: UsersRolesResolver,
-    },
   },
 ];
 

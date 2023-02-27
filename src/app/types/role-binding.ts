@@ -1,6 +1,10 @@
 import { KubeObject } from './entity';
 
+export const RoleBindingPermissions = { group: 'rbac.authorization.k8s.io', resource: 'rolebindings' };
+
 export interface RoleBinding extends KubeObject {
+  kind: 'RoleBinding';
+  apiVersion: 'rbac.authorization.k8s.io/v1';
   metadata: {
     namespace: string;
     name: string;
@@ -8,13 +12,4 @@ export interface RoleBinding extends KubeObject {
   };
   roleRef: { apiGroup: string; kind: 'ClusterRole' | 'Role'; name: string };
   subjects: { apiGroup: string; kind: 'User' | 'Group' | 'ServiceAccount'; name: string }[];
-}
-
-export interface RoleBindingList {
-  kind: 'RoleBindingsList';
-  apiVersion: 'rbac.authorization.k8s.io/v1';
-  metadata: {
-    resourceVersion: string;
-  };
-  items: RoleBinding[];
 }

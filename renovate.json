@@ -16,6 +16,7 @@
           "digest"
         ],
         "automerge": true,
+        "groupName": "npm",
         "schedule": [
           "on the first day of the week"
         ]
@@ -24,7 +25,7 @@
         "matchUpdateTypes": [
           "major"
         ],
-        "groupName": "npm",
+        "groupName": "npm-major",
         "schedule": [
           "on the first day of the week"
         ]

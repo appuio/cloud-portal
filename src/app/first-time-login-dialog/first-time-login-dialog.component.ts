@@ -11,12 +11,7 @@ import { User } from '../types/user';
 import { selectUser } from '../store/app.selectors';
 import { Entity } from '../types/entity';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
-import {
-  KubernetesCollectionService,
-  KubernetesCollectionServiceFactory,
-} from '../store/kubernetes-collection.service';
-import { OrganizationMembers } from '../types/organization-members';
-import { organizationMembersEntityKey } from '../store/entity-metadata-map';
+import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -37,19 +32,16 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   userBelongsToOrganization = true;
   getOrgSub?: Subscription;
   selectUserSub?: Subscription;
-  private organizationMembersService: KubernetesCollectionService<OrganizationMembers>;
 
   constructor(
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private kubernetesClientService: KubernetesClientService,
-    private kubernetesServiceFactory: KubernetesCollectionServiceFactory<OrganizationMembers>,
+    private organizationMembersService: OrganizationMembersCollectionService,
     private organizationService: OrganizationCollectionService,
     private identityService: IdentityService,
     private store: Store
-  ) {
-    this.organizationMembersService = kubernetesServiceFactory.create(organizationMembersEntityKey);
-  }
+  ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {

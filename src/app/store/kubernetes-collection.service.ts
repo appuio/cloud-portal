@@ -1,6 +1,11 @@
-import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import {
+  EntityActionOptions,
+  EntityCollectionServiceBase,
+  EntityCollectionServiceElementsFactory,
+  QueryParams,
+} from '@ngrx/data';
 import { KubeObject } from '../types/entity';
-import { Observable, of, take, tap } from 'rxjs';
+import { map, Observable, of, take, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { buildId } from './kubernetes-data.service';
 import { Injectable } from '@angular/core';
@@ -9,6 +14,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
   // this flag holds the value true when there was an initial collection load.
   // Ideally this can be done with rxJS, but it's not easy to accomplish this if there is no initial QUERY_ALL action dispatched.
   private memoizedAllEntities = false;
+  private memoizedAllPerNamespace = new Map<string, boolean>();
 
   constructor(entityName: string, private serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super(entityName, serviceElementsFactory);
@@ -16,6 +22,15 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
 
   override getAll(options?: EntityActionOptions): Observable<T[]> {
     return super.getAll(options).pipe(tap(() => (this.memoizedAllEntities = true)));
+  }
+
+  override getWithQuery(queryParams: QueryParams | string, options?: EntityActionOptions): Observable<T[]> {
+    const pipe = super.getWithQuery(queryParams, options);
+    if (typeof queryParams !== 'string' && 'namespace' in queryParams) {
+      const ns = queryParams['namespace'] as string;
+      return pipe.pipe(tap(() => this.memoizedAllPerNamespace.set(ns, true)));
+    }
+    return pipe;
   }
 
   /**
@@ -67,6 +82,24 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
    */
   public getAllInNamespace(namespace: string, options?: EntityActionOptions): Observable<T[]> {
     return this.getWithQuery({ namespace: namespace }, options);
+  }
+
+  /**
+   * Returns all entities from the cache from a particular namespace if it has been loaded before.
+   * @param namespace the Kubernetes namespace in which to look for entities.
+   * @param options options that influence merge behaviour.
+   * @returns Observable of the queried namespace-scoped entities after server reports successful query or the query error.
+   */
+  public getAllInNamespaceMemoized(namespace: string, options?: EntityActionOptions): Observable<T[]> {
+    return this.entities$.pipe(
+      take(1),
+      switchMap(() => {
+        if (this.memoizedAllPerNamespace.get(namespace)) {
+          return this.entities$.pipe(map((entities) => entities.filter((e) => e.metadata.namespace === namespace)));
+        }
+        return this.getAllInNamespace(namespace, options);
+      })
+    );
   }
 }
 

@@ -3,17 +3,18 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
 import { Permission, Verb } from './store/app.reducer';
-import { faComment, faDatabase, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faDatabase, faDollarSign, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
 import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
-import { take } from 'rxjs';
-import { clusterOrganizationSsarIDs } from './store/ssar-data.service';
+import { filter, take } from 'rxjs';
 import { OrganizationCollectionService } from './organizations/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
+import { composeSsarId } from './store/entity-metadata-map';
+import { SelfSubjectAccessReview } from './types/self-subject-access-review';
 
 @Component({
   selector: 'app-root',
@@ -42,7 +43,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // pre-load some entities into cache
-    clusterOrganizationSsarIDs.forEach((s) => this.ssarCollectionService.getByKey(s));
+    clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKey(s));
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
     this.organizationService.getAll().subscribe();
@@ -101,6 +102,16 @@ export class AppComponent implements OnInit {
       icon: faUserGroup,
       routerLink: ['teams'],
     });
+    this.ssarCollectionService
+      .isAllowed('billing.appuio.io', 'billingentities', Verb.List, '')
+      .pipe(filter((allowed) => allowed))
+      .subscribe(() => {
+        this.menuItems.push({
+          label: $localize`Billing`,
+          icon: faDollarSign,
+          routerLink: ['billingentities'],
+        });
+      });
   }
 }
 
@@ -111,3 +122,9 @@ export interface NavMenuItem {
   command?: () => void;
   routerLink?: string[];
 }
+
+const clusterStartupAccessChecks = [
+  composeSsarId(new SelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
+  composeSsarId(new SelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
+  composeSsarId(new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
+];

@@ -2,10 +2,12 @@ import { EntityDataModuleConfig, EntityMetadataMap } from '@ngrx/data';
 import { Organization } from '../types/organization';
 import { SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { OrganizationMembers } from '../types/organization-members';
+import { BillingEntity } from '../types/billing-entity';
 
 export const organizationEntityKey = 'Organization';
 export const organizationMembersEntityKey = 'OrganizationMembers';
 export const selfSubjectAccessReviewEntityKey = 'SelfSubjectAccessReview';
+export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -30,6 +32,12 @@ export const entityMetadataMap: EntityMetadataMap = {
     filterFn: (entities: OrganizationMembers[], filterFn: (members: OrganizationMembers) => boolean) => {
       return entities.filter((members) => filterFn(members));
     },
+  },
+  BillingEntity: {
+    entityName: billingEntityEntityKey,
+    selectId: (bEntity: BillingEntity) => bEntity.metadata.name, // cluster-scoped
+    sortComparer: (a: BillingEntity, b: BillingEntity) =>
+      a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
   },
 };
 

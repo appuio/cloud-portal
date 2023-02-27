@@ -32,7 +32,7 @@ import { InfoMenuItemComponent } from './info-menu-item/info-menu-item.component
 import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
-import { EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
 import {
   entityConfig,
   entityMetadataMap,
@@ -42,6 +42,8 @@ import {
 import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
 import { OrganizationCollectionService } from './organizations/organization-collection.service';
 import { OrganizationDataService } from './organizations/organization-data.service';
+import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
+import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
 
 @NgModule({
   declarations: [
@@ -75,6 +77,7 @@ import { OrganizationDataService } from './organizations/organization-data.servi
     SelfSubjectAccessReviewDataService,
     OrganizationCollectionService,
     OrganizationDataService,
+    KubernetesCollectionServiceFactory,
     {
       provide: APP_INITIALIZER,
       deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
@@ -83,6 +86,7 @@ import { OrganizationDataService } from './organizations/organization-data.servi
     },
     { provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RetryInterceptor, multi: true },
+    { provide: DefaultDataServiceFactory, useClass: KubernetesDataServiceFactory },
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({

@@ -9,3 +9,13 @@ export interface Entity<ValueType> {
   state: EntityState;
   value: ValueType;
 }
+
+export interface KubeObject {
+  metadata: {
+    name: string;
+    namespace?: string;
+    [key: string]: unknown;
+  };
+  kind: string;
+  apiVersion: string;
+}

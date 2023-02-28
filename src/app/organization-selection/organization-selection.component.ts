@@ -4,7 +4,6 @@ import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
-import { setFocusOrganization } from '../store/app.actions';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 
 @Component({
@@ -34,16 +33,14 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
       )
     );
     this.subscriptions.push(
-      this.organizationControl.valueChanges.subscribe((focusOrganizationName) =>
-        this.store.dispatch(setFocusOrganization({ focusOrganizationName }))
-      )
+      this.organizationControl.valueChanges.subscribe((focusOrganizationName) => {
+        this.organizationService.selectOrganization(focusOrganizationName);
+      })
     );
 
-    this.organizationService.filteredEntities$
-      .pipe(map((orgs) => orgs[0]?.metadata.name))
-      .subscribe((organizationName) => {
-        this.organizationControl.setValue(organizationName ?? '', { emitEvent: false });
-      });
+    this.organizationService.selectedOrganization$.subscribe((org) => {
+      this.organizationControl.setValue(org ? org.metadata.name : '', { emitEvent: false });
+    });
   }
 
   ngOnDestroy(): void {

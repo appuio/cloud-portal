@@ -7,6 +7,7 @@ import { KubernetesCollectionService } from './kubernetes-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './ssar-collection.service';
 import { Verb } from './app.reducer';
 import { BillingEntityPermissions } from '../types/billing-entity';
+import { organizationNameFilter } from './entity-filter';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ import { BillingEntityPermissions } from '../types/billing-entity';
 export class OrganizationCollectionService extends KubernetesCollectionService<Organization> {
   isEmptyAndLoaded$: Observable<boolean>;
   canAddOrganizations$: Observable<boolean>;
+  selectedOrganization$: Observable<Organization | undefined>;
 
   constructor(
     private elementsFactory: EntityCollectionServiceElementsFactory,
@@ -31,6 +33,8 @@ export class OrganizationCollectionService extends KubernetesCollectionService<O
       permissionService.isAllowed(OrganizationPermissions.group, OrganizationPermissions.resource, Verb.Create),
       permissionService.isAllowed(BillingEntityPermissions.group, BillingEntityPermissions.resource, Verb.List),
     ]).pipe(map(([orgCreateAllowed, beListAllowed]) => orgCreateAllowed && beListAllowed));
+
+    this.selectedOrganization$ = this.filteredEntities$.pipe(map((orgs) => orgs[0]));
   }
 
   canEditOrganization(org: Organization): Observable<boolean> {
@@ -43,5 +47,9 @@ export class OrganizationCollectionService extends KubernetesCollectionService<O
       ),
       this.permissionService.isAllowed(BillingEntityPermissions.group, BillingEntityPermissions.resource, Verb.List),
     ]).pipe(map(([orgEditAllowed, beListAllowed]) => orgEditAllowed && beListAllowed));
+  }
+
+  selectOrganization(orgName: string): void {
+    this.setFilter(organizationNameFilter(orgName));
   }
 }

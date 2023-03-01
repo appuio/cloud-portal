@@ -1,7 +1,7 @@
-import { Team } from '../../src/app/types/team';
+import { Team, TeamPermissions } from '../../src/app/types/team';
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
 import { createTeamList, team1, teamListNxt, teamListVshn } from '../fixtures/team';
-import { organizationListNxtVshn } from '../fixtures/organization';
+import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
 
 describe('Test teams list', () => {
   beforeEach(() => {
@@ -12,13 +12,11 @@ describe('Test teams list', () => {
 
   it('list with two entries', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
@@ -30,14 +28,12 @@ describe('Test teams list', () => {
   });
 
   it('failed requests are retried', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
 
     let interceptCount = 0;
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', (req) => {
@@ -57,13 +53,11 @@ describe('Test teams list', () => {
 
   it('list with one team and user with default organization', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
       body: teamListVshn,
     });
@@ -75,13 +69,12 @@ describe('Test teams list', () => {
 
   it('list with one team and user with default organization and change of selected organization', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
+
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
       body: teamListVshn,
     });
@@ -100,14 +93,11 @@ describe('Test teams list', () => {
 
   it('empty list', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: createTeamList({ items: [] }),
     });
@@ -119,20 +109,18 @@ describe('Test teams list', () => {
 
   it('request failed', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
 
     cy.visit('/teams');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.visit('/teams');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       statusCode: 403,
     });
-    cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get('#teams-failure-message').should('contain.text', 'Teams could not be loaded.');
   });
 });
@@ -146,20 +134,14 @@ describe('Test team edit', () => {
 
   it('edit team with button', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission({ verb: 'update', namespace: 'nxt', ...TeamPermissions });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
-    });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
-      body: team1,
     });
     cy.visit('/teams');
 
@@ -180,8 +162,7 @@ describe('Test team edit', () => {
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Edit team"]').click();
 
     cy.get('.text-3xl').should('contain.text', 'team1');
-    cy.get('#displayName').type('{selectall}');
-    cy.get('#displayName').type('Awesome Team!');
+    cy.get('#displayName').type('{selectall}Awesome Team!');
 
     cy.get(':nth-child(3) > :nth-child(3) > .p-ripple').click();
     cy.get(':nth-child(3) > .p-inputtext').type('cma');
@@ -199,14 +180,12 @@ describe('Test team edit', () => {
 
   it('no edit permission', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', namespace: 'nxt', ...TeamPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
@@ -226,31 +205,30 @@ describe('Test teams add', () => {
 
   it('add team with button', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
     cy.setPermission(
-      { verb: 'create', resource: 'teams', group: 'appuio.io', namespace: 'nxt' },
-      { verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' }
+      { verb: 'list', ...TeamPermissions },
+      { verb: 'create', ...TeamPermissions, namespace: 'nxt' },
+      { verb: 'update', ...TeamPermissions, namespace: 'nxt' }
     );
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
-    });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
-      body: team1,
     });
     cy.visit('/teams');
 
     const updatedTeam: Team = {
       ...team1,
+      metadata: {
+        ...team1.metadata,
+        name: 'new-team',
+      },
       spec: {
         ...team1.spec,
-        displayName: 'Awesome Team!',
+        displayName: 'New Team!',
       },
     };
     cy.intercept('POST', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
@@ -277,19 +255,18 @@ describe('Test teams add', () => {
         expect(body.spec.displayName).to.eq('New Team!');
         expect(body.spec.userRefs[0].name).to.eq('test');
       });
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'new-team');
   });
 
   it('no create permission', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.setPermission({ verb: 'update', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission({ verb: 'update', ...TeamPermissions, namespace: 'nxt' });
+    setOrganization(cy, ...organizationListNxtVshn.items);
+
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
@@ -308,20 +285,18 @@ describe('Test teams delete', () => {
 
   it('delete team with button', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission(
+      { verb: 'list', namespace: 'nxt', ...TeamPermissions },
+      { verb: 'delete', namespace: 'nxt', ...TeamPermissions }
+    );
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.setPermission({ verb: 'delete', resource: 'teams', group: 'appuio.io', namespace: 'nxt' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
+
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
-    });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
-      body: team1,
     });
     cy.visit('/teams');
 
@@ -338,18 +313,17 @@ describe('Test teams delete', () => {
     );
     cy.get('.p-confirm-dialog-accept').click();
     cy.wait('@delete');
+    cy.get(':nth-child(2) > .flex-row > :nth-child(1)').should('not.contain.text', 'team1');
   });
 
   it('no delete permission', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', namespace: 'nxt', ...TeamPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
 
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });

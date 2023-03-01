@@ -46,7 +46,11 @@ export class AppComponent implements OnInit {
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
     this.userService.setFilter(metadataNameFilter(this.identityService.getUsername()));
-    this.userService.getByKey(this.identityService.getUsername()).subscribe();
+    this.userService.getByKey(this.identityService.getUsername()).subscribe((user) => {
+      if (user.spec.preferences?.defaultOrganizationRef) {
+        this.organizationService.setFilter(metadataNameFilter(user.spec.preferences.defaultOrganizationRef));
+      }
+    });
 
     this.name = this.identityService.getName();
     this.username = this.identityService.getUsername();

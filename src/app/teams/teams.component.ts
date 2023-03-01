@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatestWith, map, Observable, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +28,7 @@ interface Payload {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsComponent implements OnInit, OnDestroy {
-  payload$?: Observable<Payload | undefined>;
+  payload$?: Observable<Payload>;
 
   faInfo = faInfoCircle;
   faWarning = faWarning;
@@ -46,7 +46,8 @@ export class TeamsComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private organizationService: OrganizationCollectionService,
     private teamService: TeamCollectionService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -110,6 +111,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
         this.subscriptions.push(
           this.teamService.delete(team).subscribe({
             next: (name) => {
+              this.changeDetectorRef.markForCheck();
               this.messageService.add({
                 severity: 'success',
                 summary: $localize`Successfully deleted team ${name}`,

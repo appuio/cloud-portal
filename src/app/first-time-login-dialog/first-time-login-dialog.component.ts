@@ -4,7 +4,7 @@ import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { Organization } from '../types/organization';
-import { combineLatestWith, forkJoin, map, Subscription } from 'rxjs';
+import { combineLatestWith, forkJoin, Subscription } from 'rxjs';
 import { User } from '../types/user';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
@@ -43,14 +43,11 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.organizationService
           .getAllMemoized()
-          .pipe(
-            combineLatestWith(this.userService.currentUser$),
-            map(([orgs, user]) => {
-              this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
-              this.showFirstLoginDialogIfNecessary(orgs);
-            })
-          )
-          .subscribe()
+          .pipe(combineLatestWith(this.userService.currentUser$))
+          .subscribe(([orgs, user]) => {
+            this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
+            this.showFirstLoginDialogIfNecessary(orgs);
+          })
       );
     }
   }

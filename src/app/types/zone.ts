@@ -21,10 +21,3 @@ export interface Zone extends KubeObject {
     cloudProvider: ZoneCloudProvider;
   };
 }
-
-export interface ZoneList {
-  kind: 'ZoneList';
-  apiVersion: 'appuio.io/v1';
-  metadata: object;
-  items: Zone[];
-}

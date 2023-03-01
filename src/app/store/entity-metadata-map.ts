@@ -6,6 +6,7 @@ import { BillingEntity } from '../types/billing-entity';
 import { RoleBinding } from '../types/role-binding';
 import { Team } from '../types/team';
 import { User } from '../types/user';
+import { Zone } from '../types/zone';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
@@ -65,12 +66,13 @@ export const entityMetadataMap: EntityMetadataMap = {
   },
   User: {
     entityName: userEntityKey,
-    selectId: (user: User) => user.metadata.name,
+    selectId: (user: User) => user.metadata.name, // cluster-scoped
   },
   Zone: {
     entityName: zoneEntityKey,
-    selectId: (zone: Zone) => zone.name,
-    sortComparer: (a: Zone, b: Zone) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+    selectId: (zone: Zone) => zone.metadata.name, // cluster-scoped
+    sortComparer: (a: Zone, b: Zone) =>
+      a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
   },
 };
 

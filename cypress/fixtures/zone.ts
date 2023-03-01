@@ -1,8 +1,4 @@
-import { Zone, ZoneCloudProvider, ZoneList } from '../../src/app/types/zone';
-
-export interface ZoneListConfig {
-  items: Zone[];
-}
+import { Zone, ZoneCloudProvider } from '../../src/app/types/zone';
 
 export interface ZoneConfig {
   name: string;
@@ -73,14 +69,5 @@ export function createZone(zoneConfig: ZoneConfig): Zone {
       gatewayIPs: zoneConfig.gatewayIPs,
       cloudProvider: zoneConfig.cloudProvider,
     },
-  };
-}
-
-export function createZoneList(zoneListConfig: ZoneListConfig): ZoneList {
-  return {
-    kind: 'ZoneList',
-    apiVersion: 'appuio.io/v1',
-    metadata: {},
-    items: zoneListConfig.items,
   };
 }

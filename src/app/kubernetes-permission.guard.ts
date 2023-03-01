@@ -7,7 +7,7 @@ import { DataServiceError } from '@ngrx/data';
 import { MessageService } from 'primeng/api';
 
 /**
- * This is a newer version of {@link PermissionGuard} backed with @ngrx/data, intended to be replacing it over time.
+ * This is a backed with @ngrx/data, intended to be replacing it over time.
  */
 @Injectable({
   providedIn: 'root',

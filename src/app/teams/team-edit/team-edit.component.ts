@@ -36,7 +36,7 @@ export class TeamEditComponent implements OnInit {
   ngOnInit(): void {
     const name = this.activatedRoute.snapshot.paramMap.get('name');
     const namespace = this.activatedRoute.snapshot.paramMap.get('organizationName');
-    if (!name || !name) {
+    if (!name || !namespace) {
       throw new Error('Name and namespace are required as parameters in the URL');
     }
     this.new = name === '$new';

@@ -7,17 +7,15 @@ import { AuthConfig, OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { AppConfigService } from './app-config.service';
-import { forkJoin, mergeMap, Observable, retry } from 'rxjs';
+import { mergeMap, Observable } from 'rxjs';
 import { IdTokenInterceptor } from './core/id-token.interceptor';
-import { Store, StoreModule } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { appReducer } from './store/app.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './store/app.effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
-import { KubernetesClientService } from './core/kubernetes-client.service';
-import { setPermission } from './store/app.actions';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { SharedModule } from './shared/shared.module';
 import * as Sentry from '@sentry/angular';
@@ -74,7 +72,7 @@ import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collectio
     SelfSubjectAccessReviewCollectionService,
     {
       provide: APP_INITIALIZER,
-      deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
+      deps: [AppConfigService, OAuthService],
       useFactory: initializeAppFactory,
       multi: true,
     },
@@ -101,9 +99,7 @@ export class AppModule {
 
 export function initializeAppFactory(
   appConfigService: AppConfigService,
-  oauthService: OAuthService,
-  kubernetesClientService: KubernetesClientService,
-  store: Store
+  oauthService: OAuthService
 ): () => Observable<boolean> {
   return () => {
     return appConfigService.loadConfig().pipe(
@@ -119,20 +115,7 @@ export function initializeAppFactory(
             return Promise.reject('Not logged in');
           }
           oauthService.setupAutomaticSilentRefresh();
-
-          return new Promise<boolean>((resolve) => {
-            forkJoin([kubernetesClientService.getZonePermission()])
-              .pipe(retry({ count: 1, delay: 250 }))
-              .subscribe({
-                next: ([zones]) => {
-                  store.dispatch(setPermission({ permission: { zones } }));
-                  resolve(true);
-                },
-                error: () => {
-                  resolve(true);
-                },
-              });
-          });
+          return true;
         });
       })
     );

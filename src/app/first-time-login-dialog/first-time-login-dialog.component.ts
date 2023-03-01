@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
@@ -33,7 +32,6 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
-    private kubernetesClientService: KubernetesClientService,
     private organizationMembersService: OrganizationMembersCollectionService,
     private organizationService: OrganizationCollectionService,
     private identityService: IdentityService,

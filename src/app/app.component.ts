@@ -1,20 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
-import { selectOrganizationSelectionEnabled, selectPermission } from './store/app.selectors';
-import { Permission, Verb } from './store/app.reducer';
+import { selectOrganizationSelectionEnabled } from './store/app.selectors';
+import { Verb } from './store/app.reducer';
 import { faComment, faDatabase, faDollarSign, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
 import { IdentityService } from './core/identity.service';
-import { forkJoin, of, take } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList, metadataNameFilter } from './store/entity-filter';
 import { OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
 import { UserCollectionService } from './store/user-collection.service';
+import { ZonePermissions } from './types/zone';
 
 @Component({
   selector: 'app-root',
@@ -57,11 +58,7 @@ export class AppComponent implements OnInit {
     this.avatarSrc = this.identityService.getAvatarUrl();
     const email = this.identityService.getEmail();
 
-    this.store
-      .select(selectPermission)
-      .pipe(take(1))
-      .subscribe((permission) => this.createMenu(permission));
-
+    this.createMenu();
     this.setupGlitchTip(this.name, email, this.username);
   }
 
@@ -83,8 +80,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private createMenu(permission: Permission): void {
-    const canViewZones$ = of(permission.zones.includes(Verb.List));
+  private createMenu(): void {
+    const canViewZones$ = this.permissionService.isAllowed(ZonePermissions.group, ZonePermissions.resource, Verb.List);
     const canViewOrganizations$ = this.permissionService.isAllowed(
       OrganizationPermissions.group,
       OrganizationPermissions.resource,

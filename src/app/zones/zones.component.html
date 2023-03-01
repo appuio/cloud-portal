@@ -1,11 +1,12 @@
 <h1 class="pt-0 mt-0" i18n id="zones-title">Zones</h1>
 
-<ng-container *ngIf="zones$ | ngrxPush as zones">
-  <ng-container *ngFor="let zone of zones.value; index as i">
-    <app-zone-detail [zone]="zone" [linkToDetailView]="true" [showCloseIcon]="false"></app-zone-detail>
-  </ng-container>
 
-  <ng-container *ngIf="isZoneListEmpty(zones)">
+<ng-container *ngrxLet="zones$ as zones; suspenseTpl: loading; error as err">
+    <ng-container *ngFor="let zone of zones; index as i">
+      <app-zone-detail [zone]="zone" [linkToDetailView]="true" [showCloseIcon]="false"></app-zone-detail>
+    </ng-container>
+
+  <ng-container *ngIf="zones?.length === 0 && !err">
     <p-messages severity="info">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faInfo"></fa-icon>
@@ -14,7 +15,7 @@
     </p-messages>
   </ng-container>
 
-  <ng-container *ngIf="hasZoneLoadingFailed(zones)">
+  <ng-container *ngIf="err">
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
@@ -23,3 +24,11 @@
     </p-messages>
   </ng-container>
 </ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

@@ -1,16 +1,16 @@
+import { KubeObject } from './entity';
+
+export const ZonePermissions = { group: 'appuio.io', resource: 'zones' };
+
 export interface ZoneCloudProvider {
   name: string;
   zones: string[];
   region: string;
 }
 
-export interface Zone {
+export interface Zone extends KubeObject {
   kind: 'Zone';
   apiVersion: 'appuio.io/v1';
-  metadata: {
-    name: string;
-    [key: string]: unknown;
-  };
   data: {
     displayName: string;
     features: { [key: string]: string };

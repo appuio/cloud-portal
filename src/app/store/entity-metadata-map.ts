@@ -14,6 +14,7 @@ export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
 export const teamEntityKey = 'appuio.io/v1/teams';
 export const userEntityKey = 'appuio.io/v1/users';
+export const zoneEntityKey = 'appuio.io/v1/zones';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -65,6 +66,11 @@ export const entityMetadataMap: EntityMetadataMap = {
   User: {
     entityName: userEntityKey,
     selectId: (user: User) => user.metadata.name,
+  },
+  Zone: {
+    entityName: zoneEntityKey,
+    selectId: (zone: Zone) => zone.name,
+    sortComparer: (a: Zone, b: Zone) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
   },
 };
 

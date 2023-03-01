@@ -47,7 +47,8 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
 
   delete(id: number | string): Observable<number | string> {
     return this.execute('DELETE', this.urlGenerator.getEntity(this.name, id.toString(), 'DELETE')).pipe(
-      map((t) => t.metadata.name)
+      // actually we get a reply from Kubernetes with a status object here, but the interface wants us to return the original entity id 🤷
+      map(() => id)
     );
   }
 

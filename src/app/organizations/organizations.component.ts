@@ -62,7 +62,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
             organization: org,
             canEdit$: this.organizationService.canEditOrganization(org),
             canViewMembers$: this.organizationMembersService.canViewMembers(org.metadata.name),
-          } as OrganizationConfig;
+          } satisfies OrganizationConfig;
         })
       )
     );

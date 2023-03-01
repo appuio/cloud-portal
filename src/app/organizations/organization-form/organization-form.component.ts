@@ -101,10 +101,11 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private getOrgFromForm(): Organization {
+    const rawValue = this.form.getRawValue();
     return newOrganization(
-      this.form.getRawValue().organizationId,
-      this.form.getRawValue().displayName ?? '',
-      this.form.getRawValue().billingEntity?.metadata.name ?? ''
+      rawValue.organizationId,
+      rawValue.displayName ?? '',
+      rawValue.billingEntity?.metadata.name ?? ''
     );
   }
 

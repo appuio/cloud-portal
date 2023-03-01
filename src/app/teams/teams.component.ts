@@ -7,10 +7,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { selectQueryParam } from '../store/router.selectors';
 import { Team } from '../types/team';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { TeamCollectionService } from '../store/team-collection.service';
 import { Organization } from '../types/organization';
+import { switchMap } from 'rxjs/operators';
 
 interface Payload {
   organization: Organization;
@@ -27,8 +28,7 @@ interface Payload {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsComponent implements OnInit, OnDestroy {
-  payload$?: Observable<Payload>;
-  selectedOrganization?: Observable<Organization | undefined>;
+  payload$?: Observable<Payload | undefined>;
 
   faInfo = faInfoCircle;
   faWarning = faWarning;
@@ -45,35 +45,32 @@ export class TeamsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private confirmationService: ConfirmationService,
     private organizationService: OrganizationCollectionService,
-    private teamService: TeamCollectionService
+    private teamService: TeamCollectionService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    this.selectedOrganization = this.organizationService.selectedOrganization$;
-    this.selectedOrganization?.subscribe((org) => {
-      console.log('org', org);
-      if (!org) {
-        return;
-      }
-      const organizationName = org.metadata.name;
-      this.payload$ = this.teamService.getAllInNamespaceMemoized(organizationName).pipe(
-        combineLatestWith(
-          this.teamService.canEdit(organizationName),
-          this.teamService.canEdit(organizationName),
-          this.teamService.canDelete(organizationName)
-        ),
-        map(([teams, canCreate, canEdit, canDelete]) => {
-          console.log('lol', teams, canCreate, canEdit, canDelete);
-          return {
-            teams,
-            organization: org,
-            canEdit: canEdit,
-            canCreate: canCreate,
-            canDelete: canDelete,
-          } satisfies Payload;
-        })
-      );
-    });
+    this.payload$ = this.organizationService.selectedOrganization$.pipe(
+      switchMap((org) => {
+        const organizationName = org.metadata.name;
+        return this.teamService.getAllInNamespaceMemoized(organizationName).pipe(
+          combineLatestWith(
+            this.teamService.canCreate(organizationName),
+            this.teamService.canEdit(organizationName),
+            this.teamService.canDelete(organizationName)
+          ),
+          map(([teams, canCreate, canEdit, canDelete]) => {
+            return {
+              teams,
+              organization: org,
+              canEdit: canEdit,
+              canCreate: canCreate,
+              canDelete: canDelete,
+            } satisfies Payload;
+          })
+        );
+      })
+    );
 
     this.subscriptions.push(
       this.store
@@ -112,11 +109,19 @@ export class TeamsComponent implements OnInit, OnDestroy {
       accept: () => {
         this.subscriptions.push(
           this.teamService.delete(team).subscribe({
-            next: () => {
-              console.log('deleted team', team.metadata.name);
+            next: (name) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: $localize`Successfully deleted team ${name}`,
+              });
             },
-            error: (err) => {
-              console.error('could not delete team:', err);
+            error: (err: Error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: $localize`Error`,
+                detail: err.message,
+                sticky: true,
+              });
             },
           })
         );

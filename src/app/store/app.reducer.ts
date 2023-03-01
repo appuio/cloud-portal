@@ -1,19 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import { Zone } from '../types/zone';
 import {
-  loadUser,
-  loadUserFailure,
-  loadUserSuccess,
   loadZones,
   loadZonesFailure,
   loadZonesSuccess,
-  setFocusOrganization,
   setOrganizationSelectionEnabled,
   setPermission,
 } from './app.actions';
 import { Entity, EntityState } from '../types/entity';
-import { Organization } from '../types/organization';
-import { User } from '../types/user';
 
 export enum Verb {
   List = 'list',
@@ -28,21 +22,16 @@ export interface Permission {
 
 export interface AppState {
   zones: Entity<Zone[]>;
-  organizations: Entity<Organization[]>;
   permission: Permission;
-  focusOrganizationName?: string;
   organizationSelectionEnabled: boolean;
-  user: Entity<User | null>;
 }
 
 const initialState: AppState = {
   zones: { value: [], state: EntityState.Unloaded },
-  organizations: { value: [], state: EntityState.Unloaded },
   permission: {
     zones: [],
   },
   organizationSelectionEnabled: false,
-  user: { value: null, state: EntityState.Unloaded },
 };
 
 export const appReducer = createReducer(
@@ -66,36 +55,6 @@ export const appReducer = createReducer(
     (state): AppState => ({
       ...state,
       zones: { value: [], state: EntityState.Failed },
-    })
-  ),
-  on(
-    loadUser,
-    (state): AppState => ({
-      ...state,
-      user: { value: null, state: EntityState.Loading },
-    })
-  ),
-  on(
-    loadUserSuccess,
-    (state, { user }): AppState => ({
-      ...state,
-      user: { value: user, state: EntityState.Loaded },
-      focusOrganizationName:
-        user.spec.preferences?.defaultOrganizationRef ?? state.organizations.value[0]?.metadata?.name,
-    })
-  ),
-  on(
-    loadUserFailure,
-    (state): AppState => ({
-      ...state,
-      user: { value: null, state: EntityState.Failed },
-    })
-  ),
-  on(
-    setFocusOrganization,
-    (state, { focusOrganizationName }): AppState => ({
-      ...state,
-      focusOrganizationName: focusOrganizationName,
     })
   ),
   on(

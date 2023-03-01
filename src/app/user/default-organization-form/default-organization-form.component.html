@@ -1,4 +1,5 @@
-<form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
+<ng-container *ngIf="user$ | ngrxPush as user">
+<form (submit)="save(user)" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
   <div class="col-12 mb-2">
     <p-message
       i18n-text
@@ -20,9 +21,10 @@
   </div>
 
   <div class="col-12">
-    <button [disabled]="form.invalid" [loading]="saving" class="w-auto mt-3" pButton pRipple type="submit">
+    <button [disabled]="form.invalid" [loading]="(userService.loading$ | ngrxPush)?? false" class="w-auto mt-3" pButton pRipple type="submit">
       <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
       <span class="pr-2" i18n>Save</span>
     </button>
   </div>
 </form>
+</ng-container>

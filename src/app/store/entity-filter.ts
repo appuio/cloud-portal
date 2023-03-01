@@ -1,8 +1,8 @@
-import { Organization } from '../types/organization';
+import { KubeObject } from '../types/entity';
 
-export function organizationNameFilter(name: string): (orgs: Organization[]) => Organization[] {
-  return function (orgs) {
-    return orgs.filter((org) => org.metadata.name === name);
+export function metadataNameFilter(metadataName: string): (entities: KubeObject[]) => KubeObject[] {
+  return function (entities) {
+    return entities.filter((entity) => entity.metadata.name === metadataName);
   };
 }
 

@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Organization, OrganizationPermissions } from '../types/organization';
 import { organizationEntityKey } from './entity-metadata-map';
-import { combineLatest, forkJoin, map, Observable } from 'rxjs';
+import { combineLatest, filter, forkJoin, map, Observable } from 'rxjs';
 import { KubernetesCollectionService } from './kubernetes-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './ssar-collection.service';
 import { Verb } from './app.reducer';
 import { BillingEntityPermissions } from '../types/billing-entity';
-import { organizationNameFilter } from './entity-filter';
+import { metadataNameFilter } from './entity-filter';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ import { organizationNameFilter } from './entity-filter';
 export class OrganizationCollectionService extends KubernetesCollectionService<Organization> {
   isEmptyAndLoaded$: Observable<boolean>;
   canAddOrganizations$: Observable<boolean>;
-  selectedOrganization$: Observable<Organization | undefined>;
+  selectedOrganization$: Observable<Organization>;
 
   constructor(
     private elementsFactory: EntityCollectionServiceElementsFactory,
@@ -34,7 +34,10 @@ export class OrganizationCollectionService extends KubernetesCollectionService<O
       permissionService.isAllowed(BillingEntityPermissions.group, BillingEntityPermissions.resource, Verb.List),
     ]).pipe(map(([orgCreateAllowed, beListAllowed]) => orgCreateAllowed && beListAllowed));
 
-    this.selectedOrganization$ = this.filteredEntities$.pipe(map((orgs) => orgs[0]));
+    this.selectedOrganization$ = this.filteredEntities$.pipe(
+      filter((org) => org.length > 0),
+      map((orgs) => orgs[0])
+    );
   }
 
   canEditOrganization(org: Organization): Observable<boolean> {
@@ -50,6 +53,6 @@ export class OrganizationCollectionService extends KubernetesCollectionService<O
   }
 
   selectOrganization(orgName: string): void {
-    this.setFilter(organizationNameFilter(orgName));
+    this.setFilter(metadataNameFilter(orgName));
   }
 }

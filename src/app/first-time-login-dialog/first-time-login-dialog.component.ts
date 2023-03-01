@@ -1,17 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { KubernetesClientService } from '../core/kubernetes-client.service';
 import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { Organization } from '../types/organization';
-import { forkJoin, Subscription } from 'rxjs';
+import { combineLatestWith, forkJoin, map, Subscription } from 'rxjs';
 import { User } from '../types/user';
-import { selectUser } from '../store/app.selectors';
-import { Entity } from '../types/entity';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
+import { UserCollectionService } from '../store/user-collection.service';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -30,8 +28,7 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   nextAction?: 'join' | 'add' | 'setDefault';
   userHasDefaultOrganization = true;
   userBelongsToOrganization = true;
-  getOrgSub?: Subscription;
-  selectUserSub?: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -40,24 +37,28 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
     private organizationMembersService: OrganizationMembersCollectionService,
     private organizationService: OrganizationCollectionService,
     private identityService: IdentityService,
-    private store: Store
+    private userService: UserCollectionService
   ) {}
 
   ngOnInit(): void {
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.getOrgSub = this.organizationService.getAllMemoized().subscribe((organizationList) => {
-        // eslint-disable-next-line ngrx/no-store-subscription
-        this.selectUserSub = this.store.select(selectUser).subscribe((user: Entity<User | null>) => {
-          this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
-          this.showFirstLoginDialogIfNecessary(organizationList);
-        });
-      });
+      this.subscriptions.push(
+        this.organizationService
+          .getAllMemoized()
+          .pipe(
+            combineLatestWith(this.userService.currentUser$),
+            map(([orgs, user]) => {
+              this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
+              this.showFirstLoginDialogIfNecessary(orgs);
+            })
+          )
+          .subscribe()
+      );
     }
   }
 
   ngOnDestroy(): void {
-    this.getOrgSub?.unsubscribe();
-    this.selectUserSub?.unsubscribe();
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   private showFirstLoginDialogIfNecessary(organizationList: Organization[]): void {
@@ -84,8 +85,8 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDefaultOrganization(user: Entity<User | null>): string | null | undefined {
-    return user?.value?.spec.preferences?.defaultOrganizationRef;
+  getDefaultOrganization(user: User): string | undefined {
+    return user?.spec.preferences?.defaultOrganizationRef;
   }
 
   addOrganization(): void {

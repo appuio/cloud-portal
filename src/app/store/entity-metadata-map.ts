@@ -5,6 +5,7 @@ import { OrganizationMembers } from '../types/organization-members';
 import { BillingEntity } from '../types/billing-entity';
 import { RoleBinding } from '../types/role-binding';
 import { Team } from '../types/team';
+import { User } from '../types/user';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
@@ -12,6 +13,7 @@ export const selfSubjectAccessReviewEntityKey = 'authorization.k8s.io/v1/selfsub
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
 export const teamEntityKey = 'appuio.io/v1/teams';
+export const userEntityKey = 'appuio.io/v1/users';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -59,6 +61,10 @@ export const entityMetadataMap: EntityMetadataMap = {
         undefined,
         { sensitivity: 'base' }
       ),
+  },
+  User: {
+    entityName: userEntityKey,
+    selectId: (user: User) => user.metadata.name,
   },
 };
 

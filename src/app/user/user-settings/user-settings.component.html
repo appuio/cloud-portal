@@ -1,7 +1,6 @@
 <h1 class="pt-0 mt-0" i18n id="zones-title">User Settings</h1>
 
-<ng-container *ngIf="user$ | ngrxPush as user" [ngSwitch]="user.state">
-  <ng-container *ngSwitchCase="EntityState.Loaded">
+<ng-container *ngIf="user$ | ngrxPush as user">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
@@ -12,22 +11,4 @@
         <app-default-organization-form></app-default-organization-form>
       </div>
     </div>
-  </ng-container>
-
-  <ng-container *ngSwitchCase="EntityState.Loading">
-    <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
-      <div class="flex flex-row justify-content-between">
-        <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
-      </div>
-    </div>
-  </ng-container>
-
-  <ng-container *ngSwitchCase="EntityState.Failed">
-    <p-messages severity="error">
-      <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="user-failure-message">User details failed to load.</div>
-      </ng-template>
-    </p-messages>
-  </ng-container>
 </ng-container>

@@ -7,14 +7,14 @@ import { faComment, faDatabase, faDollarSign, faSitemap, faUserGroup } from '@fo
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
-import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
 import { forkJoin, of, take } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
-import { firstInList } from './store/entity-filter';
+import { firstInList, metadataNameFilter } from './store/entity-filter';
 import { OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
+import { UserCollectionService } from './store/user-collection.service';
 
 @Component({
   selector: 'app-root',
@@ -38,15 +38,15 @@ export class AppComponent implements OnInit {
     private appConfigService: AppConfigService,
     private identityService: IdentityService,
     private organizationService: OrganizationCollectionService,
-    private ssarCollectionService: SelfSubjectAccessReviewCollectionService
+    private permissionService: SelfSubjectAccessReviewCollectionService,
+    private userService: UserCollectionService
   ) {}
 
   ngOnInit(): void {
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
-
-    // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-    this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));
+    this.userService.setFilter(metadataNameFilter(this.identityService.getUsername()));
+    this.userService.getByKey(this.identityService.getUsername()).subscribe();
 
     this.name = this.identityService.getName();
     this.username = this.identityService.getUsername();
@@ -81,12 +81,12 @@ export class AppComponent implements OnInit {
 
   private createMenu(permission: Permission): void {
     const canViewZones$ = of(permission.zones.includes(Verb.List));
-    const canViewOrganizations$ = this.ssarCollectionService.isAllowed(
+    const canViewOrganizations$ = this.permissionService.isAllowed(
       OrganizationPermissions.group,
       OrganizationPermissions.resource,
       Verb.List
     );
-    const canViewBillingEntities = this.ssarCollectionService.isAllowed(
+    const canViewBillingEntities = this.permissionService.isAllowed(
       BillingEntityPermissions.group,
       BillingEntityPermissions.resource,
       Verb.List

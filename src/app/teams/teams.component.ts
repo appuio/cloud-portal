@@ -51,6 +51,26 @@ export class TeamsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.subscribePayloads();
+
+    this.subscriptions.push(
+      this.store
+        .select(selectQueryParam('showJoinDialog'))
+        // eslint-disable-next-line ngrx/no-store-subscription
+        .subscribe((showJoinDialog) => {
+          if (showJoinDialog) {
+            this.openJoinTeamDialog();
+            this.router.navigate([], {
+              relativeTo: this.activatedRoute,
+              queryParams: { showJoinDialog: undefined },
+              queryParamsHandling: 'merge',
+            });
+          }
+        })
+    );
+  }
+
+  private subscribePayloads(): void {
     this.payload$ = this.organizationService.selectedOrganization$.pipe(
       switchMap((org) => {
         const organizationName = org.metadata.name;
@@ -71,22 +91,6 @@ export class TeamsComponent implements OnInit, OnDestroy {
           })
         );
       })
-    );
-
-    this.subscriptions.push(
-      this.store
-        .select(selectQueryParam('showJoinDialog'))
-        // eslint-disable-next-line ngrx/no-store-subscription
-        .subscribe((showJoinDialog) => {
-          if (showJoinDialog) {
-            this.openJoinTeamDialog();
-            this.router.navigate([], {
-              relativeTo: this.activatedRoute,
-              queryParams: { showJoinDialog: undefined },
-              queryParamsHandling: 'merge',
-            });
-          }
-        })
     );
   }
 
@@ -111,11 +115,13 @@ export class TeamsComponent implements OnInit, OnDestroy {
         this.subscriptions.push(
           this.teamService.delete(team).subscribe({
             next: (name) => {
-              this.changeDetectorRef.markForCheck();
               this.messageService.add({
                 severity: 'success',
                 summary: $localize`Successfully deleted team ${name}`,
               });
+              // After deleting, ensure that the displayed list doesn't contain the deleted element anymore.
+              this.subscribePayloads();
+              this.changeDetectorRef.markForCheck();
             },
             error: (err: Error) => {
               this.messageService.add({
@@ -124,6 +130,8 @@ export class TeamsComponent implements OnInit, OnDestroy {
                 detail: err.message,
                 sticky: true,
               });
+              this.subscribePayloads();
+              this.changeDetectorRef.markForCheck();
             },
           })
         );

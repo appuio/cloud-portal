@@ -298,11 +298,12 @@ describe('Test teams delete', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
-    cy.visit('/teams');
 
     cy.intercept('DELETE', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
       statusCode: 200,
     }).as('delete');
+
+    cy.visit('/teams');
 
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Delete team"]').click();

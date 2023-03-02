@@ -2,38 +2,37 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
-import { PermissionGuard } from '../permission.guard';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
-import { OrganizationMembersResolver } from './organization-members-edit/organization-members.resolver';
 import { UsersRolesResolver } from './users-roles.resolver';
-import { OrganizationMembersEditResolver } from './organization-members-edit/organization-members-edit.resolver';
-import { OrganizationResolver } from './organization-edit/organization.resolver';
+import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
+import { OrganizationPermissions } from '../types/organization';
+import { BillingEntityPermissions } from '../types/billing-entity';
 
 const routes: Routes = [
   {
     path: '',
     component: OrganizationsComponent,
-    canActivate: [PermissionGuard],
+    canActivate: [KubernetesPermissionGuard],
     data: {
-      permission: 'organizations',
-      verb: 'list',
+      requiredKubernetesPermissions: [{ ...OrganizationPermissions, verb: 'list' }],
     },
   },
   {
     path: ':name',
     component: OrganizationEditComponent,
-    canActivate: [PermissionGuard],
-    resolve: {
-      organization: OrganizationResolver,
+    canActivate: [KubernetesPermissionGuard],
+    data: {
+      requiredKubernetesPermissions: [
+        { ...OrganizationPermissions, verb: 'list' },
+        { ...BillingEntityPermissions, verb: 'list' },
+      ],
     },
   },
   {
     path: ':name/members',
     component: OrganizationMembersEditComponent,
     resolve: {
-      organizationMembers: OrganizationMembersResolver,
       roleBindings: UsersRolesResolver,
-      organizationMembersEditPermission: OrganizationMembersEditResolver,
     },
   },
 ];

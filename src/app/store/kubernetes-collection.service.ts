@@ -6,7 +6,7 @@ import { buildId } from './kubernetes-data.service';
 import { Injectable } from '@angular/core';
 
 export class KubernetesCollectionService<T extends KubeObject> extends EntityCollectionServiceBase<T> {
-  // this flags holds the value true where there was an initial collection load.
+  // this flag holds the value true when there was an initial collection load.
   // Ideally this can be done with rxJS, but it's not easy to accomplish this if there is no initial QUERY_ALL action dispatched.
   private memoizedAllEntities = false;
 
@@ -36,7 +36,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
         if (entity) {
           return of(entity);
         }
-        return super.getByKey(key, options);
+        return this.getByKey(key, options);
       })
     );
   }
@@ -70,7 +70,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
   }
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class KubernetesCollectionServiceFactory<T extends KubeObject> {
   protected knownCollectionServices: Map<string, KubernetesCollectionService<T>> = new Map<
     string,

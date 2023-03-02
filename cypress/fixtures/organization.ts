@@ -1,12 +1,9 @@
-import { Organization, OrganizationList, OrganizationSpec } from '../../src/app/types/organization';
+import { Organization, OrganizationSpec } from '../../src/app/types/organization';
 
 export interface OrganizationConfig {
   name: string;
   displayName?: string;
-}
-
-export interface OrganizationListConfig {
-  items: Organization[];
+  billingRef?: string;
 }
 
 export const organizationVshn = createOrganization({
@@ -14,7 +11,7 @@ export const organizationVshn = createOrganization({
   displayName: 'VSHN - the DevOps Company',
 });
 
-export const organizationListNxtVshn = createOrganizationList({
+export const organizationListNxtVshn = {
   items: [
     createOrganization({
       name: 'nxt',
@@ -24,26 +21,29 @@ export const organizationListNxtVshn = createOrganizationList({
       name: 'vshn',
     }),
   ],
-});
+};
 
-export const organizationListNxtVshnWithDisplayName = createOrganizationList({
+export const organizationListNxtVshnWithDisplayName = {
   items: [
     createOrganization({
       name: 'nxt',
       displayName: 'nxt Engineering GmbH',
+      billingRef: 'be-2345',
     }),
     createOrganization({
       name: 'vshn',
       displayName: 'VSHN AG',
+      billingRef: 'be-2347',
     }),
   ],
-});
+};
 
 export function createOrganization(organizationConfig: OrganizationConfig): Organization {
   let spec: OrganizationSpec = {};
   if (organizationConfig.displayName) {
     spec = {
       displayName: organizationConfig.displayName,
+      billingEntityRef: organizationConfig.billingRef,
     };
   }
   return {
@@ -56,11 +56,8 @@ export function createOrganization(organizationConfig: OrganizationConfig): Orga
   };
 }
 
-export function createOrganizationList(organizationListConfig: OrganizationListConfig): OrganizationList {
-  return {
-    kind: 'OrganizationList',
-    apiVersion: 'organization.appuio.io/v1',
-    metadata: {},
-    items: organizationListConfig.items,
-  };
+export function setOrganization(cy: Cypress.cy, ...org: Organization[]): void {
+  cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+    body: { items: [...org] },
+  }).as('organizationList');
 }

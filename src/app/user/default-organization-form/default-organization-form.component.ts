@@ -8,10 +8,17 @@ import { faSave, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { saveUserPreferences, saveUserPreferencesFailure, saveUserPreferencesSuccess } from '../../store/app.actions';
 import { selectUser } from '../../store/app.selectors';
 import { KubernetesClientService } from '../../core/kubernetes-client.service';
-import { OrganizationList } from '../../types/organization';
+import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
 import { User } from '../../types/user';
 import { Entity } from '../../types/entity';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
+import {
+  KubernetesCollectionService,
+  KubernetesCollectionServiceFactory,
+} from '../../store/kubernetes-collection.service';
+import { OrganizationMembers } from '../../types/organization-members';
+import { organizationMembersEntityKey } from '../../store/entity-metadata-map';
 
 @Component({
   selector: 'app-default-organization-form',
@@ -30,29 +37,34 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   faSitemap = faSitemap;
 
   private subscriptions: Subscription[] = [];
+  private orgMembersService: KubernetesCollectionService<OrganizationMembers>;
 
   constructor(
     private identityService: IdentityService,
     private kubernetesClientService: KubernetesClientService,
+    private organizationService: OrganizationCollectionService,
+    private orgMembersServiceFactory: KubernetesCollectionServiceFactory<OrganizationMembers>,
     private store: Store,
     private actions: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.orgMembersService = orgMembersServiceFactory.create(organizationMembersEntityKey);
+  }
 
   ngOnInit(): void {
     this.subscribeToUser();
     this.handleActions();
   }
 
-  private loadOrganizations(organizationList: OrganizationList, user: Entity<User | null>): void {
-    const getOrganizationMembersRequests = organizationList.items.map((organization) =>
-      this.kubernetesClientService.getOrganizationMembers(organization.metadata.name)
+  private loadOrganizations(organizationList: Organization[], user: Entity<User | null>): void {
+    const getOrganizationMembersRequests = organizationList.map((organization) =>
+      this.orgMembersService.getByKeyMemoized(`${organization.metadata.name}/members`)
     );
 
     forkJoin(getOrganizationMembersRequests).subscribe((members) => {
       const username = this.identityService.getUsername();
-      this.organizationSelectItems = organizationList.items
+      this.organizationSelectItems = organizationList
         .filter((o, index) => (members[index].spec.userRefs ?? []).map((userRef) => userRef.name).includes(username))
         .map((o) => ({
           value: o.metadata.name,
@@ -72,8 +84,8 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       // eslint-disable-next-line ngrx/no-store-subscription
       this.store.select(selectUser).subscribe((user) => {
-        this.kubernetesClientService
-          .getOrganizationList()
+        this.organizationService
+          .getAllMemoized()
           .subscribe((organizationList) => this.loadOrganizations(organizationList, user));
       })
     );

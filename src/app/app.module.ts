@@ -33,17 +33,12 @@ import { RetryInterceptor } from './core/retry.interceptor';
 import { TitleStrategy } from '@angular/router';
 import { AppAndPageTitleStrategy } from './title-strategy';
 import { DefaultDataServiceFactory, EntityDataModule, EntityDataService, EntityDefinitionService } from '@ngrx/data';
-import {
-  entityConfig,
-  entityMetadataMap,
-  organizationEntityKey,
-  selfSubjectAccessReviewEntityKey,
-} from './store/entity-metadata-map';
+import { entityConfig, entityMetadataMap, selfSubjectAccessReviewEntityKey } from './store/entity-metadata-map';
 import { SelfSubjectAccessReviewDataService } from './store/ssar-data.service';
-import { OrganizationCollectionService } from './organizations/organization-collection.service';
-import { OrganizationDataService } from './organizations/organization-data.service';
+import { OrganizationCollectionService } from './store/organization-collection.service';
 import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
+import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 
 @NgModule({
   declarations: [
@@ -74,10 +69,9 @@ import { KubernetesCollectionServiceFactory } from './store/kubernetes-collectio
     MessageService,
     DialogService,
     ConfirmationService,
-    SelfSubjectAccessReviewDataService,
     OrganizationCollectionService,
-    OrganizationDataService,
     KubernetesCollectionServiceFactory,
+    SelfSubjectAccessReviewCollectionService,
     {
       provide: APP_INITIALIZER,
       deps: [AppConfigService, OAuthService, KubernetesClientService, Store],
@@ -102,7 +96,6 @@ export class AppModule {
   constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
-    entityDataService.registerService(organizationEntityKey, inject(OrganizationDataService));
   }
 }
 
@@ -128,14 +121,11 @@ export function initializeAppFactory(
           oauthService.setupAutomaticSilentRefresh();
 
           return new Promise<boolean>((resolve) => {
-            forkJoin([
-              kubernetesClientService.getZonePermission(),
-              kubernetesClientService.getOrganizationsPermission(),
-            ])
+            forkJoin([kubernetesClientService.getZonePermission()])
               .pipe(retry({ count: 1, delay: 250 }))
               .subscribe({
-                next: ([zones, organizations]) => {
-                  store.dispatch(setPermission({ permission: { zones, organizations } }));
+                next: ([zones]) => {
+                  store.dispatch(setPermission({ permission: { zones } }));
                   resolve(true);
                 },
                 error: () => {

@@ -31,7 +31,15 @@ export class KubernetesUrlGenerator {
       }
     }
     // this case is for cluster-scoped resources.
-    return `${this.apiPrefix}/apis/${meta.apiVersion}/${meta.kind}/${idSplit.name}`;
+    const base = `${this.apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
+    switch (op) {
+      case 'CREATE': {
+        return base; // the name is not part of the endpoint for new objects, but in the payload.
+      }
+      default: {
+        return `${base}/${idSplit.name}`;
+      }
+    }
   }
 
   getEntityList(entityName: string, op: Operation, queryParams?: QueryParams | string): string {

@@ -26,11 +26,6 @@ const routes: Routes = [
   {
     path: 'organizations',
     loadChildren: () => import('./organizations/organizations.module'),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'organizations',
-      verb: 'list',
-    },
     title: $localize`Organizations`,
   },
   {

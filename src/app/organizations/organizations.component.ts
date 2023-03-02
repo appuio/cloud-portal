@@ -1,14 +1,28 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, map, Observable, Subscription } from 'rxjs';
-import { faAdd, faEdit, faInfoCircle, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { map, Observable, Subscription, take } from 'rxjs';
+import {
+  faAdd,
+  faDollarSign,
+  faEdit,
+  faInfoCircle,
+  faSitemap,
+  faUserGroup,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrganizationCollectionService } from './organization-collection.service';
-import { EntityOp } from '@ngrx/data';
-import { OrganizationPermissionService } from './organization-permission.service';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
+import { Organization } from '../types/organization';
+import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
+
+interface OrganizationConfig {
+  organization: Organization;
+  canEdit$: Observable<boolean>;
+  canViewMembers$: Observable<boolean>;
+}
 
 @Component({
   selector: 'app-organizations',
@@ -23,18 +37,35 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faAdd = faAdd;
   faSitemap = faSitemap;
   faUserGroup = faUserGroup;
+  faDollarSign = faDollarSign;
   private showJoinDialogSubscription?: Subscription;
+  organizations$?: Observable<OrganizationConfig[]>;
+  canAddOrganizations$?: Observable<boolean>;
 
   constructor(
     private store: Store,
     private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    public organizationCollectionService: OrganizationCollectionService,
-    public permissionService: OrganizationPermissionService
+    public organizationService: OrganizationCollectionService,
+    private organizationMembersService: OrganizationMembersCollectionService
   ) {}
 
   ngOnInit(): void {
+    this.canAddOrganizations$ = this.organizationService.canAddOrganizations$;
+
+    this.organizations$ = this.organizationService.getAllMemoized().pipe(
+      take(1),
+      map((orgs) =>
+        orgs.map((org) => {
+          return {
+            organization: org,
+            canEdit$: this.organizationService.canEditOrganization(org),
+            canViewMembers$: this.organizationMembersService.canViewMembers(org.metadata.name),
+          } satisfies OrganizationConfig;
+        })
+      )
+    );
     this.showJoinDialogSubscription = this.store
       .select(selectQueryParam('showJoinDialog'))
       // eslint-disable-next-line ngrx/no-store-subscription
@@ -50,12 +81,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadErrors(): Observable<Error> {
-    return this.organizationCollectionService.errors$.pipe(
-      filter((action) => action.payload.entityOp == EntityOp.QUERY_ALL_ERROR),
-      map((action) => action.payload.data.error.error satisfies Error)
-    );
-  }
   openJoinOrganizationDialog(): void {
     this.dialogService.open(JoinOrganizationDialogComponent, {
       modal: true,

@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { newOrganization, Organization } from '../../types/organization';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import { filter, map, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
-import { OrganizationCollectionService } from '../organization-collection.service';
-import { EntityOp } from '@ngrx/data';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
+import { BillingEntity } from '../../types/billing-entity';
 
 @Component({
   selector: 'app-organization-form',
@@ -20,8 +20,17 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   organization!: Organization;
   @Input()
   new = true;
+  @Input()
+  billingEntities!: BillingEntity[];
+  @Input()
+  canEditBe = false;
 
-  form!: FormGroup<{ displayName: FormControl<string | undefined>; organizationId: FormControl<string> }>;
+  form!: FormGroup<{
+    displayName: FormControl<string | undefined>;
+    organizationId: FormControl<string>;
+    billingEntity: FormControl<BillingEntity | undefined>;
+  }>;
+
   faSave = faSave;
   private subscriptions: Subscription[] = [];
 
@@ -29,7 +38,6 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef,
     private messageService: MessageService,
     private organizationNameService: OrganizationNameService,
     public organizationCollectionService: OrganizationCollectionService
@@ -42,34 +50,18 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
         validators: [Validators.required, Validators.pattern(this.organizationNameService.getValidationPattern())],
         nonNullable: true,
       }),
+      billingEntity: new FormControl<BillingEntity | undefined>(
+        this.billingEntities.find((be) => be.metadata.name === this.organization.spec.billingEntityRef),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        }
+      ),
     });
     if (this.new) {
       const sub = this.form.controls.displayName.valueChanges.subscribe((value) => this.setNameFromDisplayName(value));
       this.subscriptions.push(sub);
     }
-    this.organizationCollectionService.errors$
-      .pipe(
-        filter((action) => action.payload.entityOp == EntityOp.SAVE_ADD_ONE_ERROR),
-        map((action) => action.payload.data.error.error.error)
-      )
-      .subscribe((err: Error) => {
-        let detail = '';
-        console.debug('error!', err);
-        if ('message' in err) {
-          detail = err.message;
-        }
-        if ('reason' in err) {
-          if ('AlreadyExists' === err.reason) {
-            this.form.get('organizationId')?.setErrors({ alreadyExists: true });
-            detail = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
-          }
-        }
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail,
-        });
-      });
   }
 
   setNameFromDisplayName(displayName: string | undefined): void {
@@ -96,15 +88,25 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private addOrg(): void {
-    this.organizationCollectionService.add(this.getOrgFromForm()).subscribe(() => this.saveOrUpdateSuccess());
+    this.organizationCollectionService.add(this.getOrgFromForm()).subscribe({
+      next: () => this.saveOrUpdateSuccess(),
+      error: (err) => this.saveOrUpdateFailure(err),
+    });
   }
 
   private updateOrg(): void {
-    this.organizationCollectionService.update(this.getOrgFromForm()).subscribe(() => this.saveOrUpdateSuccess());
+    this.organizationCollectionService
+      .update(this.getOrgFromForm())
+      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
   }
 
   private getOrgFromForm(): Organization {
-    return newOrganization(this.form.getRawValue().organizationId, this.form.getRawValue().displayName ?? '');
+    const rawValue = this.form.getRawValue();
+    return newOrganization(
+      rawValue.organizationId,
+      rawValue.displayName ?? '',
+      rawValue.billingEntity?.metadata.name ?? ''
+    );
   }
 
   private saveOrUpdateSuccess(): void {
@@ -113,5 +115,24 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       summary: $localize`Successfully saved`,
     });
     void this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+  }
+
+  private saveOrUpdateFailure(err: Error): void {
+    let detail = '';
+    console.debug('error!', err);
+    if ('message' in err) {
+      detail = err.message;
+    }
+    if ('reason' in err) {
+      if ('AlreadyExists' === err.reason) {
+        this.form.get('organizationId')?.setErrors({ alreadyExists: true });
+        detail = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
+      }
+    }
+    this.messageService.add({
+      severity: 'error',
+      summary: $localize`Error`,
+      detail,
+    });
   }
 }

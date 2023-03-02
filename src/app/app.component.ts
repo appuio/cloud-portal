@@ -9,12 +9,12 @@ import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
 import { loadUser } from './store/app.actions';
 import { IdentityService } from './core/identity.service';
-import { filter, take } from 'rxjs';
-import { OrganizationCollectionService } from './organizations/organization-collection.service';
+import { forkJoin, of, take } from 'rxjs';
+import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList } from './store/entity-filter';
-import { composeSsarId } from './store/entity-metadata-map';
-import { SelfSubjectAccessReview } from './types/self-subject-access-review';
+import { OrganizationPermissions } from './types/organization';
+import { BillingEntityPermissions } from './types/billing-entity';
 
 @Component({
   selector: 'app-root',
@@ -42,11 +42,8 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // pre-load some entities into cache
-    clusterStartupAccessChecks.forEach((s) => this.ssarCollectionService.getByKey(s));
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
-    this.organizationService.getAll().subscribe();
 
     // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
     this.store.dispatch(loadUser({ username: this.identityService.getUsername() }));
@@ -83,35 +80,49 @@ export class AppComponent implements OnInit {
   }
 
   private createMenu(permission: Permission): void {
-    if (permission.zones.includes(Verb.List)) {
-      this.menuItems.push({
-        label: $localize`Zones`,
-        icon: faDatabase,
-        routerLink: ['zones'],
-      });
-    }
-    if (permission.organizations.includes(Verb.List)) {
-      this.menuItems.push({
-        label: $localize`Organizations`,
-        icon: faSitemap,
-        routerLink: ['organizations'],
-      });
-    }
-    this.menuItems.push({
-      label: $localize`Teams`,
-      icon: faUserGroup,
-      routerLink: ['teams'],
-    });
-    this.ssarCollectionService
-      .isAllowed('billing.appuio.io', 'billingentities', Verb.List, '')
-      .pipe(filter((allowed) => allowed))
-      .subscribe(() => {
+    const canViewZones$ = of(permission.zones.includes(Verb.List));
+    const canViewOrganizations$ = this.ssarCollectionService.isAllowed(
+      OrganizationPermissions.group,
+      OrganizationPermissions.resource,
+      Verb.List
+    );
+    const canViewBillingEntities = this.ssarCollectionService.isAllowed(
+      BillingEntityPermissions.group,
+      BillingEntityPermissions.resource,
+      Verb.List
+    );
+
+    forkJoin([canViewZones$, canViewOrganizations$, canViewBillingEntities]).subscribe(
+      ([canViewZones, canViewOrganizations, canViewBillingEntities]) => {
+        if (canViewZones) {
+          this.menuItems.push({
+            label: $localize`Zones`,
+            icon: faDatabase,
+            routerLink: ['zones'],
+          });
+        }
+        if (canViewOrganizations) {
+          this.menuItems.push({
+            label: $localize`Organizations`,
+            icon: faSitemap,
+            routerLink: ['organizations'],
+          });
+        }
+        // always render team menu, as teams are namespace scoped.
         this.menuItems.push({
-          label: $localize`Billing`,
-          icon: faDollarSign,
-          routerLink: ['billingentities'],
+          label: $localize`Teams`,
+          icon: faUserGroup,
+          routerLink: ['teams'],
         });
-      });
+        if (canViewBillingEntities) {
+          this.menuItems.push({
+            label: $localize`Billing`,
+            icon: faDollarSign,
+            routerLink: ['billingentities'],
+          });
+        }
+      }
+    );
   }
 }
 
@@ -122,9 +133,3 @@ export interface NavMenuItem {
   command?: () => void;
   routerLink?: string[];
 }
-
-const clusterStartupAccessChecks = [
-  composeSsarId(new SelfSubjectAccessReview(Verb.List, 'organizations', 'rbac.appuio.io', '')),
-  composeSsarId(new SelfSubjectAccessReview(Verb.Create, 'organizations', 'rbac.appuio.io', '')),
-  composeSsarId(new SelfSubjectAccessReview(Verb.Update, 'organizations', 'rbac.appuio.io', '')),
-];

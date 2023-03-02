@@ -2,22 +2,25 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BillingEntityComponent } from './billing-entity.component';
 import { BillingentityViewComponent } from './billingentity-view/billingentity-view.component';
-import { BillingEntityResolver } from './billingentity-view/billing-entity-resolver.service';
-import { BillingEntityGuard } from './billing-entity.guard';
+import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
+import { BillingEntityPermissions } from '../types/billing-entity';
 
 const routes: Routes = [
   {
     path: '',
     component: BillingEntityComponent,
-    canActivate: [BillingEntityGuard],
+    canActivate: [KubernetesPermissionGuard],
+    data: {
+      requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],
+    },
   },
   {
     path: ':name',
     component: BillingentityViewComponent,
-    resolve: {
-      billingEntity: BillingEntityResolver,
+    canActivate: [KubernetesPermissionGuard],
+    data: {
+      requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],
     },
-    canActivate: [BillingEntityGuard],
   },
 ];
 

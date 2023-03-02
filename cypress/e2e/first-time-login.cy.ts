@@ -1,5 +1,6 @@
 import { createUser } from '../fixtures/user';
-import { createOrganizationList, organizationListNxtVshn } from '../fixtures/organization';
+import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
+import { OrganizationPermissions } from '../../src/app/types/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
 
 describe('Test First Time Login', () => {
@@ -10,28 +11,23 @@ describe('Test First Time Login', () => {
   });
   beforeEach(() => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
   });
 
   it('join organization', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
-    });
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
+    setOrganization(cy);
     cy.visit('/');
     cy.get('.p-dialog-header').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
     cy.get('#joinOrganizationDialogButton').click();
     cy.get('.p-dialog-header').should('contain.text', 'Join Organization');
   });
-
-  it('add organization', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
-    });
+  // some requirements may change, see https://github.com/appuio/cloud-portal/issues/438, skipping until it's clear.
+  it.skip('add organization', () => {
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
+    setOrganization(cy);
     cy.visit('/');
     cy.get('.p-dialog-header').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
     cy.get('#addOrganizationDialogButton').click();
@@ -39,11 +35,12 @@ describe('Test First Time Login', () => {
   });
 
   it('do not show dialog', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission(
+      { verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' },
+      { verb: 'list', ...OrganizationPermissions }
+    );
+    cy.setPermission();
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
@@ -60,11 +57,10 @@ describe('Test First Time Login', () => {
     cy.get('.p-dialog-header').should('not.exist');
   });
 
-  it('do not show dialog again', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: createOrganizationList({ items: [] }),
-    });
+  // some requirements may change, see https://github.com/appuio/cloud-portal/issues/438, skipping until it's clear.
+  it.skip('do not show dialog again', () => {
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
+    setOrganization(cy);
     cy.visit('/');
     cy.get('#joinOrganizationDialogButton').should('exist');
     cy.get('#addOrganizationDialogButton').should('exist');
@@ -78,11 +74,12 @@ describe('Test First Time Login', () => {
   });
 
   it('show dialog because no organization contains current username', () => {
-    cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission(
+      { verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' },
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' }
+    );
+    setOrganization(cy, ...organizationListNxtVshn.items);
+
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
@@ -105,11 +102,11 @@ describe('Test First Time Login', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig' }),
     }).as('getUser');
-    cy.setPermission({ verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' });
-    cy.setPermission({ verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    cy.setPermission(
+      { verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' },
+      { verb: 'list', resource: 'organizations', group: 'rbac.appuio.io' }
+    );
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',

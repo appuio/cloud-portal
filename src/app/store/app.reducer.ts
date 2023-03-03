@@ -6,6 +6,7 @@ export enum Verb {
   Update = 'update',
   Create = 'create',
   Delete = 'delete',
+  Get = 'get',
 }
 
 export interface AppState {

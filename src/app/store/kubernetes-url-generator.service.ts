@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Operation, splitID } from './kubernetes-data.service';
 import { QueryParams } from '@ngrx/data';
 
+export const apiPrefix = 'appuio-api';
+
 @Injectable({
   providedIn: 'root',
 })
 export class KubernetesUrlGenerator {
-  protected readonly apiPrefix = 'appuio-api';
   protected knownEntities: Map<string, { apiVersion: string; kind: string }> = new Map<
     string,
     { apiVersion: string; kind: string }
@@ -20,7 +21,7 @@ export class KubernetesUrlGenerator {
     const idSplit = splitID(id);
     if (idSplit.namespace && idSplit.namespace !== '') {
       // we have an ID that contains name + namespace.
-      const base = `${this.apiPrefix}/apis/${meta.apiVersion}/namespaces/${idSplit.namespace}/${meta.kind}`;
+      const base = `${apiPrefix}/apis/${meta.apiVersion}/namespaces/${idSplit.namespace}/${meta.kind}`;
       switch (op) {
         case 'CREATE': {
           return base; // the name is not part of the endpoint for new objects, but in the payload.
@@ -31,7 +32,7 @@ export class KubernetesUrlGenerator {
       }
     }
     // this case is for cluster-scoped resources.
-    const base = `${this.apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
+    const base = `${apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
     switch (op) {
       case 'CREATE': {
         return base; // the name is not part of the endpoint for new objects, but in the payload.
@@ -52,11 +53,11 @@ export class KubernetesUrlGenerator {
       const namespace = queryParams['namespace'];
       if (namespace && namespace !== '') {
         // Scope the list to a specific namespace for namespace-scoped resources.
-        return `${this.apiPrefix}/apis/${meta.apiVersion}/namespaces/${namespace}/${meta.kind}`;
+        return `${apiPrefix}/apis/${meta.apiVersion}/namespaces/${namespace}/${meta.kind}`;
       }
     }
     // all cluster-scoped objects, or objects from all namespaces.
-    return `${this.apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
+    return `${apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
   }
 
   protected getKubeObjectMeta(entityName: string): { apiVersion: string; kind: string } {

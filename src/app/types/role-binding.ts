@@ -11,5 +11,12 @@ export interface RoleBinding extends KubeObject {
     [key: string]: unknown;
   };
   roleRef: { apiGroup: string; kind: 'ClusterRole' | 'Role'; name: string };
-  subjects: { apiGroup: string; kind: 'User' | 'Group' | 'ServiceAccount'; name: string }[];
+  subjects: Subject[];
+}
+
+export interface Subject {
+  kind: 'User' | 'Group' | 'ServiceAccount';
+  name: string;
+  apiGroup?: string;
+  namespace?: string;
 }

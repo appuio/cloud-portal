@@ -7,12 +7,14 @@ import { RoleBinding } from '../types/role-binding';
 import { Team } from '../types/team';
 import { User } from '../types/user';
 import { Zone } from '../types/zone';
+import { ClusterRoleBinding } from '../types/clusterrole-binding';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
 export const selfSubjectAccessReviewEntityKey = 'authorization.k8s.io/v1/selfsubjectaccessreviews';
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
+export const clusterrolebindingEntityKey = 'rbac.authorization.k8s.io/v1/clusterrolebindings';
 export const teamEntityKey = 'appuio.io/v1/teams';
 export const userEntityKey = 'appuio.io/v1/users';
 export const zoneEntityKey = 'appuio.io/v1/zones';
@@ -53,6 +55,10 @@ export const entityMetadataMap: EntityMetadataMap = {
         undefined,
         { sensitivity: 'base' }
       ),
+  },
+  ClusterRoleBinding: {
+    entityName: clusterrolebindingEntityKey,
+    selectId: (crb: ClusterRoleBinding) => crb.metadata.name, // cluster-scoped
   },
   Team: {
     entityName: teamEntityKey,

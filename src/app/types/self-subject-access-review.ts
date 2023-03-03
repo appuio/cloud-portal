@@ -10,7 +10,7 @@ export declare type SelfSubjectAccessReviewAttributes = {
 export interface SelfSubjectAccessReview extends KubeObject {
   kind: 'SelfSubjectAccessReview';
   apiVersion: 'authorization.k8s.io/v1';
-  spec: { resourceAttributes: { resource: string; namespace: string; verb: string; group: string } };
+  spec: { resourceAttributes: { resource: string; namespace: string; verb: string; group: string; name?: string } };
   status?: { reason: string; allowed: boolean };
 }
 
@@ -18,7 +18,8 @@ export function newSelfSubjectAccessReview(
   verb: string,
   resource: string,
   group: string,
-  namespace: string
+  namespace: string,
+  name?: string
 ): SelfSubjectAccessReview {
   return {
     kind: 'SelfSubjectAccessReview',
@@ -32,6 +33,7 @@ export function newSelfSubjectAccessReview(
         resource: resource,
         group: group,
         namespace: namespace,
+        name: name,
       },
     },
   };

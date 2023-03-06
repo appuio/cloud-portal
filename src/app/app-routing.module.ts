@@ -36,6 +36,11 @@ const routes: Routes = [
     title: $localize`Billing`,
   },
   {
+    path: 'invitations',
+    loadChildren: () => import('./invitations/invitations.module'),
+    title: $localize`Invitations`,
+  },
+  {
     path: 'user',
     loadChildren: () => import('./user/user.module'),
     title: $localize`User Settings`,

@@ -1,0 +1,89 @@
+<div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
+  <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Invitations</h1>
+</div>
+
+<ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="payload">
+    <ng-container *ngFor="let invitation of payload.invitations; index as i">
+      <div class="surface-card p-4 shadow-2 border-round mb-4">
+        <div class="flex flex-row justify-content-between">
+          <div class="text-3xl font-medium text-900 mb-3">
+            {{ invitation.spec.email }}
+          </div>
+        </div>
+        <div class="flex flex-wrap border-top-1 surface-border">
+          <ul class="w-full list-none p-0 m-0 surface-border">
+            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>ID</div>
+              <div class="text-900 w-full md:w-9">
+                {{ invitation.metadata.name }}
+              </div>
+            </li>
+            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>Note</div>
+              <div class="text-900 w-full md:w-9">
+                {{ invitation.spec.note }}
+              </div>
+            </li>
+
+            <li *ngIf="invitation.status?.validUntil" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>Expires</div>
+              <div class="text-900 w-full md:w-9">
+                {{ invitation.status?.validUntil }}
+              </div>
+            </li>
+
+            <li *ngFor="let condition of invitation.status?.conditions" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>{{ condition.type }}</div>
+              <div class="text-900 w-full md:w-9">
+              <div><p-tag value="{{ condition.status === 'True' ? 'yes' : 'no' }}" severity="{{ condition.status === 'True' ? 'success' : 'info' }}"></p-tag></div>
+              <div>{{ condition.message }}</div>
+              </div>
+            </li>
+
+            <li *ngIf="invitation.status?.targetStatuses" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>Targets</div>
+              <div class="text-900 w-full md:w-9">
+              <ul  class="pl-3">
+                <li *ngFor="let targetStatus of invitation.status?.targetStatuses" >
+                  <div *ngIf="targetStatus.condition"><p-tag value="{{ targetStatus.condition.type }}" severity="{{ targetStatus.condition.status === 'True' ? 'success' : 'info' }}"></p-tag></div>
+                  <div>{{ targetStatus.targetRef.kind }}: {{ targetStatus.targetRef.namespace ? targetStatus.targetRef.namespace + '/' : '' }}{{ targetStatus.targetRef.name }}</div>
+                </li>
+            </ul>
+            </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="payload?.invitations?.length === 0 && !err">
+    <p-messages severity="info">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faInfo"></fa-icon>
+        <div class="ml-2" i18n id="no-organization-message">No invitations available.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="failure-message">Invitations could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

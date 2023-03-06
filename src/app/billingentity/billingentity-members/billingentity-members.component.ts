@@ -59,11 +59,16 @@ export class BillingentityMembersComponent implements OnInit {
     const viewerClusterRoleBindingName = `billingentities-${name}-viewer`;
     this.payload$ = this.billingService.getByKeyMemoized(name).pipe(
       combineLatestWith(
+        this.billingService.canViewMembers(viewerClusterRoleBindingName),
         this.billingService.canEditMembers(adminClusterRoleBindingName),
         this.rolebindingService.getByKeyMemoized(adminClusterRoleBindingName),
         this.rolebindingService.getByKeyMemoized(viewerClusterRoleBindingName)
       ),
-      map(([be, canEdit, adminCrb, viewerCrb]) => {
+      map(([be, canView, canEdit, adminCrb, viewerCrb]) => {
+        if (!canView && !canEdit) {
+          this.router.navigateByUrl('/home');
+          throw new Error(`You don't have permissions to view members of Billing ${name}`);
+        }
         const payload = {
           billingEntity: be,
           canEdit,
@@ -147,7 +152,7 @@ export class BillingentityMembersComponent implements OnInit {
       userRefs
         .filter((ref) => ref.userName)
         .forEach((ref) => {
-          const hasSelected = ref.selectedRoles.some((role) => role === binding.metadata.name);
+          const hasSelected = ref.selectedRoles.some((role) => role === binding.roleRef.name);
           if (hasSelected) {
             binding.subjects?.push({
               apiGroup: 'rbac.authorization.k8s.io',

@@ -5,14 +5,16 @@ declare namespace Cypress {
     setupAuth(): typeof setupAuth;
 
     setPermission(
-      ...permission: { verb: string; resource: string; group: string; namespace?: string }[]
+      ...permission: { verb: string; resource: string; group: string; namespace?: string; name?: string }[]
     ): typeof setPermission;
 
     disableCookieBanner(): typeof disableCookieBanner;
   }
 }
 
-function setPermission(...permission: { verb: string; resource: string; group: string; namespace?: string }[]): void {
+function setPermission(
+  ...permission: { verb: string; resource: string; group: string; namespace?: string; name?: string }[]
+): void {
   cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', (request) => {
     const requestBody = request.body;
     const resourceAttributes = requestBody.spec.resourceAttributes;
@@ -22,7 +24,8 @@ function setPermission(...permission: { verb: string; resource: string; group: s
           resourceAttributes.verb === p.verb &&
           resourceAttributes.resource === p.resource &&
           resourceAttributes.group === p.group &&
-          ((!p.namespace && resourceAttributes.namespace === '') || resourceAttributes.namespace === p.namespace)
+          ((!p.namespace && resourceAttributes.namespace === '') || resourceAttributes.namespace === p.namespace) &&
+          ((!p.name && resourceAttributes.name === '') || resourceAttributes.name === p.name)
       )
     ) {
       requestBody.status = { allowed: true, reason: 'match' };

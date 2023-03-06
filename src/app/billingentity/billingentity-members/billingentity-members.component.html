@@ -20,7 +20,7 @@
                 class="col-11"
                 styleClass="w-full"
                 severity="info"
-                text="List all user names that should have access to this organization."></p-message>
+                text="List all user names that should have access to this billing entity."></p-message>
             </div>
             <div class="hidden md:grid md:flex">
               <label class="col-3" i18n>Name</label>
@@ -72,6 +72,14 @@
             </div>
 
             <div *ngIf="payload.canEdit">
+              <div *ngIf="isRemovingOwnUser" class="grid mb-2 mt-2">
+                <p-message
+                  i18n-text
+                  class="col-11"
+                  styleClass="w-full"
+                  severity="warn"
+                  text="You are about to remove yourself as admin!"></p-message>
+              </div>
               <button [disabled]="form.invalid" [loading]="(rolebindingService.loading$ | ngrxPush) ?? false" class="w-auto mt-3" pButton pRipple type="submit">
                 <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
                 <span class="pr-2" i18n>Save</span>

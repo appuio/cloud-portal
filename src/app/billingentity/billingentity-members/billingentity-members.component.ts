@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
-import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
+import { combineLatestWith, forkJoin, map, Observable, Subscription, take } from 'rxjs';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClusterRoleBinding } from '../../types/clusterrole-binding';
 import { ClusterRolebindingCollectionService } from '../../store/clusterrolebinding-collection.service';
 import { MessageService } from 'primeng/api';
+import { UserCollectionService } from '../../store/user-collection.service';
+import { User } from 'src/app/types/user';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -22,7 +24,7 @@ interface Payload {
   styleUrls: ['./billingentity-members.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingentityMembersComponent implements OnInit {
+export class BillingentityMembersComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;
 
   faWarning = faWarning;
@@ -37,17 +39,19 @@ export class BillingentityMembersComponent implements OnInit {
       }>
     >;
   }>;
+  currentUser?: User;
+  isRemovingOwnUser = false;
 
-  // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
-  // clearly identifying these (e.g. tag or special field)
   readonly userNamePrefix = 'appuio#';
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private billingService: BillingEntityCollectionService,
     public rolebindingService: ClusterRolebindingCollectionService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private userService: UserCollectionService
   ) {}
 
   ngOnInit(): void {
@@ -62,13 +66,15 @@ export class BillingentityMembersComponent implements OnInit {
         this.billingService.canViewMembers(viewerClusterRoleBindingName),
         this.billingService.canEditMembers(adminClusterRoleBindingName),
         this.rolebindingService.getByKeyMemoized(adminClusterRoleBindingName),
-        this.rolebindingService.getByKeyMemoized(viewerClusterRoleBindingName)
+        this.rolebindingService.getByKeyMemoized(viewerClusterRoleBindingName),
+        this.userService.currentUser$
       ),
-      map(([be, canView, canEdit, adminCrb, viewerCrb]) => {
+      map(([be, canView, canEdit, adminCrb, viewerCrb, currentUser]) => {
         if (!canView && !canEdit) {
           this.router.navigateByUrl('/home');
           throw new Error(`You don't have permissions to view members of Billing ${name}`);
         }
+        this.currentUser = currentUser;
         const payload = {
           billingEntity: be,
           canEdit,
@@ -90,21 +96,28 @@ export class BillingentityMembersComponent implements OnInit {
 
     const members: FormGroup[] = [];
     userRoles.forEach((roles, subject) => {
-      members.push(
-        new FormGroup({
-          userName: new FormControl(
-            { value: subject.replace(this.userNamePrefix, ''), disabled: !payload.canEdit },
-            { validators: Validators.required, nonNullable: true }
-          ),
-          selectedRoles: new FormControl(
-            {
-              value: roles,
-              disabled: !payload.canEdit,
-            },
-            { nonNullable: true }
-          ),
-        })
-      );
+      const userName = subject.replace(this.userNamePrefix, '');
+      const control = new FormGroup({
+        userName: new FormControl(
+          { value: userName, disabled: !payload.canEdit },
+          { validators: Validators.required, nonNullable: true }
+        ),
+        selectedRoles: new FormControl(
+          {
+            value: roles,
+            disabled: !payload.canEdit,
+          },
+          { nonNullable: true }
+        ),
+      });
+      members.push(control);
+      if (userName === this.currentUser?.metadata.name) {
+        this.subscriptions.push(
+          control.valueChanges.subscribe((value) => {
+            this.isRemovingOwnUser = !value.selectedRoles?.includes(payload.adminBinding.roleRef.name);
+          })
+        );
+      }
     });
 
     this.form = new FormGroup({
@@ -192,6 +205,17 @@ export class BillingentityMembersComponent implements OnInit {
   }
 
   removeFormControl(index: number): void {
-    this.userRefs?.removeAt(index);
+    if (!this.userRefs) {
+      return;
+    }
+    const ref = this.userRefs.at(index);
+    if (this.currentUser && this.currentUser.metadata.name === ref.getRawValue().userName) {
+      this.isRemovingOwnUser = true;
+    }
+    this.userRefs.removeAt(index);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

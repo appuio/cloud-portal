@@ -254,6 +254,31 @@ describe('billing entity edit members', () => {
       });
   });
 
+  it('delete member shows warning if removing own user', () => {
+    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+    cy.intercept(
+      'GET',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
+      {
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+      }
+    );
+    cy.intercept(
+      'GET',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
+      {
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+      }
+    );
+
+    cy.visit('/billingentities/be-2345/members');
+    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('button[title="Remove"]').eq(0).click();
+    cy.get('p-message').contains('You are about to remove yourself as admin!');
+  });
+
   it('unassign role', () => {
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
       body: billingEntityNxt,
@@ -311,5 +336,31 @@ describe('billing entity edit members', () => {
         const subject = body.subjects && body.subjects[0];
         expect(subject && subject.name).to.eq('appuio#mig');
       });
+  });
+
+  it('unassign role shows warning if removing own user', () => {
+    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+    cy.intercept(
+      'GET',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
+      {
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+      }
+    );
+    cy.intercept(
+      'GET',
+      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
+      {
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+      }
+    );
+    cy.visit('/billingentities/be-2345/members');
+    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    const multiSelect = cy.get('p-multiselect').eq(0);
+    multiSelect.click();
+    multiSelect.get('p-multiselectitem').contains('billingentities-be-2345-admin').click();
+    cy.get('p-message').contains('You are about to remove yourself as admin!');
   });
 });

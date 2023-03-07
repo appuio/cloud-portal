@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { InvitationCollectionService } from '../store/invitation-collection.service';
 import { Invitation } from '../types/invitation';
 import { map, Observable } from 'rxjs';
-import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faWarning, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as dayjs from 'dayjs';
 
 @Component({
@@ -16,6 +16,8 @@ export class InvitationsComponent implements OnInit {
 
   faWarning = faWarning;
   faInfo = faInfo;
+  faCheck = faCheck;
+  faXMark = faXmark;
 
   constructor(private invitationService: InvitationCollectionService) {}
 

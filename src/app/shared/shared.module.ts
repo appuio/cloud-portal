@@ -22,6 +22,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BackLinkDirective } from './back-link.directive';
 import { ChipModule } from 'primeng/chip';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [BackLinkDirective],
@@ -51,6 +52,7 @@ import { ChipModule } from 'primeng/chip';
     ProgressSpinnerModule,
     BackLinkDirective,
     ChipModule,
+    TableModule,
   ],
 })
 export class SharedModule {}

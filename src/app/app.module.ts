@@ -38,6 +38,9 @@ import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { NavigationService } from './shared/navigation.service';
+import * as dayjs from 'dayjs';
+import * as localizedFormat from 'dayjs/plugin/localizedFormat';
+import * as relativeTime from 'dayjs/plugin/relativeTime';
 
 @NgModule({
   declarations: [
@@ -94,6 +97,8 @@ import { NavigationService } from './shared/navigation.service';
 })
 export class AppModule {
   constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {
+    dayjs.extend(localizedFormat);
+    dayjs.extend(relativeTime);
     entityDefinitionService.registerMetadataMap(entityMetadataMap);
     entityDataService.registerService(selfSubjectAccessReviewEntityKey, inject(SelfSubjectAccessReviewDataService));
   }

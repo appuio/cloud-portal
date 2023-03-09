@@ -3,6 +3,7 @@ import { InvitationCollectionService } from '../store/invitation-collection.serv
 import { Invitation } from '../types/invitation';
 import { map, Observable } from 'rxjs';
 import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-invitations',
@@ -21,12 +22,28 @@ export class InvitationsComponent implements OnInit {
   ngOnInit(): void {
     this.payload$ = this.invitationService.getAllMemoized().pipe(
       map((invitations) => {
-        return { invitations } satisfies Payload;
+        return {
+          invitations: invitations.map((inv) => {
+            const expires = dayjs(inv.status?.validUntil);
+            const hasExpired = expires.isBefore(dayjs());
+            return {
+              expires: `${expires.format('LLLL')} (${expires.fromNow()})`,
+              hasExpired: hasExpired,
+              model: inv,
+            } satisfies InvitationViewModel;
+          }),
+        } satisfies Payload;
       })
     );
   }
 }
 
 interface Payload {
-  invitations: Invitation[];
+  invitations: InvitationViewModel[];
+}
+
+interface InvitationViewModel {
+  model: Invitation;
+  expires: string;
+  hasExpired: boolean;
 }

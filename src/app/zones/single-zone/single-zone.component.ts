@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { Store } from '@ngrx/store';
-import { selectZoneByName } from 'src/app/store/app.selectors';
-import { EntityState } from 'src/app/types/entity';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { faWarning } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { ZoneCollectionService } from '../../store/zone-collection.service';
+import { Zone } from '../../types/zone';
 
 @Component({
   selector: 'app-single-zone',
@@ -10,12 +11,17 @@ import { EntityState } from 'src/app/types/entity';
   styleUrls: ['./single-zone.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SingleZoneComponent {
-  zone$ = this.store.select(selectZoneByName);
-  faInfo = faInfoCircle;
+export class SingleZoneComponent implements OnInit {
+  zone$?: Observable<Zone>;
   faWarning = faWarning;
 
-  EntityState = EntityState;
+  constructor(private route: ActivatedRoute, private zoneService: ZoneCollectionService) {}
 
-  constructor(private store: Store) {}
+  ngOnInit(): void {
+    const name = this.route.snapshot.paramMap.get('name');
+    if (!name) {
+      throw new Error('name of the zone is required in the URL');
+    }
+    this.zone$ = this.zoneService.getByKeyMemoized(name);
+  }
 }

@@ -6,8 +6,6 @@ import { ZoneFeaturesPipe } from './zone-features.pipe';
 import { ZonesRoutingModule } from './zones-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { SingleZoneComponent } from './single-zone/single-zone.component';
-import { Store } from '@ngrx/store';
-import { loadZones } from '../store/app.actions';
 import { ZoneUrlLabelPipe } from './zone-url-label.pipe';
 
 @NgModule({
@@ -15,8 +13,4 @@ import { ZoneUrlLabelPipe } from './zone-url-label.pipe';
   imports: [CommonModule, SharedModule, ZonesRoutingModule],
   providers: [TitleCasePipe],
 })
-export default class ZonesModule {
-  constructor(private store: Store) {
-    this.store.dispatch(loadZones());
-  }
-}
+export default class ZonesModule {}

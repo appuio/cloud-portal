@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { PermissionGuard } from './permission.guard';
 
 const routes: Routes = [
   {
@@ -16,11 +15,6 @@ const routes: Routes = [
   {
     path: 'zones',
     loadChildren: () => import('./zones/zones.module'),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'zones',
-      verb: 'list',
-    },
     title: $localize`Zones`,
   },
   {

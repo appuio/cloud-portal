@@ -1,5 +1,6 @@
-import { createZoneList, zoneCloudscale1, zoneCloudscale2 } from '../fixtures/zone';
+import { zoneCloudscale1, zoneCloudscale2 } from '../fixtures/zone';
 import { createUser } from '../fixtures/user';
+import { ZonePermissions } from '../../src/app/types/zone';
 
 describe('Test zones', () => {
   beforeEach(() => {
@@ -9,16 +10,15 @@ describe('Test zones', () => {
   });
   beforeEach(() => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
   });
 
   it('list with two entries', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
+      body: { items: [zoneCloudscale1, zoneCloudscale2] },
     });
     cy.visit('/zones');
     cy.get('#zones-title').should('contain.text', 'Zones');
@@ -27,9 +27,9 @@ describe('Test zones', () => {
   });
 
   it('empty list', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: createZoneList({ items: [] }),
+      body: { items: [] },
     });
     cy.visit('/zones');
     cy.get('#zones-title').should('contain.text', 'Zones');
@@ -37,7 +37,7 @@ describe('Test zones', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
       statusCode: 403,
     });
@@ -47,7 +47,7 @@ describe('Test zones', () => {
   });
 
   it('failed requests are retried', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
     let interceptCount = 0;
 
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', (req) => {
@@ -55,7 +55,7 @@ describe('Test zones', () => {
         interceptCount++;
         req.reply({ statusCode: 504 });
       } else {
-        req.reply(createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }));
+        req.reply({ items: [zoneCloudscale1, zoneCloudscale2] });
       }
     }).as('getZones');
 
@@ -78,16 +78,15 @@ describe('Test single zone', () => {
   });
   beforeEach(() => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
   });
 
   it('displays zone details', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones/cloudscale-lpg-2', {
+      body: zoneCloudscale2,
     });
     cy.visit('/zones/cloudscale-lpg-2');
     cy.get('#zone-details-title').should('contain.text', 'Zone Details');
@@ -96,28 +95,18 @@ describe('Test single zone', () => {
     cy.contains('Logging').should('exist');
   });
 
-  it('displays zone details of zone with non-url conform name', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
-    });
-    cy.visit('/zones/cloudscale_ch-ag');
-    cy.get('#zone-details-title').should('contain.text', 'Zone Details');
-    cy.get('[data-cy=zone-name]').eq(0).should('contain.text', 'cloudscale.ch LPG 0');
-  });
-
   it('zone with that name does not exist', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: createZoneList({ items: [zoneCloudscale1, zoneCloudscale2] }),
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones/cloudscale-lpg-4', {
+      statusCode: 404,
     });
     cy.visit('/zones/cloudscale-lpg-4');
     cy.get('#zone-details-title').should('contain.text', 'Zone Details');
-    cy.get('#no-zone-message').should('contain.text', 'No zone found.');
+    cy.get('#zone-failure-message').should('contain.text', 'Zone could not be loaded.');
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'appuio.io' });
+    cy.setPermission({ verb: 'list', ...ZonePermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
       statusCode: 403,
     });

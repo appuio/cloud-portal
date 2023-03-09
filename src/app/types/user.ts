@@ -1,10 +1,12 @@
+import { KubeObject } from './entity';
+
 export interface UserSpec {
   preferences?: {
-    defaultOrganizationRef?: string | null;
+    defaultOrganizationRef?: string;
   };
 }
 
-export interface User {
+export interface User extends KubeObject {
   kind: 'User';
   apiVersion: 'appuio.io/v1';
   metadata: {
@@ -20,11 +22,4 @@ export interface User {
     email: string;
     defaultOrganization: string;
   };
-}
-
-export interface UserList {
-  kind: 'UserList';
-  apiVersion: 'appuio.io/v1';
-  metadata: object;
-  items: User[];
 }

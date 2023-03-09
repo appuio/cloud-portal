@@ -4,10 +4,16 @@ import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
-import { KubernetesClientService } from '../../core/kubernetes-client.service';
 import { MessageService } from 'primeng/api';
-import { RoleBindingList } from 'src/app/types/role-bindings';
+import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
+import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
+
+interface Payload {
+  members: OrganizationMembers;
+  roleBindings: RoleBinding[];
+  canEdit: boolean;
+}
 
 @Component({
   selector: 'app-organization-members-edit',
@@ -16,8 +22,6 @@ import { OrganizationMembersCollectionService } from '../../store/organizationme
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationMembersEditComponent implements OnInit {
-  private organizationMembers?: OrganizationMembers;
-  roleBindings!: RoleBindingList;
   faClose = faClose;
   faSave = faSave;
   faWarning = faWarning;
@@ -30,8 +34,7 @@ export class OrganizationMembersEditComponent implements OnInit {
       }>
     >;
   }>;
-  editPermission = false;
-  organizationMembers$?: Observable<OrganizationMembers>;
+  payload$?: Observable<Payload>;
 
   // list of cluster roles that can be assigned by user - currently hard-coded as there's nothing
   // clearly identifying these (e.g. tag or special field)
@@ -41,10 +44,10 @@ export class OrganizationMembersEditComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private kubernetesClientService: KubernetesClientService,
     private messageService: MessageService,
     private router: Router,
-    private membersService: OrganizationMembersCollectionService
+    private membersService: OrganizationMembersCollectionService,
+    private rolebindingService: RolebindingCollectionService
   ) {}
 
   get userRefs(): FormArray | undefined {
@@ -52,40 +55,38 @@ export class OrganizationMembersEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ roleBindings }) => {
-      this.roleBindings = roleBindings;
-    });
-
     const name = this.activatedRoute.snapshot.paramMap.get('name');
     if (!name) {
       throw new Error('name is required');
     }
 
-    this.organizationMembers$ = this.membersService.getByKeyMemoized(`${name}/members`).pipe(
-      combineLatestWith(this.membersService.canEditMembers(name)),
-      map(([members, canEdit]) => {
-        this.organizationMembers = members;
-        this.editPermission = canEdit;
-        this.initForm();
-        return members;
+    this.payload$ = this.membersService.getByKeyMemoized(`${name}/members`).pipe(
+      combineLatestWith(
+        this.membersService.canEditMembers(name),
+        this.rolebindingService.getAllInNamespaceMemoized(name)
+      ),
+      map(([members, canEdit, roleBindings]) => {
+        const payload = { members, canEdit, roleBindings } satisfies Payload;
+        this.initForm(payload);
+        return payload;
       })
     );
   }
 
-  initForm(): void {
-    const userRoles = this.mapRolesToUsers();
+  initForm(payload: Payload): void {
+    const userRoles = this.mapRolesToUsers(payload.roleBindings);
     const members =
-      this.organizationMembers?.spec.userRefs?.map(
+      payload.members.spec.userRefs?.map(
         (userRef) =>
           new FormGroup({
             userName: new FormControl(
-              { value: userRef.name, disabled: !this.editPermission },
+              { value: userRef.name, disabled: !payload.canEdit },
               { validators: Validators.required, nonNullable: true }
             ),
             selectedRoles: new FormControl(
               {
                 value: userRoles[`${this.userNamePrefix}${userRef.name}`],
-                disabled: !this.editPermission,
+                disabled: !payload.canEdit,
               },
               { nonNullable: true }
             ),
@@ -96,7 +97,7 @@ export class OrganizationMembersEditComponent implements OnInit {
       userRefs: new FormArray(members),
     });
 
-    if (this.editPermission) {
+    if (payload.canEdit) {
       this.addEmptyFormControl();
     }
   }
@@ -115,9 +116,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     this.userRefs?.push(emptyFormGroup);
   }
 
-  mapRolesToUsers(): Record<string, string[]> {
+  mapRolesToUsers(roleBindings: RoleBinding[]): Record<string, string[]> {
     const userRoles: Record<string, string[]> = {};
-    this.roleBindings.items.forEach((item) => {
+    roleBindings.forEach((item) => {
       item.subjects.forEach((subj) => {
         if (!userRoles[subj.name]) {
           userRoles[subj.name] = [];
@@ -128,8 +129,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     return userRoles;
   }
 
-  save(): void {
-    if (!this.form || !this.organizationMembers) {
+  save(payload: Payload): void {
+    if (!this.form) {
       return;
     }
     const userNames: string[] = this.form
@@ -148,9 +149,9 @@ export class OrganizationMembersEditComponent implements OnInit {
     });
 
     forkJoin([
-      this.membersService.update(this.newOrganizationMembers(this.organizationMembers, userNames)),
-      ...this.roleBindings.items.map((roleBinding) =>
-        this.kubernetesClientService.updateRoleBinding({
+      this.membersService.update(this.newOrganizationMembers(payload.members, userNames)),
+      ...payload.roleBindings.map((roleBinding) =>
+        this.rolebindingService.update({
           metadata: { ...roleBinding.metadata },
           roleRef: { ...roleBinding.roleRef },
           subjects: rolesToSubjects[roleBinding.roleRef.name].map((sub) => {

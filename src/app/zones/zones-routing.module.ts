@@ -1,26 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PermissionGuard } from '../permission.guard';
 import { SingleZoneComponent } from './single-zone/single-zone.component';
 import { ZonesComponent } from './zones.component';
+import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
+import { ZonePermissions } from '../types/zone';
 
 const routes: Routes = [
   {
     path: '',
     component: ZonesComponent,
-    canActivate: [PermissionGuard],
+    canActivate: [KubernetesPermissionGuard],
     data: {
-      permission: 'zones',
-      verb: 'list',
+      requiredKubernetesPermissions: [{ ...ZonePermissions, verb: 'list' }],
     },
   },
   {
     path: ':name',
     component: SingleZoneComponent,
-    canActivate: [PermissionGuard],
+    canActivate: [KubernetesPermissionGuard],
     data: {
-      permission: 'zones',
-      verb: 'list',
+      requiredKubernetesPermissions: [{ ...ZonePermissions, verb: 'list' }],
     },
   },
 ];

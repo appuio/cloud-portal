@@ -3,11 +3,19 @@ import { Organization } from '../types/organization';
 import { newIdFromSelfSubjectAccessReview, SelfSubjectAccessReview } from '../types/self-subject-access-review';
 import { OrganizationMembers } from '../types/organization-members';
 import { BillingEntity } from '../types/billing-entity';
+import { RoleBinding } from '../types/role-binding';
+import { Team } from '../types/team';
+import { User } from '../types/user';
+import { Zone } from '../types/zone';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
 export const selfSubjectAccessReviewEntityKey = 'authorization.k8s.io/v1/selfsubjectaccessreviews';
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
+export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
+export const teamEntityKey = 'appuio.io/v1/teams';
+export const userEntityKey = 'appuio.io/v1/users';
+export const zoneEntityKey = 'appuio.io/v1/zones';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -34,6 +42,36 @@ export const entityMetadataMap: EntityMetadataMap = {
     entityName: billingEntityEntityKey,
     selectId: (bEntity: BillingEntity) => bEntity.metadata.name, // cluster-scoped
     sortComparer: (a: BillingEntity, b: BillingEntity) =>
+      a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
+  },
+  RoleBinding: {
+    entityName: rolebindingEntityKey,
+    selectId: (rb: RoleBinding) => `${rb.metadata.namespace}/${rb.metadata.name}`,
+    sortComparer: (a: RoleBinding, b: RoleBinding) =>
+      `${a.metadata.namespace}/${a.metadata.name}`.localeCompare(
+        `${b.metadata.namespace}/${b.metadata.name}`,
+        undefined,
+        { sensitivity: 'base' }
+      ),
+  },
+  Team: {
+    entityName: teamEntityKey,
+    selectId: (team: Team) => `${team.metadata.namespace}/${team.metadata.name}`,
+    sortComparer: (a: Team, b: Team) =>
+      `${a.metadata.namespace}/${a.metadata.name}`.localeCompare(
+        `${b.metadata.namespace}/${b.metadata.name}`,
+        undefined,
+        { sensitivity: 'base' }
+      ),
+  },
+  User: {
+    entityName: userEntityKey,
+    selectId: (user: User) => user.metadata.name, // cluster-scoped
+  },
+  Zone: {
+    entityName: zoneEntityKey,
+    selectId: (zone: Zone) => zone.metadata.name, // cluster-scoped
+    sortComparer: (a: Zone, b: Zone) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
   },
 };

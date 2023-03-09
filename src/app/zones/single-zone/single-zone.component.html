@@ -1,27 +1,21 @@
-<h1 class="pt-0 mt-0" i18n id="zone-details-title">Zone Details</h1>
-<ng-container *ngrxLet="zone$ as zone">
-  <ng-container [ngSwitch]="zone.state">
-    <ng-container *ngSwitchCase="EntityState.Loaded">
-      <app-zone-detail *ngIf="zone.value" [zone]="zone.value"></app-zone-detail>
-      <div *ngIf="!zone.value">
-        <p-messages severity="info">
-          <ng-template pTemplate="content">
-            <fa-icon [icon]="faInfo"></fa-icon>
-            <div class="ml-2" i18n id="no-zone-message">No zone found.</div>
-          </ng-template>
-        </p-messages>
-      </div>
-    </ng-container>
+<ng-container *ngrxLet="zone$ as zone; suspenseTpl: loading; error as err">
+  <h1 class="pt-0 mt-0" i18n id="zone-details-title">Zone Details</h1>
+  <app-zone-detail *ngIf="!err" [zone]="zone"></app-zone-detail>
 
-    <div i18n *ngSwitchCase="EntityState.Loading"><p-progressSpinner></p-progressSpinner></div>
-
-    <div *ngSwitchCase="EntityState.Failed">
-      <p-messages severity="error">
-        <ng-template pTemplate="content">
-          <fa-icon [icon]="faWarning"></fa-icon>
-          <div class="ml-2" i18n id="zone-failure-message">Zone could not be loaded.</div>
-        </ng-template>
-      </p-messages>
-    </div>
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="zone-failure-message">Zone could not be loaded.</div>
+      </ng-template>
+    </p-messages>
   </ng-container>
+
 </ng-container>
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

@@ -1,20 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectFocusOrganizationName } from '../store/app.selectors';
-import { map, Observable, Subscription } from 'rxjs';
-import { Entity, EntityState } from '../types/entity';
+import { combineLatestWith, map, Observable, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { Verb } from '../store/app.reducer';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectQueryParam } from '../store/router.selectors';
 import { Team } from '../types/team';
-import { selectHasTeamPermission, selectTeams } from './store/team.selectors';
-import { deleteTeam, loadTeamPermissions, loadTeams } from './store/team.actions';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
-import { setFocusOrganization } from '../store/app.actions';
+import { TeamCollectionService } from '../store/team-collection.service';
+import { Organization } from '../types/organization';
+import { switchMap } from 'rxjs/operators';
+
+interface Payload {
+  organization: Organization;
+  teams: Team[];
+  canCreate: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+}
 
 @Component({
   selector: 'app-teams',
@@ -23,10 +28,8 @@ import { setFocusOrganization } from '../store/app.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsComponent implements OnInit, OnDestroy {
-  teams$: Observable<Entity<Team[]>> = this.store.select(selectTeams);
-  hasCreatePermission$ = this.store.select(selectHasTeamPermission(Verb.Create));
-  hasUpdatePermission$ = this.store.select(selectHasTeamPermission(Verb.Update));
-  hasDeletePermission$ = this.store.select(selectHasTeamPermission(Verb.Delete));
+  payload$?: Observable<Payload>;
+
   faInfo = faInfoCircle;
   faWarning = faWarning;
   faEdit = faEdit;
@@ -34,7 +37,6 @@ export class TeamsComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faUserGroup = faUserGroup;
   subscriptions: Subscription[] = [];
-  organizationName?: string;
 
   constructor(
     private store: Store,
@@ -42,28 +44,14 @@ export class TeamsComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private confirmationService: ConfirmationService,
-    private organizationService: OrganizationCollectionService
+    private organizationService: OrganizationCollectionService,
+    private teamService: TeamCollectionService,
+    private messageService: MessageService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // eslint-disable-next-line ngrx/no-store-subscription
-    this.store.select(selectFocusOrganizationName).subscribe((organizationName) => {
-      // special hook: If user has no default organization set, this selection never happens and teams do not get loaded.
-      if (!organizationName) {
-        this.subscriptions.push(
-          this.organizationService.filteredEntities$.pipe(map((orgs) => orgs[0])).subscribe((org) => {
-            this.organizationName = org.metadata.name;
-            this.store.dispatch(setFocusOrganization({ focusOrganizationName: this.organizationName }));
-          })
-        );
-      } else {
-        this.organizationName = organizationName;
-        // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-        this.store.dispatch(loadTeams());
-        // eslint-disable-next-line ngrx/avoid-dispatching-multiple-actions-sequentially
-        this.store.dispatch(loadTeamPermissions());
-      }
-    });
+    this.subscribePayloads();
 
     this.subscriptions.push(
       this.store
@@ -82,16 +70,28 @@ export class TeamsComponent implements OnInit, OnDestroy {
     );
   }
 
-  isLoading(zones: Entity<Team[]>): boolean {
-    return zones.state === EntityState.Loading;
-  }
-
-  isListEmpty(zones: Entity<Team[]>): boolean {
-    return zones.state === EntityState.Loaded && zones.value.length === 0;
-  }
-
-  hasLoadingFailed(zones: Entity<Team[]>): boolean {
-    return zones.state === EntityState.Failed;
+  private subscribePayloads(): void {
+    this.payload$ = this.organizationService.selectedOrganization$.pipe(
+      switchMap((org) => {
+        const organizationName = org.metadata.name;
+        return this.teamService.getAllInNamespaceMemoized(organizationName).pipe(
+          combineLatestWith(
+            this.teamService.canCreate(organizationName),
+            this.teamService.canEdit(organizationName),
+            this.teamService.canDelete(organizationName)
+          ),
+          map(([teams, canCreate, canEdit, canDelete]) => {
+            return {
+              teams,
+              organization: org,
+              canEdit: canEdit,
+              canCreate: canCreate,
+              canDelete: canDelete,
+            } satisfies Payload;
+          })
+        );
+      })
+    );
   }
 
   openJoinTeamDialog(): void {
@@ -112,7 +112,29 @@ export class TeamsComponent implements OnInit, OnDestroy {
       message: $localize`Are you sure that you want to delete the team '${team.spec.displayName}'?`,
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.store.dispatch(deleteTeam({ name: team.metadata.name }));
+        this.subscriptions.push(
+          this.teamService.delete(team).subscribe({
+            next: (name) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: $localize`Successfully deleted team ${name}`,
+              });
+              // After deleting, ensure that the displayed list doesn't contain the deleted element anymore.
+              this.subscribePayloads();
+              this.changeDetectorRef.markForCheck();
+            },
+            error: (err: Error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: $localize`Error`,
+                detail: err.message,
+                sticky: true,
+              });
+              this.subscribePayloads();
+              this.changeDetectorRef.markForCheck();
+            },
+          })
+        );
       },
     });
   }

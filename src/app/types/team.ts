@@ -1,4 +1,8 @@
-export interface Team {
+import { KubeObject } from './entity';
+
+export const TeamPermissions = { group: 'appuio.io', resource: 'teams' };
+
+export interface Team extends KubeObject {
   kind: 'Team';
   apiVersion: 'appuio.io/v1';
   metadata: {

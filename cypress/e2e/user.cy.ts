@@ -1,7 +1,8 @@
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
-import { organizationListNxtVshn } from '../fixtures/organization';
+import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
 import { teamListNxt, teamListVshn } from '../fixtures/team';
+import { TeamPermissions } from '../../src/app/types/team';
 
 describe('Test user', () => {
   beforeEach(() => {
@@ -12,7 +13,6 @@ describe('Test user', () => {
 
   it('without preferences', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
@@ -26,7 +26,6 @@ describe('Test user', () => {
 
   it('with preferences (default organization)', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
@@ -42,17 +41,14 @@ describe('Test user', () => {
         userRefs: [{ name: 'mig' }],
       }),
     });
+    setOrganization(cy, ...organizationListNxtVshn.items);
 
     cy.visit('/user');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH (nxt)');
   });
 
   it('with change of default organization to vshn', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
@@ -71,11 +67,9 @@ describe('Test user', () => {
         userRefs: [{ name: 'mig' }],
       }),
     });
+    setOrganization(cy, ...organizationListNxtVshn.items);
 
     cy.visit('/user');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH (nxt)');
     cy.get('.p-dropdown-trigger-icon').click();
     cy.get('#pr_id_4_list > :nth-child(2)').click();
@@ -89,7 +83,7 @@ describe('Test user', () => {
 
   it('with update of focus organization', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
+    cy.setPermission({ verb: 'list', namespace: 'nxt', ...TeamPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
@@ -108,14 +102,12 @@ describe('Test user', () => {
         userRefs: [{ name: 'mig' }],
       }),
     });
-
-    cy.visit('/teams');
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
       body: teamListNxt,
     });
+
+    cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
@@ -144,7 +136,6 @@ describe('Test user', () => {
 
   it('with change of default organization to None', () => {
     // needed for initial getUser request
-    cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });

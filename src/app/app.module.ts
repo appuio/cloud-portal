@@ -37,6 +37,7 @@ import { OrganizationCollectionService } from './store/organization-collection.s
 import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
+import { NavigationService } from './shared/navigation.service';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collectio
     SelfSubjectAccessReviewCollectionService,
     {
       provide: APP_INITIALIZER,
-      deps: [AppConfigService, OAuthService],
+      // start the NavigationService early to catch route events.
+      deps: [AppConfigService, OAuthService, NavigationService],
       useFactory: initializeAppFactory,
       multi: true,
     },

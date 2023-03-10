@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { KubernetesCollectionService } from './kubernetes-collection.service';
 import { billingEntityEntityKey } from './entity-metadata-map';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BillingEntity } from '../types/billing-entity';
+import { BillingEntity, BillingEntityPermissions } from '../types/billing-entity';
 import { Observable } from 'rxjs';
 import { Verb } from './app.reducer';
 import { SelfSubjectAccessReviewCollectionService } from './ssar-collection.service';
@@ -17,6 +17,16 @@ export class BillingEntityCollectionService extends KubernetesCollectionService<
     private permissionService: SelfSubjectAccessReviewCollectionService
   ) {
     super(billingEntityEntityKey, elementsFactory);
+  }
+
+  canViewBilling(name: string): Observable<boolean> {
+    return this.permissionService.isAllowed(
+      BillingEntityPermissions.group,
+      BillingEntityPermissions.resource,
+      Verb.Get,
+      undefined,
+      name
+    );
   }
 
   canViewMembers(clusterRoleBindingName: string): Observable<boolean> {

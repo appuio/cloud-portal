@@ -95,7 +95,7 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="failure-message">Billing members could not be loaded.</div>
+        <div class="ml-2" i18n id="failure-message">Billing members could not be loaded. {{ err.message ? err.message : '' }}</div>
       </ng-template>
     </p-messages>
   </ng-container>

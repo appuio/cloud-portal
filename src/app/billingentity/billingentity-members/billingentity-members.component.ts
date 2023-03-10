@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
-import { combineLatestWith, forkJoin, map, Observable, Subscription, take } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, Subscription, take } from 'rxjs';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClusterRoleBinding } from '../../types/clusterrole-binding';
@@ -10,10 +10,16 @@ import { ClusterRolebindingCollectionService } from '../../store/clusterrolebind
 import { MessageService } from 'primeng/api';
 import { UserCollectionService } from '../../store/user-collection.service';
 import { User } from 'src/app/types/user';
+import { switchMap } from 'rxjs/operators';
+import { defaultIfNotFound } from '../../store/kubernetes-collection.service';
+import { ClusterRoleCollectionService } from '../../store/cluster-role-collection.service';
+import { ClusterRole } from '../../types/clusterRole';
+import { KubeObject } from '../../types/entity';
 
 interface Payload {
   billingEntity: BillingEntity;
   canEdit: boolean;
+  adminRole: ClusterRole;
   adminBinding: ClusterRoleBinding;
   viewerBinding: ClusterRoleBinding;
 }
@@ -49,35 +55,81 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private billingService: BillingEntityCollectionService,
+    private roleService: ClusterRoleCollectionService,
     public rolebindingService: ClusterRolebindingCollectionService,
     private messageService: MessageService,
     private userService: UserCollectionService
   ) {}
 
   ngOnInit(): void {
-    const name = this.route.snapshot.paramMap.get('name');
-    if (!name) {
+    const beName = this.route.snapshot.paramMap.get('name');
+    if (!beName) {
       throw new Error('name is required');
     }
-    const adminClusterRoleBindingName = `billingentities-${name}-admin`;
-    const viewerClusterRoleBindingName = `billingentities-${name}-viewer`;
-    this.payload$ = this.billingService.getByKeyMemoized(name).pipe(
-      combineLatestWith(
-        this.billingService.canViewMembers(viewerClusterRoleBindingName),
-        this.billingService.canEditMembers(adminClusterRoleBindingName),
-        this.rolebindingService.getByKeyMemoized(adminClusterRoleBindingName),
-        this.rolebindingService.getByKeyMemoized(viewerClusterRoleBindingName),
-        this.userService.currentUser$
-      ),
-      map(([be, canView, canEdit, adminCrb, viewerCrb, currentUser]) => {
-        if (!canView && !canEdit) {
+    const adminClusterRoleBindingName = `billingentities-${beName}-admin`;
+    const viewerClusterRoleBindingName = `billingentities-${beName}-viewer`;
+
+    // How to read the pipe below:
+    //  First, get a set of permissions.
+    //   -> Check if we're allowed to do something and error handling
+    //  Second, we enrich the pipe with more entities, based on whether we're allowed to.
+    //  Last, map the results to the payload and render the UI based on those.
+    this.payload$ = forkJoin([
+      this.billingService.canViewBilling(beName),
+      this.billingService.canViewMembers(viewerClusterRoleBindingName),
+      this.billingService.canEditMembers(adminClusterRoleBindingName),
+    ]).pipe(
+      switchMap(([canViewBE, canViewMembers, canEditMembers]) => {
+        if (!canViewBE) {
+          this.messageService.add({
+            severity: 'error',
+            summary: `You don't have permissions to view Billing ${beName}.`,
+          });
           this.router.navigateByUrl('/home');
-          throw new Error(`You don't have permissions to view members of Billing ${name}`);
         }
+        if (!canViewMembers && !canEditMembers) {
+          this.messageService.add({
+            severity: 'error',
+            summary: `You don't have permissions to view members of Billing ${beName}.`,
+          });
+          this.router.navigateByUrl('/home');
+        }
+
+        // Note: The `take(1)`s below ensure our `forkJoin`s actually finish, otherwise they wait forever.
+        const createRole$ = this.roleService
+          .getByKeyMemoized(adminClusterRoleBindingName)
+          .pipe(
+            catchError(
+              defaultIfNotFound(
+                this.newRole(
+                  adminClusterRoleBindingName,
+                  beName,
+                  ['*'],
+                  [adminClusterRoleBindingName, viewerClusterRoleBindingName]
+                )
+              )
+            ),
+            take(1)
+          );
+        return forkJoin([
+          this.billingService.getByKeyMemoized(beName).pipe(take(1)),
+          of(canEditMembers),
+          this.rolebindingService
+            .getByKeyMemoized(adminClusterRoleBindingName)
+            .pipe(catchError(defaultIfNotFound(this.newRoleBinding(adminClusterRoleBindingName))), take(1)),
+          this.rolebindingService
+            .getByKeyMemoized(viewerClusterRoleBindingName)
+            .pipe(catchError(defaultIfNotFound(this.newRoleBinding(viewerClusterRoleBindingName))), take(1)),
+          this.userService.currentUser$.pipe(take(1)),
+          createRole$,
+        ]);
+      }),
+      map(([be, canEdit, adminCrb, viewerCrb, currentUser, adminRole]) => {
         this.currentUser = currentUser;
         const payload = {
           billingEntity: be,
           canEdit,
+          adminRole,
           adminBinding: adminCrb,
           viewerBinding: viewerCrb,
         } satisfies Payload;
@@ -184,7 +236,10 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
 
     const bindingClones = [payload.adminBinding, payload.viewerBinding].map((binding) => structuredClone(binding));
     this.mapUsersToRoles(bindingClones, this.form.getRawValue().userRefs);
-    const update$ = bindingClones.map((binding) => this.rolebindingService.update(binding));
+    const update$: Observable<KubeObject>[] = bindingClones.map((binding) => this.rolebindingService.update(binding));
+    if (!payload.adminRole.metadata.creationTimestamp) {
+      update$.push(this.roleService.add(payload.adminRole));
+    }
     forkJoin(update$).subscribe({
       next: () => {
         this.messageService.add({
@@ -217,5 +272,44 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  private newRoleBinding(clusterRoleBindingName: string): ClusterRoleBinding {
+    return {
+      apiVersion: 'rbac.authorization.k8s.io/v1',
+      kind: 'ClusterRoleBinding',
+      metadata: {
+        name: clusterRoleBindingName,
+      },
+      roleRef: {
+        name: clusterRoleBindingName,
+        kind: 'ClusterRole',
+        apiGroup: 'rbac.authorization.k8s.io',
+      },
+    };
+  }
+
+  private newRole(roleName: string, beName: string, verbs: string[], resourceNames: string[]): ClusterRole {
+    return {
+      apiVersion: 'rbac.authorization.k8s.io/v1',
+      kind: 'ClusterRole',
+      metadata: {
+        name: roleName,
+      },
+      rules: [
+        {
+          verbs: verbs,
+          apiGroups: ['rbac.authorization.k8s.io'],
+          resources: ['clusterrolebindings'],
+          resourceNames: resourceNames,
+        },
+        {
+          verbs: ['get'],
+          apiGroups: ['rbac.appuio.io'],
+          resources: ['billingentities'],
+          resourceNames: [beName],
+        },
+      ],
+    };
   }
 }

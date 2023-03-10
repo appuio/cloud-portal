@@ -30,7 +30,7 @@ export class BillingEntityComponent implements OnInit {
         entities.map((be) => {
           return {
             billingEntity: be,
-            canViewMembers$: this.billingEntityService.canViewMembers(`billingentities-${be.metadata.name}-admin`),
+            canViewMembers$: this.billingEntityService.canEditMembers(`billingentities-${be.metadata.name}-admin`),
           } satisfies Payload;
         })
       )

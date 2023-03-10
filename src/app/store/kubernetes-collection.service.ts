@@ -1,14 +1,16 @@
 import {
+  DataServiceError,
   EntityActionOptions,
   EntityCollectionServiceBase,
   EntityCollectionServiceElementsFactory,
   QueryParams,
 } from '@ngrx/data';
 import { KubeObject } from '../types/entity';
-import { map, Observable, of, take, tap } from 'rxjs';
+import { map, Observable, ObservableInput, of, take, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { buildId } from './kubernetes-data.service';
 import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export class KubernetesCollectionService<T extends KubeObject> extends EntityCollectionServiceBase<T> {
   // this flag holds the value true when there was an initial collection load.
@@ -120,4 +122,20 @@ export class KubernetesCollectionServiceFactory<T extends KubeObject> {
     this.knownCollectionServices.set(entityName, knownService);
     return knownService;
   }
+}
+
+/**
+ * This is an error handler that returns a default value if the error is a 404.
+ * Use it in a pipe like following:
+ *  `getByKey(<key>).pipe(catchError(defaultIfNotFound(<default>)))`
+ * @param def the default value to return if the error is a 404.
+ * @return function to be used in a `catchError` operator.
+ */
+export function defaultIfNotFound<T>(def: T): (err: DataServiceError, caught: Observable<T>) => ObservableInput<T> {
+  return (err: DataServiceError) => {
+    if (err.error instanceof HttpErrorResponse && err.error.status === 404) {
+      return of(def);
+    }
+    throw err;
+  };
 }

@@ -8,12 +8,14 @@ import { Team } from '../types/team';
 import { User } from '../types/user';
 import { Zone } from '../types/zone';
 import { ClusterRoleBinding } from '../types/clusterrole-binding';
+import { ClusterRole } from '../types/clusterRole';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
 export const selfSubjectAccessReviewEntityKey = 'authorization.k8s.io/v1/selfsubjectaccessreviews';
 export const billingEntityEntityKey = 'billing.appuio.io/v1/billingentities';
 export const rolebindingEntityKey = 'rbac.authorization.k8s.io/v1/rolebindings';
+export const clusterroleEntityKey = 'rbac.authorization.k8s.io/v1/clusterroles';
 export const clusterrolebindingEntityKey = 'rbac.authorization.k8s.io/v1/clusterrolebindings';
 export const teamEntityKey = 'appuio.io/v1/teams';
 export const userEntityKey = 'appuio.io/v1/users';
@@ -45,6 +47,10 @@ export const entityMetadataMap: EntityMetadataMap = {
     selectId: (bEntity: BillingEntity) => bEntity.metadata.name, // cluster-scoped
     sortComparer: (a: BillingEntity, b: BillingEntity) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
+  },
+  ClusterRole: {
+    entityName: clusterroleEntityKey,
+    selectId: (crb: ClusterRole) => crb.metadata.name, // cluster-scoped
   },
   RoleBinding: {
     entityName: rolebindingEntityKey,

@@ -60,7 +60,7 @@
             "assets": ["src/manifest.webmanifest", "src/config.json", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["fast-sha256", "dayjs", "dayjs/plugin/localizedFormat", "dayjs/plugin/relativeTime"]
+            "allowedCommonJsDependencies": ["fast-sha256"]
           },
           "configurations": {
             "production": {

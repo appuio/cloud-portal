@@ -11,6 +11,8 @@ import { BillingEntityCollectionService } from '../store/billingentity-collectio
 import { Organization } from '../types/organization';
 import { BillingEntity } from '../types/billing-entity';
 import { getBillingEntityFromClusterRoleName } from '../store/entity-filter';
+import { Team } from '../types/team';
+import { TeamCollectionService } from '../store/team-collection.service';
 
 @Component({
   selector: 'app-invitations',
@@ -31,19 +33,25 @@ export class InvitationsComponent implements OnInit {
   constructor(
     private invitationService: InvitationCollectionService,
     private organizationService: OrganizationCollectionService,
+    private teamService: TeamCollectionService,
     private billingService: BillingEntityCollectionService
   ) {}
 
   ngOnInit(): void {
     this.payload$ = this.invitationService.getAllMemoized().pipe(
       switchMap((invitations) => {
-        return forkJoin([of(invitations), this.fetchOrganizations$(invitations), this.fetchBilling$(invitations)]);
+        return forkJoin([
+          of(invitations),
+          this.fetchOrganizations$(invitations),
+          this.fetchBilling$(invitations),
+          this.fetchTeams$(invitations),
+        ]);
       }),
-      map(([invitations, organizations, billingEntities]) => {
+      map(([invitations, organizations, billingEntities, teams]) => {
         return {
           invitations: invitations.map((inv) => {
             const bePermissions = this.collectBillingPermissions(inv, billingEntities);
-            const orgPermissions = this.collectOrgPermissions(inv, organizations);
+            const orgPermissions = this.collectOrgPermissions(inv, organizations, teams);
             const expires = dayjs(inv.status?.validUntil);
             const hasExpired = expires.isBefore(dayjs());
             return {
@@ -71,7 +79,23 @@ export class InvitationsComponent implements OnInit {
     return forkJoin(organization$).pipe(
       combineLatestAll(),
       catchError((err) => {
-        console.error('could not fetch organization', err);
+        console.error('could not fetch organizations to resolve display names, resort to fallback values', err);
+        return of([]); // fallback to empty list in case we can't read an organization (permission failure, etc.)
+      })
+    );
+  }
+
+  private fetchTeams$(invitations: Invitation[]): Observable<Team[]> {
+    const teamNames = invitations
+      .map((inv) => inv.status?.targetStatuses.filter((status) => status.targetRef.kind === 'Team') ?? [])
+      .flatMap((statusArr) => statusArr.map((status) => `${status.targetRef.namespace}/${status.targetRef.name}`));
+    const uniqueNames = [...new Set(teamNames)];
+
+    const teams$ = uniqueNames.map((team) => this.teamService.getByKeyMemoized(team).pipe(take(1)));
+    return forkJoin(teams$).pipe(
+      combineLatestAll(),
+      catchError((err) => {
+        console.error('could not fetch teams to resolve display names, resort to fallback values', err);
         return of([]); // fallback to empty list in case we can't read an organization (permission failure, etc.)
       })
     );
@@ -87,7 +111,7 @@ export class InvitationsComponent implements OnInit {
     return forkJoin(billing$).pipe(
       combineLatestAll(),
       catchError((err) => {
-        console.error('could not fetch billing entities to resolve display name, resort to fallback value', err);
+        console.error('could not fetch billing entities to resolve display names, resort to fallback values', err);
         return of([]);
       })
     );
@@ -121,7 +145,7 @@ export class InvitationsComponent implements OnInit {
     return bePermissions;
   }
 
-  private collectOrgPermissions(inv: Invitation, organizations: Organization[]): PermissionRecord[] {
+  private collectOrgPermissions(inv: Invitation, organizations: Organization[], teams: Team[]): PermissionRecord[] {
     const orgPermissions: PermissionRecord[] = [];
     inv.status?.targetStatuses
       ?.filter((status) => status.targetRef.kind === 'RoleBinding')
@@ -139,7 +163,16 @@ export class InvitationsComponent implements OnInit {
                 (teamStatus) =>
                   teamStatus.targetRef.kind === 'Team' && teamStatus.targetRef.namespace === status.targetRef.namespace
               )
-              .map((teamStatus) => teamStatus.targetRef.name),
+              .map((teamStatus) => {
+                return {
+                  slug: teamStatus.targetRef.name,
+                  displayName: this.getTeamDisplayName(
+                    teams,
+                    teamStatus.targetRef.name,
+                    teamStatus.targetRef.namespace ?? ''
+                  ),
+                };
+              }),
           };
           orgPermissions.push(record);
           return;
@@ -171,6 +204,13 @@ export class InvitationsComponent implements OnInit {
     return billingEntities.find((be) => be.metadata.name === beName)?.spec.name ?? beName;
   }
 
+  private getTeamDisplayName(teams: Team[], name: string, namespace: string): string {
+    return (
+      teams.find((team) => team.metadata.name === name && team.metadata.namespace === namespace)?.spec.displayName ??
+      name
+    );
+  }
+
   severityOfCondition(condition: Condition): string {
     switch (condition.status) {
       case 'True':
@@ -200,5 +240,5 @@ interface PermissionRecord {
   displayName?: string;
   viewer: boolean;
   admin: boolean;
-  teams?: string[];
+  teams?: { slug: string; displayName?: string }[];
 }

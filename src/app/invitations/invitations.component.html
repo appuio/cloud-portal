@@ -76,12 +76,12 @@
                   </td>
                   <td>
                     <ng-container *ngFor="let team of permission.teams">
-                      <a pButton [routerLink]="['/teams', permission.slug, team]"
+                      <a pButton [routerLink]="['/teams', permission.slug, team.slug]"
                          class="p-2 white-space-nowrap no-underline">
                       <span class="pr-1">
                           <fa-icon [icon]="faUserGroup"/>
                       </span>
-                        {{ team }}
+                        {{ team.displayName ? team.displayName : team.slug }}
                       </a>
                     </ng-container>
                   </td>

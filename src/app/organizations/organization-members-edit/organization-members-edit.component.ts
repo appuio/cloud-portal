@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
+import { NavigationService } from '../../shared/navigation.service';
 
 interface Payload {
   members: OrganizationMembers;
@@ -45,9 +46,9 @@ export class OrganizationMembersEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
-    private router: Router,
     private membersService: OrganizationMembersCollectionService,
-    private rolebindingService: RolebindingCollectionService
+    private rolebindingService: RolebindingCollectionService,
+    private navigationService: NavigationService
   ) {}
 
   get userRefs(): FormArray | undefined {
@@ -165,7 +166,7 @@ export class OrganizationMembersEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate(['../..'], { relativeTo: this.activatedRoute });
+        this.navigationService.back();
       },
       error: (error) => {
         this.messageService.add({

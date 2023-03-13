@@ -15,6 +15,7 @@ import { defaultIfNotFound } from '../../store/kubernetes-collection.service';
 import { ClusterRoleCollectionService } from '../../store/cluster-role-collection.service';
 import { ClusterRole } from '../../types/clusterRole';
 import { KubeObject } from '../../types/entity';
+import { NavigationService } from '../../shared/navigation.service';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -54,6 +55,7 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private navigationService: NavigationService,
     private billingService: BillingEntityCollectionService,
     private roleService: ClusterRoleCollectionService,
     public rolebindingService: ClusterRolebindingCollectionService,
@@ -234,7 +236,7 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate(['../..'], { relativeTo: this.route });
+        this.navigationService.back();
       },
       error: (error) => {
         this.messageService.add({

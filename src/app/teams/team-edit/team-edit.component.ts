@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Observable, of, take, tap } from 'rxjs';
 import { TeamCollectionService } from '../../store/team-collection.service';
+import { NavigationService } from '../../shared/navigation.service';
 
 @Component({
   selector: 'app-team-edit',
@@ -23,10 +24,10 @@ export class TeamEditComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
-    public teamService: TeamCollectionService
+    public teamService: TeamCollectionService,
+    private navigationService: NavigationService
   ) {}
 
   get userRefs(): FormArray {
@@ -71,7 +72,7 @@ export class TeamEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate(['../..'], { relativeTo: this.activatedRoute });
+        this.navigationService.back();
       },
       error: (error) => {
         let detail = '';

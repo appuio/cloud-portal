@@ -29,15 +29,6 @@ export class BillingEntityCollectionService extends KubernetesCollectionService<
     );
   }
 
-  canViewMembers(clusterRoleBindingName: string): Observable<boolean> {
-    return this.permissionService.isAllowed(
-      ClusterRoleBindingPermissions.group,
-      ClusterRoleBindingPermissions.resource,
-      Verb.Get,
-      undefined,
-      clusterRoleBindingName
-    );
-  }
   canEditMembers(clusterRoleBindingName: string): Observable<boolean> {
     return this.permissionService.isAllowed(
       ClusterRoleBindingPermissions.group,

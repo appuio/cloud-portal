@@ -76,7 +76,7 @@ export class BillingentityMembersComponent implements OnInit, OnDestroy {
     //  Last, map the results to the payload and render the UI based on those.
     this.payload$ = forkJoin([
       this.billingService.canViewBilling(beName),
-      this.billingService.canViewMembers(viewerClusterRoleBindingName),
+      this.billingService.canEditMembers(viewerClusterRoleBindingName),
       this.billingService.canEditMembers(adminClusterRoleBindingName),
     ]).pipe(
       switchMap(([canViewBE, canViewMembers, canEditMembers]) => {

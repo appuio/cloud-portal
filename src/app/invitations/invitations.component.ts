@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { InvitationCollectionService } from '../store/invitation-collection.service';
-import { Invitation } from '../types/invitation';
-import { map, Observable } from 'rxjs';
+import { Invitation, TargetStatus } from '../types/invitation';
+import { catchError, combineLatestAll, forkJoin, map, Observable, of, take } from 'rxjs';
 import { faCheck, faDollarSign, faInfo, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import * as dayjs from 'dayjs';
 import { Condition } from '../types/status';
+import { switchMap } from 'rxjs/operators';
+import { OrganizationCollectionService } from '../store/organization-collection.service';
+import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
+import { Organization } from '../types/organization';
+import { BillingEntity } from '../types/billing-entity';
+import { getBillingEntityFromClusterRoleName } from '../store/entity-filter';
 
 @Component({
   selector: 'app-invitations',
@@ -22,15 +28,22 @@ export class InvitationsComponent implements OnInit {
   faDollarSign = faDollarSign;
   faUserGroup = faUserGroup;
 
-  constructor(private invitationService: InvitationCollectionService) {}
+  constructor(
+    private invitationService: InvitationCollectionService,
+    private organizationService: OrganizationCollectionService,
+    private billingService: BillingEntityCollectionService
+  ) {}
 
   ngOnInit(): void {
     this.payload$ = this.invitationService.getAllMemoized().pipe(
-      map((invitations) => {
+      switchMap((invitations) => {
+        return forkJoin([of(invitations), this.fetchOrganizations$(invitations), this.fetchBilling$(invitations)]);
+      }),
+      map(([invitations, organizations, billingEntities]) => {
         return {
           invitations: invitations.map((inv) => {
-            const bePermissions = this.collectBillingPermissions(inv);
-            const orgPermissions = this.collectOrgPermissions(inv);
+            const bePermissions = this.collectBillingPermissions(inv, billingEntities);
+            const orgPermissions = this.collectOrgPermissions(inv, organizations);
             const expires = dayjs(inv.status?.validUntil);
             const hasExpired = expires.isBefore(dayjs());
             return {
@@ -45,17 +58,53 @@ export class InvitationsComponent implements OnInit {
     );
   }
 
-  private collectBillingPermissions(inv: Invitation): PermissionRecord[] {
+  private fetchOrganizations$(invitations: Invitation[]): Observable<Organization[]> {
+    const orgNames = invitations
+      .map(
+        (inv) => inv.status?.targetStatuses.filter((status) => status.targetRef.kind === 'OrganizationMembers') ?? []
+      )
+      .flatMap((statusArr) => statusArr.map((status) => status.targetRef.namespace ?? ''));
+
+    const uniqueOrgNames = [...new Set(orgNames)];
+
+    const organization$ = uniqueOrgNames.map((org) => this.organizationService.getByKeyMemoized(org).pipe(take(1)));
+    return forkJoin(organization$).pipe(
+      combineLatestAll(),
+      catchError((err) => {
+        console.error('could not fetch organization', err);
+        return of([]); // fallback to empty list in case we can't read an organization (permission failure, etc.)
+      })
+    );
+  }
+
+  private fetchBilling$(invitations: Invitation[]): Observable<BillingEntity[]> {
+    const beNames = invitations
+      .map((inv) => inv.status?.targetStatuses.filter((status) => status.targetRef.kind === 'ClusterRoleBinding') ?? [])
+      .flatMap((statusArr) => statusArr.map((status) => getBillingEntityFromClusterRoleName(status.targetRef.name)));
+    const uniqueNames = [...new Set(beNames)];
+
+    const billing$ = uniqueNames.map((be) => this.billingService.getByKeyMemoized(be).pipe(take(1)));
+    return forkJoin(billing$).pipe(
+      combineLatestAll(),
+      catchError((err) => {
+        console.error('could not fetch billing entities to resolve display name, resort to fallback value', err);
+        return of([]);
+      })
+    );
+  }
+
+  private collectBillingPermissions(inv: Invitation, billingEntities: BillingEntity[]): PermissionRecord[] {
     const bePermissions: PermissionRecord[] = [];
 
     inv.status?.targetStatuses
       ?.filter((status) => status.targetRef.kind === 'ClusterRoleBinding')
       .forEach((status) => {
-        let record = bePermissions.find((p) => p.name === status.targetRef.namespace);
+        let record = bePermissions.find((p) => p.slug === status.targetRef.namespace);
         if (!record) {
           record = {
             kind: 'billingentities',
-            name: status.targetRef.name.replace('billingentities-', '').replace('-viewer', '').replace('-admin', ''),
+            slug: getBillingEntityFromClusterRoleName(status.targetRef.name),
+            displayName: this.getBillingDisplayName(billingEntities, status),
             viewer: status.targetRef.name.includes('-viewer'),
             admin: status.targetRef.name.includes('-admin'),
           };
@@ -72,16 +121,17 @@ export class InvitationsComponent implements OnInit {
     return bePermissions;
   }
 
-  private collectOrgPermissions(inv: Invitation): PermissionRecord[] {
+  private collectOrgPermissions(inv: Invitation, organizations: Organization[]): PermissionRecord[] {
     const orgPermissions: PermissionRecord[] = [];
     inv.status?.targetStatuses
       ?.filter((status) => status.targetRef.kind === 'RoleBinding')
       .forEach((status) => {
-        let record = orgPermissions.find((p) => p.name === status.targetRef.namespace);
+        let record = orgPermissions.find((p) => p.slug === status.targetRef.namespace);
         if (!record) {
           record = {
             kind: 'organizations',
-            name: status.targetRef.namespace ?? '',
+            slug: status.targetRef.namespace ?? '',
+            displayName: this.getOrganizationDisplayName(organizations, status),
             viewer: status.targetRef.name === 'control-api:organization-viewer',
             admin: status.targetRef.name === 'control-api:organization-admin',
             teams: inv.status?.targetStatuses
@@ -106,6 +156,19 @@ export class InvitationsComponent implements OnInit {
         }
       });
     return orgPermissions;
+  }
+
+  private getOrganizationDisplayName(organizations: Organization[], status: TargetStatus): string {
+    return (
+      organizations.find((org) => org.metadata.name === status.targetRef.namespace)?.spec.displayName ??
+      status.targetRef.namespace ??
+      ''
+    );
+  }
+
+  private getBillingDisplayName(billingEntities: BillingEntity[], status: TargetStatus): string {
+    const beName = getBillingEntityFromClusterRoleName(status.targetRef.name);
+    return billingEntities.find((be) => be.metadata.name === beName)?.spec.name ?? beName;
   }
 
   severityOfCondition(condition: Condition): string {
@@ -133,7 +196,8 @@ interface InvitationViewModel {
 
 interface PermissionRecord {
   kind: 'organizations' | 'billingentities';
-  name: string;
+  slug: string;
+  displayName?: string;
   viewer: boolean;
   admin: boolean;
   teams?: string[];

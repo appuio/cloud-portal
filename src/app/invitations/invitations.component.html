@@ -57,7 +57,7 @@
               <ng-template pTemplate="body" let-permission>
                 <tr>
                   <td>
-                    <a pButton [routerLink]="['/', permission.kind, permission.name]"
+                    <a pButton [routerLink]="['/', permission.kind, permission.slug]"
                        class="p-2 white-space-nowrap no-underline">
                       <span class="pr-1">
                         <ng-container [ngSwitch]="permission.kind">
@@ -65,7 +65,7 @@
                           <fa-icon *ngSwitchCase="'billingentities'" [icon]="faDollarSign"/>
                         </ng-container>
                       </span>
-                      {{ permission.name }}
+                      {{ permission.displayName ? permission.displayName : permission.slug }}
                     </a>
                   </td>
                   <td>
@@ -76,7 +76,7 @@
                   </td>
                   <td>
                     <ng-container *ngFor="let team of permission.teams">
-                      <a pButton [routerLink]="['/teams', permission.name, team]"
+                      <a pButton [routerLink]="['/teams', permission.slug, team]"
                          class="p-2 white-space-nowrap no-underline">
                       <span class="pr-1">
                           <fa-icon [icon]="faUserGroup"/>

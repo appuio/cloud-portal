@@ -13,6 +13,7 @@ export class NavigationService {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.history.push(event.urlAfterRedirects);
+        this.history.splice(0, this.history.length - 5); // only keep the latest few, no need for more.
       }
     });
   }

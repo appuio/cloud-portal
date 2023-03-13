@@ -25,7 +25,7 @@ export interface TargetRef {
 export interface InvitationStatus {
   token: string;
   validUntil: string;
-  targetStatuses: TargetStatus[];
+  targetStatuses?: TargetStatus[];
   RedeemedBy?: string;
   conditions?: Condition[];
 }

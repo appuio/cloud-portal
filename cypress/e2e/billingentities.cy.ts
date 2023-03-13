@@ -13,10 +13,10 @@ describe('Test billing entity list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
   });
 
   it('list with two entries', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     setBillingEntities(cy, billingEntityNxt, billingEntityVshn);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
@@ -25,7 +25,6 @@ describe('Test billing entity list', () => {
   });
 
   it('empty list', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     setBillingEntities(cy);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
@@ -33,7 +32,6 @@ describe('Test billing entity list', () => {
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', {
       statusCode: 403,
     });
@@ -43,8 +41,6 @@ describe('Test billing entity list', () => {
   });
 
   it('failed requests are retried', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
-
     let interceptCount = 0;
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities', (req) => {
       if (interceptCount === 0) {
@@ -60,12 +56,31 @@ describe('Test billing entity list', () => {
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
   });
+});
 
-  it('no permission', () => {
+describe('no permissions', () => {
+  beforeEach(() => {
+    cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
+  });
+
+  it('no BE list permission', () => {
     cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', {
       body: { spec: { resourceAttributes: { resource: '', group: '', verb: '' } }, status: { allowed: false } },
     });
     cy.visit('/billingentities');
+    cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+  });
+
+  it('no member edit permission', () => {
+    cy.visit('/billingentities/be-2345/members');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
 });
@@ -81,10 +96,10 @@ describe('Test billing entity details', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
   });
 
   it('request failed', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
       statusCode: 403,
     });
@@ -93,7 +108,6 @@ describe('Test billing entity details', () => {
   });
 
   it('list details', () => {
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
       body: billingEntityNxt,
     });

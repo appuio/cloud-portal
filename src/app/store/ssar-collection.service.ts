@@ -18,9 +18,15 @@ export class SelfSubjectAccessReviewCollectionService extends KubernetesCollecti
     super(selfSubjectAccessReviewEntityKey, elementsFactory);
   }
 
-  public isAllowed(group: string, resource: string, verb: string, namespace?: string): Observable<boolean> {
+  public isAllowed(
+    group: string,
+    resource: string,
+    verb: string,
+    namespace?: string,
+    name?: string
+  ): Observable<boolean> {
     return this.getBySelfSubjectAccessReviewLazy(
-      newSelfSubjectAccessReview(verb, resource, group, namespace ?? '')
+      newSelfSubjectAccessReview(verb, resource, group, namespace ?? '', name)
     ).pipe(map((ssar) => ssar.status?.allowed ?? false));
   }
 

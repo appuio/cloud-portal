@@ -4,6 +4,7 @@ import { BillingEntityComponent } from './billing-entity.component';
 import { BillingentityViewComponent } from './billingentity-view/billingentity-view.component';
 import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { BillingEntityPermissions } from '../types/billing-entity';
+import { BillingentityMembersComponent } from './billingentity-members/billingentity-members.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,14 @@ const routes: Routes = [
   {
     path: ':name',
     component: BillingentityViewComponent,
+    canActivate: [KubernetesPermissionGuard],
+    data: {
+      requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],
+    },
+  },
+  {
+    path: ':name/members',
+    component: BillingentityMembersComponent,
     canActivate: [KubernetesPermissionGuard],
     data: {
       requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],

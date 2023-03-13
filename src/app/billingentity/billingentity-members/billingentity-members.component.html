@@ -54,7 +54,7 @@
               <div class="field col-11 md:col-1">
                 <button
                   (click)="removeFormControl(i)"
-                  *ngIf="!last && payload.canEdit; else noButton"
+                  *ngIf="!last; else noButton"
                   class="p-button"
                   i18n-title
                   pButton
@@ -67,11 +67,11 @@
                 </button>
               </div>
               <ng-template #noButton>
-                <div *ngIf="payload.canEdit" class="ml-3 w-3rem"></div>
+                <div class="ml-3 w-3rem"></div>
               </ng-template>
             </div>
 
-            <div *ngIf="payload.canEdit">
+            <div>
               <div *ngIf="isRemovingOwnUser" class="grid mb-2 mt-2">
                 <p-message
                   i18n-text

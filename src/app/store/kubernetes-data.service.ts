@@ -32,9 +32,15 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
     return this.executeCollection('GET', url, p);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   upsert(entity: T): Observable<T> {
-    throw new Error('not implemented in Kubernetes');
+    if (entity.metadata.creationTimestamp) {
+      return this.execute(
+        'PUT',
+        this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'UPDATE'),
+        entity
+      );
+    }
+    return this.add(entity);
   }
 
   add(entity: T): Observable<T> {

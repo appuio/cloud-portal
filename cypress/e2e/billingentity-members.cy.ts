@@ -4,9 +4,9 @@ import { ClusterRoleBinding, ClusterRoleBindingPermissions } from '../../src/app
 import { billingEntityNxt } from '../fixtures/billingentities';
 import { createClusterRoleBinding } from '../fixtures/clusterrole-binding';
 import { createClusterRole } from '../fixtures/clusterrole';
-import { ClusterRole, ClusterRolePermissions } from '../../src/app/types/clusterRole';
+import { ClusterRolePermissions } from '../../src/app/types/clusterRole';
 
-describe('billing entity edit members with existing admin roles', () => {
+describe('billing entity edit members with existing roles', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -26,7 +26,10 @@ describe('billing entity edit members with existing admin roles', () => {
       { verb: 'update', ...ClusterRoleBindingPermissions, name: 'billingentities-be-2345-admin' }
     );
     cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles/billingentities-be-2345-admin', {
-      body: createClusterRole('be-2345'),
+      body: createClusterRole('be-2345', true),
+    });
+    cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles/billingentities-be-2345-viewer', {
+      body: createClusterRole('be-2345', false),
     });
   });
 
@@ -38,28 +41,36 @@ describe('billing entity edit members with existing admin roles', () => {
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig'] }),
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig'], exists: true }),
       }
     );
     cy.intercept(
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'] }),
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'], exists: true }),
       }
     );
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-viewer',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     ).as('updateViewer');
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-admin',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     ).as('updateAdmin');
 
@@ -94,28 +105,36 @@ describe('billing entity edit members with existing admin roles', () => {
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-viewer',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
     cy.intercept(
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-admin',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig'] }),
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig'], exists: true }),
       }
     ).as('updateViewer');
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'] }),
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'], exists: true }),
       }
     ).as('updateAdmin');
 
@@ -149,14 +168,22 @@ describe('billing entity edit members with existing admin roles', () => {
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-viewer',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
     cy.intercept(
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-admin',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
 
@@ -174,28 +201,40 @@ describe('billing entity edit members with existing admin roles', () => {
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-viewer',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
     cy.intercept(
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-admin',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     );
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig', 'appuio#crc'] }),
+        body: createClusterRoleBinding({
+          name: 'billingentities-be-2345-viewer',
+          users: ['appuio#mig', 'appuio#crc'],
+          exists: true,
+        }),
       }
     ).as('updateViewer');
     cy.intercept(
       'PUT',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'] }),
+        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'], exists: true }),
       }
     ).as('updateAdmin');
 
@@ -252,7 +291,7 @@ describe('billing entity edit members with existing admin roles', () => {
   });
 });
 
-describe('billing entity edit members without admin roles', () => {
+describe('billing entity edit members without initial roles', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -274,17 +313,14 @@ describe('billing entity edit members without admin roles', () => {
     cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles/billingentities-be-2345-admin', {
       statusCode: 404,
     });
-  });
-
-  it('add member', () => {
-    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
-      body: billingEntityNxt,
+    cy.intercept('GET', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles/billingentities-be-2345-viewer', {
+      statusCode: 404,
     });
     cy.intercept(
       'GET',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: [] }),
+        statusCode: 404,
       }
     );
     cy.intercept(
@@ -294,52 +330,50 @@ describe('billing entity edit members without admin roles', () => {
         statusCode: 404,
       }
     );
-    cy.intercept('POST', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles', {
-      body: createClusterRole('be-2345'),
-    }).as('createAdminRole');
+  });
 
-    cy.intercept(
-      'PUT',
-      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
-      {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#crc'] }),
+  it('add member', () => {
+    cy.intercept('GET', 'appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+    cy.intercept('POST', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterroles', (req) => {
+      if (req.body.metadata.name.includes('admin')) {
+        expect(req.body.rules).to.have.length(2);
+        const rule = req.body.rules && req.body.rules[0];
+        expect(rule && rule.resourceNames).to.include('billingentities-be-2345-admin');
+        expect(rule && rule.verbs).to.eql(['*']);
+
+        req.reply(createClusterRole('be-2345', true));
+        return;
       }
-    ).as('updateViewer');
-    cy.intercept(
-      'PUT',
-      'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
-      {
-        body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#crc'] }),
+      if (req.body.metadata.name.includes('viewer')) {
+        const rule = req.body.rules && req.body.rules[0];
+        expect(rule && rule.resourceNames).to.include('billingentities-be-2345-viewer');
+        expect(rule && rule.verbs).to.eql(['get', 'watch']);
+
+        req.reply(createClusterRole('be-2345', false));
+        return;
       }
-    ).as('createAdminBinding');
+    }).as('createRole');
+
+    cy.intercept('POST', 'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings', (req) => {
+      expect(req.body.subjects).to.have.length(1);
+      const subject = req.body.subjects && req.body.subjects[0];
+      expect(subject && subject.name).to.eq('appuio#crc');
+
+      if (req.body.metadata.name.includes('admin')) {
+        req.reply(createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#crc'] }));
+      }
+      if (req.body.metadata.name.includes('viewer')) {
+        req.reply(createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#crc'] }));
+      }
+    }).as('createRoleBinding');
+
     cy.visit('/billingentities/be-2345/members');
     cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
     cy.get('[data-cy="name-input-0"]').type('crc');
     cy.get('p-multiselect').eq(0).click().contains('billingentities-be-2345-admin').click();
     cy.get('button[type=submit]').click();
-    cy.wait('@updateViewer');
-    cy.wait('@createAdminBinding');
-    cy.wait('@createAdminRole');
-    cy.get('@updateViewer')
-      .its('request.body')
-      .then((body: ClusterRoleBinding) => {
-        expect(body.subjects).to.have.length(1);
-        const subject = body.subjects && body.subjects[0];
-        expect(subject && subject.name).to.eq('appuio#crc');
-      });
-    cy.get('@createAdminBinding')
-      .its('request.body')
-      .then((body: ClusterRoleBinding) => {
-        expect(body.subjects).to.have.length(1);
-        const subject = body.subjects && body.subjects[0];
-        expect(subject && subject.name).to.eq('appuio#crc');
-      });
-    cy.get('@createAdminRole')
-      .its('request.body')
-      .then((body: ClusterRole) => {
-        expect(body.rules).to.have.length(2);
-        const rule = body.rules && body.rules[0];
-        expect(rule && rule.resourceNames).to.include('billingentities-be-2345-admin');
-      });
+    cy.wait(['@createRole', '@createRoleBinding']);
   });
 });

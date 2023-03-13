@@ -3,6 +3,7 @@ import { ClusterRoleBinding } from '../../src/app/types/clusterrole-binding';
 export interface ClusterRoleBindingConfig {
   name: string;
   users: string[];
+  exists?: boolean;
 }
 
 export function createClusterRoleBinding(config: ClusterRoleBindingConfig): ClusterRoleBinding {
@@ -11,6 +12,7 @@ export function createClusterRoleBinding(config: ClusterRoleBindingConfig): Clus
     kind: 'ClusterRoleBinding',
     metadata: {
       name: config.name,
+      creationTimestamp: config.exists ? 'timestamp-irrelevant' : undefined,
     },
     roleRef: {
       name: config.name,

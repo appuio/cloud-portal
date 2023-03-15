@@ -21,7 +21,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BackLinkDirective } from './back-link.directive';
-import { ChipModule } from 'primeng/chip';
 import { TableModule } from 'primeng/table';
 
 @NgModule({
@@ -51,7 +50,6 @@ import { TableModule } from 'primeng/table';
     MultiSelectModule,
     ProgressSpinnerModule,
     BackLinkDirective,
-    ChipModule,
     TableModule,
   ],
 })

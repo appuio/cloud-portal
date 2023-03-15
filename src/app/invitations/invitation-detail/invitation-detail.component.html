@@ -35,7 +35,7 @@
               <p-tag *ngFor="let condition of vm.model.status?.conditions"
                      [rounded]="true"
                      [severity]="severityOfCondition(condition)"
-                     [value]="condition.message ?? condition.type"
+                     [value]="condition.message && condition.message !== '' ? condition.message : condition.type"
                      styleClass="mr-2"/>
               <p-tag *ngIf="vm.hasExpired"
                      [rounded]="true"

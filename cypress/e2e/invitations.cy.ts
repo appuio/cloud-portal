@@ -111,7 +111,7 @@ describe('invitation details', () => {
   it('displays single properties', () => {
     cy.intercept('GET', 'appuio-api/apis/user.appuio.io/v1/invitations', {
       body: {
-        items: [createInvitation({})],
+        items: [createInvitation({ email: 'sent' })],
       },
     });
     cy.visit('/invitations');
@@ -121,14 +121,20 @@ describe('invitation details', () => {
     cy.get('li div.text-900').eq(0).should('contain.text', 'e303b166-5d66-4151-8f5f-b84ba84a7559');
     cy.get('li div.text-900').eq(1).should('contain.text', 'New Employee working for ');
     cy.get('li div.text-900').eq(2).should('contain.text', '(in 3 months)');
-    cy.get('li div.text-900').eq(3).should('contain.text', 'Pending').find('span').should('have.class', 'p-tag-info');
+    cy.get('li div.text-900')
+      .eq(3)
+      .should('contain.text', 'Pending')
+      .should('contain.text', 'EmailSent')
+      .find('span')
+      .should('have.class', 'p-tag-info')
+      .should('have.class', 'p-tag-success');
     cy.get('p-table').should('not.exist');
   });
 
   it('displays failed condition', () => {
     cy.intercept('GET', 'appuio-api/apis/user.appuio.io/v1/invitations', {
       body: {
-        items: [createInvitation({ failed: 'sendFailed' })],
+        items: [createInvitation({ email: 'sendFailed' })],
       },
     });
     cy.visit('/invitations');

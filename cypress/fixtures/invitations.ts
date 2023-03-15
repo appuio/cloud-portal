@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 
 export interface InvitationConfig {
   redeemed?: 'redeemed' | 'pending';
-  failed?: 'sendFailed';
+  email?: 'sendFailed' | 'sent';
   organizations?: { name: string; role?: 'admin' | 'viewer' | 'both'; teams?: string[] }[];
   billingEntities?: { name: string; role: 'admin' | 'viewer' | 'both' }[];
 }
@@ -29,8 +29,17 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   if (cfg.redeemed === 'redeemed' && inv.status && inv.status.conditions) {
     inv.status.conditions.push({ status: 'True', message: 'Redeemed by "appuio#dev"', type: 'Redeemed' });
   }
-  if (cfg.failed === 'sendFailed' && inv.status && inv.status.conditions) {
-    inv.status.conditions.push({ status: 'False', message: 'The email could not be sent', type: 'EmailSent' });
+  if (inv.status && inv.status.conditions) {
+    switch (cfg.email) {
+      case 'sendFailed': {
+        inv.status.conditions.push({ status: 'False', message: 'The email could not be sent', type: 'EmailSent' });
+        break;
+      }
+      case 'sent': {
+        inv.status.conditions.push({ status: 'True', message: '', type: 'EmailSent' });
+        break;
+      }
+    }
   }
   const refs: TargetRef[] = [];
   // cypress can't handle the `?.forEach()` notation here for some obscure reason...

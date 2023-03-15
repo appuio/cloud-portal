@@ -53,10 +53,14 @@ export class InvitationDetailComponent implements OnInit {
           hasExpired: hasExpired,
           model: this.invitation,
           permissionTable: [...orgPermissions, ...bePermissions],
-          isPending: this.invitation.status?.conditions?.length ? this.invitation.status.conditions.length === 0 : true,
+          isPending: this.isPending(),
         } satisfies Payload;
       })
     );
+  }
+
+  private isPending(): boolean {
+    return !this.invitation.status?.conditions?.some((cond) => cond.type === 'Redeemed') ?? true;
   }
 
   private fetchOrganizations$(invitation: Invitation): Observable<Organization[]> {

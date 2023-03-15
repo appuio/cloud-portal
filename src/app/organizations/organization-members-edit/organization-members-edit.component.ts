@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -46,6 +46,7 @@ export class OrganizationMembersEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
+    private router: Router,
     private membersService: OrganizationMembersCollectionService,
     private rolebindingService: RolebindingCollectionService,
     private navigationService: NavigationService
@@ -166,7 +167,7 @@ export class OrganizationMembersEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        this.navigationService.back();
+        void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
         this.messageService.add({

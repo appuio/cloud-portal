@@ -116,7 +116,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    this.navigationService.back();
+    void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
   }
 
   private saveOrUpdateFailure(err: Error): void {

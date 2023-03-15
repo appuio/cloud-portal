@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Observable, of, take, tap } from 'rxjs';
@@ -24,6 +24,7 @@ export class TeamEditComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
     public teamService: TeamCollectionService,
@@ -72,7 +73,7 @@ export class TeamEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        this.navigationService.back();
+        void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
         let detail = '';

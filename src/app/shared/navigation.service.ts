@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Location } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 
 /**
- * See https://nils-mehlhorn.de/posts/angular-navigate-back-previous-page/
+ * Inspired by https://nils-mehlhorn.de/posts/angular-navigate-back-previous-page/
+ * Modified to be used with a Router working with default and relative paths in case the history is empty.
  */
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
   private history: string[] = [];
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.history.push(event.urlAfterRedirects);
@@ -18,14 +18,18 @@ export class NavigationService {
     });
   }
 
-  back(): void {
-    const record = this.history.pop();
+  /**
+   * Gets the previous URI location in the history.
+   * @param defaultPath if the history is empty, return this path as fallback value
+   * @returns the URI, or '/' if no default was given.
+   */
+  previousLocation(defaultPath?: string): string {
+    void this.history.pop(); // remove "current" location
     if (this.history.length > 0) {
-      this.location.back();
+      const previousLocation = this.history.pop();
+      return previousLocation ?? defaultPath ?? '/';
     } else {
-      window.history.replaceState(null, '', '/');
-      window.history.pushState(null, '', record ?? this.router.url);
-      this.location.back();
+      return defaultPath ?? '/';
     }
   }
 }

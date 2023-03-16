@@ -20,9 +20,10 @@ import { MessageModule } from 'primeng/message';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { BackLinkDirective } from './back-link.directive';
 
 @NgModule({
-  declarations: [],
+  declarations: [BackLinkDirective],
   imports: [],
   exports: [
     CommonModule,
@@ -47,6 +48,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ConfirmDialogModule,
     MultiSelectModule,
     ProgressSpinnerModule,
+    BackLinkDirective,
   ],
 })
 export class SharedModule {}

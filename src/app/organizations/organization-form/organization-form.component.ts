@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
+import { NavigationService } from '../../shared/navigation.service';
 
 @Component({
   selector: 'app-organization-form',
@@ -40,7 +41,8 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
     private organizationNameService: OrganizationNameService,
-    public organizationCollectionService: OrganizationCollectionService
+    public organizationCollectionService: OrganizationCollectionService,
+    private navigationService: NavigationService
   ) {}
 
   ngOnInit(): void {
@@ -114,12 +116,11 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    void this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+    void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
   }
 
   private saveOrUpdateFailure(err: Error): void {
     let detail = '';
-    console.debug('error!', err);
     if ('message' in err) {
       detail = err.message;
     }
@@ -132,6 +133,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     this.messageService.add({
       severity: 'error',
       summary: $localize`Error`,
+      sticky: true,
       detail,
     });
   }

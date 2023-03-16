@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
+import { NavigationService } from '../../shared/navigation.service';
 
 interface Payload {
   members: OrganizationMembers;
@@ -47,7 +48,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     private membersService: OrganizationMembersCollectionService,
-    private rolebindingService: RolebindingCollectionService
+    private rolebindingService: RolebindingCollectionService,
+    private navigationService: NavigationService
   ) {}
 
   get userRefs(): FormArray | undefined {
@@ -165,7 +167,7 @@ export class OrganizationMembersEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate(['../..'], { relativeTo: this.activatedRoute });
+        void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
         this.messageService.add({

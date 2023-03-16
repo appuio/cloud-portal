@@ -6,6 +6,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MessageService } from 'primeng/api';
 import { Observable, of, take, tap } from 'rxjs';
 import { TeamCollectionService } from '../../store/team-collection.service';
+import { NavigationService } from '../../shared/navigation.service';
 
 @Component({
   selector: 'app-team-edit',
@@ -26,7 +27,8 @@ export class TeamEditComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
-    public teamService: TeamCollectionService
+    public teamService: TeamCollectionService,
+    private navigationService: NavigationService
   ) {}
 
   get userRefs(): FormArray {
@@ -71,7 +73,7 @@ export class TeamEditComponent implements OnInit {
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate(['../..'], { relativeTo: this.activatedRoute });
+        void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
         let detail = '';

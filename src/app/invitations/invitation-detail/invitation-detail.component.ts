@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { faCheck, faDollarSign, faInfo, faSitemap, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faClose,
+  faDollarSign,
+  faInfo,
+  faSitemap,
+  faUserGroup,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
 import { Condition } from '../../types/status';
 import { Organization } from '../../types/organization';
 import { BillingEntity } from '../../types/billing-entity';
@@ -21,6 +29,8 @@ import { TeamCollectionService } from '../../store/team-collection.service';
 export class InvitationDetailComponent implements OnInit {
   @Input()
   invitation!: Invitation;
+  @Input()
+  showCloseButton = true;
 
   faWarning = faWarning;
   faInfo = faInfo;
@@ -28,6 +38,7 @@ export class InvitationDetailComponent implements OnInit {
   faSitemap = faSitemap;
   faDollarSign = faDollarSign;
   faUserGroup = faUserGroup;
+  faClose = faClose;
 
   payload$?: Observable<Payload>;
 

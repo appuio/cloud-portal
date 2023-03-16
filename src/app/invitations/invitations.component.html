@@ -4,7 +4,7 @@
 
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
   <ng-container *ngIf="payload">
-      <app-invitation-detail *ngFor="let invitation of payload.invitations" [invitation]="invitation" />
+      <app-invitation-detail *ngFor="let invitation of payload.invitations" [invitation]="invitation" [showCloseButton]="false" />
   </ng-container>
 
   <ng-container *ngIf="payload?.invitations?.length === 0 && !err">

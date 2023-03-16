@@ -5,6 +5,9 @@
         <div class="text-3xl font-medium text-900 mb-3">
           {{ vm.model.spec.email }}
         </div>
+        <a *ngIf="showCloseButton" appBackLink=".." class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+          <fa-icon [icon]="faClose"></fa-icon>
+        </a>
       </div>
       <div class="flex flex-wrap border-top-1 surface-border">
         <ul class="w-full list-none p-0 m-0 surface-border">

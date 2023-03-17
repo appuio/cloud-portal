@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { InvitationCollectionService } from '../store/invitation-collection.service';
 import { Invitation } from '../types/invitation';
-import { map, Observable } from 'rxjs';
+import { combineLatestWith, map, Observable } from 'rxjs';
 import { faGift, faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -21,9 +21,11 @@ export class InvitationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.payload$ = this.invitationService.getAllMemoized().pipe(
-      map((invitations) => {
+      combineLatestWith(this.invitationService.canInviteUsers$),
+      map(([invitations, canInvite]) => {
         return {
           invitations,
+          canInvite,
         } satisfies Payload;
       })
     );
@@ -32,4 +34,5 @@ export class InvitationsComponent implements OnInit {
 
 interface Payload {
   invitations: Invitation[];
+  canInvite: boolean;
 }

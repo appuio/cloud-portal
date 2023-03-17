@@ -49,7 +49,6 @@ describe('Test invitation list', () => {
       statusCode: 403,
     });
     cy.visit('/invitations');
-    cy.get('#title').should('contain.text', 'Invitations');
     cy.get('#failure-message').should('contain.text', 'Invitations could not be loaded.');
   });
 

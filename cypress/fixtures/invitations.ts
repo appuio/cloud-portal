@@ -5,6 +5,7 @@ export interface InvitationConfig {
   email?: 'sendFailed' | 'sent';
   organizations?: { name: string; role?: 'admin' | 'viewer' | 'both'; teams?: string[] }[];
   billingEntities?: { name: string; role: 'admin' | 'viewer' | 'both' }[];
+  hasStatus?: boolean;
 }
 
 export function createInvitation(cfg: InvitationConfig): Invitation {
@@ -20,12 +21,14 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
       note: 'New Employee working for 👁️',
       targetRefs: [],
     },
-    status: {
+  };
+  if (cfg.hasStatus) {
+    inv.status = {
       validUntil: new Date(now.setMonth(now.getMonth() + 3)).toISOString(),
       token: 'supersecret',
       conditions: [],
-    },
-  };
+    };
+  }
   if (cfg.redeemed === 'redeemed' && inv.status && inv.status.conditions) {
     inv.status.conditions.push({ status: 'True', message: 'Redeemed by "appuio#dev"', type: 'Redeemed' });
   }
@@ -45,25 +48,28 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   // cypress can't handle the `?.forEach()` notation here for some obscure reason...
   if (cfg.organizations) {
     cfg.organizations.forEach((org) => {
-      refs.push(
-        {
-          name: org.name,
-          kind: 'Organization',
-          apiGroup: 'irrelevant',
-        },
-        {
-          name: 'members',
-          namespace: org.name,
-          kind: 'OrganizationMembers',
-          apiGroup: 'irrelevant',
-        }
-      );
+      refs.push({
+        name: 'members',
+        namespace: org.name,
+        kind: 'OrganizationMembers',
+        apiGroup: 'appuio.io',
+      });
+      if (org.teams) {
+        org.teams.forEach((team) => {
+          refs.push({
+            name: team,
+            namespace: org.name,
+            kind: 'Team',
+            apiGroup: 'appuio.io',
+          });
+        });
+      }
       if (org.role === 'admin' || org.role === 'both') {
         refs.push({
           name: 'control-api:organization-admin',
           namespace: org.name,
           kind: 'RoleBinding',
-          apiGroup: 'irrelevant',
+          apiGroup: 'rbac.authorization.k8s.io',
         });
       }
       if (org.role === 'viewer' || org.role === 'both') {
@@ -71,17 +77,7 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
           name: 'control-api:organization-viewer',
           namespace: org.name,
           kind: 'RoleBinding',
-          apiGroup: 'irrelevant',
-        });
-      }
-      if (org.teams) {
-        org.teams.forEach((team) => {
-          refs.push({
-            name: team,
-            namespace: org.name,
-            kind: 'Team',
-            apiGroup: 'irrelevant',
-          });
+          apiGroup: 'rbac.authorization.k8s.io',
         });
       }
     });
@@ -91,16 +87,16 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
     cfg.billingEntities.forEach((be) => {
       if (be.role === 'admin' || be.role === 'both') {
         refs.push({
-          name: `${be.name}-admin`,
+          name: `billingentities-${be.name}-admin`,
           kind: 'ClusterRoleBinding',
-          apiGroup: 'irrelevant',
+          apiGroup: 'rbac.authorization.k8s.io',
         });
       }
       if (be.role === 'viewer' || be.role === 'both') {
         refs.push({
-          name: `${be.name}-viewer`,
+          name: `billingentities-${be.name}-viewer`,
           kind: 'ClusterRoleBinding',
-          apiGroup: 'irrelevant',
+          apiGroup: 'rbac.authorization.k8s.io',
         });
       }
     });

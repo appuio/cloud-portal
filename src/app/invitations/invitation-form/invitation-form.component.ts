@@ -21,6 +21,7 @@ import { RoleBindingPermissions } from '../../types/role-binding';
 import { ClusterRoleBindingPermissions } from '../../types/clusterrole-binding';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationService } from '../../shared/navigation.service';
+import { KubeObject } from '../../types/entity';
 
 @Component({
   selector: 'app-invitation-form',
@@ -61,17 +62,13 @@ export class InvitationFormComponent implements OnInit {
     this.organizationOptions = this.organizations.map((organization) => {
       return {
         organization,
-        displayName: organization.spec.displayName
-          ? `${organization.spec.displayName} (${organization.metadata.name})`
-          : organization.metadata.name,
+        displayName: this.getDisplayName(organization, organization.spec.displayName),
       } satisfies OrganizationOption;
     });
     this.billingOptions = this.billingEntities.map((billingEntity) => {
       return {
         billingEntity,
-        displayName: billingEntity.spec.name
-          ? `${billingEntity.spec.name} (${billingEntity.metadata.name})`
-          : billingEntity.metadata.name,
+        displayName: this.getDisplayName(billingEntity, billingEntity.spec.name),
       } satisfies BillingOption;
     });
     this.form = this.formBuilder.nonNullable.group({
@@ -113,11 +110,11 @@ export class InvitationFormComponent implements OnInit {
         namespace: org.metadata.name,
         apiGroup: 'appuio.io',
       });
-      orgTarget.value.teams?.forEach((team) => {
+      orgTarget.value.teams?.forEach((teamOption) => {
         targetRefs.push({
-          name: team.metadata.name,
-          namespace: team.metadata.namespace,
-          kind: team.kind,
+          name: teamOption.team.metadata.name,
+          namespace: teamOption.team.metadata.namespace,
+          kind: teamOption.team.kind,
           apiGroup: 'appuio.io',
         });
       });
@@ -187,8 +184,8 @@ export class InvitationFormComponent implements OnInit {
       organization: new FormControl<OrganizationOption | undefined>(undefined, { nonNullable: true }),
       isAdmin: new FormControl<boolean>(false, { nonNullable: true }),
       isViewer: new FormControl<boolean>(false, { nonNullable: true }),
-      selectableTeams: new FormControl<Team[] | undefined>(undefined, { nonNullable: true }),
-      teams: new FormControl<Team[] | undefined>(undefined, { nonNullable: true }),
+      selectableTeams: new FormControl<TeamOption[] | undefined>(undefined, { nonNullable: true }),
+      teams: new FormControl<TeamOption[] | undefined>(undefined, { nonNullable: true }),
     });
 
     emptyFormControl.controls.organization.valueChanges.pipe(take(1)).subscribe(() => {
@@ -201,7 +198,14 @@ export class InvitationFormComponent implements OnInit {
       emptyFormControl.controls.teams.reset();
       if (org) {
         emptyFormControl.controls.selectableTeams.setValue(
-          this.teams.filter((team) => team.metadata.namespace === org?.organization.metadata.name)
+          this.teams
+            .filter((team) => team.metadata.namespace === org?.organization.metadata.name)
+            .map((team) => {
+              return {
+                team,
+                displayName: this.getDisplayName(team, team.spec.displayName),
+              };
+            })
         );
         emptyFormControl.controls.teams.enable();
         emptyFormControl.controls.isAdmin.enable();
@@ -245,6 +249,13 @@ export class InvitationFormComponent implements OnInit {
   removeBilling(index: number): void {
     this.form.controls.billingTargets.removeAt(index);
   }
+
+  getDisplayName(entity: KubeObject, displayName?: string): string {
+    if (displayName && displayName !== '') {
+      return `${displayName} (${entity.metadata.name})`;
+    }
+    return entity.metadata.name;
+  }
 }
 
 interface InvitationForm {
@@ -258,8 +269,8 @@ interface OrganizationTarget {
   organization: FormControl<OrganizationOption | undefined>;
   isViewer: FormControl<boolean>;
   isAdmin: FormControl<boolean>;
-  teams: FormControl<Team[] | undefined>;
-  selectableTeams: FormControl<Team[] | undefined>;
+  teams: FormControl<TeamOption[] | undefined>;
+  selectableTeams: FormControl<TeamOption[] | undefined>;
 }
 
 interface OrganizationOption {
@@ -269,6 +280,11 @@ interface OrganizationOption {
 
 interface BillingOption {
   billingEntity: BillingEntity;
+  displayName: string;
+}
+
+interface TeamOption {
+  team: Team;
   displayName: string;
 }
 

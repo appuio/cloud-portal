@@ -34,7 +34,7 @@ export class InvitationEditComponent implements OnInit {
     ]).pipe(
       switchMap(([canViewOrganizations, canViewBillingEntities]) => {
         const organizations$ = canViewOrganizations ? this.organizationService.getAllMemoized().pipe(take(1)) : of([]);
-        const billingEntities$ = canViewBillingEntities ? this.billingService.getAllMemoized().pipe(take(1)) : of([]);
+        const billingEntities$ = canViewBillingEntities ? this.fetchBilling$() : of([]);
         return forkJoin([of(canViewOrganizations), organizations$, of(canViewBillingEntities), billingEntities$]);
       }),
       switchMap(([canViewOrganizations, organizations, canViewBillingEntities, billingEntities]) => {
@@ -55,6 +55,13 @@ export class InvitationEditComponent implements OnInit {
           teams,
         } satisfies Payload;
       })
+    );
+  }
+
+  private fetchBilling$(): Observable<BillingEntity[]> {
+    return this.billingService.getAllMemoized().pipe(
+      take(1),
+      catchError(() => of([])) // swallows all kinds of errors.
     );
   }
 

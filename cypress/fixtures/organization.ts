@@ -10,17 +10,13 @@ export const organizationVshn = createOrganization({
   name: 'vshn',
   displayName: 'VSHN - the DevOps Company',
 });
+export const organizationNxt = createOrganization({
+  name: 'nxt',
+  displayName: 'nxt Engineering GmbH',
+});
 
 export const organizationListNxtVshn = {
-  items: [
-    createOrganization({
-      name: 'nxt',
-      displayName: 'nxt Engineering GmbH',
-    }),
-    createOrganization({
-      name: 'vshn',
-    }),
-  ],
+  items: [organizationNxt, organizationVshn],
 };
 
 export const organizationListNxtVshnWithDisplayName = {

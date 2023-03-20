@@ -4,8 +4,8 @@ import { List } from '../../src/app/types/list';
 export interface TeamConfig {
   name: string;
   namespace: string;
-  displayName: string;
-  userRefs: UserRef[];
+  displayName?: string;
+  userRefs?: UserRef[];
 }
 
 export interface TeamListConfig {
@@ -55,8 +55,8 @@ export function createTeam(teamConfig: TeamConfig): Team {
       namespace: teamConfig.namespace,
     },
     spec: {
-      displayName: teamConfig.displayName,
-      userRefs: teamConfig.userRefs,
+      displayName: teamConfig.displayName ? teamConfig.displayName : '',
+      userRefs: teamConfig.userRefs ? teamConfig.userRefs : [],
     },
   };
 }
@@ -71,4 +71,10 @@ export function createTeamList(teamListConfig: TeamListConfig): List<Team> {
       selfLink: '',
     },
   };
+}
+
+export function setTeam(cy: Cypress.cy, namespace: string, ...teams: Team[]): void {
+  cy.intercept('GET', `appuio-api/apis/appuio.io/v1/namespaces/${namespace}/teams`, {
+    body: { items: [...teams] },
+  }).as(`teamList-${namespace}`);
 }

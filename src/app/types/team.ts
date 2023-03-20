@@ -11,7 +11,7 @@ export interface Team extends KubeObject {
     [key: string]: unknown;
   };
   spec: {
-    displayName: string;
+    displayName?: string;
     userRefs: UserRef[];
   };
 }

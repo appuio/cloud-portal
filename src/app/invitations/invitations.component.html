@@ -1,5 +1,15 @@
 <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
   <h1 class="pt-0 mt-0 mb-0" i18n id="title">Invitations</h1>
+
+  <div class="flex flex-wrap gap-2">
+    <div>
+      <a class="mr-2 w-full white-space-nowrap no-underline" id="createInvitationButton" [routerLink]="['create']" pButton pRipple>
+        <fa-icon [icon]="faGift" class="mr-2"></fa-icon>
+        <span i18n>Invite User</span>
+      </a>
+    </div>
+
+  </div>
 </div>
 
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">

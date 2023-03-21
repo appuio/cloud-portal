@@ -128,5 +128,4 @@ export const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + window.location.pathname,
   responseType: 'code',
   scope: 'openid profile email roles offline_access web-origins',
-  showDebugInformation: !environment.production,
 };

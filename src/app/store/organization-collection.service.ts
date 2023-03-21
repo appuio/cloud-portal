@@ -15,6 +15,7 @@ import { metadataNameFilter } from './entity-filter';
 export class OrganizationCollectionService extends KubernetesCollectionService<Organization> {
   isEmptyAndLoaded$: Observable<boolean>;
   canAddOrganizations$: Observable<boolean>;
+  canViewOrganizations$: Observable<boolean>;
   selectedOrganization$: Observable<Organization>;
 
   constructor(
@@ -33,6 +34,12 @@ export class OrganizationCollectionService extends KubernetesCollectionService<O
       permissionService.isAllowed(OrganizationPermissions.group, OrganizationPermissions.resource, Verb.Create),
       permissionService.isAllowed(BillingEntityPermissions.group, BillingEntityPermissions.resource, Verb.List),
     ]).pipe(map(([orgCreateAllowed, beListAllowed]) => orgCreateAllowed && beListAllowed));
+
+    this.canViewOrganizations$ = permissionService.isAllowed(
+      OrganizationPermissions.group,
+      OrganizationPermissions.resource,
+      Verb.List
+    );
 
     this.selectedOrganization$ = this.filteredEntities$.pipe(
       filter((org) => org.length > 0),

@@ -27,7 +27,7 @@ export class InvitationCollectionService extends KubernetesCollectionService<Inv
       )
       .pipe(
         tap(() => {
-          this.updateOneInCache(invitation);
+          this.upsertOneInCache(invitation);
         })
       );
   }

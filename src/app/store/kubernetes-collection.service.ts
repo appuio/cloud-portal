@@ -132,8 +132,26 @@ export class KubernetesCollectionServiceFactory<T extends KubeObject> {
  * @return function to be used in a `catchError` operator.
  */
 export function defaultIfNotFound<T>(def: T): (err: DataServiceError, caught: Observable<T>) => ObservableInput<T> {
+  return defaultIfStatusCode(def, [404]);
+}
+
+/**
+ * This is an error handler that returns a default value if the error contains one of the given HTTP status codes.
+ * Use it in a pipe like following:
+ *  `getByKey(<key>).pipe(catchError(defaultIfStatusCode(<default>, [401, 403])))`
+ * @param def the default value to return if the error's status code is included in `statusCodes`.
+ * @param statusCodes list of HTTP status codes which cause the handler to return the default value.
+ * @return function to be used in a `catchError` operator.
+ */
+export function defaultIfStatusCode<T>(
+  def: T,
+  statusCodes: number[]
+): (err: DataServiceError, caught: Observable<T>) => ObservableInput<T> {
+  if (statusCodes.length === 0) {
+    throw new Error('at least 1 status code is required');
+  }
   return (err: DataServiceError) => {
-    if (err.error instanceof HttpErrorResponse && err.error.status === 404) {
+    if (err.error instanceof HttpErrorResponse && statusCodes.includes(err.error.status)) {
       return of(def);
     }
     throw err;

@@ -6,7 +6,7 @@
     </div>
     <div class="field mb-4 col-12">
       <label for="note" i18n>Note</label>
-      <input formControlName="note" id="note" pInputText type="text"/>
+      <textarea pInputTextarea formControlName="note" id="note" [autoResize]="true" rows="3" cols="30"></textarea>
     </div>
 
     <div class="mb-4 col-12" *ngIf="canInviteOrganization" id="organizationFormGroup">

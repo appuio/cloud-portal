@@ -68,12 +68,10 @@ export class InvitationEditComponent implements OnInit {
   private fetchTeamsFromAllOrganizations(organizations: Organization[]): Observable<Team[]> {
     // we can't use `getAllMemoized`, since we don't have the permission to list all teams in all namespaces at once.
     // so we have to iterate over every organization we know, list them per namespace and collect/reduce them.
-    const allTeamsInAllNamespaces$: Observable<Team[]>[] = [];
-    organizations.forEach((org) => {
-      const teamsInNamespace = this.teamService
+    const allTeamsInAllNamespaces$: Observable<Team[]>[] = organizations.map((org) => {
+      return this.teamService
         .getAllInNamespaceMemoized(org.metadata.name)
         .pipe(take(1), catchError(defaultIfStatusCode<Team[]>([], [401, 403])));
-      allTeamsInAllNamespaces$.push(teamsInNamespace);
     });
     if (allTeamsInAllNamespaces$.length === 0) {
       return of([]);
@@ -81,14 +79,7 @@ export class InvitationEditComponent implements OnInit {
 
     return from(allTeamsInAllNamespaces$).pipe(
       combineLatestAll(),
-      switchMap((teamInAllNamespaces) =>
-        of(
-          teamInAllNamespaces.reduce((acc, curr) => {
-            acc.push(...curr);
-            return acc;
-          }, [])
-        )
-      )
+      map((teamInAllNamespaces) => teamInAllNamespaces.flat())
     );
   }
 }

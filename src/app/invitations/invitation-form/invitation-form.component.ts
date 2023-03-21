@@ -6,15 +6,7 @@ import { MessageService } from 'primeng/api';
 import { Invitation, TargetRef } from '../../types/invitation';
 import { v4 as uuidv4 } from 'uuid';
 import { faClose, faGift } from '@fortawesome/free-solid-svg-icons';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { take } from 'rxjs';
 import { Team } from '../../types/team';
 import { RoleBindingPermissions } from '../../types/role-binding';
@@ -22,6 +14,15 @@ import { ClusterRoleBindingPermissions } from '../../types/clusterrole-binding';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationService } from '../../shared/navigation.service';
 import { KubeObject } from '../../types/entity';
+import {
+  BillingOption,
+  BillingTarget,
+  InvitationForm,
+  OrganizationOption,
+  OrganizationTarget,
+  TeamOption,
+} from './invitation-form.types';
+import { atLeastOneChecked } from './invitation-form.util';
 
 @Component({
   selector: 'app-invitation-form',
@@ -256,59 +257,4 @@ export class InvitationFormComponent implements OnInit {
     }
     return entity.metadata.name;
   }
-}
-
-interface InvitationForm {
-  note: FormControl<string>;
-  email: FormControl<string>;
-  organizationTargets: FormArray<FormGroup<OrganizationTarget>>;
-  billingTargets: FormArray<FormGroup<BillingTarget>>;
-}
-
-interface OrganizationTarget {
-  organization: FormControl<OrganizationOption | undefined>;
-  isViewer: FormControl<boolean>;
-  isAdmin: FormControl<boolean>;
-  teams: FormControl<TeamOption[] | undefined>;
-  selectableTeams: FormControl<TeamOption[] | undefined>;
-}
-
-interface OrganizationOption {
-  organization: Organization;
-  displayName: string;
-}
-
-interface BillingOption {
-  billingEntity: BillingEntity;
-  displayName: string;
-}
-
-interface TeamOption {
-  team: Team;
-  displayName: string;
-}
-
-interface BillingTarget {
-  billing: FormControl<BillingOption | undefined>;
-  isViewer: FormControl<boolean>;
-  isAdmin: FormControl<boolean>;
-}
-
-function atLeastOneChecked<T extends AbstractControl<boolean, boolean>>(
-  other: FormControl<boolean>
-): (control: T) => ValidationErrors | null {
-  return (control): ValidationErrors | null => {
-    if (!control.value && !other.value) {
-      const err = {
-        atLeastOneRequired: 'at least one is required',
-      };
-      other.setErrors(err);
-      other.markAsDirty();
-      return err;
-    }
-    if (control.value) {
-      other.setErrors(null);
-    }
-    return null;
-  };
 }

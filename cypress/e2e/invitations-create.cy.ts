@@ -307,5 +307,6 @@ describe('degradation', () => {
     cy.visit('/invitations/create');
     cy.get('#organizationFormGroup').should('exist');
     cy.get('#billingFormGroup').should('not.exist');
+    cy.get('#warning-message').should('contain.text', 'Billing Entities could not be loaded at the moment.');
   });
 });

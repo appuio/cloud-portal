@@ -10,6 +10,9 @@
         </a>
       </div>
       <div class="border-top-1 surface-border">
+        <div *ngIf="payload.billingEntitiesFailed" id="warning-message" class="col-12 mb-2">
+          <p-message i18n-text severity="warn" text="Billing Entities could not be loaded at the moment. Try again or create a separate invite later."></p-message>
+        </div>
         <app-invitation-form
           [organizations]="payload.organizations"
           [canInviteOrganization]="payload.canViewOrganizations"

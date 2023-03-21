@@ -50,18 +50,19 @@ export class InvitationEditComponent implements OnInit {
         return {
           canViewOrganizations: canViewOrganizations && organizations.length > 0,
           organizations,
-          canViewBillingEntities: canViewBillingEntities && billingEntities.length > 0,
-          billingEntities,
+          canViewBillingEntities: canViewBillingEntities && billingEntities ? billingEntities.length > 0 : false,
+          billingEntities: billingEntities ?? [],
+          billingEntitiesFailed: billingEntities === undefined,
           teams,
         } satisfies Payload;
       })
     );
   }
 
-  private fetchBilling$(): Observable<BillingEntity[]> {
+  private fetchBilling$(): Observable<BillingEntity[] | undefined> {
     return this.billingService.getAllMemoized().pipe(
       take(1),
-      catchError(() => of([])) // swallows all kinds of errors.
+      catchError(() => of(undefined)) // swallows all kinds of errors.
     );
   }
 
@@ -89,5 +90,6 @@ interface Payload {
   organizations: Organization[];
   canViewBillingEntities: boolean;
   billingEntities: BillingEntity[];
+  billingEntitiesFailed: boolean;
   teams: Team[];
 }

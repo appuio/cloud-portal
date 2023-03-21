@@ -120,7 +120,6 @@ describe('invitation details', () => {
     cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
     cy.get('li div.text-900').eq(0).should('contain.text', 'e303b166-5d66-4151-8f5f-b84ba84a7559');
     cy.get('li div.text-900').eq(1).should('contain.text', 'New Employee working for ');
-    cy.get('li div.text-900').eq(2).should('contain.text', '(in 3 months)');
     cy.get('li div.text-900')
       .eq(3)
       .should('contain.text', 'Pending')

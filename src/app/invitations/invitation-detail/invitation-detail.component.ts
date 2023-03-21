@@ -14,7 +14,6 @@ import { BillingEntity } from '../../types/billing-entity';
 import { Team } from '../../types/team';
 import { Invitation } from '../../types/invitation';
 import { getBillingEntityFromClusterRoleName } from '../../store/entity-filter';
-import * as dayjs from 'dayjs';
 import { catchError, combineLatestAll, forkJoin, from, map, Observable, of, take } from 'rxjs';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
@@ -57,10 +56,10 @@ export class InvitationDetailComponent implements OnInit {
       map(([organizations, billingEntities, teams]) => {
         const orgPermissions = this.collectOrgPermissions(this.invitation, organizations, teams);
         const bePermissions = this.collectBillingPermissions(this.invitation, billingEntities);
-        const expires = dayjs(this.invitation.status?.validUntil);
-        const hasExpired = expires.isBefore(dayjs());
+        const expires = new Date(this.invitation.status?.validUntil ?? '');
+        const hasExpired = new Date().getTime() >= expires.getTime();
         return {
-          expires: `${expires.format('LLLL')} (${expires.fromNow()})`,
+          expires: expires,
           hasExpired: hasExpired,
           model: this.invitation,
           permissionTable: [...orgPermissions, ...bePermissions],
@@ -271,7 +270,7 @@ export class InvitationDetailComponent implements OnInit {
 
 interface Payload {
   model: Invitation;
-  expires: string;
+  expires: Date;
   hasExpired: boolean;
   isPending: boolean;
   permissionTable: PermissionRecord[];

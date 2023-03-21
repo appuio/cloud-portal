@@ -1,5 +1,4 @@
 import { Invitation, TargetRef } from '../../src/app/types/invitation';
-import * as dayjs from 'dayjs';
 
 export interface InvitationConfig {
   redeemed?: 'redeemed' | 'pending';
@@ -9,6 +8,7 @@ export interface InvitationConfig {
 }
 
 export function createInvitation(cfg: InvitationConfig): Invitation {
+  const now = new Date();
   const inv: Invitation = {
     apiVersion: 'user.appuio.io/v1',
     kind: 'Invitation',
@@ -21,7 +21,7 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
       targetRefs: [],
     },
     status: {
-      validUntil: dayjs().add(3, 'months').toISOString(),
+      validUntil: new Date(now.setMonth(now.getMonth() + 3)).toISOString(),
       token: 'supersecret',
       conditions: [],
     },

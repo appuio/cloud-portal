@@ -28,7 +28,7 @@
             <div *ngIf="vm.hasExpired" class="text-500 w-full md:w-3 font-medium" i18n>Expired</div>
             <div *ngIf="!vm.hasExpired" class="text-500 w-full md:w-3 font-medium" i18n>Expires</div>
             <div class="text-900 w-full md:w-9">
-              {{ vm.expires }}
+              {{ vm.expires | date:'medium' }}
             </div>
           </li>
 

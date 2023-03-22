@@ -123,6 +123,14 @@ describe('Test teams list', () => {
     });
     cy.get('#teams-failure-message').should('contain.text', 'Teams could not be loaded.');
   });
+
+  it('no organizations available', () => {
+    cy.setPermission({ verb: 'list', ...TeamPermissions });
+    setOrganization(cy);
+
+    cy.visit('/teams');
+    cy.get('#teams-failure-message').should('contain.text', 'Teams could not be loaded.');
+  });
 });
 
 describe('Test team edit', () => {

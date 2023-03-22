@@ -19,3 +19,14 @@ export function createOrganizationMembers(organizationMembersConfig: Organizatio
     },
   };
 }
+
+export function setOrganizationMembers(cy: Cypress.cy, namespace: string, ...members: string[]): void {
+  cy.intercept('GET', `appuio-api/apis/appuio.io/v1/namespaces/${namespace}/organizationmembers/members`, {
+    body: createOrganizationMembers({
+      namespace,
+      userRefs: members.map((member) => {
+        return { name: member };
+      }),
+    }),
+  }).as(`organizationMembersGet-${namespace}`);
+}

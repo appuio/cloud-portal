@@ -1,31 +1,31 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { combineLatestWith, forkJoin, map, Observable, Subscription } from 'rxjs';
+import { combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
 import { MessageService, SelectItem } from 'primeng/api';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
 import { User } from '../../types/user';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { UserCollectionService } from '../../store/user-collection.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-default-organization-form',
-  templateUrl: './default-organization-form.component.html',
-  styleUrls: ['./default-organization-form.component.scss'],
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
+export class UserEditComponent implements OnInit {
   faSave = faSave;
-  organizationSelectItems: SelectItem<string>[] = [];
-  defaultOrganizationRefControl = new FormControl<SelectItem<string> | null>(null);
+  faWarning = faWarning;
+
   form = new FormGroup({
-    defaultOrganizationRef: this.defaultOrganizationRefControl,
+    defaultOrganizationRef: new FormControl<SelectItem<string> | undefined>(undefined),
   });
 
-  private subscriptions: Subscription[] = [];
-  user$?: Observable<User>;
+  payload$?: Observable<Payload>;
 
   constructor(
     private identityService: IdentityService,
@@ -36,37 +36,45 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.user$ = this.userService.currentUser$.pipe(
+    const userName = this.identityService.getUsername();
+    this.payload$ = this.userService.getByKeyMemoized(userName).pipe(
       combineLatestWith(this.organizationService.getAllMemoized()),
-      map(([user, orgs]) => {
-        this.loadOrganizations(orgs, user);
-        return user;
+      switchMap(([user, orgs]) => {
+        return forkJoin([this.filterOrganizationsForMembership(orgs, userName), of(user)]);
+      }),
+      map(([selectItems, user]) => {
+        this.form.controls.defaultOrganizationRef.setValue(
+          selectItems.find((organization) => organization.value === user.spec.preferences?.defaultOrganizationRef)
+        );
+        return {
+          organizationSelectItems: selectItems,
+          user,
+        } satisfies Payload;
       })
     );
   }
 
-  private loadOrganizations(organizationList: Organization[], user: User): void {
+  private filterOrganizationsForMembership(
+    organizationList: Organization[],
+    userName: string
+  ): Observable<SelectItem[]> {
     const orgMembers$ = organizationList.map((organization) =>
       this.orgMembersService.getByKeyMemoized(`${organization.metadata.name}/members`)
     );
+    if (orgMembers$.length === 0) {
+      return of([]);
+    }
 
-    const p = forkJoin(orgMembers$).subscribe((members) => {
-      const username = this.identityService.getUsername();
-      this.organizationSelectItems = organizationList
-        .filter((o, index) => (members[index].spec.userRefs ?? []).map((userRef) => userRef.name).includes(username))
-        .map((o) => ({
-          value: o.metadata.name,
-          label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
-        }));
-
-      const organization = this.organizationSelectItems.find(
-        (organization) => organization.value === user.spec.preferences?.defaultOrganizationRef
-      );
-      if (organization) {
-        this.defaultOrganizationRefControl.setValue(organization);
-      }
-    });
-    this.subscriptions.push(p);
+    return forkJoin(orgMembers$).pipe(
+      map((members) =>
+        organizationList
+          .filter((o, index) => (members[index].spec.userRefs ?? []).map((userRef) => userRef.name).includes(userName))
+          .map((o) => ({
+            value: o.metadata.name,
+            label: o.spec.displayName ? `${o.spec.displayName} (${o.metadata.name})` : o.metadata.name,
+          }))
+      )
+    );
   }
 
   save(user: User): void {
@@ -95,8 +103,9 @@ export class DefaultOrganizationFormComponent implements OnInit, OnDestroy {
       },
     });
   }
+}
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
+interface Payload {
+  organizationSelectItems: SelectItem<string>[];
+  user: User;
 }

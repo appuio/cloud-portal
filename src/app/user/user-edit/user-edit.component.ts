@@ -12,12 +12,12 @@ import { UserCollectionService } from '../../store/user-collection.service';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-default-organization-form',
-  templateUrl: './default-organization-form.component.html',
-  styleUrls: ['./default-organization-form.component.scss'],
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultOrganizationFormComponent implements OnInit {
+export class UserEditComponent implements OnInit {
   faSave = faSave;
   faWarning = faWarning;
 

@@ -1,6 +1,6 @@
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
 import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
-import { createOrganizationMembers } from '../fixtures/organization-members';
+import { createOrganizationMembers, setOrganizationMembers } from '../fixtures/organization-members';
 import { teamListNxt, teamListVshn } from '../fixtures/team';
 import { TeamPermissions } from '../../src/app/types/team';
 
@@ -9,6 +9,7 @@ describe('Test user', () => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
     cy.disableCookieBanner();
+    cy.setPermission();
   });
 
   it('without preferences', () => {
@@ -19,6 +20,8 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
+    setOrganizationMembers(cy, 'nxt', 'mig');
+    setOrganizationMembers(cy, 'vshn', 'mig');
 
     cy.visit('/user');
     cy.get('.p-dropdown-label').should('contain.text', 'None');
@@ -167,5 +170,23 @@ describe('Test user', () => {
     cy.get('button[type=submit]').click();
     cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'None');
+  });
+});
+
+describe('Test failures', () => {
+  beforeEach(() => {
+    cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
+    cy.setPermission();
+  });
+
+  it('load user failed', () => {
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      statusCode: 403,
+    });
+    cy.visit('/user');
+
+    cy.get('#failure-message').should('contain.text', 'User settings could not be loaded.');
   });
 });

@@ -4,6 +4,7 @@ import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { InvitationsComponent } from './invitations.component';
 import { InvitationPermissions } from '../types/invitation';
 import { InvitationViewComponent } from './invitation-view/invitation-view.component';
+import { InvitationEditComponent } from './invitation-edit/invitation-edit.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,14 @@ const routes: Routes = [
     canActivate: [KubernetesPermissionGuard],
     data: {
       requiredKubernetesPermissions: [{ ...InvitationPermissions, verb: 'list' }],
+    },
+  },
+  {
+    path: 'create',
+    component: InvitationEditComponent,
+    canActivate: [KubernetesPermissionGuard],
+    data: {
+      requiredKubernetesPermissions: [{ ...InvitationPermissions, verb: 'create' }],
     },
   },
   {

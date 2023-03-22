@@ -49,7 +49,6 @@ describe('Test invitation list', () => {
       statusCode: 403,
     });
     cy.visit('/invitations');
-    cy.get('#title').should('contain.text', 'Invitations');
     cy.get('#failure-message').should('contain.text', 'Invitations could not be loaded.');
   });
 
@@ -111,7 +110,7 @@ describe('invitation details', () => {
   it('displays single properties', () => {
     cy.intercept('GET', 'appuio-api/apis/user.appuio.io/v1/invitations', {
       body: {
-        items: [createInvitation({ email: 'sent' })],
+        items: [createInvitation({ email: 'sent', hasStatus: true })],
       },
     });
     cy.visit('/invitations');
@@ -133,7 +132,7 @@ describe('invitation details', () => {
   it('displays failed condition', () => {
     cy.intercept('GET', 'appuio-api/apis/user.appuio.io/v1/invitations', {
       body: {
-        items: [createInvitation({ email: 'sendFailed' })],
+        items: [createInvitation({ email: 'sendFailed', hasStatus: true })],
       },
     });
     cy.visit('/invitations');
@@ -156,6 +155,7 @@ describe('invitation details', () => {
               { name: 'vshn', role: 'viewer', teams: ['dev-team', 'ops-team'] },
             ],
             billingEntities: [{ name: 'be-2345', role: 'both' }],
+            hasStatus: true,
           }),
         ],
       },

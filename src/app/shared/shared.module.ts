@@ -22,6 +22,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BackLinkDirective } from './back-link.directive';
 import { TableModule } from 'primeng/table';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [BackLinkDirective],
@@ -51,6 +52,7 @@ import { TableModule } from 'primeng/table';
     ProgressSpinnerModule,
     BackLinkDirective,
     TableModule,
+    InputTextareaModule,
   ],
 })
 export class SharedModule {}

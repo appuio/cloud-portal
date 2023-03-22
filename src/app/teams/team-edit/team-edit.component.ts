@@ -47,7 +47,7 @@ export class TeamEditComponent implements OnInit {
     ).pipe(
       tap((team) => {
         this.form = this.formBuilder.nonNullable.group({
-          displayName: [team.spec.displayName],
+          displayName: [team.spec.displayName ?? ''],
           name: [
             team.metadata.name,
             [

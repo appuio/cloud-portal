@@ -1,0 +1,123 @@
+<ng-container *ngrxLet="payload$ as vm; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="vm">
+    <div class="surface-card p-4 shadow-2 border-round mb-4">
+      <div class="flex flex-row justify-content-between">
+        <div class="text-3xl font-medium text-900 mb-3">
+          {{ vm.model.spec.email }}
+        </div>
+        <a *ngIf="showCloseButton" appBackLink=".." class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+          <fa-icon [icon]="faClose"></fa-icon>
+        </a>
+      </div>
+      <div class="flex flex-wrap border-top-1 surface-border">
+        <ul class="w-full list-none p-0 m-0 surface-border">
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>ID</div>
+            <div class="text-900 w-full md:w-9">
+              {{ vm.model.metadata.name }}
+            </div>
+          </li>
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Note</div>
+            <div class="text-900 w-full md:w-9">
+              {{ vm.model.spec.note }}
+            </div>
+          </li>
+
+          <li *ngIf="vm.model.status?.validUntil" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div *ngIf="vm.hasExpired" class="text-500 w-full md:w-3 font-medium" i18n>Expired</div>
+            <div *ngIf="!vm.hasExpired" class="text-500 w-full md:w-3 font-medium" i18n>Expires</div>
+            <div class="text-900 w-full md:w-9">
+              {{ vm.expires | date:'medium' }}
+            </div>
+          </li>
+
+          <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <div class="text-500 w-full md:w-3 font-medium" i18n>Status</div>
+            <div class="text-900 w-full md:w-9">
+              <p-tag *ngFor="let condition of vm.model.status?.conditions"
+                     [rounded]="true"
+                     [severity]="severityOfCondition(condition)"
+                     [value]="condition.message && condition.message !== '' ? condition.message : condition.type"
+                     styleClass="mr-2"/>
+              <p-tag *ngIf="vm.hasExpired"
+                     [rounded]="true"
+                     severity="danger"
+                     value="Expired"
+                     styleClass="mr-2"/>
+              <p-tag *ngIf="vm.isPending"
+                     [rounded]="true"
+                     severity="info"
+                     value="Pending"
+                     styleClass="mr-2"/>
+            </div>
+          </li>
+
+          <p-table *ngIf="vm.permissionTable.length > 0" [value]="vm.permissionTable" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="p-2" i18n>Name</th>
+                <th i18n>Viewer</th>
+                <th i18n>Admin</th>
+                <th i18n>Teams</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-record>
+              <tr>
+                <td>
+                  <a [routerLink]="['/', record.kind, record.slug]"
+                     class="text-blue-500 hover:text-primary cursor-pointer no-underline" [title]="record.slug">
+                <span class="pr-1 white-space-nowrap">
+                  <ng-container [ngSwitch]="record.kind">
+                    <fa-icon *ngSwitchCase="'organizations'" [icon]="faSitemap" [fixedWidth]="true"/>
+                    <fa-icon *ngSwitchCase="'billingentities'" [icon]="faDollarSign" [fixedWidth]="true"/>
+                  </ng-container>
+                  {{ record.displayName ? record.displayName : record.slug }}
+                </span>
+                  </a>
+                </td>
+                <td>
+                  <fa-icon *ngIf="record.viewer" [icon]="faCheck"/>
+                </td>
+                <td>
+                  <fa-icon *ngIf="record.admin" [icon]="faCheck"/>
+                </td>
+                <td>
+                  <ng-container *ngFor="let team of record.teams">
+                    <a [routerLink]="['/teams', record.slug, team.slug]"
+                       class="text-blue-500 hover:text-primary cursor-pointer no-underline m-2"
+                       title="{{ record.slug }}/{{ team.slug }}">
+                  <span class="pr-1 white-space-nowrap">
+                    <fa-icon [icon]="faUserGroup"/>
+                    {{ team.displayName ? team.displayName : team.slug }}
+                  </span>
+                    </a>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ul>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"/>
+        <div class="ml-2" i18n id="failure-message">Invitation could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

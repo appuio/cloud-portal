@@ -3,7 +3,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled } from './store/app.selectors';
 import { Verb } from './store/app.reducer';
-import { faComment, faDatabase, faDollarSign, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faDatabase, faDollarSign, faGift, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
@@ -16,6 +16,7 @@ import { OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
 import { UserCollectionService } from './store/user-collection.service';
 import { ZonePermissions } from './types/zone';
+import { InvitationPermissions } from './types/invitation';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,6 @@ export class AppComponent implements OnInit {
   username = '';
   avatarSrc = '';
   selectOrganizationSelectionEnabled$ = this.store.select(selectOrganizationSelectionEnabled);
-  faSitemap = faSitemap;
   faComment = faComment;
 
   constructor(
@@ -87,14 +87,19 @@ export class AppComponent implements OnInit {
       OrganizationPermissions.resource,
       Verb.List
     );
-    const canViewBillingEntities = this.permissionService.isAllowed(
+    const canViewBillingEntities$ = this.permissionService.isAllowed(
       BillingEntityPermissions.group,
       BillingEntityPermissions.resource,
       Verb.List
     );
+    const canViewInvitations$ = this.permissionService.isAllowed(
+      InvitationPermissions.group,
+      InvitationPermissions.resource,
+      Verb.List
+    );
 
-    forkJoin([canViewZones$, canViewOrganizations$, canViewBillingEntities]).subscribe(
-      ([canViewZones, canViewOrganizations, canViewBillingEntities]) => {
+    forkJoin([canViewZones$, canViewOrganizations$, canViewBillingEntities$, canViewInvitations$]).subscribe(
+      ([canViewZones, canViewOrganizations, canViewBillingEntities, canViewInvitations]) => {
         if (canViewZones) {
           this.menuItems.push({
             label: $localize`Zones`,
@@ -120,6 +125,13 @@ export class AppComponent implements OnInit {
             label: $localize`Billing`,
             icon: faDollarSign,
             routerLink: ['billingentities'],
+          });
+        }
+        if (canViewInvitations) {
+          this.menuItems.push({
+            label: $localize`Invitations`,
+            icon: faGift,
+            routerLink: ['invitations'],
           });
         }
       }

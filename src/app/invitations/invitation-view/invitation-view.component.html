@@ -1,0 +1,27 @@
+<div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
+  <h1 class="pt-0 mt-0 mb-0" i18n id="title">Invitation</h1>
+</div>
+
+<ng-container *ngrxLet="invitation$ as vm; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="vm">
+    <app-invitation-detail [invitation]="vm"/>
+  </ng-container>
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"/>
+        <div class="ml-2" i18n id="failure-message">Invitation could not be loaded.</div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

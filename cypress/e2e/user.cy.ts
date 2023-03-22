@@ -16,11 +16,11 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-
-    cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
+
+    cy.visit('/user');
     cy.get('.p-dropdown-label').should('contain.text', 'None');
   });
 
@@ -154,16 +154,16 @@ describe('Test user', () => {
         userRefs: [{ name: 'mig' }],
       }),
     });
-
-    cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
+    cy.visit('/user');
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH (nxt)');
     cy.get('.p-dropdown-clear-icon').click();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
+
     cy.get('button[type=submit]').click();
     cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'None');

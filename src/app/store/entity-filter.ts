@@ -6,12 +6,6 @@ export function metadataNameFilter(metadataName: string): (entities: KubeObject[
   };
 }
 
-export function noFilter<T>(): (entities: T[]) => T[] {
-  return function (entities) {
-    return entities;
-  };
-}
-
 export function firstInList<T>(): (entity: T[]) => T[] {
   return function (entities) {
     if (entities.length === 0) {
@@ -19,4 +13,8 @@ export function firstInList<T>(): (entity: T[]) => T[] {
     }
     return [entities[0]];
   };
+}
+
+export function getBillingEntityFromClusterRoleName(clusterRoleName: string): string {
+  return clusterRoleName.replace('billingentities-', '').replace('-viewer', '').replace('-admin', '');
 }

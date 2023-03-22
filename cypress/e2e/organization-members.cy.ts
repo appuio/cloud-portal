@@ -221,10 +221,11 @@ describe('Test organization members', () => {
 
   it('no list permission', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions });
-    cy.visit('/organizations');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     }).as('list');
+    cy.visit('/organizations');
+
     cy.wait('@list');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('not.exist');

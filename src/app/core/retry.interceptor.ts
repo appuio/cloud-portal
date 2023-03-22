@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { delay, Observable, of, retry } from 'rxjs';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { mergeMap, Observable, of, retry, timer } from 'rxjs';
 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {
@@ -12,7 +12,18 @@ export class RetryInterceptor implements HttpInterceptor {
       return next.handle(request).pipe(
         retry({
           count: this.MAX_RETRIES,
-          delay: (error, retryCount) => of(error).pipe(delay(this.BASE_DELAY * (retryCount - 1))),
+          delay: (error) => {
+            return of(error).pipe(
+              mergeMap((err: HttpErrorResponse, retryCount) => {
+                const ignoreStatus = err.status >= 400 && err.status < 500;
+                if (retryCount >= this.MAX_RETRIES || ignoreStatus) {
+                  throw err;
+                }
+                const delayTime = this.BASE_DELAY * (retryCount + 1);
+                return timer(delayTime);
+              })
+            );
+          },
         })
       );
     }

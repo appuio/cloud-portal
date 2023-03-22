@@ -9,6 +9,7 @@ import { User } from '../types/user';
 import { Zone } from '../types/zone';
 import { ClusterRoleBinding } from '../types/clusterrole-binding';
 import { ClusterRole } from '../types/clusterRole';
+import { Invitation } from '../types/invitation';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
@@ -20,6 +21,7 @@ export const clusterrolebindingEntityKey = 'rbac.authorization.k8s.io/v1/cluster
 export const teamEntityKey = 'appuio.io/v1/teams';
 export const userEntityKey = 'appuio.io/v1/users';
 export const zoneEntityKey = 'appuio.io/v1/zones';
+export const invitationEntityKey = 'user.appuio.io/v1/invitations';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -85,6 +87,10 @@ export const entityMetadataMap: EntityMetadataMap = {
     selectId: (zone: Zone) => zone.metadata.name, // cluster-scoped
     sortComparer: (a: Zone, b: Zone) =>
       a.metadata.name.localeCompare(b.metadata.name, undefined, { sensitivity: 'base' }),
+  },
+  Invitation: {
+    entityName: invitationEntityKey,
+    selectId: (inv: Invitation) => inv.metadata.name, // cluster-scoped
   },
 };
 

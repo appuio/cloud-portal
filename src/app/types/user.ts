@@ -9,11 +9,6 @@ export interface UserSpec {
 export interface User extends KubeObject {
   kind: 'User';
   apiVersion: 'appuio.io/v1';
-  metadata: {
-    name: string;
-    resourceVersion: string;
-    [key: string]: unknown;
-  };
   spec: UserSpec;
   status?: {
     id: string;

@@ -2,6 +2,7 @@ import { KubeObject } from './entity';
 import { Condition } from './status';
 
 export const InvitationPermissions = { group: 'user.appuio.io', resource: 'invitations' };
+export const invitationTokenLocalStorageKey = 'invitationToken';
 
 export interface Invitation extends KubeObject {
   apiVersion: 'user.appuio.io/v1';
@@ -26,11 +27,17 @@ export interface InvitationStatus {
   token: string;
   validUntil: string;
   targetStatuses?: TargetStatus[];
-  RedeemedBy?: string;
+  redeemedBy?: string;
   conditions?: Condition[];
 }
 
 export interface TargetStatus {
   condition: Condition;
   targetRef: TargetRef;
+}
+
+export interface InvitationRedeemRequest extends KubeObject {
+  apiVersion: 'user.appuio.io/v1';
+  kind: 'InvitationRedeemRequest';
+  token: string;
 }

@@ -38,6 +38,7 @@ import { KubernetesDataServiceFactory } from './store/kubernetes-data.service';
 import { KubernetesCollectionServiceFactory } from './store/kubernetes-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { NavigationService } from './shared/navigation.service';
+import { invitationTokenLocalStorageKey } from './types/invitation';
 
 @NgModule({
   declarations: [
@@ -112,6 +113,11 @@ export function initializeAppFactory(
           clientId: appConfig.clientId,
         };
         oauthService.configure(authConfig);
+        const tokenInQuery = new URLSearchParams(window.location.search).get('token');
+        if (tokenInQuery) {
+          // store the token in local storage for later. Somehow oauth redirect with query params doesn't work.
+          window.localStorage.setItem(invitationTokenLocalStorageKey, tokenInQuery);
+        }
         return oauthService.loadDiscoveryDocumentAndLogin().then((loggedIn) => {
           if (!loggedIn) {
             return Promise.reject('Not logged in');

@@ -2,9 +2,20 @@
   <h1 class="pt-0 mt-0 mb-0" i18n id="title">Invitation</h1>
 </div>
 
-<ng-container *ngrxLet="invitation$ as vm; suspenseTpl: loading; error as err">
-  <ng-container *ngIf="vm">
-    <app-invitation-detail [invitation]="vm"/>
+<ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
+  <ng-container *ngIf="payload">
+    <app-invitation-detail *ngIf="payload.invitation" [invitation]="payload.invitation"/>
+    <p-messages *ngIf="payload.isRedeeming" severity="info">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faInfo"/>
+        <div class="ml-2" id="processing-message">
+          <p i18n>
+            Invitation is being processed in the background.
+            Once it's ready, we'll notify you. In the meantime, you can continue using the app.
+          </p>
+        </div>
+      </ng-template>
+    </p-messages>
   </ng-container>
 
   <ng-container *ngIf="err">

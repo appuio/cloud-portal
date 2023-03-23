@@ -1,3 +1,5 @@
+import { KubeObject } from './entity';
+
 export const OrganizationPermissions = { group: 'organization.appuio.io', resource: 'organizations' };
 
 export interface OrganizationSpec {
@@ -5,13 +7,9 @@ export interface OrganizationSpec {
   billingEntityRef?: string;
 }
 
-export interface Organization {
+export interface Organization extends KubeObject {
   kind: 'Organization';
   apiVersion: 'organization.appuio.io/v1';
-  metadata: {
-    name: string;
-    [key: string]: unknown;
-  };
   spec: OrganizationSpec;
   status?: OrganizationStatus;
 }

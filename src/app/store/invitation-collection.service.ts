@@ -3,9 +3,8 @@ import { KubernetesCollectionService } from './kubernetes-collection.service';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { invitationEntityKey } from './entity-metadata-map';
 import { Invitation, InvitationPermissions } from '../types/invitation';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiPrefix } from './kubernetes-url-generator.service';
 import { SelfSubjectAccessReviewCollectionService } from './ssar-collection.service';
 import { Verb } from './app.reducer';
 
@@ -26,22 +25,5 @@ export class InvitationCollectionService extends KubernetesCollectionService<Inv
       InvitationPermissions.resource,
       Verb.Create
     );
-  }
-
-  redeemInvitation(invitation: Invitation): Observable<Invitation> {
-    return this.http
-      .request<Invitation>(
-        'REDEEM', // yes, a special HTTP method, see https://kb.vshn.ch/appuio-cloud/references/architecture/control-api-invitation.html#_accepting_an_invitation
-        `${apiPrefix}/apis/${invitation.apiVersion}/invitations/${invitation.metadata.name}/${invitation.status?.token}`,
-        {
-          body: invitation,
-          responseType: 'json',
-        }
-      )
-      .pipe(
-        tap(() => {
-          this.upsertOneInCache(invitation);
-        })
-      );
   }
 }

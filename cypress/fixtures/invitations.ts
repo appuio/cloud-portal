@@ -1,4 +1,4 @@
-import { Invitation, TargetRef } from '../../src/app/types/invitation';
+import { Invitation, InvitationRedeemRequest, TargetRef } from '../../src/app/types/invitation';
 
 export interface InvitationConfig {
   redeemed?: 'redeemed' | 'pending';
@@ -31,6 +31,7 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   }
   if (cfg.redeemed === 'redeemed' && inv.status && inv.status.conditions) {
     inv.status.conditions.push({ status: 'True', message: 'Redeemed by "appuio#dev"', type: 'Redeemed' });
+    inv.status.redeemedBy = 'appuio#dev';
   }
   if (inv.status && inv.status.conditions) {
     switch (cfg.email) {
@@ -103,4 +104,14 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   }
   inv.spec.targetRefs = refs;
   return inv;
+}
+export function createInvitationRedeemRequest(name: string, token: string): InvitationRedeemRequest {
+  return {
+    kind: 'InvitationRedeemRequest',
+    apiVersion: 'user.appuio.io/v1',
+    token: token,
+    metadata: {
+      name: name,
+    },
+  };
 }

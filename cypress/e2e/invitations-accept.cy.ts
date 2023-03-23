@@ -81,6 +81,7 @@ describe('Test invitation accept', () => {
     cy.wait('@createInvitationRedeemRequest');
     cy.wait('@getInvitation');
     cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('.p-button-success').should('contain.text', 'Reload');
   });
 
   it('should display success message after polling', () => {

@@ -5,7 +5,7 @@
     style="width: 280px">
     <div class="flex flex-column h-full">
       <div class="flex align-items-center px-5 flex-shrink-0" style="height: 60px">
-        <img alt="APPUiO Cloud Logo" class="pt-3 h-full" src="assets/logo.svg" />
+        <img alt="APPUiO Cloud Logo" class="pt-3 h-full" src="assets/logo.svg"/>
       </div>
       <div class="overflow-y-auto mt-3">
         <ul class="list-none p-3 m-0">
@@ -67,5 +67,18 @@
 </div>
 
 <p-toast></p-toast>
+<p-toast key="reload">
+  <ng-template let-message pTemplate="message">
+    <span
+      [class]="'p-toast-message-icon pi' + (message.icon ? ' ' + message.icon : '')"
+      [ngClass]="'pi-check'"
+    ></span>
+    <div class="p-toast-message-text">
+      <div class="p-toast-summary">{{ message.summary }}</div>
+      <div class="p-toast-detail">{{ message.detail }}</div>
+      <button type="button" pButton (click)="reload()" class="p-button-success mt-2" i18n>Reload</button>
+    </div>
+  </ng-template>
+</p-toast>
 <app-first-time-login-dialog></app-first-time-login-dialog>
 <p-confirmDialog></p-confirmDialog>

@@ -88,16 +88,16 @@ export class InvitationViewComponent implements OnInit {
     this.messageService.add({
       severity: 'success',
       summary: 'Redeem successful',
-      detail: $localize`Invitation accepted. Please reload the page`,
-      closable: false,
+      detail: $localize`Invitation accepted.`,
       sticky: true,
+      key: 'reload',
     });
   }
 
   startPollingInvitation(invReq: InvitationRedeemRequest): void {
     this.http
       .get<Invitation>(this.urlGenerator.getEntity(invitationEntityKey, invReq.metadata.name, 'READ'))
-      .pipe(retry({ count: 3, delay: 1000 }))
+      .pipe(retry({ count: 30, delay: 2000 }))
       .subscribe({
         next: (inv) => {
           this.invitationService.addOneToCache(inv);

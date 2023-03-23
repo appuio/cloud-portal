@@ -142,6 +142,10 @@ export class AppComponent implements OnInit {
       }
     );
   }
+
+  reload(): void {
+    window.location.reload();
+  }
 }
 
 export interface NavMenuItem {

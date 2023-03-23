@@ -40,7 +40,7 @@ export const entityMetadataMap: EntityMetadataMap = {
     entityName: organizationMembersEntityKey,
     selectId: (members: OrganizationMembers) => `${members.metadata.namespace}/${members.metadata.name}`,
     sortComparer: (a: OrganizationMembers, b: OrganizationMembers) =>
-      a.metadata.namespace.localeCompare(b.metadata.namespace, undefined, { sensitivity: 'base' }),
+      (a.metadata.namespace ?? '').localeCompare(b.metadata.namespace ?? '', undefined, { sensitivity: 'base' }),
     filterFn: (entities: OrganizationMembers[], filterFn: (members: OrganizationMembers) => boolean) =>
       entities.filter((members) => filterFn(members)),
   },

@@ -1,6 +1,6 @@
 import { Team, TeamPermissions } from '../../src/app/types/team';
 import { createUser, userMigWithoutPreferences } from '../fixtures/user';
-import { createTeamList, team1, teamListNxt, teamListVshn } from '../fixtures/team';
+import { createTeamList, setTeam, team1, teamListNxt, teamListVshn } from '../fixtures/team';
 import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
 
 describe('Test teams list', () => {
@@ -75,18 +75,13 @@ describe('Test teams list', () => {
     cy.setPermission({ verb: 'list', ...TeamPermissions });
 
     setOrganization(cy, ...organizationListNxtVshn.items);
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/teams', {
-      body: teamListVshn,
-    });
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams', {
-      body: teamListNxt,
-    });
+    setTeam(cy, 'vshn', ...teamListVshn.items);
+    setTeam(cy, 'nxt', ...teamListNxt.items);
 
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
-    cy.get('app-organization-selection:visible').click();
-    cy.get('#pr_id_4_list > :nth-child(1)').click();
+    cy.get('app-organization-selection:visible').click().contains('nxt').click();
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
   });

@@ -74,8 +74,7 @@ describe('Test user', () => {
 
     cy.visit('/user');
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH (nxt)');
-    cy.get('.p-dropdown-trigger-icon').click();
-    cy.get('#pr_id_4_list > :nth-child(2)').click();
+    cy.get('p-dropdown').click().contains('VSHN').click();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });
@@ -120,8 +119,7 @@ describe('Test user', () => {
       body: organizationListNxtVshn,
     });
     cy.get('.p-dropdown-label').should('contain.text', 'nxt Engineering GmbH (nxt)');
-    cy.get('.p-dropdown-trigger-icon').click();
-    cy.get('#pr_id_4_list > :nth-child(2)').click();
+    cy.get('p-dropdown').click().contains('VSHN').click();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     });

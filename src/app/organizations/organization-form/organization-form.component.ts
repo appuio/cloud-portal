@@ -48,12 +48,19 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.billingOptions = this.billingEntities.map((be) => {
-      return {
-        value: be,
-        label: be.spec.name ? `${be.spec.name} (${be.metadata.name})` : be.metadata.name,
-      };
-    });
+    this.billingOptions = this.billingEntities
+      // Note: When implementing https://github.com/appuio/cloud-portal/issues/492 be sure that BE are sorted by display name in entity-metadata-map.ts by default
+      .sort((a, b) => {
+        const aName = a.spec.name ? a.spec.name : a.metadata.name;
+        const bName = b.spec.name ? b.spec.name : b.metadata.name;
+        return aName.localeCompare(bName, undefined, { sensitivity: 'base' });
+      })
+      .map((be) => {
+        return {
+          value: be,
+          label: be.spec.name ? `${be.spec.name} (${be.metadata.name})` : be.metadata.name,
+        };
+      });
     this.form = this.formBuilder.nonNullable.group({
       displayName: this.organization.spec.displayName,
       organizationId: new FormControl(this.organization.metadata.name, {

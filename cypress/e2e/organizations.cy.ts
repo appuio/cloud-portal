@@ -124,9 +124,7 @@ describe('Test organization edit', () => {
     cy.get('#selectedBillingEntity').should('contain.text', '👁️ AG');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
-    cy.get('#selectedBillingEntity').click();
-    cy.get('#selectedBillingEntity').should('contain.text', '➡️ Engineering GmbH');
-    cy.get('#selectedBillingEntity').click();
+    cy.get('#selectedBillingEntity').click().contains('➡️ Engineering GmbH').click();
     cy.get('button[type=submit]').click();
     cy.wait('@update');
     cy.get('@update')
@@ -134,7 +132,7 @@ describe('Test organization edit', () => {
       .then((body) => {
         expect(body.metadata.name).to.eq('vshn');
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
-        expect(body.spec.billingEntityRef).to.eq('be-2347');
+        expect(body.spec.billingEntityRef).to.eq('be-2345');
       });
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
     cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
@@ -238,12 +236,13 @@ describe('Test organization add', () => {
       { verb: 'list', ...BillingEntityPermissions }
     );
     setOrganization(cy);
-    setBillingEntities(cy);
+    setBillingEntities(cy, billingEntityNxt);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
 
     cy.get('#addOrganizationButton').click();
+    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('#id').clear().type('VSHN $a');
@@ -258,7 +257,7 @@ describe('Test organization add', () => {
       { verb: 'list', ...BillingEntityPermissions }
     );
     setOrganization(cy);
-    setBillingEntities(cy);
+    setBillingEntities(cy, billingEntityNxt);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
@@ -266,6 +265,7 @@ describe('Test organization add', () => {
     cy.get('#addOrganizationButton').click();
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
 
     cy.get('#id').clear().type('-1-vshn');
     cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');

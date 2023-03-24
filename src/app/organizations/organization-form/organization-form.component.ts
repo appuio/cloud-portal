@@ -98,25 +98,28 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private addOrg(): void {
-    this.organizationCollectionService.add(this.getOrgFromForm()).subscribe({
+    const rawValue = this.form.getRawValue();
+    const org = newOrganization(
+      rawValue.organizationId,
+      rawValue.displayName ?? '',
+      rawValue.billingEntity?.value.metadata.name ?? ''
+    );
+    this.organizationCollectionService.add(org).subscribe({
       next: () => this.saveOrUpdateSuccess(),
       error: (err) => this.saveOrUpdateFailure(err),
     });
   }
 
   private updateOrg(): void {
-    this.organizationCollectionService
-      .update(this.getOrgFromForm())
-      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
-  }
-
-  private getOrgFromForm(): Organization {
     const rawValue = this.form.getRawValue();
-    return newOrganization(
-      rawValue.organizationId,
-      rawValue.displayName ?? '',
-      rawValue.billingEntity?.value.metadata.name ?? ''
-    );
+    const org = structuredClone(this.organization);
+    org.spec = {
+      displayName: rawValue.displayName ?? '',
+      billingEntityRef: rawValue.billingEntity?.value.metadata.name,
+    };
+    this.organizationCollectionService
+      .update(org)
+      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
   }
 
   private saveOrUpdateSuccess(): void {

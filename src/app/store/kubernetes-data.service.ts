@@ -1,4 +1,4 @@
-import { EntityCollectionDataService, HttpMethods, QueryParams } from '@ngrx/data';
+import { EntityCollectionDataService, QueryParams } from '@ngrx/data';
 import { KubeObject } from '../types/entity';
 import { map, Observable } from 'rxjs';
 import { Update } from '@ngrx/entity';
@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { KubernetesUrlGenerator } from './kubernetes-url-generator.service';
 import { Injectable } from '@angular/core';
 
-export declare type Operation = 'CREATE' | 'READ' | 'UPDATE' | 'DELETE';
+export declare type HttpMethods = 'DELETE' | 'GET' | 'POST' | 'PUT' | 'PATCH';
 
 export class KubernetesDataService<T extends KubeObject> implements EntityCollectionDataService<T> {
   protected _name: string;
@@ -20,7 +20,7 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   }
 
   getWithQuery(params: QueryParams | string): Observable<T[]> {
-    const url = this.urlGenerator.getEntityList(this.name, 'READ', params);
+    const url = this.urlGenerator.getEntityList(this.name, params);
     let p = params;
     if (typeof params !== 'string') {
       // Since the EntityCollectionDataService doesn't support path parameter out-of-the-box,
@@ -35,8 +35,8 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   upsert(entity: T): Observable<T> {
     if (entity.metadata.creationTimestamp) {
       return this.execute(
-        'PUT',
-        this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'UPDATE'),
+        'PATCH',
+        this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'PATCH'),
         entity
       );
     }
@@ -46,7 +46,7 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
   add(entity: T): Observable<T> {
     return this.execute(
       'POST',
-      this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'CREATE'),
+      this.urlGenerator.getEntity(this.name, buildId(entity.metadata.name, entity.metadata.namespace), 'POST'),
       entity
     );
   }
@@ -64,16 +64,16 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
    *   For namespaced collections, use "getWithQuery" and set the "namespace" parameter.
    */
   getAll(): Observable<T[]> {
-    return this.executeCollection('GET', this.urlGenerator.getEntityList(this.name, 'READ'));
+    return this.executeCollection('GET', this.urlGenerator.getEntityList(this.name, 'GET'));
   }
 
   getById(id: string): Observable<T> {
-    return this.execute('GET', this.urlGenerator.getEntity(this.name, id, 'READ'));
+    return this.execute('GET', this.urlGenerator.getEntity(this.name, id, 'GET'));
   }
 
   update(update: Update<T>): Observable<T> {
     const entity = update.changes as T;
-    return this.execute('PUT', this.urlGenerator.getEntity(this.name, update.id.toString(), 'UPDATE'), entity);
+    return this.execute('PATCH', this.urlGenerator.getEntity(this.name, update.id.toString(), 'PATCH'), entity);
   }
 
   protected executeCollection(method: HttpMethods, url: string, queryParams?: QueryParams | string): Observable<T[]> {
@@ -96,16 +96,23 @@ export class KubernetesDataService<T extends KubeObject> implements EntityCollec
     const params = new HttpParams(qParams);
     switch (method) {
       case 'DELETE': {
-        return this.http.delete<T>(url, { params: params, responseType: 'json' });
+        return this.http.delete<T>(url, { params, responseType: 'json' });
       }
       case 'GET': {
-        return this.http.get<T>(url, { params: params, responseType: 'json' });
+        return this.http.get<T>(url, { params, responseType: 'json' });
       }
       case 'POST': {
-        return this.http.post<T>(url, data, { params: params, responseType: 'json' });
+        return this.http.post<T>(url, data, { params, responseType: 'json' });
       }
       case 'PUT': {
-        return this.http.put<T>(url, data, { params: params, responseType: 'json' });
+        return this.http.put<T>(url, data, { params, responseType: 'json' });
+      }
+      case 'PATCH': {
+        return this.http.patch<T>(url, data, {
+          params,
+          responseType: 'json',
+          headers: { 'content-type': 'application/merge-patch+json' },
+        });
       }
       default: {
         throw new Error(`Unimplemented HTTP method: ${method}`);

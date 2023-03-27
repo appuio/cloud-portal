@@ -155,7 +155,7 @@ describe('Test team edit', () => {
         displayName: 'Awesome Team!',
       },
     };
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/teams/team1', {
       body: updatedTeam,
       statusCode: 200,
     }).as('update');

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Operation, splitID } from './kubernetes-data.service';
+import { HttpMethods, splitID } from './kubernetes-data.service';
 import { QueryParams } from '@ngrx/data';
 
 export const apiPrefix = 'appuio-api';
@@ -13,7 +13,7 @@ export class KubernetesUrlGenerator {
     { apiVersion: string; kind: string }
   >();
 
-  getEntity(entityName: string, id: string, op: Operation): string {
+  getEntity(entityName: string, id: string, op: HttpMethods): string {
     const meta = this.getKubeObjectMeta(entityName);
     if (!meta) {
       throw new Error(`Entity "${entityName}" is not registered in the Kubernetes URL generator`);
@@ -23,7 +23,7 @@ export class KubernetesUrlGenerator {
       // we have an ID that contains name + namespace.
       const base = `${apiPrefix}/apis/${meta.apiVersion}/namespaces/${idSplit.namespace}/${meta.kind}`;
       switch (op) {
-        case 'CREATE': {
+        case 'POST': {
           return base; // the name is not part of the endpoint for new objects, but in the payload.
         }
         default: {
@@ -34,7 +34,7 @@ export class KubernetesUrlGenerator {
     // this case is for cluster-scoped resources.
     const base = `${apiPrefix}/apis/${meta.apiVersion}/${meta.kind}`;
     switch (op) {
-      case 'CREATE': {
+      case 'POST': {
         return base; // the name is not part of the endpoint for new objects, but in the payload.
       }
       default: {
@@ -43,7 +43,7 @@ export class KubernetesUrlGenerator {
     }
   }
 
-  getEntityList(entityName: string, op: Operation, queryParams?: QueryParams | string): string {
+  getEntityList(entityName: string, queryParams?: QueryParams | string): string {
     const meta = this.getKubeObjectMeta(entityName);
     if (!meta) {
       throw new Error(`Entity "${entityName}" is not registered in the Kubernetes URL generator`);

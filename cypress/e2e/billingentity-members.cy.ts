@@ -52,7 +52,7 @@ describe('billing entity edit members with existing roles', () => {
       }
     );
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
         body: createClusterRoleBinding({
@@ -63,7 +63,7 @@ describe('billing entity edit members with existing roles', () => {
       }
     ).as('updateViewer');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
         body: createClusterRoleBinding({
@@ -124,14 +124,14 @@ describe('billing entity edit members with existing roles', () => {
       }
     );
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
         body: createClusterRoleBinding({ name: 'billingentities-be-2345-viewer', users: ['appuio#mig'], exists: true }),
       }
     ).as('updateViewer');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
         body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'], exists: true }),
@@ -220,7 +220,7 @@ describe('billing entity edit members with existing roles', () => {
       }
     );
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-viewer',
       {
         body: createClusterRoleBinding({
@@ -231,7 +231,7 @@ describe('billing entity edit members with existing roles', () => {
       }
     ).as('updateViewer');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/billingentities-be-2345-admin',
       {
         body: createClusterRoleBinding({ name: 'billingentities-be-2345-admin', users: ['appuio#mig'], exists: true }),

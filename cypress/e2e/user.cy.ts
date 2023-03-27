@@ -55,7 +55,7 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/users/mig', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     }).as('putUser');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {
@@ -89,7 +89,7 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/users/mig', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'vshn' }),
     }).as('putUser');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {
@@ -140,7 +140,7 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/users/mig', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     }).as('putUser');
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/vshn/organizationmembers/members', {

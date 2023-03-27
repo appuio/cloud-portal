@@ -104,7 +104,7 @@ describe('Test organization edit', () => {
     setBillingEntities(cy, billingEntityVshn, billingEntityNxt);
 
     cy.visit('/organizations');
-    cy.intercept('PUT', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
+    cy.intercept('PATCH', 'appuio-api/apis/organization.appuio.io/v1/organizations/vshn', {
       body: organizationVshn,
       statusCode: 200,
     }).as('update');

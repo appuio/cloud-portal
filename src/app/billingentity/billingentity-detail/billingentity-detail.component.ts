@@ -6,12 +6,12 @@ import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 
 @Component({
-  selector: 'app-billingentity-view',
-  templateUrl: './billingentity-view.component.html',
-  styleUrls: ['./billingentity-view.component.scss'],
+  selector: 'app-billingentity-detail',
+  templateUrl: './billingentity-detail.component.html',
+  styleUrls: ['./billingentity-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingentityViewComponent implements OnInit {
+export class BillingentityDetailComponent implements OnInit {
   billingEntity$?: Observable<BillingEntity>;
   billingEntityName = '';
 

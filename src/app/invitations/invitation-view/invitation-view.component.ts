@@ -23,7 +23,6 @@ export class InvitationViewComponent implements OnInit {
     if (!name) {
       throw new Error('name is required as path parameter in URL');
     }
-
     this.invitation$ = this.invitationService.getByKeyMemoized(name);
   }
 }

@@ -87,21 +87,21 @@ describe('Test organization members', () => {
         }),
       },
     });
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     }).as('save');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-admin',
       {
         body: {},
       }
     ).as('save-admin-role');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-viewer',
       {
         body: {},
@@ -167,21 +167,21 @@ describe('Test organization members', () => {
         }),
       },
     });
-    cy.intercept('PUT', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
+    cy.intercept('PATCH', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
         namespace: 'nxt',
         userRefs: [{ name: 'hans.meier' }, { name: 'peter.muster' }],
       }),
     }).as('save');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-admin',
       {
         body: {},
       }
     ).as('save-admin-role');
     cy.intercept(
-      'PUT',
+      'PATCH',
       'appuio-api/apis/rbac.authorization.k8s.io/v1/namespaces/nxt/rolebindings/control-api:organization-viewer',
       {
         body: {},

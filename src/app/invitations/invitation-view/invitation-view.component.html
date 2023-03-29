@@ -4,6 +4,12 @@
 
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
   <ng-container *ngIf="payload">
+    <p-messages *ngIf="payload.isRedeemed" severity="warn">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"/>
+        <div class="ml-2" id="redeemed-message" i18n>Invitation is already redeemed.</div>
+      </ng-template>
+    </p-messages>
     <app-invitation-detail *ngIf="payload.invitation" [invitation]="payload.invitation"/>
     <p-messages *ngIf="payload.isRedeeming" severity="info">
       <ng-template pTemplate="content">

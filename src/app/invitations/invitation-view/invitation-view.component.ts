@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { catchError, map, Observable, of, retry } from 'rxjs';
+import { catchError, map, Observable, of, retry, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationCollectionService } from '../../store/invitation-collection.service';
 import { Invitation, InvitationRedeemRequest, invitationTokenLocalStorageKey } from '../../types/invitation';
@@ -34,7 +34,7 @@ export class InvitationViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const invitationName = this.activatedRoute.snapshot.paramMap.get('name') ?? '';
+    const invitationName = this.activatedRoute.snapshot.paramMap.get('name')?.trim() ?? '';
     if (!invitationName) {
       throw new Error('name is required as path parameter in URL');
     }
@@ -43,23 +43,7 @@ export class InvitationViewComponent implements OnInit {
     const tokenFromStorage = window.localStorage.getItem(invitationTokenLocalStorageKey);
     const token = tokenFromStorage || tokenInQuery;
     if (token) {
-      this.payload$ = this.invitationRedeemRequestService
-        .add(this.invitationRedeemRequestService.newInvitationRedeemRequest(invitationName, token))
-        .pipe(
-          map((invReq) => {
-            this.startPollingInvitation(invReq);
-            return {
-              isRedeeming: true,
-            };
-          }),
-          catchError((err) => {
-            this.addErrorNotification(err);
-            return of({ isRedeeming: true });
-          })
-        );
-      window.localStorage.removeItem(invitationTokenLocalStorageKey);
-      // remove token from address bar
-      void this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: { token: undefined } });
+      this.redeemInvitation(invitationName, token);
     } else {
       this.payload$ = this.invitationService.getByKeyMemoized(invitationName).pipe(
         map((invitation) => {
@@ -71,10 +55,51 @@ export class InvitationViewComponent implements OnInit {
     }
   }
 
+  private redeemInvitation(invitationName: string, token: string): void {
+    const invitation$: Observable<Invitation | undefined> = this.invitationService
+      .getByKeyMemoized(invitationName)
+      .pipe(
+        catchError((err) => {
+          if (err instanceof DataServiceError && err.error.status >= 400 && err.error.status <= 404) {
+            return of(undefined);
+          }
+          throw err;
+        })
+      );
+    this.payload$ = invitation$.pipe(
+      switchMap((inv) => {
+        if (inv && inv.status?.redeemedBy) {
+          return of({ isRedeemed: true, invitation: inv } satisfies Payload);
+        }
+        return this.invitationRedeemRequestService
+          .add(this.invitationRedeemRequestService.newInvitationRedeemRequest(invitationName, token))
+          .pipe(
+            map((invReq) => {
+              this.startPollingInvitation(invReq);
+              return {
+                isRedeeming: true,
+              };
+            }),
+            catchError((err) => {
+              this.addErrorNotification(err);
+              return of({ isRedeeming: true } satisfies Payload);
+            })
+          );
+      })
+    );
+    window.localStorage.removeItem(invitationTokenLocalStorageKey);
+    // remove token from address bar
+    void this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: { token: undefined } });
+  }
+
   addErrorNotification(err: DataServiceError | Error): void {
     let detail = err.message ?? '';
     if (err instanceof DataServiceError) {
-      detail = err.error.message;
+      if (err.error.status === 403) {
+        detail = $localize`Not allowed, most likely already redeemed`;
+      } else {
+        detail = err.error.message;
+      }
     }
     this.messageService.add({
       severity: 'error',
@@ -83,11 +108,11 @@ export class InvitationViewComponent implements OnInit {
       sticky: true,
     });
   }
-  addSuccessNotification(detail?: string): void {
+  addSuccessNotification(detail: string): void {
     this.messageService.add({
       severity: 'success',
       summary: 'Redeem successful',
-      detail: detail ?? $localize`Invitation accepted. Reload to view the new entities.`,
+      detail: detail,
       sticky: true,
       key: 'reload',
     });
@@ -116,7 +141,7 @@ export class InvitationViewComponent implements OnInit {
       .subscribe({
         next: (inv) => {
           if (inv.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'True')) {
-            this.addSuccessNotification();
+            this.addSuccessNotification($localize`Invitation accepted. Reload to view the new entities.`);
           }
           if (inv.status?.targetStatuses?.some((targetStatus) => targetStatus.condition.status === 'False')) {
             this.addSuccessNotification($localize`Invitation accepted, though not all permissions could be granted.`);
@@ -132,4 +157,5 @@ export class InvitationViewComponent implements OnInit {
 interface Payload {
   invitation?: Invitation;
   isRedeeming?: boolean;
+  isRedeemed?: boolean;
 }

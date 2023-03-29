@@ -12,6 +12,9 @@ describe('Test token storage and retrieval', () => {
   });
 
   it('should store token in local storage', () => {
+    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
+      statusCode: 403,
+    }); // don't fail in CI
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
     cy.getAllLocalStorage().then((result) => {
       const expected = {
@@ -31,6 +34,9 @@ describe('Test token storage and retrieval', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       statusCode: 403,
     });
+    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
+      statusCode: 403,
+    }); // don't fail in CI
     cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
       req.reply(req.body);
     });
@@ -55,6 +61,9 @@ describe('Test token storage and retrieval', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
+    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
+      statusCode: 403,
+    }); // don't fail in CI
     cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
       req.reply(req.body);
     });
@@ -71,61 +80,22 @@ describe('Test invitation accept', () => {
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
     cy.disableCookieBanner();
     cy.setPermission();
-  });
-
-  it('should display success message', () => {
-    cy.setupAuth();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
-      req.reply(req.body);
-    }).as('createInvitationRedeemRequest');
-    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
-      body: createInvitation({
-        hasStatus: true,
-        redeemed: 'redeemed',
-        organizations: [{ name: 'nxt', condition: 'True' }],
-      }),
-    }).as('getInvitation');
-
-    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
-    cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
-    cy.wait('@createInvitationRedeemRequest');
-    cy.wait('@getInvitation');
-    cy.get('p-toast').should('contain.text', 'Redeem successful');
-    cy.get('.p-button-success').should('contain.text', 'Reload');
   });
 
-  it('should display success message if some targets failed', () => {
-    cy.setupAuth();
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
-      body: userMigWithoutPreferences,
-    });
-    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
-      req.reply(req.body);
-    }).as('createInvitationRedeemRequest');
+  it('should display message if already redeemed', () => {
     cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
-      body: createInvitation({
-        hasStatus: true,
-        redeemed: 'redeemed',
-        organizations: [{ name: 'nxt', condition: 'False' }],
-      }),
+      body: createInvitation({ hasStatus: true, redeemed: 'redeemed' }),
     }).as('getInvitation');
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
-    cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
-    cy.wait('@createInvitationRedeemRequest');
     cy.wait('@getInvitation');
-    cy.get('p-toast').should('contain.text', 'not all permissions could be granted');
-    cy.get('.p-button-success').should('contain.text', 'Reload');
+    cy.get('#redeemed-message').should('contain.text', 'Invitation is already redeemed.');
   });
 
   it('should display success message after polling', () => {
-    cy.setupAuth();
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
-      body: userMigWithoutPreferences,
-    });
     cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
       req.reply(req.body);
     }).as('createInvitationRedeemRequest');
@@ -135,10 +105,9 @@ describe('Test invitation accept', () => {
       'GET',
       '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559',
       (req) => {
-        console.log('count', interceptCount);
         if (interceptCount === 0) {
           interceptCount++;
-          req.reply({ statusCode: 403 });
+          req.reply(403, { status: 403 });
         } else if (interceptCount === 1) {
           interceptCount++;
           req.reply(
@@ -166,10 +135,43 @@ describe('Test invitation accept', () => {
     cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Redeem successful');
   });
 
+  it('should accept but display message if some targets failed', () => {
+    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
+      req.reply(req.body);
+    }).as('createInvitationRedeemRequest');
+
+    let interceptCount = 0;
+    cy.intercept(
+      'GET',
+      '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559',
+      (req) => {
+        if (interceptCount === 0) {
+          interceptCount++;
+          req.reply(403, { status: 403 });
+        } else if (interceptCount >= 1) {
+          interceptCount++;
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'redeemed',
+              organizations: [{ name: 'nxt', condition: 'False' }],
+            })
+          );
+        }
+      }
+    ).as('getInvitation');
+
+    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
+    cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
+    cy.wait('@createInvitationRedeemRequest');
+    cy.wait('@getInvitation');
+    cy.get('p-toast').should('contain.text', 'not all permissions could be granted');
+    cy.get('.p-button-success').should('contain.text', 'Reload');
+  });
+
   it('should display error message if redeem failed', () => {
-    cy.setupAuth();
-    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
-      body: userMigWithoutPreferences,
+    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
+      statusCode: 403,
     });
     cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', {
       statusCode: 403,

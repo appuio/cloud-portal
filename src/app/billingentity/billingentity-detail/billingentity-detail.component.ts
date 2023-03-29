@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
 import { Observable } from 'rxjs';
-import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 
 @Component({
@@ -15,7 +15,6 @@ export class BillingentityDetailComponent implements OnInit {
   billingEntity$?: Observable<BillingEntity>;
   billingEntityName = '';
 
-  faClose = faClose;
   faWarning = faWarning;
 
   constructor(private route: ActivatedRoute, private billingService: BillingEntityCollectionService) {}

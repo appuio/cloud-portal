@@ -3,7 +3,12 @@ import { Invitation, InvitationRedeemRequest, TargetRef } from '../../src/app/ty
 export interface InvitationConfig {
   redeemed?: 'redeemed' | 'pending';
   email?: 'sendFailed' | 'sent';
-  organizations?: { name: string; role?: 'admin' | 'viewer' | 'both'; teams?: string[] }[];
+  organizations?: {
+    name: string;
+    role?: 'admin' | 'viewer' | 'both';
+    teams?: string[];
+    condition?: 'Unknown' | 'True' | 'False';
+  }[];
   billingEntities?: { name: string; role: 'admin' | 'viewer' | 'both' }[];
   hasStatus?: boolean;
 }
@@ -27,6 +32,7 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
       validUntil: new Date(now.setMonth(now.getMonth() + 3)).toISOString(),
       token: 'supersecret',
       conditions: [],
+      targetStatuses: [],
     };
   }
   if (cfg.redeemed === 'redeemed' && inv.status && inv.status.conditions) {
@@ -49,12 +55,22 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   // cypress can't handle the `?.forEach()` notation here for some obscure reason...
   if (cfg.organizations) {
     cfg.organizations.forEach((org) => {
-      refs.push({
+      const ref = {
         name: 'members',
         namespace: org.name,
         kind: 'OrganizationMembers',
         apiGroup: 'appuio.io',
-      });
+      };
+      refs.push(ref);
+      if (inv.status && inv.status.targetStatuses && org.condition) {
+        inv.status.targetStatuses.push({
+          targetRef: ref,
+          condition: {
+            type: 'Redeemed',
+            status: org.condition,
+          },
+        });
+      }
       if (org.teams) {
         org.teams.forEach((team) => {
           refs.push({

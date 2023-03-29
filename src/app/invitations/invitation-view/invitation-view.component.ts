@@ -72,7 +72,6 @@ export class InvitationViewComponent implements OnInit {
   }
 
   addErrorNotification(err: DataServiceError | Error): void {
-    console.log('err', err);
     let detail = err.message ?? '';
     if (err instanceof DataServiceError) {
       detail = err.error.message;
@@ -84,11 +83,11 @@ export class InvitationViewComponent implements OnInit {
       sticky: true,
     });
   }
-  addSuccessNotification(): void {
+  addSuccessNotification(detail?: string): void {
     this.messageService.add({
       severity: 'success',
       summary: 'Redeem successful',
-      detail: $localize`Invitation accepted.`,
+      detail: detail ?? $localize`Invitation accepted. Reload to view the new entities.`,
       sticky: true,
       key: 'reload',
     });
@@ -96,13 +95,31 @@ export class InvitationViewComponent implements OnInit {
 
   startPollingInvitation(invReq: InvitationRedeemRequest): void {
     this.http
-      .get<Invitation>(this.urlGenerator.getEntity(invitationEntityKey, invReq.metadata.name, 'READ'))
-      .pipe(retry({ count: 30, delay: 2000 }))
+      .get<Invitation>(this.urlGenerator.getEntity(invitationEntityKey, invReq.metadata.name, 'GET'))
+      .pipe(
+        map((inv) => {
+          this.invitationService.upsertOneInCache(inv);
+          // Even though we might get a response with an Invitation, the actual permissions are granted in a separate, asynchronous process (controller).
+          // So we continue to poll as long as there are conditions with "Unknown" status.
+          // See https://github.com/appuio/control-api/blob/26efed0b3fd27b2a16d9c3ac4ee30b1866b3e569/controllers/invitation_redeem_controller.go#L69-L81
+          if (inv.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'Unknown')) {
+            // As long as every target is still "Unknown", we retry.
+            // The controller updates all target status at once, so there are no "Unknown" conditions together with "True" or "False" ones in the array.
+            throw new Error(
+              $localize`Invitation redeemed, but permissions are not yet granted. Please try to reload later.`
+            );
+          }
+          return inv;
+        }),
+        retry({ count: 30, delay: 2000 })
+      )
       .subscribe({
         next: (inv) => {
-          this.invitationService.addOneToCache(inv);
-          if (inv.status?.redeemedBy) {
+          if (inv.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'True')) {
             this.addSuccessNotification();
+          }
+          if (inv.status?.targetStatuses?.some((targetStatus) => targetStatus.condition.status === 'False')) {
+            this.addSuccessNotification($localize`Invitation accepted, though not all permissions could be granted.`);
           }
         },
         error: (err) => {

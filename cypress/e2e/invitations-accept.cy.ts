@@ -12,14 +12,17 @@ describe('Test token storage and retrieval', () => {
   });
 
   it('should store token in local storage', () => {
-    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640').then(
-      () => {
-        expect(window.localStorage.getItem(invitationTokenLocalStorageKey)).eq('93c05fe3-b20f-48cf-aea6-39eb2350d640');
-      }
-    );
-
-    cy.origin('https://id.dev.appuio.cloud', () => {
-      cy.get('header').should('contain.text', 'Sign in to your account');
+    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
+    cy.getAllLocalStorage().then((result) => {
+      const expected = {
+        'http://localhost:4200': {
+          hideFirstTimeLoginDialog: 'true',
+          [invitationTokenLocalStorageKey]: '93c05fe3-b20f-48cf-aea6-39eb2350d640',
+        },
+      };
+      console.debug('expected', expected);
+      console.debug('result', result);
+      expect(result).to.deep.eq(expected);
     });
   });
 
@@ -34,11 +37,17 @@ describe('Test token storage and retrieval', () => {
     window.localStorage.setItem(invitationTokenLocalStorageKey, '93c05fe3-b20f-48cf-aea6-39eb2350d640');
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559');
-    cy.get('#processing-message')
-      .should('contain.text', 'Invitation is being processed in the background.')
-      .then(() => {
-        expect(window.localStorage.getItem(invitationTokenLocalStorageKey)).to.be.null;
-      });
+    cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
+    cy.getAllLocalStorage().then((result) => {
+      const expected = {
+        'http://localhost:4200': {
+          hideFirstTimeLoginDialog: 'true',
+        },
+      };
+      console.debug('expected', expected);
+      console.debug('result', result);
+      expect(result).to.deep.eq(expected);
+    });
   });
 
   it('should retrieve token from query if already logged in', () => {
@@ -46,8 +55,8 @@ describe('Test token storage and retrieval', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-    cy.intercept('POST', 'appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', {
-      body: { status: 'success' },
+    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
+      req.reply(req.body);
     });
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
@@ -73,7 +82,11 @@ describe('Test invitation accept', () => {
       req.reply(req.body);
     }).as('createInvitationRedeemRequest');
     cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
-      body: createInvitation({ hasStatus: true, redeemed: 'redeemed' }),
+      body: createInvitation({
+        hasStatus: true,
+        redeemed: 'redeemed',
+        organizations: [{ name: 'nxt', condition: 'True' }],
+      }),
     }).as('getInvitation');
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
@@ -81,6 +94,30 @@ describe('Test invitation accept', () => {
     cy.wait('@createInvitationRedeemRequest');
     cy.wait('@getInvitation');
     cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('.p-button-success').should('contain.text', 'Reload');
+  });
+
+  it('should display success message if some targets failed', () => {
+    cy.setupAuth();
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: userMigWithoutPreferences,
+    });
+    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
+      req.reply(req.body);
+    }).as('createInvitationRedeemRequest');
+    cy.intercept('GET', '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559', {
+      body: createInvitation({
+        hasStatus: true,
+        redeemed: 'redeemed',
+        organizations: [{ name: 'nxt', condition: 'False' }],
+      }),
+    }).as('getInvitation');
+
+    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
+    cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
+    cy.wait('@createInvitationRedeemRequest');
+    cy.wait('@getInvitation');
+    cy.get('p-toast').should('contain.text', 'not all permissions could be granted');
     cy.get('.p-button-success').should('contain.text', 'Reload');
   });
 
@@ -98,11 +135,27 @@ describe('Test invitation accept', () => {
       'GET',
       '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559',
       (req) => {
-        if (interceptCount < 1) {
+        console.log('count', interceptCount);
+        if (interceptCount === 0) {
           interceptCount++;
           req.reply({ statusCode: 403 });
-        } else {
-          req.reply(createInvitation({ hasStatus: true, redeemed: 'redeemed' }));
+        } else if (interceptCount === 1) {
+          interceptCount++;
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'redeemed',
+              organizations: [{ name: 'nxt', condition: 'Unknown' }],
+            })
+          );
+        } else if (interceptCount >= 2) {
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'redeemed',
+              organizations: [{ name: 'nxt', condition: 'True' }],
+            })
+          );
         }
       }
     ).as('getInvitation');
@@ -110,8 +163,7 @@ describe('Test invitation accept', () => {
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
     cy.get('#processing-message').should('contain.text', 'Invitation is being processed in the background.');
     cy.wait('@createInvitationRedeemRequest');
-    cy.wait('@getInvitation');
-    cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Redeem successful');
   });
 
   it('should display error message if redeem failed', () => {

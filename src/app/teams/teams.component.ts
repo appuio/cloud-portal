@@ -60,7 +60,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
         .subscribe((showJoinDialog) => {
           if (showJoinDialog) {
             this.openJoinTeamDialog();
-            this.router.navigate([], {
+            void this.router.navigate([], {
               relativeTo: this.activatedRoute,
               queryParams: { showJoinDialog: undefined },
               queryParamsHandling: 'merge',
@@ -71,7 +71,13 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   private subscribePayloads(): void {
-    this.payload$ = this.organizationService.selectedOrganization$.pipe(
+    this.payload$ = this.organizationService.getAllMemoized().pipe(
+      switchMap((orgs) => {
+        if (orgs.length === 0) {
+          throw new Error('no organizations available');
+        }
+        return this.organizationService.selectedOrganization$;
+      }),
       switchMap((org) => {
         const organizationName = org.metadata.name;
         return this.teamService.getAllInNamespaceMemoized(organizationName).pipe(

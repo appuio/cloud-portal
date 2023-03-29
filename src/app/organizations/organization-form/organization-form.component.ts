@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
@@ -29,8 +29,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   form!: FormGroup<{
     displayName: FormControl<string | undefined>;
     organizationId: FormControl<string>;
-    billingEntity: FormControl<BillingEntity | undefined>;
+    billingEntity: FormControl<SelectItem<BillingEntity> | undefined>;
   }>;
+
+  billingOptions: SelectItem<BillingEntity>[] = [];
 
   faSave = faSave;
   private subscriptions: Subscription[] = [];
@@ -46,14 +48,27 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.billingOptions = this.billingEntities
+      // Note: When implementing https://github.com/appuio/cloud-portal/issues/492 be sure that BE are sorted by display name in entity-metadata-map.ts by default
+      .sort((a, b) => {
+        const aName = a.spec.name ? a.spec.name : a.metadata.name;
+        const bName = b.spec.name ? b.spec.name : b.metadata.name;
+        return aName.localeCompare(bName, undefined, { sensitivity: 'base' });
+      })
+      .map((be) => {
+        return {
+          value: be,
+          label: be.spec.name ? `${be.spec.name} (${be.metadata.name})` : be.metadata.name,
+        };
+      });
     this.form = this.formBuilder.nonNullable.group({
       displayName: this.organization.spec.displayName,
       organizationId: new FormControl(this.organization.metadata.name, {
         validators: [Validators.required, Validators.pattern(this.organizationNameService.getValidationPattern())],
         nonNullable: true,
       }),
-      billingEntity: new FormControl<BillingEntity | undefined>(
-        this.billingEntities.find((be) => be.metadata.name === this.organization.spec.billingEntityRef),
+      billingEntity: new FormControl<SelectItem<BillingEntity> | undefined>(
+        this.billingOptions.find((option) => option.value.metadata.name === this.organization.spec.billingEntityRef),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -90,25 +105,28 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private addOrg(): void {
-    this.organizationCollectionService.add(this.getOrgFromForm()).subscribe({
+    const rawValue = this.form.getRawValue();
+    const org = newOrganization(
+      rawValue.organizationId,
+      rawValue.displayName ?? '',
+      rawValue.billingEntity?.value.metadata.name ?? ''
+    );
+    this.organizationCollectionService.add(org).subscribe({
       next: () => this.saveOrUpdateSuccess(),
       error: (err) => this.saveOrUpdateFailure(err),
     });
   }
 
   private updateOrg(): void {
-    this.organizationCollectionService
-      .update(this.getOrgFromForm())
-      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
-  }
-
-  private getOrgFromForm(): Organization {
     const rawValue = this.form.getRawValue();
-    return newOrganization(
-      rawValue.organizationId,
-      rawValue.displayName ?? '',
-      rawValue.billingEntity?.metadata.name ?? ''
-    );
+    const org = structuredClone(this.organization);
+    org.spec = {
+      displayName: rawValue.displayName ?? '',
+      billingEntityRef: rawValue.billingEntity?.value.metadata.name,
+    };
+    this.organizationCollectionService
+      .update(org)
+      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
   }
 
   private saveOrUpdateSuccess(): void {

@@ -1,4 +1,4 @@
-<form (submit)="save()" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
+<form (submit)="save()" [formGroup]="form" class="flex flex-column p-fluid py-2" novalidate>
   <div class="field mb-4 col-12">
     <label for="displayName" class="font-bold" i18n>Display Name</label>
     <input formControlName="displayName" id="displayName" pInputText type="text" autofocus />
@@ -26,11 +26,13 @@
     <p-dropdown
       id="selectedBillingEntity"
       formControlName="billingEntity"
-      optionLabel="spec.name"
-      [options]="billingEntities"
+      [options]="billingOptions"
+      optionLabel="label"
       [styleClass]="'w-full'"
+      [filter]="true"
       placeholder="Select Billing"
-      i18n></p-dropdown>
+      i18n-placeholder
+    />
   </div>
 
   <div class="col-12">

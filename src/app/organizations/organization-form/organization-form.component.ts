@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
@@ -29,8 +29,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   form!: FormGroup<{
     displayName: FormControl<string | undefined>;
     organizationId: FormControl<string>;
-    billingEntity: FormControl<BillingEntity | undefined>;
+    billingEntity: FormControl<SelectItem<BillingEntity> | undefined>;
   }>;
+
+  billingOptions: SelectItem<BillingEntity>[] = [];
 
   faSave = faSave;
   private subscriptions: Subscription[] = [];
@@ -46,14 +48,20 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.billingOptions = this.billingEntities.map((be) => {
+      return {
+        value: be,
+        label: be.spec.name ? `${be.spec.name} (${be.metadata.name})` : be.metadata.name,
+      };
+    });
     this.form = this.formBuilder.nonNullable.group({
       displayName: this.organization.spec.displayName,
       organizationId: new FormControl(this.organization.metadata.name, {
         validators: [Validators.required, Validators.pattern(this.organizationNameService.getValidationPattern())],
         nonNullable: true,
       }),
-      billingEntity: new FormControl<BillingEntity | undefined>(
-        this.billingEntities.find((be) => be.metadata.name === this.organization.spec.billingEntityRef),
+      billingEntity: new FormControl<SelectItem<BillingEntity> | undefined>(
+        this.billingOptions.find((option) => option.value.metadata.name === this.organization.spec.billingEntityRef),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -107,7 +115,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     return newOrganization(
       rawValue.organizationId,
       rawValue.displayName ?? '',
-      rawValue.billingEntity?.metadata.name ?? ''
+      rawValue.billingEntity?.value.metadata.name ?? ''
     );
   }
 

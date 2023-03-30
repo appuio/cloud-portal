@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input } from '@angular/core';
+import { Directive, HostListener, Input, Optional } from '@angular/core';
 import { NavigationService } from './navigation.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,9 +15,29 @@ export class BackLinkDirective {
   @Input()
   appBackLink?: string;
 
+  @Input()
+  @Optional()
+  clearAllQueryParams?: boolean;
+
+  @Input()
+  @Optional()
+  removeQueryParamList?: string[];
+
   @HostListener('click')
   onClick(): void {
-    const route = this.navigation.previousLocation(this.appBackLink);
-    void this.router.navigate([route], { relativeTo: this.activatedRoute });
+    let route = this.navigation.previousRoute(this.appBackLink);
+    while (route.path === window.location.pathname) {
+      // same path, try again
+      route = this.navigation.previousRoute(this.appBackLink);
+    }
+    if (this.clearAllQueryParams) {
+      route.queryParams = undefined;
+    }
+    this.removeQueryParamList?.forEach((p) => {
+      if (route.queryParams) {
+        delete route.queryParams[p];
+      }
+    });
+    void this.router.navigate([route.path], { relativeTo: this.activatedRoute, queryParams: route.queryParams });
   }
 }

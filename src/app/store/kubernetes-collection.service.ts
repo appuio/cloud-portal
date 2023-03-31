@@ -22,6 +22,19 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
     super(entityName, serviceElementsFactory);
   }
 
+  /**
+   * resetMemoization causes all {@link getByKeyMemoized}, {@link getAllMemoized} and {@link getAllInNamespaceMemoized} to cause data to be loaded from remote storage again.
+   * @param namespace if set, it will only reset memoization in the given namespace.
+   */
+  resetMemoization(namespace?: string): void {
+    if (namespace) {
+      this.memoizedAllPerNamespace.set(namespace, false);
+    } else {
+      this.memoizedAllPerNamespace.clear();
+      this.memoizedAllEntities = false;
+    }
+  }
+
   override getAll(options?: EntityActionOptions): Observable<T[]> {
     return super.getAll(options).pipe(tap(() => (this.memoizedAllEntities = true)));
   }
@@ -96,7 +109,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
     return this.entities$.pipe(
       take(1),
       switchMap(() => {
-        if (this.memoizedAllPerNamespace.get(namespace)) {
+        if (this.memoizedAllPerNamespace.get(namespace) === true) {
           return this.entities$.pipe(map((entities) => entities.filter((e) => e.metadata.namespace === namespace)));
         }
         return this.getAllInNamespace(namespace, options);

@@ -1,6 +1,8 @@
 import { invitationTokenLocalStorageKey } from '../../src/app/types/invitation';
 import { userMigWithoutPreferences } from '../fixtures/user';
 import { createInvitation } from '../fixtures/invitations';
+import { organizationNxt, organizationVshn } from '../fixtures/organization';
+import { OrganizationPermissions } from '../../src/app/types/organization';
 
 describe('Test token storage and retrieval', () => {
   beforeEach(() => {
@@ -62,7 +64,7 @@ describe('Test invitation accept for existing user', () => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
     cy.disableCookieBanner();
-    cy.setPermission();
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
@@ -154,7 +156,6 @@ describe('Test invitation accept for existing user', () => {
     cy.wait('@getInvitation');
     cy.get('p-toast').should('contain.text', 'not all permissions could be granted');
     cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
-    cy.get('.p-button-success').should('contain.text', 'Reload');
   });
 
   it('should display error message if redeem failed', () => {
@@ -180,6 +181,66 @@ describe('Test invitation accept for existing user', () => {
     cy.get('p-toast')
       .should('contain.text', 'Redeem failed')
       .and('contain.text', 'Not allowed, most likely already redeemed');
+  });
+
+  it('should reload entities after redeeming', () => {
+    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
+      req.reply(req.body);
+    }).as('createInvitationRedeemRequest');
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations/nxt', {
+      statusCode: 401, // this is invoked to resolve display name for organization, but at this point we don't have yet access.
+    });
+
+    let organizationInterceptCount = 0;
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', (req) => {
+      if (organizationInterceptCount === 0) {
+        organizationInterceptCount++;
+        req.reply({ items: [organizationVshn] });
+      } else {
+        req.reply({ items: [organizationVshn, organizationNxt] });
+      }
+    }).as('organizationList');
+
+    let invitationInterceptCount = 0;
+    cy.intercept(
+      'GET',
+      '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559',
+      (req) => {
+        if (invitationInterceptCount === 0) {
+          invitationInterceptCount++;
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'pending',
+              organizations: [{ name: 'nxt', condition: 'Unknown' }],
+            })
+          );
+        } else if (invitationInterceptCount >= 1) {
+          invitationInterceptCount++;
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'redeemed',
+              organizations: [{ name: 'nxt', condition: 'True' }],
+            })
+          );
+        }
+      }
+    ).as('getInvitation');
+
+    cy.visit('/organizations');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+
+    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
+    cy.wait('@createInvitationRedeemRequest');
+    cy.wait('@getInvitation');
+    cy.get('#title').should('contain.text', 'Invitation');
+    cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
+    cy.get('p-toast').should('contain.text', 'Redeem successful');
+
+    cy.get('app-navbar-item').contains('Organizations').click();
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'nxt');
   });
 });
 
@@ -259,7 +320,6 @@ describe('Test invitation accept for new user', () => {
     cy.wait('@getInvitation');
     cy.get('p-toast').should('contain.text', 'not all permissions could be granted');
     cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
-    cy.get('.p-button-success').should('contain.text', 'Reload');
   });
 
   it('should display error message if redeem failed', () => {

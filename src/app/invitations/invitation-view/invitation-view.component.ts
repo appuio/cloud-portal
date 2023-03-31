@@ -7,8 +7,9 @@ import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { InvitationRedeemRequestCollectionService } from '../../store/invitation-redeem-request-collection.service';
 import { MessageService } from 'primeng/api';
 import { DataServiceError } from '@ngrx/data';
-import { HttpClient } from '@angular/common/http';
-import { KubernetesUrlGenerator } from '../../store/kubernetes-url-generator.service';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
+import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
+import { TeamCollectionService } from '../../store/team-collection.service';
 
 @Component({
   selector: 'app-invitation-view',
@@ -28,8 +29,9 @@ export class InvitationViewComponent implements OnInit {
     private invitationRedeemRequestService: InvitationRedeemRequestCollectionService,
     private messageService: MessageService,
     private router: Router,
-    private http: HttpClient,
-    private urlGenerator: KubernetesUrlGenerator
+    private organizationService: OrganizationCollectionService,
+    private billingService: BillingEntityCollectionService,
+    private teamService: TeamCollectionService
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +86,7 @@ export class InvitationViewComponent implements OnInit {
               if (
                 invitation.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'True')
               ) {
-                this.addSuccessNotification($localize`Invitation accepted. Reload to view the new entities.`);
+                this.addSuccessNotification($localize`Invitation accepted.`);
               }
               if (
                 invitation.status?.targetStatuses?.some((targetStatus) => targetStatus.condition.status === 'False')
@@ -93,6 +95,9 @@ export class InvitationViewComponent implements OnInit {
                   $localize`Invitation accepted, though not all permissions could be granted.`
                 );
               }
+              this.billingService.resetMemoization();
+              this.organizationService.resetMemoization();
+              this.teamService.resetMemoization();
               return { invitation } satisfies Payload;
             }),
             catchError((err) => {
@@ -132,7 +137,6 @@ export class InvitationViewComponent implements OnInit {
       summary: 'Redeem successful',
       detail: detail,
       sticky: true,
-      key: 'reload',
     });
   }
 }

@@ -67,18 +67,5 @@
 </div>
 
 <p-toast></p-toast>
-<p-toast key="reload">
-  <ng-template let-message pTemplate="message">
-    <span
-      [class]="'p-toast-message-icon pi' + (message.icon ? ' ' + message.icon : '')"
-      [ngClass]="'pi-check'"
-    ></span>
-    <div class="p-toast-message-text">
-      <div class="p-toast-summary">{{ message.summary }}</div>
-      <div class="p-toast-detail">{{ message.detail }}</div>
-      <button type="button" pButton (click)="reload()" class="p-button-success mt-2" i18n>Reload</button>
-    </div>
-  </ng-template>
-</p-toast>
 <app-first-time-login-dialog></app-first-time-login-dialog>
 <p-confirmDialog></p-confirmDialog>

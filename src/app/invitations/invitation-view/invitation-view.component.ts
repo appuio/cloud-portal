@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { catchError, map, Observable, of, retry, switchMap } from 'rxjs';
+import { catchError, delay, map, Observable, of, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationCollectionService } from '../../store/invitation-collection.service';
-import { Invitation, InvitationRedeemRequest, invitationTokenLocalStorageKey } from '../../types/invitation';
+import { Invitation, invitationTokenLocalStorageKey } from '../../types/invitation';
 import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { InvitationRedeemRequestCollectionService } from '../../store/invitation-redeem-request-collection.service';
 import { MessageService } from 'primeng/api';
 import { DataServiceError } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
 import { KubernetesUrlGenerator } from '../../store/kubernetes-url-generator.service';
-import { invitationEntityKey } from '../../store/entity-metadata-map';
 
 @Component({
   selector: 'app-invitation-view',
@@ -56,10 +55,12 @@ export class InvitationViewComponent implements OnInit {
   }
 
   private redeemInvitation(invitationName: string, token: string): void {
+    // try to get the invitation first before making the request, to check if already redeemed.
     const invitation$: Observable<Invitation | undefined> = this.invitationService
       .getByKeyMemoized(invitationName)
       .pipe(
         catchError((err) => {
+          // a new user doesn't have access to the invitation, only after redeeming it, so let's ignore some errors.
           if (err instanceof DataServiceError && err.error.status >= 400 && err.error.status <= 404) {
             return of(undefined);
           }
@@ -74,15 +75,32 @@ export class InvitationViewComponent implements OnInit {
         return this.invitationRedeemRequestService
           .add(this.invitationRedeemRequestService.newInvitationRedeemRequest(invitationName, token))
           .pipe(
-            map((invReq) => {
-              this.startPollingInvitation(invReq);
-              return {
-                isRedeeming: true,
-              };
+            // give some time for the controller to grant permissions in kubernetes, waiting 1s should be good enough in most cases.
+            delay(1000),
+            switchMap((invReq) => {
+              return this.invitationService.getByKey(invReq.metadata.name);
+            }),
+            map((invitation) => {
+              if (
+                invitation.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'True')
+              ) {
+                this.addSuccessNotification($localize`Invitation accepted. Reload to view the new entities.`);
+              }
+              if (
+                invitation.status?.targetStatuses?.some((targetStatus) => targetStatus.condition.status === 'False')
+              ) {
+                this.addSuccessNotification(
+                  $localize`Invitation accepted, though not all permissions could be granted.`
+                );
+              }
+              return { invitation } satisfies Payload;
             }),
             catchError((err) => {
               this.addErrorNotification(err);
-              return of({ isRedeeming: true } satisfies Payload);
+              if (inv) {
+                return of({ invitation: inv } satisfies Payload);
+              }
+              throw err;
             })
           );
       })
@@ -117,45 +135,9 @@ export class InvitationViewComponent implements OnInit {
       key: 'reload',
     });
   }
-
-  startPollingInvitation(invReq: InvitationRedeemRequest): void {
-    this.http
-      .get<Invitation>(this.urlGenerator.getEntity(invitationEntityKey, invReq.metadata.name, 'GET'))
-      .pipe(
-        map((inv) => {
-          this.invitationService.upsertOneInCache(inv);
-          // Even though we might get a response with an Invitation, the actual permissions are granted in a separate, asynchronous process (controller).
-          // So we continue to poll as long as there are conditions with "Unknown" status.
-          // See https://github.com/appuio/control-api/blob/26efed0b3fd27b2a16d9c3ac4ee30b1866b3e569/controllers/invitation_redeem_controller.go#L69-L81
-          if (inv.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'Unknown')) {
-            // As long as every target is still "Unknown", we retry.
-            // The controller updates all target status at once, so there are no "Unknown" conditions together with "True" or "False" ones in the array.
-            throw new Error(
-              $localize`Invitation redeemed, but permissions are not yet granted. Please try to reload later.`
-            );
-          }
-          return inv;
-        }),
-        retry({ count: 30, delay: 2000 })
-      )
-      .subscribe({
-        next: (inv) => {
-          if (inv.status?.targetStatuses?.every((targetStatus) => targetStatus.condition.status === 'True')) {
-            this.addSuccessNotification($localize`Invitation accepted. Reload to view the new entities.`);
-          }
-          if (inv.status?.targetStatuses?.some((targetStatus) => targetStatus.condition.status === 'False')) {
-            this.addSuccessNotification($localize`Invitation accepted, though not all permissions could be granted.`);
-          }
-        },
-        error: (err) => {
-          this.addErrorNotification(err);
-        },
-      });
-  }
 }
 
 interface Payload {
   invitation?: Invitation;
-  isRedeeming?: boolean;
   isRedeemed?: boolean;
 }

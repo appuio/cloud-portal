@@ -1,11 +1,15 @@
 <form (submit)="save()" [formGroup]="form" class="flex flex-column p-fluid">
-  <div class="field col-12">
+  <div class="field col-12 mb-3">
     <label for="displayName" i18n>Billing Display Name</label>
     <input formControlName="displayName" id="displayName" pInputText type="text"/>
   </div>
 
-  <span class="mt-4 ml-2 text-lg font-semibold text-700" i18n>Company</span>
-  <div class="mt-2 mb-2">
+  <p-divider styleClass="col-12" >
+    <div class="inline-flex align-items-center">
+      <span class="text-lg font-semibold text-700" i18n>Company</span>
+    </div>
+  </p-divider>
+  <div class="mb-2">
 
     <div class="field mb-2 col-12">
       <label for="companyEmail" i18n>Email</label>
@@ -52,8 +56,12 @@
 
   </div>
 
-  <span class="mt-4 ml-2 text-lg font-semibold text-700" i18n>Invoice Recipient</span>
-  <div class="mt-2 mb-2">
+  <p-divider styleClass="col-12" >
+    <div class="inline-flex align-items-center">
+      <span class="text-lg font-semibold text-700" i18n>Invoice Recipient</span>
+    </div>
+  </p-divider>
+  <div class="mb-3">
     <div class="field mb-2 col-12">
       <label for="accountingName" i18n>Name</label>
       <input formControlName="accountingName" id="accountingName" type="text" class="mb-2" pInputText placeholder="Name"

@@ -89,6 +89,10 @@ export class BillingentityFormComponent implements OnInit {
         country: controls.country.value?.name,
       },
       emails: controls.companyEmail.value,
+      accountingContact: {
+        name: controls.accountingName.value,
+        emails: controls.accountingEmail.value,
+      },
     };
     if (this.isNewBe(be)) {
       this.billingService.add(be).subscribe({

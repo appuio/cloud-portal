@@ -24,6 +24,7 @@ import { BackLinkDirective } from './back-link.directive';
 import { TableModule } from 'primeng/table';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChipsModule } from 'primeng/chips';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
   declarations: [BackLinkDirective],
@@ -55,6 +56,7 @@ import { ChipsModule } from 'primeng/chips';
     TableModule,
     InputTextareaModule,
     ChipsModule,
+    DividerModule,
   ],
 })
 export class SharedModule {}

@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfigService } from '../../app-config.service';
 import { MessageService } from 'primeng/api';
 import { NavigationService } from '../../shared/navigation.service';
+import { multiEmail } from './billingentity-form.util';
 
 @Component({
   selector: 'app-billingentity-form',
@@ -42,7 +43,7 @@ export class BillingentityFormComponent implements OnInit {
     this.form = this.formBuilder.nonNullable.group({
       companyEmail: new FormControl<string[]>(spec.emails ?? [], {
         nonNullable: true,
-        validators: [Validators.email, Validators.required],
+        validators: [multiEmail, Validators.required],
       }),
       displayName: new FormControl(spec.name ?? '', {
         nonNullable: true,
@@ -66,7 +67,7 @@ export class BillingentityFormComponent implements OnInit {
       }),
       accountingEmail: new FormControl(spec.accountingContact?.emails ?? [], {
         nonNullable: true,
-        validators: [Validators.email, Validators.required],
+        validators: [multiEmail, Validators.required],
       }),
     } satisfies BillingForm);
   }

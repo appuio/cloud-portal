@@ -77,8 +77,8 @@ export class InvitationViewComponent implements OnInit {
         return this.invitationRedeemRequestService
           .add(this.invitationRedeemRequestService.newInvitationRedeemRequest(invitationName, token))
           .pipe(
-            // give some time for the controller to grant permissions in kubernetes, waiting 1s should be good enough in most cases.
-            delay(1000),
+            // give some time for the controller to grant permissions in kubernetes, waiting should be good enough in most cases.
+            delay(3000),
             switchMap((invReq) => {
               return this.invitationService.getByKey(invReq.metadata.name);
             }),

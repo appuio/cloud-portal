@@ -115,7 +115,7 @@ describe('Test invitation accept for existing user', () => {
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
     cy.wait('@createInvitationRedeemRequest');
     cy.get('#title').should('contain.text', 'Invitation');
-    cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
+    cy.get('.flex-row > .text-3xl', { timeout: 7000 }).should('contain.text', 'dev@nxt.engineering');
     cy.get('p-toast').should('contain.text', 'Redeem successful');
   });
 
@@ -285,7 +285,7 @@ describe('Test invitation accept for new user', () => {
     cy.wait('@createInvitationRedeemRequest');
     cy.wait('@getInvitation');
     cy.get('#title').should('contain.text', 'Invitation');
-    cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
+    cy.get('.flex-row > .text-3xl', { timeout: 7000 }).should('contain.text', 'dev@nxt.engineering');
     cy.get('p-toast').should('contain.text', 'Redeem successful');
   });
 

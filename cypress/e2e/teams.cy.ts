@@ -124,7 +124,7 @@ describe('Test teams list', () => {
     setOrganization(cy);
 
     cy.visit('/teams');
-    cy.get('#teams-failure-message').should('contain.text', 'Teams could not be loaded.');
+    cy.get('#no-teams-message').should('contain.text', 'No teams available.');
   });
 });
 

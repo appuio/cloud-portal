@@ -1,7 +1,7 @@
 import { invitationTokenLocalStorageKey } from '../../src/app/types/invitation';
 import { userMigWithoutPreferences } from '../fixtures/user';
 import { createInvitation } from '../fixtures/invitations';
-import { organizationNxt, organizationVshn } from '../fixtures/organization';
+import { organizationNxt, organizationVshn, setOrganization } from '../fixtures/organization';
 import { OrganizationPermissions } from '../../src/app/types/organization';
 
 describe('Test token storage and retrieval', () => {
@@ -45,7 +45,7 @@ describe('Test token storage and retrieval', () => {
     window.localStorage.setItem(invitationTokenLocalStorageKey, '93c05fe3-b20f-48cf-aea6-39eb2350d640');
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559');
-    cy.get('#failure-message').should('contain.text', 'Invitation could not be loaded.');
+    cy.get('.text-3xl').should('contain.text', 'Loading');
     cy.getAllLocalStorage().then((result) => {
       const expected = {
         'http://localhost:4200': {
@@ -242,12 +242,58 @@ describe('Test invitation accept for existing user', () => {
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'nxt');
   });
+
+  it('should display message even if navigated away', () => {
+    cy.intercept('POST', '/appuio-api/apis/user.appuio.io/v1/invitationredeemrequests', (req) => {
+      req.reply(req.body);
+    }).as('createInvitationRedeemRequest');
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations/nxt', {
+      statusCode: 403,
+    });
+
+    setOrganization(cy, organizationNxt);
+
+    let invitationInterceptCount = -1;
+    cy.intercept(
+      'GET',
+      '/appuio-api/apis/user.appuio.io/v1/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559',
+      (req) => {
+        invitationInterceptCount++;
+        if (invitationInterceptCount <= 1) {
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'pending',
+              organizations: [{ name: 'nxt', condition: 'Unknown' }],
+            })
+          );
+        } else {
+          req.reply(
+            createInvitation({
+              hasStatus: true,
+              redeemed: 'redeemed',
+              organizations: [{ name: 'nxt', condition: 'True' }],
+            })
+          );
+        }
+      }
+    ).as('getInvitation');
+
+    cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
+    cy.wait('@createInvitationRedeemRequest');
+
+    cy.get('#title').should('contain.text', 'Invitation');
+
+    cy.get('app-navbar-item').contains('Organizations').click();
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Redeem successful');
+  });
 });
 
 describe('Test invitation accept for new user', () => {
   beforeEach(() => {
     cy.setupAuth();
-    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'false');
     cy.disableCookieBanner();
     cy.setPermission();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {

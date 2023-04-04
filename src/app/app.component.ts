@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled } from './store/app.selectors';
@@ -40,7 +40,8 @@ export class AppComponent implements OnInit {
     private identityService: IdentityService,
     private organizationService: OrganizationCollectionService,
     private permissionService: SelfSubjectAccessReviewCollectionService,
-    private userService: UserCollectionService
+    private userService: UserCollectionService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -139,12 +140,11 @@ export class AppComponent implements OnInit {
             routerLink: ['invitations'],
           });
         }
+        // needed to render the menu if other rendering tasks are running in the background,
+        // e.g. polling invitations
+        this.changeDetectorRef.markForCheck();
       }
     );
-  }
-
-  reload(): void {
-    window.location.reload();
   }
 }
 

@@ -107,17 +107,17 @@ export function initializeAppFactory(
   return () => {
     return appConfigService.loadConfig().pipe(
       mergeMap((appConfig) => {
+        const tokenInQuery = new URLSearchParams(window.location.search).get('token');
+        if (tokenInQuery) {
+          // store the token in local storage for later. Somehow oauth redirect with query params doesn't work.
+          window.localStorage.setItem(invitationTokenLocalStorageKey, tokenInQuery);
+        }
         const authConfig = {
           ...authCodeFlowConfig,
           issuer: appConfig.issuer,
           clientId: appConfig.clientId,
         };
         oauthService.configure(authConfig);
-        const tokenInQuery = new URLSearchParams(window.location.search).get('token');
-        if (tokenInQuery) {
-          // store the token in local storage for later. Somehow oauth redirect with query params doesn't work.
-          window.localStorage.setItem(invitationTokenLocalStorageKey, tokenInQuery);
-        }
         return oauthService.loadDiscoveryDocumentAndLogin().then((loggedIn) => {
           if (!loggedIn) {
             return Promise.reject('Not logged in');

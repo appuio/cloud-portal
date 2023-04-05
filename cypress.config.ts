@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import * as installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter';
 
 export default defineConfig({
   videosFolder: 'cypress/videos',
@@ -7,5 +8,11 @@ export default defineConfig({
   retries: 2,
   e2e: {
     baseUrl: 'http://localhost:4200',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setupNodeEvents(on, config) {
+      installLogsPrinter(on, {
+        printLogsToConsole: 'always',
+      });
+    },
   },
 });

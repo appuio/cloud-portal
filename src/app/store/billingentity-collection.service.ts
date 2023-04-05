@@ -37,6 +37,16 @@ export class BillingEntityCollectionService extends KubernetesCollectionService<
     );
   }
 
+  canEditBilling(name: string): Observable<boolean> {
+    return this.permissionService.isAllowed(
+      BillingEntityPermissions.group,
+      BillingEntityPermissions.resource,
+      Verb.Update,
+      undefined,
+      name
+    );
+  }
+
   canEditMembers(clusterRoleBindingName: string): Observable<boolean> {
     return this.permissionService.isAllowed(
       ClusterRoleBindingPermissions.group,
@@ -45,5 +55,25 @@ export class BillingEntityCollectionService extends KubernetesCollectionService<
       undefined,
       clusterRoleBindingName
     );
+  }
+
+  canCreateBilling(): Observable<boolean> {
+    return this.permissionService.isAllowed(
+      BillingEntityPermissions.group,
+      BillingEntityPermissions.resource,
+      Verb.Create
+    );
+  }
+
+  newBillingEntity(): BillingEntity {
+    return {
+      apiVersion: 'billing.appuio.io/v1',
+      kind: 'BillingEntity',
+      metadata: {
+        name: '',
+        generateName: 'be-',
+      },
+      spec: {},
+    };
   }
 }

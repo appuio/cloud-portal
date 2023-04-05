@@ -3,9 +3,9 @@ import { SharedModule } from '../shared/shared.module';
 import { BillingEntityComponent } from './billing-entity.component';
 import { BillingEntityRoutingModule } from './billing-entity-routing.module';
 import { BillingentityDetailComponent } from './billingentity-detail/billingentity-detail.component';
-import { PanelModule } from 'primeng/panel';
 import { BillingentityMembersComponent } from './billingentity-members/billingentity-members.component';
 import { BillingentityViewComponent } from './billingentity-view/billingentity-view.component';
+import { BillingentityFormComponent } from './billingentity-form/billingentity-form.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,8 @@ import { BillingentityViewComponent } from './billingentity-view/billingentity-v
     BillingentityDetailComponent,
     BillingentityMembersComponent,
     BillingentityViewComponent,
+    BillingentityFormComponent,
   ],
-  imports: [SharedModule, BillingEntityRoutingModule, PanelModule],
+  imports: [SharedModule, BillingEntityRoutingModule],
 })
 export default class BillingEntityModule {}

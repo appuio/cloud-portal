@@ -1,0 +1,81 @@
+<form (submit)="save()" [formGroup]="form" class="flex flex-column p-fluid">
+  <div class="field col-12">
+    <label for="displayName" i18n>Billing Display Name</label>
+    <input formControlName="displayName" id="displayName" pInputText type="text"/>
+  </div>
+
+  <span class="mt-4 ml-2 text-lg font-semibold text-700" i18n>Company</span>
+  <div class="mt-2 mb-2">
+
+    <div class="field mb-2 col-12">
+      <label for="companyEmail" i18n>Email</label>
+      <p-chips formControlName="companyEmail" id="companyEmail" separator="," placeholder="Enter comma separated"
+               i18n-placeholder/>
+    </div>
+
+    <div class="field mb-2 col-12">
+      <label for="phone" i18n>Phone</label>
+      <input formControlName="phone" id="phone" pInputText type="text" maxlength="20"/>
+    </div>
+
+    <div class="field mb-2 col-12">
+      <label i18n>Address</label>
+      <input formControlName="line1" id="line1" type="text" class="mb-2" pInputText placeholder="Line 1"
+             i18n-placeholder/>
+      <input formControlName="line2" id="line2" type="text" class="mb-2" pInputText placeholder="Line 2"
+             i18n-placeholder/>
+      <div class="flex flex-row gap-2">
+        <input formControlName="postal" id="postal" type="text" class="mb-2 max-w-8rem" pInputText
+               placeholder="Postal Code" maxlength="12" i18n-placeholder/>
+        <input formControlName="city" id="city" type="text" class="mb-2" pInputText placeholder="City"
+               i18n-placeholder/>
+      </div>
+      <p-dropdown
+        formControlName="country"
+        [options]="countryOptions"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        [required]="true"
+        placeholder="Select Country"
+        i18n-placeholder
+        [styleClass]="'mb-2'"
+        [appendTo]="'body'"
+      />
+      <small i18n>
+        Is your country missing?
+        <a href="https://www.vshn.ch/en/appuio-cloud-availability-in-your-country" target="_blank" class="text-blue-500 hover:text-primary">
+          Please let us know!
+        </a>
+      </small>
+    </div>
+
+  </div>
+
+  <span class="mt-4 ml-2 text-lg font-semibold text-700" i18n>Invoice Recipient</span>
+  <div class="mt-2 mb-2">
+    <div class="field mb-2 col-12">
+      <label for="accountingName" i18n>Name</label>
+      <input formControlName="accountingName" id="accountingName" type="text" class="mb-2" pInputText placeholder="Name"
+             i18n-placeholder/>
+    </div>
+    <div class="field mb-2 col-12">
+      <label for="accountingEmail" i18n>Email</label>
+      <p-chips formControlName="accountingEmail" id="accountingEmail" separator="," placeholder="Enter comma separated"
+               i18n-placeholder/>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <button [disabled]="form.invalid" [loading]="(billingService.loading$ | ngrxPush) ?? false"
+            class="w-auto mr-3 p-button-primary"
+            pButton pRipple type="submit">
+      <fa-icon [icon]="faSave" class="pr-2"/>
+      <span class="pr-2" i18n>Save</span>
+    </button>
+    <button class="w-auto mr-3 p-button-secondary p-button-outlined" pButton pRipple type="button" (click)="cancel()">
+      <fa-icon [icon]="faCancel" class="pr-2"/>
+      <span class="pr-2" i18n>Cancel</span>
+    </button>
+  </div>
+</form>

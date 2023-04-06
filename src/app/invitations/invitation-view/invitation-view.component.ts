@@ -13,6 +13,7 @@ import { TeamCollectionService } from '../../store/team-collection.service';
 import { HttpClient } from '@angular/common/http';
 import { KubernetesUrlGenerator } from '../../store/kubernetes-url-generator.service';
 import { invitationEntityKey } from '../../store/entity-metadata-map';
+import { BrowserStorageService } from '../../shared/browser-storage.service';
 
 @Component({
   selector: 'app-invitation-view',
@@ -36,7 +37,8 @@ export class InvitationViewComponent implements OnInit {
     private organizationService: OrganizationCollectionService,
     private billingService: BillingEntityCollectionService,
     private teamService: TeamCollectionService,
-    private urlGenerator: KubernetesUrlGenerator
+    private urlGenerator: KubernetesUrlGenerator,
+    private storageService: BrowserStorageService
   ) {}
 
   ngOnInit(): void {
@@ -45,8 +47,17 @@ export class InvitationViewComponent implements OnInit {
       throw new Error('name is required as path parameter in URL');
     }
 
+    const storageAvailable = this.storageService.storageAvailable('localStorage');
+    if (!storageAvailable) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Local storage is available in your browser.',
+        detail: 'This feature is required for redeeming invitations.',
+        sticky: true,
+      });
+    }
     const tokenInQuery = this.activatedRoute.snapshot.queryParamMap.get('token');
-    const tokenFromStorage = window.localStorage.getItem(invitationTokenLocalStorageKey);
+    const tokenFromStorage = this.storageService.getLocalStorageItem(invitationTokenLocalStorageKey);
     const token = tokenFromStorage || tokenInQuery;
     if (token) {
       this.redeemInvitation(invitationName, token);
@@ -124,7 +135,7 @@ export class InvitationViewComponent implements OnInit {
         );
       })
     );
-    window.localStorage.removeItem(invitationTokenLocalStorageKey);
+    this.storageService.removeLocalStorageItem(invitationTokenLocalStorageKey);
     // remove token from address bar
     void this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: { token: undefined } });
   }

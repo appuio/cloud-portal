@@ -39,6 +39,7 @@ import { KubernetesCollectionServiceFactory } from './store/kubernetes-collectio
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { NavigationService } from './shared/navigation.service';
 import { invitationTokenLocalStorageKey } from './types/invitation';
+import { BrowserStorageService } from './shared/browser-storage.service';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,7 @@ import { invitationTokenLocalStorageKey } from './types/invitation';
     {
       provide: APP_INITIALIZER,
       // start the NavigationService early to catch route events.
-      deps: [AppConfigService, OAuthService, NavigationService],
+      deps: [AppConfigService, OAuthService, BrowserStorageService, NavigationService],
       useFactory: initializeAppFactory,
       multi: true,
     },
@@ -102,7 +103,8 @@ export class AppModule {
 
 export function initializeAppFactory(
   appConfigService: AppConfigService,
-  oauthService: OAuthService
+  oauthService: OAuthService,
+  storageService: BrowserStorageService
 ): () => Observable<boolean> {
   return () => {
     return appConfigService.loadConfig().pipe(
@@ -110,7 +112,11 @@ export function initializeAppFactory(
         const tokenInQuery = new URLSearchParams(window.location.search).get('token');
         if (tokenInQuery) {
           // store the token in local storage for later. Somehow oauth redirect with query params doesn't work.
-          window.localStorage.setItem(invitationTokenLocalStorageKey, tokenInQuery);
+          if (!storageService.setLocalStorageItem(invitationTokenLocalStorageKey, tokenInQuery)) {
+            console.warn(
+              'could not store the invitation token in browsers local storage. The invitation redeem might not work correctly or only via query parameters.'
+            );
+          }
         }
         const authConfig = {
           ...authCodeFlowConfig,

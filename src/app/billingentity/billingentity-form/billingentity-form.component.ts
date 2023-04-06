@@ -8,7 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfigService } from '../../app-config.service';
 import { MessageService } from 'primeng/api';
 import { NavigationService } from '../../shared/navigation.service';
-import { multiEmail } from './billingentity-form.util';
+import { multiEmail, sameEntries } from './billingentity-form.util';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-billingentity-form',
@@ -24,7 +25,7 @@ export class BillingentityFormComponent implements OnInit {
 
   faSave = faSave;
   faCancel = faCancel;
-  countryOptions: { code?: string; name: string }[] = [];
+  countryOptions?: { code?: string; name: string }[] = [];
 
   constructor(
     public billingService: BillingEntityCollectionService,
@@ -33,43 +34,67 @@ export class BillingentityFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private navigationService: NavigationService,
     private messageService: MessageService,
-    appConfig: AppConfigService
-  ) {
-    this.countryOptions = appConfig.getConfiguration().countries;
-  }
+    private appConfig: AppConfigService
+  ) {}
 
   ngOnInit(): void {
+    this.countryOptions = this.appConfig.getConfiguration().countries;
     const spec = this.billingEntity.spec;
+    const companyEmails = spec.emails?.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) ?? [];
+    const accountingEmails =
+      spec.accountingContact?.emails?.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) ?? [];
+    const sameEmails = sameEntries(companyEmails, accountingEmails);
+    const preselectedCountry = this.countryOptions.find((o) => o.name === spec.address?.country);
     this.form = this.formBuilder.nonNullable.group({
-      companyEmail: new FormControl<string[]>(spec.emails ?? [], {
-        nonNullable: true,
-        validators: [multiEmail, Validators.required],
-      }),
       displayName: new FormControl(spec.name ?? '', {
         nonNullable: true,
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.minLength(2)],
+      }),
+      companyEmail: new FormControl<string[]>(companyEmails, {
+        nonNullable: true,
+        validators: [multiEmail, Validators.required],
       }),
       phone: new FormControl(spec.phone ?? '', { nonNullable: true, validators: [Validators.required] }),
       line1: new FormControl(spec.address?.line1 ?? '', { nonNullable: true, validators: [Validators.required] }),
       line2: new FormControl(spec.address?.line2 ?? '', { nonNullable: true }),
       postal: new FormControl(spec.address?.postalCode ?? '', { nonNullable: true, validators: [Validators.required] }),
       city: new FormControl(spec.address?.city ?? '', { nonNullable: true, validators: [Validators.required] }),
-      country: new FormControl<{ name: string } | undefined>(
-        this.countryOptions.find((o) => o.name === spec.address?.country),
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        }
-      ),
+      country: new FormControl<{ name: string } | undefined>(preselectedCountry, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       accountingName: new FormControl(spec.accountingContact?.name ?? '', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      accountingEmail: new FormControl(spec.accountingContact?.emails ?? [], {
-        nonNullable: true,
-        validators: [multiEmail, Validators.required],
-      }),
+      accountingEmail: new FormControl(
+        {
+          value: accountingEmails,
+          disabled: sameEmails,
+        },
+        {
+          nonNullable: true,
+          validators: [multiEmail, Validators.required],
+        }
+      ),
+      sameCompanyEmailsSelected: new FormControl(sameEmails, { nonNullable: true }),
     } satisfies BillingForm);
+
+    this.form.controls.companyEmail.valueChanges
+      .pipe(filter(() => this.form.controls.sameCompanyEmailsSelected.value))
+      .subscribe((emails) => this.form.controls.accountingEmail.setValue(emails));
+
+    this.form.controls.sameCompanyEmailsSelected.valueChanges.subscribe((isSelected) => {
+      if (isSelected) {
+        this.form.controls.accountingEmail.disable();
+        this.form.controls.accountingEmail.setValue(this.form.controls.companyEmail.value);
+      } else {
+        this.form.controls.accountingEmail.enable();
+        this.form.controls.accountingEmail.setValue(
+          accountingEmails.length > 0 ? accountingEmails : this.form.controls.companyEmail.value
+        );
+      }
+    });
   }
 
   save(): void {
@@ -79,9 +104,11 @@ export class BillingentityFormComponent implements OnInit {
     const controls = this.form.controls;
     const be = structuredClone(this.billingEntity);
     be.spec = {
+      ...be.spec,
       name: controls.displayName.value,
       phone: controls.phone.value,
       address: {
+        ...be.spec.address,
         line1: controls.line1.value,
         line2: controls.line2.value,
         postalCode: controls.postal.value,
@@ -90,6 +117,7 @@ export class BillingentityFormComponent implements OnInit {
       },
       emails: controls.companyEmail.value,
       accountingContact: {
+        ...be.spec.accountingContact,
         name: controls.accountingName.value,
         emails: controls.accountingEmail.value,
       },

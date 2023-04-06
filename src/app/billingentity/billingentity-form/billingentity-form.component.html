@@ -1,10 +1,10 @@
 <form (submit)="save()" [formGroup]="form" class="flex flex-column p-fluid">
   <div class="field col-12 mb-3">
-    <label for="displayName" i18n>Billing Display Name</label>
+    <label for="displayName" i18n>Display Name</label>
     <input formControlName="displayName" id="displayName" pInputText type="text"/>
   </div>
 
-  <p-divider styleClass="col-12" >
+  <p-divider styleClass="col-12">
     <div class="inline-flex align-items-center">
       <span class="text-lg font-semibold text-700" i18n>Company</span>
     </div>
@@ -12,9 +12,15 @@
   <div class="mb-2">
 
     <div class="field mb-2 col-12">
-      <label for="companyEmail" i18n>Email</label>
-      <p-chips formControlName="companyEmail" id="companyEmail" separator="," placeholder="Enter comma separated"
-               i18n-placeholder/>
+      <label for="companyEmail" i18n>Emails</label>
+      <p-chips
+        formControlName="companyEmail"
+        id="companyEmail"
+        separator=","
+        [allowDuplicate]="false"
+        placeholder="Enter comma separated"
+        i18n-placeholder
+      />
     </div>
 
     <div class="field mb-2 col-12">
@@ -36,7 +42,7 @@
       </div>
       <p-dropdown
         formControlName="country"
-        [options]="countryOptions"
+        [options]="countryOptions ?? []"
         optionLabel="name"
         [filter]="true"
         filterBy="name"
@@ -44,11 +50,11 @@
         placeholder="Select Country"
         i18n-placeholder
         [styleClass]="'mb-2'"
-        [appendTo]="'body'"
       />
       <small i18n>
         Is your country missing?
-        <a href="https://www.vshn.ch/en/appuio-cloud-availability-in-your-country" target="_blank" class="text-blue-500 hover:text-primary">
+        <a href="https://www.vshn.ch/en/appuio-cloud-availability-in-your-country" target="_blank"
+           class="text-blue-500 hover:text-primary">
           Please let us know!
         </a>
       </small>
@@ -56,7 +62,7 @@
 
   </div>
 
-  <p-divider styleClass="col-12" >
+  <p-divider styleClass="col-12">
     <div class="inline-flex align-items-center">
       <span class="text-lg font-semibold text-700" i18n>Invoice Recipient</span>
     </div>
@@ -68,9 +74,22 @@
              i18n-placeholder/>
     </div>
     <div class="field mb-2 col-12">
-      <label for="accountingEmail" i18n>Email</label>
-      <p-chips formControlName="accountingEmail" id="accountingEmail" separator="," placeholder="Enter comma separated"
-               i18n-placeholder/>
+      <label for="accountingEmail" class="flex flex-column gap-2" i18n>Emails
+        <p-checkbox
+          formControlName="sameCompanyEmailsSelected"
+          [labelStyleClass]="'text-gray-500'"
+          [binary]="true"
+          label="Same as company emails"
+        />
+      </label>
+      <p-chips
+        formControlName="accountingEmail"
+        id="accountingEmail"
+        separator=","
+        [allowDuplicate]="false"
+        placeholder="Enter comma separated"
+        i18n-placeholder
+      />
     </div>
   </div>
 

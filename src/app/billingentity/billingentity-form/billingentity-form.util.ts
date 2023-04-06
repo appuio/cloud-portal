@@ -1,15 +1,15 @@
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 
-export const asdf = /^$/;
-
 // Copied from https://github.com/angular/angular/blob/b3d2e3312ae682aeb96bc783cc44e9ee4575fda4/packages/forms/src/validators.ts#L18
-function isEmptyInputValue(value: any): boolean {
+function isEmptyInputValue(value: unknown): boolean {
   /**
    * Check if the object is a string or array before evaluating the length attribute.
    * This avoids falsely rejecting objects that contain a custom length attribute.
    * For example, the object {id: 1, length: 0, width: 0} should not be returned as empty.
    */
-  return value == null || ((typeof value === 'string' || Array.isArray(value)) && value.length === 0);
+  return (
+    value === null || value === undefined || ((typeof value === 'string' || Array.isArray(value)) && value.length === 0)
+  );
 }
 
 export function multiEmail(control: AbstractControl): ValidationErrors | null {
@@ -29,4 +29,11 @@ export function multiEmail(control: AbstractControl): ValidationErrors | null {
     }
   });
   return allErrors;
+}
+
+export function sameEntries(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  return a.every((s, index) => b[index] === s);
 }

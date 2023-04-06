@@ -11,4 +11,5 @@ export interface BillingForm {
   country: FormControl<{ name: string } | undefined>;
   accountingName: FormControl<string>;
   accountingEmail: FormControl<string[]>;
+  sameCompanyEmailsSelected: FormControl<boolean>;
 }

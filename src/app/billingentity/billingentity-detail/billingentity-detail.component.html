@@ -3,10 +3,10 @@
   <ng-container *ngIf="vm">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
-        <div class="text-3xl font-medium text-900 mb-3">
+        <div class="text-3xl font-medium text-900 mb-3" id="title">
           <span *ngIf="!isNewBE(vm.billingEntity); else newBillingTitle">{{ vm.billingEntity.metadata.name }}</span>
           <ng-template #newBillingTitle>
-            <span i18n >New Billing</span>
+            <span i18n>New Billing</span>
           </ng-template>
         </div>
         <div>

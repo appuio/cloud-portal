@@ -43,10 +43,10 @@ jobs:
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v1.2.0
         with:
-          helm-version: v3.7.1
-          helmfile-version: v0.142.0
+          helm-version: v3.11.2
+          helmfile-version: v0.152.0
           install-kubectl: false
-          additional-helm-plugins: https://github.com/aslafy-z/helm-git --version 0.11.1
+          additional-helm-plugins: https://github.com/aslafy-z/helm-git --version 0.15.1
 
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
@@ -81,7 +81,7 @@ jobs:
         run: .github/keycloak-redirect-url.sh "${{ secrets.keycloak_user }}" "${{ secrets.keycloak_password }}" "https://${{ steps.deployment_info.outputs.route_host }}"
 
       - name: Notify on success
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
           issue-number: ${{ github.event.number }}

@@ -73,7 +73,7 @@ jobs:
             **Cluster** | ${{ env.OPENSHIFT_API }}
 
       - name: Notify on failure
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v3
         if: ${{ failure() }}
         with:
           issue-number: ${{ github.event.number }}

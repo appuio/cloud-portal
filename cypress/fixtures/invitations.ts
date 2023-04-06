@@ -1,9 +1,14 @@
-import { Invitation, TargetRef } from '../../src/app/types/invitation';
+import { Invitation, InvitationRedeemRequest, TargetRef } from '../../src/app/types/invitation';
 
 export interface InvitationConfig {
   redeemed?: 'redeemed' | 'pending';
   email?: 'sendFailed' | 'sent';
-  organizations?: { name: string; role?: 'admin' | 'viewer' | 'both'; teams?: string[] }[];
+  organizations?: {
+    name: string;
+    role?: 'admin' | 'viewer' | 'both';
+    teams?: string[];
+    condition?: 'Unknown' | 'True' | 'False';
+  }[];
   billingEntities?: { name: string; role: 'admin' | 'viewer' | 'both' }[];
   hasStatus?: boolean;
 }
@@ -27,10 +32,12 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
       validUntil: new Date(now.setMonth(now.getMonth() + 3)).toISOString(),
       token: 'supersecret',
       conditions: [],
+      targetStatuses: [],
     };
   }
   if (cfg.redeemed === 'redeemed' && inv.status && inv.status.conditions) {
     inv.status.conditions.push({ status: 'True', message: 'Redeemed by "appuio#dev"', type: 'Redeemed' });
+    inv.status.redeemedBy = 'appuio#dev';
   }
   if (inv.status && inv.status.conditions) {
     switch (cfg.email) {
@@ -48,12 +55,22 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   // cypress can't handle the `?.forEach()` notation here for some obscure reason...
   if (cfg.organizations) {
     cfg.organizations.forEach((org) => {
-      refs.push({
+      const ref = {
         name: 'members',
         namespace: org.name,
         kind: 'OrganizationMembers',
         apiGroup: 'appuio.io',
-      });
+      };
+      refs.push(ref);
+      if (inv.status && inv.status.targetStatuses && org.condition) {
+        inv.status.targetStatuses.push({
+          targetRef: ref,
+          condition: {
+            type: 'Redeemed',
+            status: org.condition,
+          },
+        });
+      }
       if (org.teams) {
         org.teams.forEach((team) => {
           refs.push({
@@ -103,4 +120,14 @@ export function createInvitation(cfg: InvitationConfig): Invitation {
   }
   inv.spec.targetRefs = refs;
   return inv;
+}
+export function createInvitationRedeemRequest(name: string, token: string): InvitationRedeemRequest {
+  return {
+    kind: 'InvitationRedeemRequest',
+    apiVersion: 'user.appuio.io/v1',
+    token: token,
+    metadata: {
+      name: name,
+    },
+  };
 }

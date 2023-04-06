@@ -26,10 +26,6 @@ const routes: Routes = [
   {
     path: ':name',
     component: InvitationViewComponent,
-    canActivate: [KubernetesPermissionGuard],
-    data: {
-      requiredKubernetesPermissions: [{ ...InvitationPermissions, verb: 'list' }],
-    },
   },
 ];
 

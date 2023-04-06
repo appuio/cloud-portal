@@ -9,7 +9,7 @@ import { User } from '../types/user';
 import { Zone } from '../types/zone';
 import { ClusterRoleBinding } from '../types/clusterrole-binding';
 import { ClusterRole } from '../types/clusterRole';
-import { Invitation } from '../types/invitation';
+import { Invitation, InvitationRedeemRequest } from '../types/invitation';
 
 export const organizationEntityKey = 'organization.appuio.io/v1/organizations';
 export const organizationMembersEntityKey = 'appuio.io/v1/organizationmembers';
@@ -22,6 +22,7 @@ export const teamEntityKey = 'appuio.io/v1/teams';
 export const userEntityKey = 'appuio.io/v1/users';
 export const zoneEntityKey = 'appuio.io/v1/zones';
 export const invitationEntityKey = 'user.appuio.io/v1/invitations';
+export const invitationRedeemRequestEntityKey = 'user.appuio.io/v1/invitationredeemrequests';
 
 const pluralNames = {};
 export const entityMetadataMap: EntityMetadataMap = {
@@ -91,6 +92,10 @@ export const entityMetadataMap: EntityMetadataMap = {
   Invitation: {
     entityName: invitationEntityKey,
     selectId: (inv: Invitation) => inv.metadata.name, // cluster-scoped
+  },
+  InvitationRedeemRequest: {
+    entityName: invitationRedeemRequestEntityKey,
+    selectId: (invReq: InvitationRedeemRequest) => invReq.metadata.name, // cluster-scoped
   },
 };
 

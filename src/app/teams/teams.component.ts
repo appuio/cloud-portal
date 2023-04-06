@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatestWith, map, Observable, Subscription } from 'rxjs';
+import { combineLatestWith, map, Observable, of, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { Organization } from '../types/organization';
 import { switchMap } from 'rxjs/operators';
 
 interface Payload {
-  organization: Organization;
+  organization?: Organization;
   teams: Team[];
   canCreate: boolean;
   canEdit: boolean;
@@ -74,11 +74,19 @@ export class TeamsComponent implements OnInit, OnDestroy {
     this.payload$ = this.organizationService.getAllMemoized().pipe(
       switchMap((orgs) => {
         if (orgs.length === 0) {
-          throw new Error('no organizations available');
+          return of(undefined);
         }
         return this.organizationService.selectedOrganization$;
       }),
       switchMap((org) => {
+        if (!org) {
+          return of({
+            teams: [],
+            canCreate: false,
+            canDelete: false,
+            canEdit: false,
+          } satisfies Payload);
+        }
         const organizationName = org.metadata.name;
         return this.teamService.getAllInNamespaceMemoized(organizationName).pipe(
           combineLatestWith(

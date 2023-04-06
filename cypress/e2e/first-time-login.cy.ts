@@ -2,6 +2,8 @@ import { createUser } from '../fixtures/user';
 import { organizationListNxtVshn, setOrganization } from '../fixtures/organization';
 import { OrganizationPermissions } from '../../src/app/types/organization';
 import { createOrganizationMembers } from '../fixtures/organization-members';
+import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
+import { InvitationPermissions } from '../../src/app/types/invitation';
 
 describe('Test First Time Login', () => {
   beforeEach(() => {
@@ -39,7 +41,6 @@ describe('Test First Time Login', () => {
       { verb: 'list', resource: 'organizationmembers', group: 'rbac.appuio.io' },
       { verb: 'list', ...OrganizationPermissions }
     );
-    cy.setPermission();
     setOrganization(cy, ...organizationListNxtVshn.items);
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/namespaces/nxt/organizationmembers/members', {
       body: createOrganizationMembers({
@@ -54,6 +55,18 @@ describe('Test First Time Login', () => {
       }),
     });
     cy.visit('/');
+    cy.get('.p-dialog-header').should('not.exist');
+  });
+
+  it('do not show dialog when redeeming invitations', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationMembersPermissions },
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'list', ...InvitationPermissions }
+    );
+    setOrganization(cy);
+    cy.visit('/invitations/uuid');
+    cy.get('#title').should('contain.text', 'Invitation');
     cy.get('.p-dialog-header').should('not.exist');
   });
 

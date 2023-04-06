@@ -39,6 +39,9 @@ export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (window.location.pathname.includes('/invitations/')) {
+      return;
+    }
     if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
       this.subscriptions.push(
         this.organizationService

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "http-server": "angular-http-server --path dist/cloud-portal/en-CH -p 4200",
+    "http-server": "angular-http-server --silent --path dist/cloud-portal/en-CH -p 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest --passWithNoTests",

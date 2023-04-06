@@ -15,6 +15,7 @@ export interface AppConfig {
     zoneURLLabels: { [key: string]: string };
     consoleUrlKey: string;
   };
+  countries: { code?: string; name: string }[];
 }
 
 export interface ZoneConfig {

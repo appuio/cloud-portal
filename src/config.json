@@ -33,5 +33,23 @@
       "oauth": "API Token"
     },
     "consoleUrlKey": "console"
-  }
+  },
+  "countries": [
+    {
+      "code": "CH",
+      "name": "Switzerland"
+    },
+    {
+      "code": "DE",
+      "name": "Germany"
+    },
+    {
+      "code": "AT",
+      "name": "Austria"
+    },
+    {
+      "code": "LI",
+      "name": "Liechtenstein"
+    }
+  ]
 }

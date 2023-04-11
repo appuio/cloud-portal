@@ -6,7 +6,7 @@ import {
   QueryParams,
 } from '@ngrx/data';
 import { KubeObject } from '../types/entity';
-import { map, Observable, ObservableInput, of, take, tap } from 'rxjs';
+import { filter, map, Observable, ObservableInput, of, take, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { buildId } from './kubernetes-data.service';
 import { Injectable } from '@angular/core';
@@ -53,7 +53,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
    * If it doesn't it returns the result of {@link getByKey}.
    * @param key the "name" or "namespace/name" of a Kubernetes resource.
    * @param options options that influence merge behavior.
-   * @returns Observable of the queried entities after server reports successful query or the query error.
+   * @returns Observable of the queried entity after server reports successful query or the query error.
    */
   public getByKeyMemoized(key: string, options?: EntityActionOptions): Observable<T> {
     return this.entities$.pipe(
@@ -72,6 +72,37 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
   }
 
   /**
+   * Emits the entity identified by key and all its updates from the cache.
+   * If the entity initially doesn't exist, it will be queried from remote API.
+   * To trigger an update, call any of the other methods on this class that update the entity collection cache.
+   * Updates are only emitted if the `.metadata.resourceVersion` has changed to filter unrelated changes occurring in the collection.
+   * @param key
+   * @param options
+   * @returns Continuous Observable of the queried entity
+   */
+  public streamByKeyMemoized(key: string, options?: EntityActionOptions): Observable<T> {
+    return this.getByKeyMemoized(key, options).pipe(
+      switchMap((existing) => {
+        let resourceVersion = existing.metadata.resourceVersion ?? '';
+        return this.entities$.pipe(
+          map(
+            (entities) =>
+              entities.find((entity) => buildId(entity.metadata.name, entity.metadata.namespace) === key) as T
+          ),
+          filter((entity) => {
+            if (!entity) {
+              return false;
+            }
+            const hasChanged = resourceVersion !== entity.metadata.resourceVersion;
+            resourceVersion = entity.metadata.resourceVersion ?? '';
+            return hasChanged;
+          })
+        );
+      })
+    );
+  }
+
+  /**
    * Returns all entities from the cache if it has been loaded before.
    * If it hasn't been loaded yet, it dispatches an action to query remote storage as in {@link EntityCollectionServiceBase.getAll}.
    * @param options options that influence merge behavior.
@@ -85,6 +116,18 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
           return this.entities$;
         }
         return this.getAll(options);
+      })
+    );
+  }
+
+  /**
+   * Like {@link getAllMemoized}, but doesn't terminate the Observable.
+   * Any update to the entity cache emits the whole collection.
+   */
+  public streamAllMemoized(options?: EntityActionOptions): Observable<T[]> {
+    return this.getAllMemoized(options).pipe(
+      switchMap(() => {
+        return this.entities$;
       })
     );
   }

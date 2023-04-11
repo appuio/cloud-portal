@@ -125,6 +125,41 @@ describe('Test billing entity form elements', () => {
       .should('not.contain.text', 'accounting@company');
   });
 
+  it('should prefill existing values', () => {
+    cy.intercept('GET', '/appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+
+    cy.visit('/billingentities/be-2345?edit=y');
+
+    cy.get('#displayName').should('have.value', '➡️ Engineering GmbH');
+    cy.get('#companyEmail').should('contain.text', 'hallo@nxt.engineering');
+    cy.get('#phone').should('have.value', '☎️');
+    cy.get('#line1').should('have.value', '📃');
+    cy.get('#line2').should('have.value', '📋');
+    cy.get('#postal').should('have.value', '🏤');
+    cy.get('#city').should('have.value', '🏙️');
+    cy.get('p-dropdown').should('contain.text', 'Switzerland');
+    cy.get('#accountingName').should('have.value', 'mig');
+    cy.get('#accountingEmail').should('contain.text', 'hallo@nxt.engineering');
+
+    cy.get('#companyEmail').find('input').type('{backspace}info@nxt.engineering{enter}');
+    cy.get('#accountingEmail')
+      .should('contain.text', 'info@nxt.engineering')
+      .should('not.contain.text', 'accounting@nxt.engineering');
+    cy.get('.p-checkbox').should('have.class', 'p-checkbox-checked').click();
+    cy.get('#accountingEmail')
+      .should('not.contain.text', 'info@nxt.engineering')
+      .should('contain.text', 'hallo@nxt.engineering');
+    cy.get('#accountingEmail').find('input').type('{backspace}accounting@nxt.engineering{enter}');
+
+    cy.get('.p-checkbox').click();
+    cy.get('#accountingEmail')
+      .should('not.contain.text', 'accounting@nxt.engineering')
+      .should('contain.text', 'info@nxt.engineering');
+    cy.get('button[type="submit"]').should('be.enabled');
+  });
+
   it('should cancel editing', () => {
     setBillingEntities(cy);
 
@@ -154,7 +189,7 @@ describe('Test billing entity create', () => {
     cy.setPermission({ verb: 'list', ...BillingEntityPermissions }, { verb: 'create', ...BillingEntityPermissions });
   });
 
-  it('should submit form values', () => {
+  it('should create billing', () => {
     cy.intercept('POST', '/appuio-api/apis/billing.appuio.io/v1/billingentities', {
       body: billingEntityNxt,
     }).as('createBillingEntity');
@@ -202,7 +237,108 @@ describe('Test billing entity create', () => {
       });
 
     cy.get('p-toast').should('contain.text', 'Successfully saved');
+    cy.url().should('include', '/billingentities/be-2345').should('not.include', '?edit=y');
+    cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
+
     cy.get('#title').should('contain.text', 'be-2345');
-    cy.url().should('include', '/billingentities/be-2345');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️Switzerland');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
+  });
+});
+
+describe('Test billing entity edit', () => {
+  beforeEach(() => {
+    cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
+  });
+  beforeEach(() => {
+    // needed for initial getUser request
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
+    cy.setPermission(
+      { verb: 'list', ...BillingEntityPermissions },
+      { verb: 'create', ...BillingEntityPermissions },
+      { verb: 'update', ...BillingEntityPermissions, name: 'be-2345' }
+    );
+  });
+
+  it('should update billing', () => {
+    cy.intercept('GET', '/appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', {
+      body: billingEntityNxt,
+    });
+
+    cy.intercept('PATCH', '/appuio-api/apis/billing.appuio.io/v1/billingentities/be-2345', (req) => {
+      req.reply(req.body);
+    }).as('updateBillingEntity');
+
+    cy.visit('/billingentities/be-2345');
+    cy.get('#title').should('contain.text', 'be-2345');
+
+    cy.get('svg[class*="fa-pen-to-square"]').click();
+
+    cy.get('#displayName').should('have.value', '➡️ Engineering GmbH');
+
+    cy.get('#displayName').type('{selectAll}nxt Engineering');
+    cy.get('#companyEmail').type('info@nxt.engineering{enter}');
+    cy.get('#phone').type('{selectAll}1234');
+    cy.get('#line1').type('{selectAll}line1');
+    cy.get('#line2').type('{selectAll}{backspace}').should('have.value', '');
+    cy.get('#postal').type('{selectAll}4321');
+    cy.get('#city').type('{selectAll}Berlin');
+    cy.get('p-dropdown').click().contains('Germany').click();
+
+    cy.get('#accountingName').type('{selectAll}{backspace}crc');
+    cy.get('.p-checkbox').click();
+
+    cy.get('button[type="submit"]').should('be.enabled').click();
+    cy.wait('@updateBillingEntity')
+      .its('request.body')
+      .then((body: BillingEntity) => {
+        expect(body.metadata.name).eq('be-2345');
+        const expected: BillingEntitySpec = {
+          name: 'nxt Engineering',
+          phone: '1234',
+          emails: ['hallo@nxt.engineering', 'info@nxt.engineering'],
+          address: {
+            line1: 'line1',
+            line2: '',
+            postalCode: '4321',
+            city: 'Berlin',
+            country: 'Germany',
+          },
+          accountingContact: {
+            name: 'crc',
+            emails: ['hallo@nxt.engineering'],
+          },
+          // even we don't use this field yet, ensure it gets sent back.
+          languagePreference: '🇩🇪',
+        };
+        console.debug('expected', expected);
+        console.debug('actual', body.spec);
+        expect(body.spec).deep.eq(expected);
+      });
+
+    cy.get('p-toast').should('contain.text', 'Successfully saved');
+    cy.url().should('include', '/billingentities/be-2345').should('not.include', '?edit=y');
+    // check values
+    cy.get('#title').should('contain.text', 'be-2345');
+    cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', 'nxt Engineering');
+    cy.get('.flex-wrap > .text-900')
+      .eq(1)
+      .should('contain.text', 'hallo@nxt.engineering')
+      .should('contain.text', 'info@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '1234');
+    cy.get('.flex-wrap > .text-900')
+      .eq(3)
+      .should('contain.text', 'line1')
+      .should('contain.text', '4321 Berlin')
+      .should('contain.text', 'Germany');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'crc hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
   });
 });

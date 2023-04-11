@@ -108,7 +108,7 @@
       </small>
     </div>
     <button
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || form.pristine"
       [loading]="(billingService.loading$ | ngrxPush) ?? false"
       class="w-auto mr-3 p-button-primary"
       pButton pRipple type="submit"
@@ -116,7 +116,11 @@
       <fa-icon [icon]="faSave" class="pr-2"/>
       <span class="pr-2" i18n>Save</span>
     </button>
-    <button class="w-auto mr-3 p-button-secondary p-button-outlined" pButton pRipple type="button" (click)="cancel()">
+    <button
+      class="w-auto mr-3 p-button-secondary p-button-outlined"
+      pButton pRipple type="button"
+      (click)="cancel()"
+    >
       <fa-icon [icon]="faCancel" class="pr-2"/>
       <span class="pr-2" i18n>Cancel</span>
     </button>

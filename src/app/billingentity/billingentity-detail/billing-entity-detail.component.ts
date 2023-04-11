@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { faCancel, faClose, faEdit, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 
@@ -15,27 +15,39 @@ export class BillingEntityDetailComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;
   isEditing$?: Observable<boolean>;
   billingEntityName = '';
+  updatedBillingEntity: BehaviorSubject<BillingEntity | undefined>;
 
   faWarning = faWarning;
   faEdit = faEdit;
   faCancel = faCancel;
   faClose = faClose;
 
-  constructor(private route: ActivatedRoute, private billingService: BillingEntityCollectionService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private billingService: BillingEntityCollectionService
+  ) {
+    this.updatedBillingEntity = new BehaviorSubject<BillingEntity | undefined>(undefined);
+  }
 
   ngOnInit(): void {
     this.isEditing$ = this.route.queryParamMap.pipe(map((queryParams) => queryParams.get('edit') === 'y'));
-    this.viewModel$ = this.route.paramMap.pipe(
-      switchMap((params) => {
-        const name = params.get('name');
-        if (!name) {
-          throw new Error('name is required');
+    this.viewModel$ = this.updatedBillingEntity.pipe(
+      switchMap((be) => {
+        if (be) {
+          return forkJoin([of(be), this.billingService.canEditBilling(be.metadata.name)]);
         }
-        this.billingEntityName = name;
-        if (name === '$new') {
-          return forkJoin([of(this.billingService.newBillingEntity()), of(true)]);
-        }
-        return forkJoin([this.billingService.getByKeyMemoized(name), this.billingService.canEditBilling(name)]);
+        return this.route.paramMap.pipe(
+          map((params) => params.get('name') as string),
+          filter((name) => name !== null),
+          switchMap((name) => {
+            this.billingEntityName = name;
+            if (name === '$new') {
+              return forkJoin([of(this.billingService.newBillingEntity()), of(true)]);
+            }
+            return forkJoin([this.billingService.getByKeyMemoized(name), this.billingService.canEditBilling(name)]);
+          })
+        );
       }),
       map(([billingEntity, canEdit]) => {
         return {
@@ -48,6 +60,10 @@ export class BillingEntityDetailComponent implements OnInit {
 
   isNewBE(be: BillingEntity): boolean {
     return !!be.metadata.generateName;
+  }
+
+  updateBillingEntity(event: BillingEntity): void {
+    this.updatedBillingEntity.next(event);
   }
 }
 

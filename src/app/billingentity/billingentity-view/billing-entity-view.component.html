@@ -7,8 +7,8 @@
     <li *ngIf="billingEntity.spec.emails" class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
       <div class="text-500 w-full md:w-3 font-medium" i18n>Company Email</div>
       <div class="text-900 w-full md:w-9">
-        <ul *ngFor="let email of billingEntity.spec.emails" class="pl-0 list-none">
-          <li>{{ email }}</li>
+        <ul *ngIf="billingEntity.spec.emails" class="pl-0 list-none">
+          <li *ngFor="let email of billingEntity.spec.emails" >{{ email }}</li>
         </ul>
       </div>
     </li>
@@ -30,8 +30,8 @@
       <div class="text-500 w-full md:w-3 font-medium" i18n>Invoice Recipient</div>
       <div class="text-900 w-full md:w-9">
         {{ billingEntity.spec.accountingContact.name }}
-        <ul *ngFor="let email of billingEntity.spec.accountingContact.emails" class="pl-0 list-none">
-          <li>{{ email }}</li>
+        <ul *ngIf="billingEntity.spec.accountingContact.emails" class="pl-0 list-none">
+          <li *ngFor="let email of billingEntity.spec.accountingContact.emails">{{ email }}</li>
         </ul>
       </div>
     </li>

@@ -42,11 +42,13 @@ export class BillingEntityComponent implements OnInit {
             of(be),
             // enrich the BE with information about permissions.
             this.billingEntityService.canEditMembers(`billingentities-${be.metadata.name}-admin`),
+            this.billingEntityService.canEditBilling(be.metadata.name),
           ]).pipe(
-            map(([billingEntity, canViewMembers]) => {
+            map(([billingEntity, canViewMembers, canEdit]) => {
               return {
                 billingEntity,
                 canViewMembers,
+                canEdit,
               } satisfies BillingModel;
             })
           );
@@ -77,5 +79,6 @@ interface ViewModel {
 
 interface BillingModel {
   billingEntity: BillingEntity;
+  canEdit: boolean;
   canViewMembers: boolean;
 }

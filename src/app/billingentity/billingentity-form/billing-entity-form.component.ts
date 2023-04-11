@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCancel, faSave } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
@@ -21,6 +21,9 @@ export class BillingEntityFormComponent implements OnInit {
   @Input()
   billingEntity!: BillingEntity;
 
+  @Output()
+  updatedBillingEvent = new EventEmitter<BillingEntity>();
+
   form!: FormGroup<BillingForm>;
 
   faSave = faSave;
@@ -40,6 +43,7 @@ export class BillingEntityFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.countryOptions = this.appConfig.getConfiguration().countries;
+    this.billingEntity = structuredClone(this.billingEntity); // make fields writable if editing existing BE.
     const spec = this.billingEntity.spec;
     const companyEmails = spec.emails?.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) ?? [];
     const accountingEmails =
@@ -103,7 +107,7 @@ export class BillingEntityFormComponent implements OnInit {
       return;
     }
     const controls = this.form.controls;
-    const be = structuredClone(this.billingEntity);
+    const be = this.billingEntity;
     be.spec = {
       ...be.spec,
       name: controls.displayName.value,
@@ -153,9 +157,13 @@ export class BillingEntityFormComponent implements OnInit {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    void this.router.navigate(['..', be.metadata.name], {
+    this.updatedBillingEvent.emit(be);
+    // TODO: navigating to previous location with fallback might not work correctly.
+    // But since the backend hasn't implemented creating/editing BE yet, it's hard to test.
+    const previous = this.navigationService.previousRoute(`../${be.metadata.name}`);
+    void this.router.navigate([previous.path], {
       relativeTo: this.activatedRoute,
-      queryParams: { edit: undefined },
+      queryParams: { ...previous.queryParams, edit: undefined },
       queryParamsHandling: 'merge',
     });
   }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCancel, faSave } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
@@ -20,9 +20,6 @@ import { filter } from 'rxjs';
 export class BillingEntityFormComponent implements OnInit {
   @Input()
   billingEntity!: BillingEntity;
-
-  @Output()
-  updatedBillingEvent = new EventEmitter<BillingEntity>();
 
   form!: FormGroup<BillingForm>;
 
@@ -157,7 +154,6 @@ export class BillingEntityFormComponent implements OnInit {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    this.updatedBillingEvent.emit(be);
     // TODO: navigating to previous location with fallback might not work correctly.
     // But since the backend hasn't implemented creating/editing BE yet, it's hard to test.
     const previous = this.navigationService.previousRoute(`../${be.metadata.name}`);

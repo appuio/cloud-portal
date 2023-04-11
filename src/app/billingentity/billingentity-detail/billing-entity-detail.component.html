@@ -32,7 +32,6 @@
       <app-billingentity-form
         *ngIf="isEditing$ | ngrxPush"
         [billingEntity]="vm.billingEntity"
-        (updatedBillingEvent)="updateBillingEntity($event)"
       />
     </div>
   </ng-container>

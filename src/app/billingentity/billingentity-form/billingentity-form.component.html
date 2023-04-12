@@ -13,13 +13,14 @@
 
     <div class="field mb-2 col-12">
       <label for="companyEmail" i18n>Emails</label>
+      <!-- Using $any() as a workaround for https://github.com/primefaces/primeng/issues/12640 -->
       <p-chips
         formControlName="companyEmail"
         id="companyEmail"
-        separator=","
+        [separator]="$any(emailSeparatorExp)"
         [allowDuplicate]="false"
-        placeholder="Enter comma separated"
-        i18n-placeholder
+        [addOnBlur]="true"
+        [addOnTab]="true"
       />
     </div>
 
@@ -81,13 +82,14 @@
           label="Same as company emails"
         />
       </label>
+      <!-- Using $any() as a workaround for https://github.com/primefaces/primeng/issues/12640 -->
       <p-chips
         formControlName="accountingEmail"
         id="accountingEmail"
-        separator=","
+        [separator]="$any(emailSeparatorExp)"
         [allowDuplicate]="false"
-        placeholder="Enter comma separated"
-        i18n-placeholder
+        [addOnBlur]="true"
+        [addOnTab]="true"
       />
     </div>
   </div>

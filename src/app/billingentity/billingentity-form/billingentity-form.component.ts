@@ -26,6 +26,7 @@ export class BillingentityFormComponent implements OnInit {
   faSave = faSave;
   faCancel = faCancel;
   countryOptions?: { code?: string; name: string }[] = [];
+  emailSeparatorExp = /[, ]/;
 
   constructor(
     public billingService: BillingEntityCollectionService,

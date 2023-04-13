@@ -1,71 +1,101 @@
-<p-dialog
-  (onHide)="onHide()"
-  [(visible)]="showFirstLoginDialog"
-  [draggable]="false"
-  [modal]="true"
-  [resizable]="false"
-  [style]="{ width: '590px' }"
-  appendTo="body"
-  header="Welcome to the APPUiO Cloud Portal"
-  i18n-header>
-  <div class="flex flex-wrap pt-4">
-    <div class="hidden sm:flex bg-blue-50 align-items-center justify-content-center w-4 border-round">
-      <img alt="Image" class="w-9" src="assets/logo_appuio_cloud_rgb.svg" />
+<ng-container *ngrxLet="viewModel$ as vm">
+  <p-dialog
+    *ngIf="vm"
+    (onHide)="onHide()"
+    [(visible)]="vm.showFirstLoginDialog"
+    [draggable]="false"
+    [modal]="true"
+    [resizable]="false"
+    [style]="{ width: '590px' }"
+    appendTo="body"
+    header="Welcome to the APPUiO Cloud Portal"
+    i18n-header>
+    <div class="flex flex-wrap pt-4">
+      <div class="hidden sm:flex bg-blue-50 align-items-center justify-content-center w-4 border-round">
+        <img alt="Image" class="w-9" src="assets/logo_appuio_cloud_rgb.svg"/>
+      </div>
+      <div class="text-700 line-height-3 pl-4 sm:w-8">
+        <p class="mt-0" i18n *ngIf="!vm.userBelongsToOrganization">
+          You do not yet belong to an organization.
+          <span *ngIf="vm.showAddBillingButton || vm.showAddOrganizationButton"> You can either join an existing organization or create a new one.</span>
+          <span *ngIf="!vm.showAddBillingButton && !vm.showAddOrganizationButton"> You can join an existing organization.</span>
+          <span *ngIf="vm.showAddBillingButton"> To create a new organization, first setup Billing.</span>
+        </p>
+        <p class="mt-0" i18n *ngIf="vm.showSetDefaultOrganizationButton">
+          You don't have a default organization set in your settings.
+          Do you want to do that now?
+        </p>
+
+        <p i18n>
+          Don't forget to have a look at the
+          <a href="https://docs.appuio.cloud/user/index.html" target="_blank">documentation</a>
+          of APPUiO Cloud.
+        </p>
+
+        <p-checkbox
+          inputId="hideFirstTimeLoginDialogCheckbox"
+          [binary]="true"
+          [formControl]="hideFirstTimeLoginDialogControl"
+          i18n-label
+          label="Don't show again"
+        />
+      </div>
     </div>
-    <div class="text-700 line-height-3 pl-4 sm:w-8">
-      <p class="mt-0" i18n *ngIf="!userBelongsToOrganization">
-        Unfortunately, you do not yet belong to an organization. You can either join an existing organization or create
-        a new one.
-      </p>
-      <p class="mt-0" i18n *ngIf="userBelongsToOrganization && !userHasDefaultOrganization">
-        You don't yet have a default organization set in your settings. Do you want to do that now?
-      </p>
+    <ng-template pTemplate="footer">
+      <div class="pt-3 flex">
 
-      <p i18n>
-        Don't forget to have a look at the
-        <a href="https://docs.appuio.cloud/user/index.html" target="_blank">documentation</a>
-        of APPUiO Cloud.
-      </p>
+        <button
+          *ngIf="vm.showJoinOrganizationButton"
+          [routerLink]="['organizations']"
+          [queryParams]="{showJoinDialog: 'true'}"
+          (click)="hideDialog(vm)"
+          id="joinOrganizationDialogButton"
+          pButton
+          pRipple
+        >
+          <fa-icon [icon]="faSitemap" class="mr-2"/>
+          <span i18n>Join Organization</span>
+        </button>
 
-      <p-checkbox
-        inputId="hideFirstTimeLoginDialogCheckbox"
-        [binary]="true"
-        [formControl]="hideFirstTimeLoginDialogControl"
-        i18n-label
-        label="Don't show again"></p-checkbox>
-    </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="pt-3 flex">
-      <button
-        *ngIf="!userBelongsToOrganization"
-        (click)="joinOrganization()"
-        id="joinOrganizationDialogButton"
-        pButton
-        pRipple>
-        <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
-        <span i18n>Join Organization</span>
-      </button>
+        <button
+          *ngIf="vm.showAddBillingButton"
+          [routerLink]="['billingentities', '$new']"
+          [queryParams]="{edit: 'y', firstTime: 'y'}"
+          (click)="hideDialog(vm)"
+          id="addBillingDialogButton"
+          pButton
+          pRipple
+        >
+          <fa-icon [icon]="faAdd" class="mr-2"/>
+          <span i18n>Add Billing</span>
+        </button>
 
-      <button
-        *ngIf="!userBelongsToOrganization"
-        (click)="addOrganization()"
-        id="addOrganizationDialogButton"
-        pButton
-        pRipple>
-        <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-        <span i18n>Add new Organization</span>
-      </button>
+        <button
+          *ngIf="vm.showAddOrganizationButton"
+          [routerLink]="['organizations', '$new']"
+          (click)="hideDialog(vm)"
+          id="addOrganizationDialogButton"
+          pButton
+          pRipple
+        >
+          <fa-icon [icon]="faAdd" class="mr-2"/>
+          <span i18n>Add Organization</span>
+        </button>
 
-      <button
-        *ngIf="userBelongsToOrganization && !userHasDefaultOrganization"
-        (click)="setDefaultOrganization()"
-        id="setDefaultOrganizationDialogButton"
-        pButton
-        pRipple>
-        <fa-icon [icon]="faCoq" class="mr-2"></fa-icon>
-        <span i18n>Set Default Organization</span>
-      </button>
-    </div>
-  </ng-template>
-</p-dialog>
+        <button
+          *ngIf="vm.showSetDefaultOrganizationButton"
+          [routerLink]="['user']"
+          (click)="hideDialog(vm)"
+          id="setDefaultOrganizationDialogButton"
+          pButton
+          pRipple
+        >
+          <fa-icon [icon]="faCoq" class="mr-2"/>
+          <span i18n>Set Default Organization</span>
+        </button>
+
+      </div>
+    </ng-template>
+  </p-dialog>
+
+</ng-container>

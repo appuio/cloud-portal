@@ -1,6 +1,7 @@
 import { createUser } from '../fixtures/user';
 import { BillingEntity, BillingEntityPermissions, BillingEntitySpec } from '../../src/app/types/billing-entity';
 import { billingEntityNxt, setBillingEntities } from '../fixtures/billingentities';
+import { OrganizationPermissions } from '../../src/app/types/organization';
 
 describe('Test billing entity form elements', () => {
   beforeEach(() => {
@@ -186,7 +187,11 @@ describe('Test billing entity create', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions }, { verb: 'create', ...BillingEntityPermissions });
+    cy.setPermission(
+      { verb: 'list', ...BillingEntityPermissions },
+      { verb: 'create', ...BillingEntityPermissions },
+      { verb: 'list', ...OrganizationPermissions }
+    );
   });
 
   it('should create billing', () => {
@@ -246,6 +251,39 @@ describe('Test billing entity create', () => {
     cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️Switzerland');
     cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig hallo@nxt.engineering');
     cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
+  });
+
+  it('should forward to organizations if first time', () => {
+    cy.intercept('POST', '/appuio-api/apis/billing.appuio.io/v1/billingentities', (req) => {
+      const be: BillingEntity = req.body;
+      be.metadata.name = 'be-2345';
+      be.metadata.generateName = '';
+      req.reply(be);
+    }).as('createBillingEntity');
+    setBillingEntities(cy, billingEntityNxt);
+
+    cy.visit('/billingentities/$new?edit=y&firstTime=y');
+    cy.get('#title').should('contain.text', 'New Billing');
+
+    cy.get('#displayName').type('➡️ Engineering GmbH');
+
+    cy.get('#companyEmail').find('input').type('hallo@nxt.engineering,');
+    cy.get('#phone').type('☎️');
+    cy.get('#line1').type('📃');
+    cy.get('#line2').type('📋');
+    cy.get('#postal').type('🏤');
+    cy.get('#city').type('🏙️');
+    cy.get('p-dropdown').click().contains('Switzerland').click();
+
+    cy.get('#accountingName').type('mig');
+
+    cy.get('button[type="submit"]').should('be.enabled').click();
+    cy.wait('@createBillingEntity');
+
+    cy.get('p-toast').should('contain.text', 'Successfully saved');
+    cy.url().should('include', '/organizations/$new').should('not.include', '?edit=y');
+
+    cy.get('#title').should('contain.text', 'New Organization');
   });
 });
 

@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivationStart, Router } from '@angular/router';
+import { faAdd, faCog, faDollarSign, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
-import { Organization } from '../types/organization';
-import { combineLatestWith, forkJoin, Subscription } from 'rxjs';
-import { User } from '../types/user';
+import { filter, forkJoin, map, Observable, of, take } from 'rxjs';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
-import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
 import { UserCollectionService } from '../store/user-collection.service';
+import { BrowserStorageService } from '../shared/browser-storage.service';
+import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
+import { switchMap } from 'rxjs/operators';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -18,106 +18,94 @@ export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
   styleUrls: ['./first-time-login-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FirstTimeLoginDialogComponent implements OnInit, OnDestroy {
-  showFirstLoginDialog = false;
+export class FirstTimeLoginDialogComponent implements OnInit {
+  viewModel$?: Observable<ViewModel>;
+
   faSitemap = faSitemap;
   faAdd = faAdd;
   faCoq = faCog;
+  faDollarSign = faDollarSign;
   hideFirstTimeLoginDialogControl = new FormControl(false);
-  nextAction?: 'join' | 'add' | 'setDefault';
-  userHasDefaultOrganization = true;
-  userBelongsToOrganization = true;
-  private subscriptions: Subscription[] = [];
+  nextAction?: 'join' | 'add';
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
+    private storageService: BrowserStorageService,
     private changeDetectorRef: ChangeDetectorRef,
-    private organizationMembersService: OrganizationMembersCollectionService,
     private organizationService: OrganizationCollectionService,
+    private billingService: BillingEntityCollectionService,
     private identityService: IdentityService,
     private userService: UserCollectionService
   ) {}
 
   ngOnInit(): void {
-    if (window.location.pathname.includes('/invitations/')) {
+    if (this.storageService.getLocalStorageItem(hideFirstTimeLoginDialogKey) === 'true') {
       return;
     }
-    if (window.localStorage.getItem(hideFirstTimeLoginDialogKey) !== 'true') {
-      this.subscriptions.push(
-        this.organizationService
-          .getAllMemoized()
-          .pipe(combineLatestWith(this.userService.currentUser$))
-          .subscribe(([orgs, user]) => {
-            this.userHasDefaultOrganization = !!this.getDefaultOrganization(user);
-            this.showFirstLoginDialogIfNecessary(orgs);
+
+    this.viewModel$ = forkJoin([
+      this.router.events.pipe(
+        filter((e) => e instanceof ActivationStart),
+        map((e) => {
+          return e as ActivationStart;
+        }),
+        take(2),
+        map((e) => e.snapshot.data)
+      ),
+      this.billingService.canCreateBilling(),
+    ]).pipe(
+      switchMap(([data, canCreateBilling]) => {
+        const hideDialogByRoute: boolean = data[hideFirstTimeLoginDialogKey];
+        if (hideDialogByRoute) {
+          return of({
+            showFirstLoginDialog: false,
+          } satisfies ViewModel);
+        }
+        const be$ = canCreateBilling && !hideDialogByRoute ? this.billingService.getAllMemoized() : of([]);
+        return forkJoin([
+          be$,
+          this.organizationService.getAllMemoized(),
+          this.userService.currentUser$.pipe(take(1)),
+        ]).pipe(
+          map(([beList, orgs, user]) => {
+            const userHasDefaultOrganization = !!user?.spec.preferences?.defaultOrganizationRef;
+            const userSettingsExists = user.metadata.resourceVersion !== undefined;
+            const userBelongsToBilling = beList.length > 0;
+            const userBelongsToOrganization = orgs.length > 0;
+            return {
+              showFirstLoginDialog: !userBelongsToOrganization || !userHasDefaultOrganization,
+              userBelongsToOrganization,
+              showJoinOrganizationButton: !userBelongsToOrganization,
+              showSetDefaultOrganizationButton:
+                !userHasDefaultOrganization && userBelongsToOrganization && userSettingsExists,
+              showAddBillingButton: !userBelongsToBilling && canCreateBilling,
+              showAddOrganizationButton: !userBelongsToOrganization && userBelongsToBilling,
+            } satisfies ViewModel;
           })
-      );
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
-
-  private showFirstLoginDialogIfNecessary(organizationList: Organization[]): void {
-    this.userBelongsToOrganization = organizationList.length > 0;
-    if (!this.userBelongsToOrganization || !this.userHasDefaultOrganization) {
-      this.showFirstLoginDialog = true;
-      this.changeDetectorRef.markForCheck();
-      return;
-    }
-
-    const getOrganizationMembersRequests = organizationList.map((organization) =>
-      this.organizationMembersService.getByKeyMemoized(`${organization.metadata.name}/members`)
+        );
+      })
     );
-
-    forkJoin(getOrganizationMembersRequests).subscribe((members) => {
-      const usernames = members
-        .map((organizationMembers) => (organizationMembers.spec.userRefs ?? []).map((userRef) => userRef.name))
-        .flatMap((usernames) => usernames);
-      if (!usernames.includes(this.identityService.getUsername())) {
-        this.userBelongsToOrganization = false;
-        this.showFirstLoginDialog = true;
-        this.changeDetectorRef.markForCheck();
-      }
-    });
   }
 
-  getDefaultOrganization(user: User): string | undefined {
-    return user?.spec.preferences?.defaultOrganizationRef;
-  }
-
-  addOrganization(): void {
-    this.showFirstLoginDialog = false;
-    this.nextAction = 'add';
-  }
-
-  joinOrganization(): void {
-    this.showFirstLoginDialog = false;
-    this.nextAction = 'join';
-  }
-
-  setDefaultOrganization(): void {
-    this.showFirstLoginDialog = false;
-    this.nextAction = 'setDefault';
+  hideDialog(vm: ViewModel): void {
+    vm.showFirstLoginDialog = false;
   }
 
   onHide(): void {
-    this.firstTimeLoginDialogHide();
-    if (this.nextAction === 'add') {
-      void this.router.navigate(['organizations/$new']);
-    } else if (this.nextAction === 'join') {
-      void this.router.navigate(['organizations'], { queryParams: { showJoinDialog: true } });
-    } else if (this.nextAction === 'setDefault') {
-      void this.router.navigate(['user']);
-    }
-  }
-
-  firstTimeLoginDialogHide(): void {
     if (this.hideFirstTimeLoginDialogControl.value) {
-      window.localStorage.setItem(hideFirstTimeLoginDialogKey, 'true');
+      this.storageService.setLocalStorageItem(hideFirstTimeLoginDialogKey, 'true');
     } else {
-      window.localStorage.removeItem(hideFirstTimeLoginDialogKey);
+      this.storageService.removeLocalStorageItem(hideFirstTimeLoginDialogKey);
     }
   }
+}
+
+interface ViewModel {
+  showFirstLoginDialog: boolean;
+  userBelongsToOrganization?: boolean;
+  showJoinOrganizationButton?: boolean;
+  showSetDefaultOrganizationButton?: boolean;
+  showAddBillingButton?: boolean;
+  showAddOrganizationButton?: boolean;
 }

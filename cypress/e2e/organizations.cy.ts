@@ -2,14 +2,87 @@ import { createUser } from '../fixtures/user';
 import {
   organizationListNxtVshn,
   organizationListNxtVshnWithDisplayName,
+  organizationNxt,
   organizationVshn,
   setOrganization,
 } from '../fixtures/organization';
 import { OrganizationPermissions } from '../../src/app/types/organization';
 import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
 import { billingEntityNxt, billingEntityVshn, setBillingEntities } from '../fixtures/billingentities';
+import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
 
 describe('Test organization list', () => {
+  beforeEach(() => {
+    cy.setupAuth();
+    window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
+    cy.disableCookieBanner();
+  });
+  beforeEach(() => {
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
+    // needed for initial getUser request
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
+      body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
+    });
+  });
+
+  it('list with two entries', () => {
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: organizationListNxtVshn,
+    });
+    cy.visit('/organizations');
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+  });
+
+  it('empty list without billing list permission', () => {
+    setOrganization(cy);
+    cy.visit('/organizations');
+    cy.wait('@organizationList');
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
+  });
+
+  it('empty list with billing list permission', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'create', ...OrganizationPermissions },
+      { verb: 'list', ...BillingEntityPermissions }
+    );
+    setOrganization(cy);
+    setBillingEntities(cy);
+    cy.visit('/organizations');
+    cy.wait('@organizationList');
+    cy.get('#title').should('contain.text', 'New Organization');
+    cy.url().should('contain', '/organizations/$new');
+  });
+
+  it('request failed', () => {
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      statusCode: 403,
+    });
+    cy.visit('/organizations');
+    cy.get('#failure-message').should('contain.text', 'Organizations could not be loaded.');
+  });
+
+  it('failed requests are retried', () => {
+    let interceptCount = 0;
+    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', (req) => {
+      if (interceptCount === 0) {
+        interceptCount++;
+        req.reply({ statusCode: 503 });
+      } else {
+        req.reply(organizationListNxtVshn);
+      }
+    });
+    cy.visit('/organizations');
+
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+  });
+});
+
+describe('Test limited permissions', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -22,61 +95,52 @@ describe('Test organization list', () => {
     });
   });
 
-  it('list with two entries', () => {
+  it('no organization list permission', () => {
+    cy.setPermission();
+    cy.visit('/organizations');
+    cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+  });
+
+  it('no organization create permission', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions });
+    setOrganization(cy);
+    setBillingEntities(cy);
+
+    cy.visit('/organizations');
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
+    cy.get('#addOrganizationButton').should('not.exist');
+  });
+
+  it('no organization edit permission', () => {
+    cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'list', ...BillingEntityPermissions });
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
       body: organizationListNxtVshn,
     });
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
   });
 
-  it('empty list', () => {
+  it('should show empty list if no billing list permissions', () => {
     cy.setPermission({ verb: 'list', ...OrganizationPermissions });
     setOrganization(cy);
+
     cy.visit('/organizations');
-    cy.wait('@organizationList');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
   });
 
-  it('request failed', () => {
-    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      statusCode: 403,
-    });
+  it('should hide billing link if no billing list permission', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'update', ...OrganizationPermissions, namespace: organizationVshn.metadata.name }
+    );
+
+    setBillingEntities(cy);
+    setOrganization(cy, organizationVshn);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#failure-message').should('contain.text', 'Organizations could not be loaded.');
-  });
-
-  it('failed requests are retried', () => {
-    cy.setPermission({ verb: 'list', ...OrganizationPermissions });
-
-    let interceptCount = 0;
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', (req) => {
-      if (interceptCount === 0) {
-        interceptCount++;
-        req.reply({ statusCode: 503 });
-      } else {
-        req.reply(organizationListNxtVshn);
-      }
-    });
-    cy.visit('/organizations');
-
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
-  });
-
-  it('no permission', () => {
-    cy.intercept('POST', 'appuio-api/apis/authorization.k8s.io/v1/selfsubjectaccessreviews', {
-      body: { spec: { resourceAttributes: { resource: '', group: '', verb: '' } }, status: { allowed: false } },
-    });
-    cy.visit('/organizations');
-    cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+    cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
   });
 });
 
@@ -145,30 +209,6 @@ describe('Test organization edit', () => {
       'VSHN - the DevOps Company'
     );
   });
-
-  it('no edit permission', () => {
-    cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'list', ...BillingEntityPermissions });
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
-  });
-  it('no billing list permission', () => {
-    cy.setPermission(
-      { verb: 'list', ...OrganizationPermissions },
-      { verb: 'update', ...OrganizationPermissions, namespace: organizationVshn.metadata.name }
-    );
-
-    setBillingEntities(cy);
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
-  });
 });
 
 describe('Test organization add', () => {
@@ -188,10 +228,10 @@ describe('Test organization add', () => {
       { verb: 'create', ...OrganizationPermissions },
       { verb: 'list', ...BillingEntityPermissions },
       { verb: 'update', ...OrganizationPermissions, namespace: organizationVshn.metadata.name },
-      { verb: 'list', resource: 'organizationmembers', group: 'appuio.io', namespace: organizationVshn.metadata.name }
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: organizationVshn.metadata.name }
     );
 
-    setOrganization(cy);
+    setOrganization(cy, organizationNxt);
     setBillingEntities(cy, billingEntityNxt, billingEntityVshn);
 
     cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -200,7 +240,6 @@ describe('Test organization add', () => {
     }).as('add');
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
 
     cy.get('#addOrganizationButton').click();
 
@@ -220,13 +259,13 @@ describe('Test organization add', () => {
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
         expect(body.spec.billingEntityRef).to.eq('be-2347');
       });
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
-    cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'VSHN - the DevOps Company'
     );
-    cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('exist');
-    cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
+    cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').should('exist');
+    cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('exist');
   });
 
   it('add organization with invalid id', () => {
@@ -237,11 +276,8 @@ describe('Test organization add', () => {
     );
     setOrganization(cy);
     setBillingEntities(cy, billingEntityNxt);
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
+    cy.visit('/organizations/$new');
 
-    cy.get('#addOrganizationButton').click();
     cy.get('#selectedBillingEntity').click().contains('Engineering').click();
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
@@ -258,11 +294,7 @@ describe('Test organization add', () => {
     );
     setOrganization(cy);
     setBillingEntities(cy, billingEntityNxt);
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
-
-    cy.get('#addOrganizationButton').click();
+    cy.visit('/organizations/$new');
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('#selectedBillingEntity').click().contains('Engineering').click();
@@ -298,25 +330,5 @@ describe('Test organization add', () => {
     cy.get('#id').clear().type('vshn_1');
     cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');
     cy.get('button[type=submit]').should('be.disabled');
-  });
-
-  it('no create permission', () => {
-    cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'list', ...BillingEntityPermissions });
-    setOrganization(cy);
-    setBillingEntities(cy);
-
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
-    cy.get('#addOrganizationButton').should('not.exist');
-  });
-  it('no list billing permission', () => {
-    cy.setPermission({ verb: 'list', ...OrganizationPermissions }, { verb: 'create', ...OrganizationPermissions });
-    setOrganization(cy);
-
-    cy.visit('/organizations');
-    cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
-    cy.get('#addOrganizationButton').should('not.exist');
   });
 });

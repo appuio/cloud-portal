@@ -97,9 +97,8 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/home');
         }
 
-        // Note: The `take(1)`s below ensure our `forkJoin`s actually finish, otherwise they wait forever.
         return forkJoin([
-          this.billingService.getByKeyMemoized(beName).pipe(take(1)),
+          this.billingService.getByKeyMemoized(beName),
           this.rolebindingService
             .getByKeyMemoized(adminClusterRoleBindingName)
             .pipe(catchError(defaultIfNotFound(this.newRoleBinding(adminClusterRoleBindingName))), take(1)),

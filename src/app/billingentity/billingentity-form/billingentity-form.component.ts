@@ -144,7 +144,7 @@ export class BillingentityFormComponent implements OnInit {
     });
   }
 
-  private isNewBe(be?: BillingEntity): boolean {
+  isNewBe(be?: BillingEntity): boolean {
     return be ? !!be.metadata.generateName : !!this.billingEntity.metadata.generateName;
   }
 

@@ -95,9 +95,24 @@
   </div>
 
   <div class="col-12">
-    <button [disabled]="form.invalid" [loading]="(billingService.loading$ | ngrxPush) ?? false"
-            class="w-auto mr-3 p-button-primary"
-            pButton pRipple type="submit">
+    <div class="mb-4" *ngIf="isNewBe()">
+      <small i18n>
+        By registering a billing address, you agree that you will get charged for using VSHN products.
+        You also agree to our
+        <a
+          href="https://legal.docs.vshn.ch/legal/gtc_en.html"
+          target="_blank" class="text-blue-500 hover:text-primary"
+        >
+          general terms and conditions
+        </a>.
+      </small>
+    </div>
+    <button
+      [disabled]="form.invalid"
+      [loading]="(billingService.loading$ | ngrxPush) ?? false"
+      class="w-auto mr-3 p-button-primary"
+      pButton pRipple type="submit"
+    >
       <fa-icon [icon]="faSave" class="pr-2"/>
       <span class="pr-2" i18n>Save</span>
     </button>

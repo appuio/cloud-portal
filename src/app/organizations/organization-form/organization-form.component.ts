@@ -134,7 +134,16 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
+    const firstTime = this.activatedRoute.snapshot.queryParamMap.get('firstTime') === 'y';
+    if (firstTime) {
+      void this.router.navigate(['zones'], {
+        queryParams: { edit: undefined, firstTime: undefined },
+        queryParamsHandling: 'merge',
+      });
+      return;
+    }
+    const previous = this.navigationService.previousRoute('..');
+    void this.router.navigate([previous.path], { relativeTo: this.activatedRoute, queryParams: previous.queryParams });
   }
 
   private saveOrUpdateFailure(err: Error): void {

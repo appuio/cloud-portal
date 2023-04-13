@@ -5,6 +5,7 @@ import { faAdd, faEdit, faInfo, faMagnifyingGlass, faUserGroup, faWarning } from
 import { combineLatestAll, forkJoin, from, map, Observable, of } from 'rxjs';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-billing-entity',
@@ -21,7 +22,11 @@ export class BillingEntityComponent implements OnInit {
 
   payload$?: Observable<ViewModel>;
 
-  constructor(public billingEntityService: BillingEntityCollectionService) {}
+  constructor(
+    public billingEntityService: BillingEntityCollectionService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.payload$ = forkJoin([
@@ -30,6 +35,13 @@ export class BillingEntityComponent implements OnInit {
     ]).pipe(
       switchMap(([entities, canCreateBilling]) => {
         if (entities.length === 0) {
+          if (canCreateBilling) {
+            void this.router.navigate(['$new'], {
+              queryParams: { firstTime: undefined, edit: 'y' },
+              queryParamsHandling: 'merge',
+              relativeTo: this.route,
+            });
+          }
           // no billing entities
           return of({
             canCreateBilling: canCreateBilling,

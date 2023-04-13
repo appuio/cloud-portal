@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivationStart, Router } from '@angular/router';
-import { faAdd, faCog, faDollarSign, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { filter, forkJoin, map, Observable, of, take } from 'rxjs';
@@ -24,9 +24,7 @@ export class FirstTimeLoginDialogComponent implements OnInit {
   faSitemap = faSitemap;
   faAdd = faAdd;
   faCoq = faCog;
-  faDollarSign = faDollarSign;
   hideFirstTimeLoginDialogControl = new FormControl(false);
-  nextAction?: 'join' | 'add';
 
   constructor(
     private router: Router,

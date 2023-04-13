@@ -10,6 +10,8 @@ import { OrganizationPermissions } from '../../src/app/types/organization';
 import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
 import { billingEntityNxt, billingEntityVshn, setBillingEntities } from '../fixtures/billingentities';
 import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
+import { ZonePermissions } from '../../src/app/types/zone';
+import { zoneCloudscale1 } from '../fixtures/zone';
 
 describe('Test organization list', () => {
   beforeEach(() => {
@@ -266,6 +268,36 @@ describe('Test organization add', () => {
     );
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').should('exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('exist');
+  });
+
+  it('add organization for first-time', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'create', ...OrganizationPermissions },
+      { verb: 'list', ...BillingEntityPermissions },
+      { verb: 'list', ...ZonePermissions },
+      { verb: 'update', ...OrganizationPermissions, namespace: organizationVshn.metadata.name },
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: organizationVshn.metadata.name }
+    );
+
+    setOrganization(cy, organizationNxt);
+    setBillingEntities(cy, billingEntityNxt);
+    cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
+      body: { items: [zoneCloudscale1] },
+    });
+
+    cy.intercept('POST', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
+      body: organizationVshn,
+    }).as('add');
+    cy.visit('/organizations/$new?firstTime=y');
+    cy.get('#title').should('contain.text', 'New Organization');
+
+    cy.get('#id').type('nxt');
+    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
+    cy.get('button[type=submit]').click();
+    cy.wait('@add');
+    cy.url().should('contain', '/zones');
+    cy.get('#zones-title').should('contain.text', 'Zones');
   });
 
   it('add organization with invalid id', () => {

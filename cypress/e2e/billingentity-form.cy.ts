@@ -162,7 +162,7 @@ describe('Test billing entity form elements', () => {
   });
 
   it('should cancel editing', () => {
-    setBillingEntities(cy);
+    setBillingEntities(cy, billingEntityNxt); // give at least 1 item to avoid redirect back to form.
 
     ['.p-button-secondary', 'a[appbacklink]'].forEach((cancelSelector) => {
       cy.visit('/billingentities/$new?edit=y');
@@ -171,7 +171,7 @@ describe('Test billing entity form elements', () => {
       cy.get(cancelSelector).click();
       cy.get('app-billingentity-form').should('not.exist');
 
-      cy.get('p-messages').should('contain.text', 'No billing entities available');
+      cy.get('.text-3xl').should('have.length', 1);
     });
   });
 });

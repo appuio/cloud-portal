@@ -12,7 +12,7 @@ import { catchError, forkJoin } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList, metadataNameFilter } from './store/entity-filter';
-import { OrganizationPermissions } from './types/organization';
+import { Organization, OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
 import { UserCollectionService } from './store/user-collection.service';
 import { ZonePermissions } from './types/zone';
@@ -56,7 +56,9 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (user) => {
           if (user.spec.preferences?.defaultOrganizationRef) {
-            this.organizationService.setFilter(metadataNameFilter(user.spec.preferences?.defaultOrganizationRef ?? ''));
+            this.organizationService.setFilter(
+              metadataNameFilter(user.spec.preferences?.defaultOrganizationRef ?? '', firstInList<Organization>())
+            );
           }
           if (!user.metadata.resourceVersion) {
             this.userService.upsertOneInCache(user);

@@ -19,4 +19,15 @@ export class UserCollectionService extends KubernetesCollectionService<User> {
       map((users) => users[0])
     );
   }
+
+  newUser(userName: string): User {
+    return {
+      kind: 'User',
+      apiVersion: 'appuio.io/v1',
+      metadata: {
+        name: userName,
+      },
+      spec: {},
+    };
+  }
 }

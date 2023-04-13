@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api';
-import { Store } from '@ngrx/store';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { FormControl } from '@angular/forms';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
@@ -19,7 +18,7 @@ export class OrganizationSelectionComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private organizationService: OrganizationCollectionService) {}
+  constructor(private organizationService: OrganizationCollectionService) {}
 
   ngOnInit(): void {
     this.organizations$ = this.organizationService.getAllMemoized().pipe(

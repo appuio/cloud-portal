@@ -1,48 +1,64 @@
-<div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
-  <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
+<ng-container *ngrxLet="organizations$ as vm; suspenseTpl: loading; error as err">
 
-  <div class="flex flex-wrap gap-2">
-    <div>
-      <button (click)="openJoinOrganizationDialog()" class="mr-2 w-full white-space-nowrap" id="joinOrganizationButton"
-        pButton pRipple>
-        <fa-icon [icon]="faSitemap" class="mr-2"></fa-icon>
-        <span i18n>Join Organization</span>
-      </button>
+  <ng-container *ngIf="vm">
+    <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
+      <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
+
+      <div class="flex flex-wrap gap-2">
+        <div>
+          <button
+            (click)="openJoinOrganizationDialog()"
+            class="mr-2 w-full white-space-nowrap"
+            id="joinOrganizationButton"
+            pButton pRipple
+          >
+            <fa-icon [icon]="faSitemap" class="mr-2"/>
+            <span i18n>Join Organization</span>
+          </button>
+        </div>
+
+        <div *ngIf="vm.canAddOrganizations">
+          <button
+            [routerLink]="['$new']"
+            class="w-full white-space-nowrap" id="addOrganizationButton"
+            pButton pRipple
+          >
+            <fa-icon [icon]="faAdd" class="mr-2"/>
+            <span i18n>Add new Organization</span>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <ng-container *ngIf="canAddOrganizations$ | ngrxPush">
-      <div>
-        <button [routerLink]="['$new']" class="w-full white-space-nowrap" id="addOrganizationButton" pButton pRipple>
-          <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
-          <span i18n>Add new Organization</span>
-        </button>
-      </div>
-    </ng-container>
-  </div>
-</div>
-
-<ng-container *ngrxLet="organizations$ as orgPayload; suspenseTpl: loading; error as err">
-  <ng-container *ngIf="orgPayload">
-    <ng-container *ngFor="let dto of orgPayload; index as i">
+    <ng-container *ngFor="let dto of vm.organizations">
       <div class="surface-card p-4 shadow-2 border-round mb-4">
         <div class="flex flex-row justify-content-between">
           <div class="text-3xl font-medium text-900 mb-3">
             {{ dto.organization.metadata.name }}
           </div>
           <div>
-            <a *ngIf="dto.organization.spec.billingEntityRef"
+            <a
+              *ngIf="dto.organization.spec.billingEntityRef"
               [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
-              class="text-blue-500 hover:text-primary cursor-pointer mr-1" i18n-title
-              title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'">
-              <fa-icon [icon]="faDollarSign"></fa-icon>
+              class="text-blue-500 hover:text-primary cursor-pointer ml-3"
+              i18n-title title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'"
+            >
+              <fa-icon [icon]="faDollarSign"/>
             </a>
-            <a *ngIf="dto.canViewMembers$ | ngrxPush" [routerLink]="[dto.organization.metadata.name, 'members']"
-              class="text-blue-500 hover:text-primary cursor-pointer mr-2" i18n-title title="Edit members">
-              <fa-icon [icon]="faUserGroup"></fa-icon>
+            <a
+              *ngIf="dto.canViewMembers"
+              [routerLink]="[dto.organization.metadata.name, 'members']"
+              class="text-blue-500 hover:text-primary cursor-pointer ml-3"
+              i18n-title title="Edit members"
+            >
+              <fa-icon [icon]="faUserGroup"/>
             </a>
-            <a *ngIf="dto.canEdit$ | ngrxPush" [routerLink]="[dto.organization.metadata.name]"
-              class="text-blue-500 hover:text-primary cursor-pointer" i18n-title title="Edit organization">
-              <fa-icon [icon]="faEdit"></fa-icon>
+            <a
+              *ngIf="dto.canEdit" [routerLink]="[dto.organization.metadata.name]"
+              class="text-blue-500 hover:text-primary cursor-pointer ml-3"
+              i18n-title title="Edit organization"
+            >
+              <fa-icon [icon]="faEdit"/>
             </a>
           </div>
         </div>
@@ -58,22 +74,21 @@
         </div>
       </div>
     </ng-container>
-  </ng-container>
 
-  <ng-container *ngIf="orgPayload?.length === 0 && !err">
-    <p-messages severity="info">
-      <ng-template pTemplate="content">
-        <fa-icon [icon]="faInfo"></fa-icon>
-        <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
-      </ng-template>
-    </p-messages>
+    <ng-container *ngIf="vm.organizations.length === 0 && !err">
+      <p-messages severity="info">
+        <ng-template pTemplate="content">
+          <fa-icon [icon]="faInfo"/>
+          <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
+        </ng-template>
+      </p-messages>
+    </ng-container>
   </ng-container>
-
 
   <ng-container *ngIf="err">
     <p-messages severity="error">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"></fa-icon>
+        <fa-icon [icon]="faWarning"/>
         <div class="ml-2" i18n id="failure-message">Organizations could not be loaded.</div>
       </ng-template>
     </p-messages>

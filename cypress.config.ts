@@ -5,7 +5,7 @@ export default defineConfig({
   videosFolder: 'cypress/videos',
   screenshotsFolder: 'cypress/screenshots',
   fixturesFolder: 'cypress/fixtures',
-  retries: 2,
+  retries: process.env['CI'] ? 2 : 0,
   e2e: {
     baseUrl: 'http://localhost:4200',
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

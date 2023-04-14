@@ -39,7 +39,7 @@
             {{ p.billingEntity.metadata.name }}
           </div>
           <div>
-            <a *ngIf="p.canViewMembers" [routerLink]="[p.billingEntity.metadata.name, 'members']"
+            <a *ngIf="p.canEditMembers" [routerLink]="[p.billingEntity.metadata.name, 'members']"
                class="text-blue-500 hover:text-primary cursor-pointer ml-3" i18n-title title="Edit members">
               <fa-icon [icon]="faUserGroup" />
             </a>

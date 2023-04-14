@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BillingEntityComponent } from './billing-entity.component';
-import { BillingentityDetailComponent } from './billingentity-detail/billingentity-detail.component';
+import { BillingEntityDetailComponent } from './billingentity-detail/billing-entity-detail.component';
 import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { BillingEntityPermissions } from '../types/billing-entity';
-import { BillingentityMembersComponent } from './billingentity-members/billingentity-members.component';
+import { BillingEntityMembersComponent } from './billingentity-members/billing-entity-members.component';
 
 const routes: Routes = [
   {
@@ -17,7 +17,7 @@ const routes: Routes = [
   },
   {
     path: ':name',
-    component: BillingentityDetailComponent,
+    component: BillingEntityDetailComponent,
     canActivate: [KubernetesPermissionGuard],
     data: {
       requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],
@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: ':name/members',
-    component: BillingentityMembersComponent,
+    component: BillingEntityMembersComponent,
     canActivate: [KubernetesPermissionGuard],
     data: {
       requiredKubernetesPermissions: [{ ...BillingEntityPermissions, verb: 'list' }],

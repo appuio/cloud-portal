@@ -27,11 +27,11 @@ interface Payload {
 
 @Component({
   selector: 'app-billingentity-members',
-  templateUrl: './billingentity-members.component.html',
-  styleUrls: ['./billingentity-members.component.scss'],
+  templateUrl: './billing-entity-members.component.html',
+  styleUrls: ['./billing-entity-members.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingentityMembersComponent implements OnInit, OnDestroy {
+export class BillingEntityMembersComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;
 
   faWarning = faWarning;

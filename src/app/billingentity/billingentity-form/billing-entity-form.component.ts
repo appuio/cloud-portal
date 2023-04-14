@@ -13,11 +13,11 @@ import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-billingentity-form',
-  templateUrl: './billingentity-form.component.html',
-  styleUrls: ['./billingentity-form.component.scss'],
+  templateUrl: './billing-entity-form.component.html',
+  styleUrls: ['./billing-entity-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingentityFormComponent implements OnInit {
+export class BillingEntityFormComponent implements OnInit {
   @Input()
   billingEntity!: BillingEntity;
 
@@ -123,7 +123,7 @@ export class BillingentityFormComponent implements OnInit {
         emails: controls.accountingEmail.value,
       },
     };
-    if (this.isNewBe(be)) {
+    if (this.isNewBillingEntity(be)) {
       this.billingService.add(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
         error: (err) => this.saveOrUpdateFailure(err),
@@ -144,7 +144,7 @@ export class BillingentityFormComponent implements OnInit {
     });
   }
 
-  isNewBe(be?: BillingEntity): boolean {
+  isNewBillingEntity(be?: BillingEntity): boolean {
     return be ? !!be.metadata.generateName : !!this.billingEntity.metadata.generateName;
   }
 

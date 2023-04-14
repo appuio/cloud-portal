@@ -7,11 +7,11 @@ import { BillingEntityCollectionService } from '../../store/billingentity-collec
 
 @Component({
   selector: 'app-billingentity-detail',
-  templateUrl: './billingentity-detail.component.html',
-  styleUrls: ['./billingentity-detail.component.scss'],
+  templateUrl: './billing-entity-detail.component.html',
+  styleUrls: ['./billing-entity-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingentityDetailComponent implements OnInit {
+export class BillingEntityDetailComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;
   isEditing$?: Observable<boolean>;
   billingEntityName = '';

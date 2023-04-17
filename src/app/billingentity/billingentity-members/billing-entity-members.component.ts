@@ -68,8 +68,8 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     if (!beName) {
       throw new Error('name is required');
     }
-    const adminClusterRoleBindingName = `billingentities-${beName}-admin`;
-    const viewerClusterRoleBindingName = `billingentities-${beName}-viewer`;
+    const adminClusterRoleBindingName = this.getBindingName(beName, 'admin');
+    const viewerClusterRoleBindingName = this.getBindingName(beName, 'viewer');
 
     // How to read the pipe below:
     //  First, get a set of permissions.
@@ -258,6 +258,10 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
       this.isRemovingOwnUser = true;
     }
     this.userRefs.removeAt(index);
+  }
+
+  getBindingName(beName: string, role: 'admin' | 'viewer'): string {
+    return `billingentities-${beName}-${role}`;
   }
 
   ngOnDestroy(): void {

@@ -150,6 +150,7 @@ export class BillingEntityFormComponent implements OnInit {
   }
 
   private saveOrUpdateSuccess(be: BillingEntity): void {
+    this.billingService.resetMemoization();
     this.messageService.add({
       severity: 'success',
       summary: $localize`Successfully saved`,

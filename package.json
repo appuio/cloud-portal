@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "http-server": "angular-http-server --path dist/cloud-portal/en-CH -p 4200",
+    "http-server": "angular-http-server --silent --path dist/cloud-portal/en-CH -p 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest --passWithNoTests",
@@ -67,6 +67,7 @@
     "@typescript-eslint/parser": "5.54.0",
     "angular-http-server": "1.11.1",
     "cypress": "12.7.0",
+    "cypress-terminal-report": "5.1.1",
     "eslint": "8.35.0",
     "eslint-plugin-change-detection-strategy": "0.1.1",
     "eslint-plugin-ngrx": "2.1.4",

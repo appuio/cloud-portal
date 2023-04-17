@@ -10,5 +10,11 @@ export const environment: EnvironmentType = {
     server: '',
     glitchTipDsn: '',
     zones: defaultZonesConfig,
+    countries: [
+      { code: 'CH', name: 'Switzerland' },
+      { code: 'DE', name: 'Germany' },
+      { code: 'AT', name: 'Austria' },
+      { code: 'LI', name: 'Liechtenstein' },
+    ],
   },
 };

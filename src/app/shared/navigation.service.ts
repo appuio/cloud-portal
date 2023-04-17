@@ -32,4 +32,28 @@ export class NavigationService {
       return defaultPath ?? '/';
     }
   }
+
+  /**
+   * Gets the previous URI location in the history split into path and query params.
+   * @param defaultPath if the history is empty, return this path as fallback value
+   * @returns the URI, or '/' if no default was given. If there are no query parameters, `queryParams` will be undefined.
+   */
+  previousRoute(defaultPath?: string): { raw: string; path: string; queryParams?: { [key: string]: string } } {
+    const raw = this.previousLocation(defaultPath);
+    let path = raw;
+    const split = raw.split('?');
+    let queryParams: { [key: string]: string } | undefined = undefined;
+    if (split.length > 1) {
+      path = split[0];
+      queryParams = {};
+      new URLSearchParams(`?${split[1]}`).forEach((v, k) => {
+        queryParams = { ...queryParams, [k]: v };
+      });
+    }
+    return {
+      raw,
+      path,
+      queryParams,
+    };
+  }
 }

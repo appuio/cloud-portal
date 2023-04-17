@@ -1,0 +1,58 @@
+<ng-container *ngrxLet="viewModel$ as vm; suspenseTpl: loading; error as err">
+
+  <ng-container *ngIf="vm">
+    <div class="surface-card p-4 shadow-2 border-round mb-4">
+      <div class="flex flex-row justify-content-between">
+        <div class="text-3xl font-medium text-900 mb-3" id="title">
+          <span *ngIf="!isNewBE(vm.billingEntity); else newBillingTitle">{{ vm.billingEntity.metadata.name }}</span>
+          <ng-template #newBillingTitle>
+            <span i18n>New Billing</span>
+          </ng-template>
+        </div>
+        <div>
+          <a
+            *ngIf="vm.canEdit &&!isNewBE(vm.billingEntity)"
+            class="text-blue-500 ml-3 hover:text-primary text-2xl cursor-pointer"
+            [routerLink]="[]"
+            [queryParams]="{edit: (isEditing$ | ngrxPush) ? undefined : 'y'}"
+            [queryParamsHandling]="'merge'"
+          >
+            <fa-icon *ngIf="!(isEditing$ | ngrxPush)" [icon]="faEdit" class="fa-xs" />
+            <fa-icon *ngIf="(isEditing$ | ngrxPush)" [icon]="faCancel" class="fa-xs" />
+          </a>
+          <a class="text-blue-500 ml-3 hover:text-primary text-2xl cursor-pointer" appBackLink=".." [removeQueryParamList]="['edit']">
+            <fa-icon [icon]="faClose" />
+          </a>
+        </div>
+      </div>
+      <app-billingentity-view
+        *ngIf="!(isEditing$ | ngrxPush)"
+        [billingEntity]="vm.billingEntity"
+      />
+      <app-billingentity-form
+        *ngIf="isEditing$ | ngrxPush"
+        [billingEntity]="vm.billingEntity"
+      />
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="err">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <fa-icon [icon]="faWarning"></fa-icon>
+        <div class="ml-2" i18n id="failure-message">Billing entity "{{ billingEntityName }}" could not be
+          loaded.
+        </div>
+      </ng-template>
+    </p-messages>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="surface-card p-4 shadow-2 border-round mb-4 blink">
+    <div class="flex flex-row justify-content-between">
+      <div class="text-3xl font-medium text-900 mb-3" i18n>Loading &#8230;</div>
+    </div>
+  </div>
+</ng-template>

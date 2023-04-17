@@ -1,0 +1,124 @@
+<form (submit)="save()" [formGroup]="form" class="flex flex-column p-fluid">
+  <div class="field col-12 mb-3">
+    <label for="displayName" i18n>Display Name</label>
+    <input formControlName="displayName" id="displayName" pInputText type="text"/>
+  </div>
+
+  <p-divider styleClass="col-12">
+    <div class="inline-flex align-items-center">
+      <span class="text-lg font-semibold text-700" i18n>Company</span>
+    </div>
+  </p-divider>
+  <div class="mb-2">
+
+    <div class="field mb-2 col-12">
+      <label for="companyEmail" i18n>Emails</label>
+      <!-- Using $any() as a workaround for https://github.com/primefaces/primeng/issues/12640 -->
+      <p-chips
+        formControlName="companyEmail"
+        id="companyEmail"
+        [separator]="$any(emailSeparatorExp)"
+        [allowDuplicate]="false"
+        [addOnBlur]="true"
+        [addOnTab]="true"
+      />
+    </div>
+
+    <div class="field mb-2 col-12">
+      <label for="phone" i18n>Phone</label>
+      <input formControlName="phone" id="phone" pInputText type="text" maxlength="20"/>
+    </div>
+
+    <div class="field mb-2 col-12">
+      <label i18n>Address</label>
+      <input formControlName="line1" id="line1" type="text" class="mb-2" pInputText placeholder="Line 1"
+             i18n-placeholder/>
+      <input formControlName="line2" id="line2" type="text" class="mb-2" pInputText placeholder="Line 2"
+             i18n-placeholder/>
+      <div class="flex flex-row gap-2">
+        <input formControlName="postal" id="postal" type="text" class="mb-2 max-w-8rem" pInputText
+               placeholder="Postal Code" maxlength="12" i18n-placeholder/>
+        <input formControlName="city" id="city" type="text" class="mb-2" pInputText placeholder="City"
+               i18n-placeholder/>
+      </div>
+      <p-dropdown
+        formControlName="country"
+        [options]="countryOptions ?? []"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        [required]="true"
+        placeholder="Select Country"
+        i18n-placeholder
+        [styleClass]="'mb-2'"
+      />
+      <small i18n>
+        Is your country missing?
+        <a href="https://www.vshn.ch/en/appuio-cloud-availability-in-your-country" target="_blank"
+           class="text-blue-500 hover:text-primary">
+          Please let us know!
+        </a>
+      </small>
+    </div>
+
+  </div>
+
+  <p-divider styleClass="col-12">
+    <div class="inline-flex align-items-center">
+      <span class="text-lg font-semibold text-700" i18n>Invoice Recipient</span>
+    </div>
+  </p-divider>
+  <div class="mb-3">
+    <div class="field mb-2 col-12">
+      <label for="accountingName" i18n>Name</label>
+      <input formControlName="accountingName" id="accountingName" type="text" class="mb-2" pInputText/>
+    </div>
+    <div class="field mb-2 col-12">
+      <label for="accountingEmail" class="flex flex-column gap-2" i18n>Emails
+        <p-checkbox
+          formControlName="sameCompanyEmailsSelected"
+          [labelStyleClass]="'text-gray-500'"
+          [binary]="true"
+          label="Same as company emails"
+        />
+      </label>
+      <!-- Using $any() as a workaround for https://github.com/primefaces/primeng/issues/12640 -->
+      <p-chips
+        formControlName="accountingEmail"
+        id="accountingEmail"
+        [separator]="$any(emailSeparatorExp)"
+        [allowDuplicate]="false"
+        [addOnBlur]="true"
+        [addOnTab]="true"
+      />
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="mb-4" *ngIf="isNewBillingEntity()">
+      <small i18n>
+        By registering a billing address, you agree that you will get charged for using VSHN products.
+        You also agree to our
+        <a
+          href="https://legal.docs.vshn.ch/legal/gtc_en.html"
+          target="_blank" class="text-blue-500 hover:text-primary"
+        >
+          general terms and conditions
+        </a>.
+      </small>
+    </div>
+    <button
+      [disabled]="form.invalid"
+      [loading]="(billingService.loading$ | ngrxPush) ?? false"
+      class="w-auto mr-3 p-button-primary"
+      pButton pRipple type="submit"
+    >
+      <fa-icon [icon]="faSave" class="pr-2"/>
+      <span class="pr-2" i18n>Save</span>
+    </button>
+    <button class="w-auto mr-3 p-button-secondary p-button-outlined" pButton pRipple type="button" (click)="cancel()">
+      <fa-icon [icon]="faCancel" class="pr-2"/>
+      <span class="pr-2" i18n>Cancel</span>
+    </button>
+  </div>
+</form>

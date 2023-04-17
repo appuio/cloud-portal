@@ -13,14 +13,14 @@ export const billingEntityNxt: BillingEntity = {
       line2: '📋',
       postalCode: '🏤',
       city: '🏙️',
-      country: '🇨🇭',
+      country: 'Switzerland',
     },
-    emails: ['📧'],
+    emails: ['hallo@nxt.engineering'],
     phone: '☎️',
     languagePreference: '🇩🇪',
     accountingContact: {
       name: 'mig',
-      emails: ['📧'],
+      emails: ['hallo@nxt.engineering'],
     },
   },
 };

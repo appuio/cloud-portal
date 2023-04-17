@@ -51,3 +51,24 @@ body {
 .p-toast-icon-close {
   flex-shrink: 0
 }
+
+.p-divider.p-divider-horizontal {
+  padding: 0;
+  margin-bottom: 0.625rem;
+}
+
+.p-divider-horizontal::before {
+  right: 0.5rem;
+  width: unset !important;
+  left: 0.5rem !important;
+  border-top: 1px var(--gray-400) solid !important
+}
+
+.p-checkbox, .p-checkbox-box {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+::placeholder {
+  opacity: 1;
+}

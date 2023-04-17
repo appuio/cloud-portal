@@ -23,6 +23,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BackLinkDirective } from './back-link.directive';
 import { TableModule } from 'primeng/table';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ChipsModule } from 'primeng/chips';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
   declarations: [BackLinkDirective],
@@ -53,6 +55,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     BackLinkDirective,
     TableModule,
     InputTextareaModule,
+    ChipsModule,
+    DividerModule,
   ],
 })
 export class SharedModule {}

@@ -13,13 +13,14 @@ describe('Test billing entity list', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
-    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions }, { verb: 'create', ...BillingEntityPermissions });
   });
 
   it('list with two entries', () => {
     setBillingEntities(cy, billingEntityNxt, billingEntityVshn);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
+    cy.get('#addButton').should('contain.text', 'Add new Billing');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
   });
@@ -28,6 +29,7 @@ describe('Test billing entity list', () => {
     setBillingEntities(cy);
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
+    cy.get('#addButton').should('contain.text', 'Add new Billing');
     cy.get('#no-billingentity-message').should('contain.text', 'No billing entities available.');
   });
 
@@ -36,7 +38,6 @@ describe('Test billing entity list', () => {
       statusCode: 403,
     });
     cy.visit('/billingentities');
-    cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get('#failure-message').should('contain.text', 'Billing entities could not be loaded.');
   });
 
@@ -83,6 +84,14 @@ describe('no permissions', () => {
     cy.visit('/billingentities/be-2345/members');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
   });
+
+  it('no create permission', () => {
+    setBillingEntities(cy);
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
+    cy.visit('/billingentities');
+    cy.get('h1').should('contain.text', 'Billing');
+    cy.get('addButton').should('not.exist');
+  });
 });
 
 describe('Test billing entity details', () => {
@@ -113,10 +122,10 @@ describe('Test billing entity details', () => {
     });
     cy.visit('/billingentities/be-2345');
     cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
-    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', '📧');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'hallo@nxt.engineering');
     cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
-    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️🇨🇭');
-    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig 📧');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️Switzerland');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig hallo@nxt.engineering');
     cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
   });
 });

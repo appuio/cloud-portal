@@ -40,6 +40,7 @@ export class BillingEntityFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.countryOptions = this.appConfig.getConfiguration().countries;
+    this.billingEntity = structuredClone(this.billingEntity); // make fields writable if editing existing BE.
     const spec = this.billingEntity.spec;
     const companyEmails = spec.emails?.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) ?? [];
     const accountingEmails =
@@ -103,7 +104,7 @@ export class BillingEntityFormComponent implements OnInit {
       return;
     }
     const controls = this.form.controls;
-    const be = structuredClone(this.billingEntity);
+    const be = this.billingEntity;
     be.spec = {
       ...be.spec,
       name: controls.displayName.value,
@@ -149,13 +150,17 @@ export class BillingEntityFormComponent implements OnInit {
   }
 
   private saveOrUpdateSuccess(be: BillingEntity): void {
+    this.billingService.resetMemoization();
     this.messageService.add({
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
-    void this.router.navigate(['..', be.metadata.name], {
+    // TODO: navigating to previous location with fallback might not work correctly.
+    // But since the backend hasn't implemented creating/editing BE yet, it's hard to test.
+    const previous = this.navigationService.previousRoute(`../${be.metadata.name}`);
+    void this.router.navigate([previous.path], {
       relativeTo: this.activatedRoute,
-      queryParams: { edit: undefined },
+      queryParams: { ...previous.queryParams, edit: undefined },
       queryParamsHandling: 'merge',
     });
   }

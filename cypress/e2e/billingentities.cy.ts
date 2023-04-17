@@ -92,6 +92,15 @@ describe('no permissions', () => {
     cy.get('h1').should('contain.text', 'Billing');
     cy.get('addButton').should('not.exist');
   });
+
+  it('no edit permission', () => {
+    setBillingEntities(cy, billingEntityNxt);
+    cy.setPermission({ verb: 'list', ...BillingEntityPermissions });
+    cy.visit('/billingentities');
+    cy.get('h1').should('contain.text', 'Billing');
+    cy.get('svg[class*="fa-pen-to-square"]').should('not.exist');
+    cy.get('svg[class*="fa-magnifying-glass"]').should('exist');
+  });
 });
 
 describe('Test billing entity details', () => {

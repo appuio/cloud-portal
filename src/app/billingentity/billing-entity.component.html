@@ -38,6 +38,7 @@
               <fa-icon [icon]="faDetails" />
             </a>
             <a
+              *ngIf="p.canEdit"
               [routerLink]="[p.billingEntity.metadata.name]"
               [queryParams]="{edit: 'y'}"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"

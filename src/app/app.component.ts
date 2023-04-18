@@ -8,15 +8,16 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
 import { IdentityService } from './core/identity.service';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin } from 'rxjs';
 import { OrganizationCollectionService } from './store/organization-collection.service';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { firstInList, metadataNameFilter } from './store/entity-filter';
-import { OrganizationPermissions } from './types/organization';
+import { Organization, OrganizationPermissions } from './types/organization';
 import { BillingEntityPermissions } from './types/billing-entity';
 import { UserCollectionService } from './store/user-collection.service';
 import { ZonePermissions } from './types/zone';
 import { InvitationPermissions } from './types/invitation';
+import { defaultIfStatusCode } from './store/kubernetes-collection.service';
 
 @Component({
   selector: 'app-root',
@@ -47,17 +48,26 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // initial filter, otherwise teams cannot be loaded if no default organization is defined in the user
     this.organizationService.setFilter(firstInList());
-    this.userService.setFilter(metadataNameFilter(this.identityService.getUsername()));
-    this.userService.getByKey(this.identityService.getUsername()).subscribe({
-      next: (user) => {
-        if (user.spec.preferences?.defaultOrganizationRef) {
-          this.organizationService.setFilter(metadataNameFilter(user.spec.preferences.defaultOrganizationRef));
-        }
-      },
-      error: (err) => {
-        console.warn('could not load the user object:', err.message ?? err);
-      },
-    });
+    const userName = this.identityService.getUsername();
+    this.userService.setFilter(metadataNameFilter(userName));
+    this.userService
+      .getByKey(userName)
+      .pipe(catchError(defaultIfStatusCode(this.userService.newUser(userName), [401, 403, 404])))
+      .subscribe({
+        next: (user) => {
+          if (user.spec.preferences?.defaultOrganizationRef) {
+            this.organizationService.setFilter(
+              metadataNameFilter(user.spec.preferences?.defaultOrganizationRef ?? '', firstInList<Organization>())
+            );
+          }
+          if (!user.metadata.resourceVersion) {
+            this.userService.upsertOneInCache(user);
+          }
+        },
+        error: (err) => {
+          console.warn('could not load the user object:', err.message ?? err);
+        },
+      });
 
     this.name = this.identityService.getName();
     this.username = this.identityService.getUsername();

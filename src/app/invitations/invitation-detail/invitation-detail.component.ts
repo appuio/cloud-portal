@@ -14,7 +14,7 @@ import { BillingEntity } from '../../types/billing-entity';
 import { Team } from '../../types/team';
 import { Invitation } from '../../types/invitation';
 import { getBillingEntityFromClusterRoleName } from '../../store/entity-filter';
-import { catchError, combineLatestAll, forkJoin, from, map, Observable, of, take } from 'rxjs';
+import { catchError, combineLatestAll, forkJoin, from, map, Observable, of } from 'rxjs';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { TeamCollectionService } from '../../store/team-collection.service';
@@ -116,7 +116,6 @@ export class InvitationDetailComponent implements OnInit {
 
     const teams$ = teamNames.map((team) =>
       this.teamService.getByKeyMemoized(team).pipe(
-        take(1),
         catchError(() => {
           console.warn(`could not fetch team '${team}' to resolve display name, resort to fallback value`);
           const teamName = team.split('/');
@@ -149,7 +148,6 @@ export class InvitationDetailComponent implements OnInit {
     }
     const billing$ = beNames.map((be) =>
       this.billingService.getByKeyMemoized(be).pipe(
-        take(1),
         catchError(() => {
           console.warn(`could not fetch billing entity '${be}' to resolve display name, resort to fallback value`);
           return of({

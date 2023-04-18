@@ -38,6 +38,14 @@ export class UserEditComponent implements OnInit {
   ngOnInit(): void {
     const userName = this.identityService.getUsername();
     this.payload$ = this.userService.getByKeyMemoized(userName).pipe(
+      switchMap((user) => {
+        if (user.metadata.resourceVersion) {
+          return of(user);
+        }
+        // we only have a faked user in the store based on IDP, we need to get the real user object.
+        // this case could happen if the user is a first-time user where the actual User object doesn't yet exist in Kubernetes.
+        return this.userService.getByKey(userName);
+      }),
       combineLatestWith(this.organizationService.getAllMemoized()),
       switchMap(([user, orgs]) => {
         return forkJoin([this.filterOrganizationsForMembership(orgs, userName), of(user)]);

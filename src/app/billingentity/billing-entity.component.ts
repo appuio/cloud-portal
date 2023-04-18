@@ -1,10 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BillingEntity } from '../types/billing-entity';
 
-import { faAdd, faEdit, faInfo, faMagnifyingGlass, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { combineLatestAll, forkJoin, from, map, Observable, of, take } from 'rxjs';
+import {
+  faAdd,
+  faDollarSign,
+  faEdit,
+  faInfo,
+  faMagnifyingGlass,
+  faUserGroup,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
+import { combineLatestAll, forkJoin, from, map, Observable, of } from 'rxjs';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 import { switchMap } from 'rxjs/operators';
+import { JoinDialogService } from '../join-dialog/join-dialog.service';
 
 @Component({
   selector: 'app-billing-entity',
@@ -18,21 +27,25 @@ export class BillingEntityComponent implements OnInit {
   faEdit = faEdit;
   faUserGroup = faUserGroup;
   faDetails = faMagnifyingGlass;
+  faAdd = faAdd;
+  faDollarSign = faDollarSign;
 
   payload$?: Observable<ViewModel>;
 
-  constructor(public billingEntityService: BillingEntityCollectionService) {}
+  constructor(
+    public billingEntityService: BillingEntityCollectionService,
+    public joinDialogService: JoinDialogService
+  ) {}
 
   ngOnInit(): void {
     this.payload$ = forkJoin([
-      this.billingEntityService.getAllMemoized().pipe(take(1)),
+      this.billingEntityService.getAllMemoized(),
       this.billingEntityService.canCreateBilling(),
     ]).pipe(
       switchMap(([entities, canCreateBilling]) => {
         if (entities.length === 0) {
-          // no billing entities
           return of({
-            canCreateBilling: canCreateBilling,
+            canCreateBilling,
             billingModels: [],
           } satisfies ViewModel);
         }
@@ -68,8 +81,6 @@ export class BillingEntityComponent implements OnInit {
       })
     );
   }
-
-  protected readonly faAdd = faAdd;
 }
 
 interface ViewModel {

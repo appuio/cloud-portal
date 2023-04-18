@@ -1,12 +1,19 @@
 import { KubeObject } from '../types/entity';
 
-export function metadataNameFilter(metadataName: string): (entities: KubeObject[]) => KubeObject[] {
+export function metadataNameFilter<T extends KubeObject>(
+  metadataName: string,
+  defaultFn?: (entities: T[]) => T[]
+): (entities: T[]) => T[] {
   return function (entities) {
-    return entities.filter((entity) => entity.metadata.name === metadataName);
+    const entity = entities.find((e) => e.metadata.name === metadataName);
+    if (entity) {
+      return [entity];
+    }
+    return defaultFn ? defaultFn(entities) : entities.filter((e) => e.metadata.name === metadataName);
   };
 }
 
-export function firstInList<T>(): (entity: T[]) => T[] {
+export function firstInList<T>(): (entities: T[]) => T[] {
   return function (entities) {
     if (entities.length === 0) {
       return [];

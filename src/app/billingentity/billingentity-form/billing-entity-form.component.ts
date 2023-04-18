@@ -155,6 +155,14 @@ export class BillingEntityFormComponent implements OnInit {
       severity: 'success',
       summary: $localize`Successfully saved`,
     });
+    const firstTime = this.activatedRoute.snapshot.queryParamMap.get('firstTime') === 'y';
+    if (firstTime) {
+      void this.router.navigate(['organizations', '$new'], {
+        queryParams: { edit: undefined },
+        queryParamsHandling: 'merge',
+      });
+      return;
+    }
     // TODO: navigating to previous location with fallback might not work correctly.
     // But since the backend hasn't implemented creating/editing BE yet, it's hard to test.
     const previous = this.navigationService.previousRoute(`../${be.metadata.name}`);

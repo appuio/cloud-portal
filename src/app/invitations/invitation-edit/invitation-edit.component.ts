@@ -33,7 +33,7 @@ export class InvitationEditComponent implements OnInit {
       this.billingService.canViewBillingEntities$,
     ]).pipe(
       switchMap(([canViewOrganizations, canViewBillingEntities]) => {
-        const organizations$ = canViewOrganizations ? this.organizationService.getAllMemoized().pipe(take(1)) : of([]);
+        const organizations$ = canViewOrganizations ? this.organizationService.getAllMemoized() : of([]);
         const billingEntities$ = canViewBillingEntities ? this.fetchBilling$() : of([]);
         return forkJoin([of(canViewOrganizations), organizations$, of(canViewBillingEntities), billingEntities$]);
       }),

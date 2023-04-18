@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { map, Observable, Subscription, take } from 'rxjs';
+import { combineLatestAll, filter, forkJoin, from, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import {
   faAdd,
   faDollarSign,
@@ -11,18 +10,11 @@ import {
   faWarning,
 } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
-import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
-import { selectQueryParam } from '../store/router.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { Organization } from '../types/organization';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
-
-interface OrganizationConfig {
-  organization: Organization;
-  canEdit$: Observable<boolean>;
-  canViewMembers$: Observable<boolean>;
-}
+import { JoinDialogService } from '../join-dialog/join-dialog.service';
 
 @Component({
   selector: 'app-organizations',
@@ -38,58 +30,88 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   faSitemap = faSitemap;
   faUserGroup = faUserGroup;
   faDollarSign = faDollarSign;
-  private showJoinDialogSubscription?: Subscription;
-  organizations$?: Observable<OrganizationConfig[]>;
-  canAddOrganizations$?: Observable<boolean>;
+  subscriptions: Subscription[] = [];
+
+  organizations$?: Observable<ViewModel>;
 
   constructor(
-    private store: Store,
     private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public organizationService: OrganizationCollectionService,
-    private organizationMembersService: OrganizationMembersCollectionService
+    private organizationMembersService: OrganizationMembersCollectionService,
+    public joinDialogService: JoinDialogService
   ) {}
 
   ngOnInit(): void {
-    this.canAddOrganizations$ = this.organizationService.canAddOrganizations$;
-
-    this.organizations$ = this.organizationService.getAllMemoized().pipe(
-      take(1),
-      map((orgs) =>
-        orgs.map((org) => {
-          return {
-            organization: org,
-            canEdit$: this.organizationService.canEditOrganization(org),
-            canViewMembers$: this.organizationMembersService.canViewMembers(org.metadata.name),
-          } satisfies OrganizationConfig;
-        })
-      )
+    this.organizations$ = forkJoin([
+      this.organizationService.canAddOrganizations$,
+      this.organizationService.getAllMemoized(),
+    ]).pipe(
+      switchMap(([canAddOrganizations, orgs]) => {
+        return forkJoin([of(canAddOrganizations), this.fetchOrganizationData$(orgs)]);
+      }),
+      map(([canAddOrganizations, orgVMList]) => {
+        const vm: ViewModel = {
+          canAddOrganizations,
+          organizations: orgVMList,
+        };
+        return vm;
+      })
     );
-    this.showJoinDialogSubscription = this.store
-      .select(selectQueryParam('showJoinDialog'))
-      // eslint-disable-next-line ngrx/no-store-subscription
-      .subscribe((showJoinDialog) => {
-        if (showJoinDialog) {
-          this.openJoinOrganizationDialog();
-          this.router.navigate([], {
+
+    this.subscriptions.push(
+      this.activatedRoute.queryParamMap
+        .pipe(
+          map((q) => q.get('showJoinDialog')),
+          filter((v) => v === 'true')
+        )
+        .subscribe(() => {
+          this.joinDialogService.showDialog();
+          void this.router.navigate([], {
             relativeTo: this.activatedRoute,
             queryParams: { showJoinDialog: undefined },
             queryParamsHandling: 'merge',
           });
-        }
-      });
+        })
+    );
   }
 
-  openJoinOrganizationDialog(): void {
-    this.dialogService.open(JoinOrganizationDialogComponent, {
-      modal: true,
-      closable: true,
-      header: $localize`Join Organization`,
+  private fetchOrganizationData$(orgs: Organization[]): Observable<OrganizationViewModel[]> {
+    if (orgs.length === 0) {
+      return of([]);
+    }
+    const list = orgs.map((org) => {
+      return forkJoin([
+        of(org),
+        this.organizationService.canEditOrganization(org),
+        this.organizationMembersService.canViewMembers(org.metadata.name),
+      ]).pipe(
+        map(([organization, canEdit, canViewMembers]) => {
+          const orgVM: OrganizationViewModel = {
+            organization,
+            canEdit,
+            canViewMembers,
+          };
+          return orgVM;
+        })
+      );
     });
+    return from(list).pipe(combineLatestAll());
   }
 
   ngOnDestroy(): void {
-    this.showJoinDialogSubscription?.unsubscribe();
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
+}
+
+interface ViewModel {
+  organizations: OrganizationViewModel[];
+  canAddOrganizations: boolean;
+}
+
+interface OrganizationViewModel {
+  organization: Organization;
+  canEdit: boolean;
+  canViewMembers: boolean;
 }

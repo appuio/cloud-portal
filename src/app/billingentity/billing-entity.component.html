@@ -3,18 +3,31 @@
     <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
       <h1 class="pt-0 mt-0 mb-0" i18n id="billingentities-title">Billing</h1>
 
-      <div *ngIf="viewModel.canCreateBilling">
-        <button
-          [routerLink]="['$new']"
-          [queryParams]="{edit: 'y'}"
-          class="w-full white-space-nowrap"
-          id="addButton"
-          pButton
-          pRipple
-        >
-          <fa-icon [icon]="faAdd" class="mr-2" />
-          <span i18n>Add new Billing</span>
-        </button>
+      <div class="flex flex-wrap gap-2">
+        <div>
+          <button
+            (click)="this.joinDialogService.showDialog()"
+            class="mr-2 w-full white-space-nowrap"
+            id="joinOrganizationButton"
+            pButton pRipple
+          >
+            <fa-icon [icon]="faDollarSign" class="mr-2"/>
+            <span i18n>Join Billing</span>
+          </button>
+        </div>
+        <div *ngIf="viewModel.canCreateBilling">
+          <button
+            [routerLink]="['$new']"
+            [queryParams]="{edit: 'y'}"
+            class="w-full white-space-nowrap"
+            id="addButton"
+            pButton
+            pRipple
+          >
+            <fa-icon [icon]="faAdd" class="mr-2" />
+            <span i18n>Add new Billing</span>
+          </button>
+        </div>
       </div>
 
     </div>
@@ -72,7 +85,11 @@
       <p-messages severity="info">
         <ng-template pTemplate="content">
           <fa-icon [icon]="faInfo" />
-          <div class="ml-2" i18n id="no-billingentity-message">No billing entities available.</div>
+          <div class="ml-2" i18n id="no-billingentity-message">
+            No billing address available.
+            <span *ngIf="viewModel.canCreateBilling">Please create one first or ask to join an existing billing address.</span>
+            <span *ngIf="!viewModel.canCreateBilling">Please ask to join an existing billing address.</span>
+          </div>
         </ng-template>
       </p-messages>
     </ng-container>

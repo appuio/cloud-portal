@@ -6,7 +6,6 @@ import { OrganizationEditComponent } from './organization-edit/organization-edit
 import { SharedModule } from '../shared/shared.module';
 import { OrganizationFormComponent } from './organization-form/organization-form.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
-import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +13,6 @@ import { JoinOrganizationDialogComponent } from './join-organization-dialog/join
     OrganizationEditComponent,
     OrganizationFormComponent,
     OrganizationMembersEditComponent,
-    JoinOrganizationDialogComponent,
   ],
   imports: [SharedModule, OrganizationsRoutingModule],
 })

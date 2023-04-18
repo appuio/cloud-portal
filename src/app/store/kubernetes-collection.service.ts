@@ -113,7 +113,7 @@ export class KubernetesCollectionService<T extends KubeObject> extends EntityCol
       take(1),
       switchMap(() => {
         if (this.memoizedAllEntities) {
-          return this.entities$;
+          return this.entities$.pipe(take(1));
         }
         return this.getAll(options);
       })

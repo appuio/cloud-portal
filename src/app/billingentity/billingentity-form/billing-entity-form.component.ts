@@ -39,7 +39,7 @@ export class BillingEntityFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.countryOptions = this.appConfig.getConfiguration().countries;
+    this.countryOptions = this.appConfig.getConfiguration().countries ?? [];
     this.billingEntity = structuredClone(this.billingEntity); // make fields writable if editing existing BE.
     const spec = this.billingEntity.spec;
     const companyEmails = spec.emails?.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) ?? [];

@@ -17,10 +17,17 @@
       <div class="text-700 line-height-3 pl-4 sm:w-8">
         <p class="mt-0" i18n *ngIf="!vm.userBelongsToOrganization">
           You do not yet belong to an organization.
-          <span *ngIf="vm.showAddBillingButton || vm.showAddOrganizationButton"> You can either join an existing organization or create a new one.</span>
           <span *ngIf="!vm.showAddBillingButton && !vm.showAddOrganizationButton"> You can join an existing organization.</span>
-          <span *ngIf="vm.showAddBillingButton"> To create a new organization, first setup Billing.</span>
+          <span *ngIf="vm.showAddBillingButton || vm.showAddOrganizationButton"> You can either join an existing organization or create a new one.</span>
         </p>
+        <div *ngIf="vm.showAddBillingButton">
+          <span i18n>To get started with APPUiO Cloud, follow the setup procedure.</span>
+          <ol>
+            <li i18n>Add new billing address</li>
+            <li i18n>Add new organization</li>
+            <li i18n>Open the console of an APPUiO Cloud Zone</li>
+          </ol>
+        </div>
         <p class="mt-0" i18n *ngIf="vm.showSetDefaultOrganizationButton">
           You don't have a default organization set in your settings.
           Do you want to do that now?

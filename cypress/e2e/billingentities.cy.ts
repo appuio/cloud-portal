@@ -25,12 +25,12 @@ describe('Test billing entity list', () => {
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
   });
 
-  it('empty list should redirect to new', () => {
+  it('empty list', () => {
     setBillingEntities(cy);
     cy.visit('/billingentities');
-    cy.get('#title').should('contain.text', 'New Billing');
-
-    cy.url().should('contain', 'billingentities/$new?edit=y');
+    cy.get('#billingentities-title').should('contain.text', 'Billing');
+    cy.get('#addButton').should('contain.text', 'Add new Billing');
+    cy.get('#no-billingentity-message').should('contain.text', 'No billing address available.');
   });
 
   it('request failed', () => {
@@ -91,7 +91,7 @@ describe('no permissions', () => {
     cy.visit('/billingentities');
     cy.get('h1').should('contain.text', 'Billing');
     cy.get('addButton').should('not.exist');
-    cy.get('#no-billingentity-message').should('contain.text', 'No billing entities available.');
+    cy.get('#no-billingentity-message').should('contain.text', 'No billing address available.');
   });
 
   it('no edit permission', () => {

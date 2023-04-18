@@ -10,12 +10,11 @@ import {
   faWarning,
 } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
-import { JoinOrganizationDialogComponent } from './join-organization-dialog/join-organization-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { Organization } from '../types/organization';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
-import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
+import { JoinDialogService } from '../join-dialog/join-dialog.service';
 
 @Component({
   selector: 'app-organizations',
@@ -41,23 +40,15 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public organizationService: OrganizationCollectionService,
     private organizationMembersService: OrganizationMembersCollectionService,
-    private billingService: BillingEntityCollectionService
+    public joinDialogService: JoinDialogService
   ) {}
 
   ngOnInit(): void {
     this.organizations$ = forkJoin([
       this.organizationService.canAddOrganizations$,
-      this.billingService.canViewBillingEntities$,
       this.organizationService.getAllMemoized(),
     ]).pipe(
-      switchMap(([canAddOrganizations, canViewBilling, orgs]) => {
-        if (orgs.length === 0 && canAddOrganizations && canViewBilling) {
-          void this.router.navigate(['organizations', '$new'], {
-            queryParams: { firstTime: undefined },
-            queryParamsHandling: 'merge',
-          });
-          return forkJoin([of(canAddOrganizations), of([])]);
-        }
+      switchMap(([canAddOrganizations, orgs]) => {
         return forkJoin([of(canAddOrganizations), this.fetchOrganizationData$(orgs)]);
       }),
       map(([canAddOrganizations, orgVMList]) => {
@@ -76,7 +67,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
           filter((v) => v === 'true')
         )
         .subscribe(() => {
-          this.openJoinOrganizationDialog();
+          this.joinDialogService.showDialog();
           void this.router.navigate([], {
             relativeTo: this.activatedRoute,
             queryParams: { showJoinDialog: undefined },
@@ -107,14 +98,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
       );
     });
     return from(list).pipe(combineLatestAll());
-  }
-
-  openJoinOrganizationDialog(): void {
-    this.dialogService.open(JoinOrganizationDialogComponent, {
-      modal: true,
-      closable: true,
-      header: $localize`Join Organization`,
-    });
   }
 
   ngOnDestroy(): void {

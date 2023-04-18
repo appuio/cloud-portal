@@ -37,26 +37,12 @@ describe('Test organization list', () => {
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
   });
 
-  it('empty list without billing list permission', () => {
+  it('empty list', () => {
     setOrganization(cy);
     cy.visit('/organizations');
     cy.wait('@organizationList');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get('#no-organization-message').should('contain.text', 'No organizations available.');
-  });
-
-  it('empty list with billing list permission', () => {
-    cy.setPermission(
-      { verb: 'list', ...OrganizationPermissions },
-      { verb: 'create', ...OrganizationPermissions },
-      { verb: 'list', ...BillingEntityPermissions }
-    );
-    setOrganization(cy);
-    setBillingEntities(cy);
-    cy.visit('/organizations');
-    cy.wait('@organizationList');
-    cy.get('#title').should('contain.text', 'New Organization');
-    cy.url().should('contain', '/organizations/$new');
   });
 
   it('request failed', () => {

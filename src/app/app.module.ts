@@ -40,6 +40,7 @@ import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collectio
 import { NavigationService } from './shared/navigation.service';
 import { invitationTokenLocalStorageKey } from './types/invitation';
 import { BrowserStorageService } from './shared/browser-storage.service';
+import { JoinDialogComponent } from './join-dialog/join-dialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { BrowserStorageService } from './shared/browser-storage.service';
     IdentityMenuComponent,
     InfoMenuComponent,
     InfoMenuItemComponent,
+    JoinDialogComponent,
   ],
   imports: [
     BrowserModule,

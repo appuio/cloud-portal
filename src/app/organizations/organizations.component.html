@@ -7,7 +7,7 @@
       <div class="flex flex-wrap gap-2">
         <div>
           <button
-            (click)="openJoinOrganizationDialog()"
+            (click)="this.joinDialogService.showDialog()"
             class="mr-2 w-full white-space-nowrap"
             id="joinOrganizationButton"
             pButton pRipple
@@ -79,7 +79,11 @@
       <p-messages severity="info">
         <ng-template pTemplate="content">
           <fa-icon [icon]="faInfo"/>
-          <div class="ml-2" i18n id="no-organization-message">No organizations available.</div>
+          <div class="ml-2" i18n id="no-organization-message">
+            No organizations available.
+            <span *ngIf="vm.canAddOrganizations">Please create one first or ask to join an existing organization.</span>
+            <span *ngIf="!vm.canAddOrganizations">Please ask to join an existing organization.</span>
+          </div>
         </ng-template>
       </p-messages>
     </ng-container>

@@ -1,11 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BillingEntity } from '../types/billing-entity';
 
-import { faAdd, faEdit, faInfo, faMagnifyingGlass, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faDollarSign,
+  faEdit,
+  faInfo,
+  faMagnifyingGlass,
+  faUserGroup,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons';
 import { combineLatestAll, forkJoin, from, map, Observable, of } from 'rxjs';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 import { switchMap } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
+import { JoinDialogService } from '../join-dialog/join-dialog.service';
 
 @Component({
   selector: 'app-billing-entity',
@@ -19,13 +27,14 @@ export class BillingEntityComponent implements OnInit {
   faEdit = faEdit;
   faUserGroup = faUserGroup;
   faDetails = faMagnifyingGlass;
+  faAdd = faAdd;
+  faDollarSign = faDollarSign;
 
   payload$?: Observable<ViewModel>;
 
   constructor(
     public billingEntityService: BillingEntityCollectionService,
-    private router: Router,
-    private route: ActivatedRoute
+    public joinDialogService: JoinDialogService
   ) {}
 
   ngOnInit(): void {
@@ -35,16 +44,8 @@ export class BillingEntityComponent implements OnInit {
     ]).pipe(
       switchMap(([entities, canCreateBilling]) => {
         if (entities.length === 0) {
-          if (canCreateBilling) {
-            void this.router.navigate(['$new'], {
-              queryParams: { firstTime: undefined, edit: 'y' },
-              queryParamsHandling: 'merge',
-              relativeTo: this.route,
-            });
-          }
-          // no billing entities
           return of({
-            canCreateBilling: canCreateBilling,
+            canCreateBilling,
             billingModels: [],
           } satisfies ViewModel);
         }
@@ -80,8 +81,6 @@ export class BillingEntityComponent implements OnInit {
       })
     );
   }
-
-  protected readonly faAdd = faAdd;
 }
 
 interface ViewModel {

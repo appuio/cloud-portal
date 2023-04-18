@@ -61,19 +61,22 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
           label: be.spec.name ? `${be.spec.name} (${be.metadata.name})` : be.metadata.name,
         };
       });
+    let preselectedBe = this.billingOptions.find(
+      (option) => option.value.metadata.name === this.organization.spec.billingEntityRef
+    );
+    if (!preselectedBe && this.billingEntities.length === 1 && this.new) {
+      preselectedBe = this.billingOptions[0];
+    }
     this.form = this.formBuilder.nonNullable.group({
       displayName: this.organization.spec.displayName,
       organizationId: new FormControl(this.organization.metadata.name, {
         validators: [Validators.required, Validators.pattern(this.organizationNameService.getValidationPattern())],
         nonNullable: true,
       }),
-      billingEntity: new FormControl<SelectItem<BillingEntity> | undefined>(
-        this.billingOptions.find((option) => option.value.metadata.name === this.organization.spec.billingEntityRef),
-        {
-          validators: [Validators.required],
-          nonNullable: true,
-        }
-      ),
+      billingEntity: new FormControl<SelectItem<BillingEntity> | undefined>(preselectedBe, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
     });
     if (this.new) {
       const sub = this.form.controls.displayName.valueChanges.subscribe((value) => this.setNameFromDisplayName(value));

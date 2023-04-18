@@ -279,7 +279,7 @@ describe('Test organization add', () => {
     cy.get('#title').should('contain.text', 'New Organization');
 
     cy.get('#id').type('nxt');
-    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
+    cy.get('#selectedBillingEntity').should('contain.text', 'Engineering');
     cy.get('button[type=submit]').click();
     cy.wait('@add');
     cy.url().should('contain', '/zones');
@@ -295,8 +295,6 @@ describe('Test organization add', () => {
     setOrganization(cy);
     setBillingEntities(cy, billingEntityNxt);
     cy.visit('/organizations/$new');
-
-    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
     cy.get('#id').clear().type('VSHN $a');
@@ -315,7 +313,6 @@ describe('Test organization add', () => {
     cy.visit('/organizations/$new');
 
     cy.get('#displayName').type('VSHN - the DevOps Company');
-    cy.get('#selectedBillingEntity').click().contains('Engineering').click();
 
     cy.get('#id').clear().type('-1-vshn');
     cy.get('.p-error').should('be.visible').and('contain.text', 'organization ID');

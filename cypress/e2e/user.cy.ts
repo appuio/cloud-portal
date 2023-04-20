@@ -183,6 +183,7 @@ describe('Test failures', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       statusCode: 403,
     });
+    setOrganization(cy);
     cy.visit('/user');
 
     cy.get('#failure-message').should('contain.text', 'User settings could not be loaded.');

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
+import { catchError, combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
 import { MessageService, SelectItem } from 'primeng/api';
 import { faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Organization } from '../../types/organization';
@@ -10,6 +10,7 @@ import { OrganizationCollectionService } from '../../store/organization-collecti
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { UserCollectionService } from '../../store/user-collection.service';
 import { switchMap } from 'rxjs/operators';
+import { defaultIfStatusCode } from '../../store/kubernetes-collection.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -38,6 +39,7 @@ export class UserEditComponent implements OnInit {
   ngOnInit(): void {
     const userName = this.identityService.getUsername();
     this.payload$ = this.userService.getByKeyMemoized(userName).pipe(
+      catchError(defaultIfStatusCode(this.userService.newUser(userName), [401, 403, 404])),
       switchMap((user) => {
         if (user.metadata.resourceVersion) {
           return of(user);

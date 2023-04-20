@@ -47,10 +47,13 @@
   </ng-container>
 
   <ng-container *ngIf="err">
-    <p-messages severity="error">
+    <p-messages severity="warn">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"/>
-        <div class="ml-2" i18n id="failure-message">User settings could not be loaded.</div>
+        <div class="ml-2" i18n id="failure-message">
+          User settings could not be loaded.
+          If you're a new user, please try again later, as your settings might take a while to initialize.
+        </div>
       </ng-template>
     </p-messages>
   </ng-container>

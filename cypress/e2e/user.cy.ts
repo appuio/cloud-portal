@@ -165,6 +165,7 @@ describe('Test user', () => {
       body: userMigWithoutPreferences,
     });
 
+    cy.get('.p-dropdown').click();
     cy.get('button[type=submit]').click();
     cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'None');

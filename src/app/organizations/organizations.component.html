@@ -38,7 +38,7 @@
           </div>
           <div>
             <a
-              *ngIf="dto.organization.spec.billingEntityRef"
+              *ngIf="dto.canViewBillingEntity"
               [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
               i18n-title title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'"

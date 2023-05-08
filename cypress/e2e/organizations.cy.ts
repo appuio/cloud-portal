@@ -1,10 +1,16 @@
 import { createUser } from '../fixtures/user';
-import { organizationListNxtVshn, organizationVshn, setOrganization } from '../fixtures/organization';
+import {
+  createOrganization,
+  organizationListNxtVshn,
+  organizationVshn,
+  setOrganization,
+} from '../fixtures/organization';
 import { OrganizationPermissions } from '../../src/app/types/organization';
 import { BillingEntityPermissions } from '../../src/app/types/billing-entity';
 import { setBillingEntities } from '../fixtures/billingentities';
+import { OrganizationMembersPermissions } from '../../src/app/types/organization-members';
 
-describe.skip('Test organization list', () => {
+describe('Test organization list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
@@ -19,13 +25,28 @@ describe.skip('Test organization list', () => {
   });
 
   it('list with two entries', () => {
-    cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
-      body: organizationListNxtVshn,
-    });
+    setOrganization(cy, ...organizationListNxtVshn.items);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+  });
+
+  it('list with edit permissions', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'update', ...OrganizationPermissions, namespace: 'nxt' },
+      { verb: 'get', ...BillingEntityPermissions, name: 'be-2345' },
+      { verb: 'list', ...BillingEntityPermissions },
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: 'nxt' }
+    );
+    setOrganization(cy, createOrganization({ name: 'nxt', displayName: 'nxt Engineering', billingRef: 'be-2345' }));
+    cy.visit('/organizations');
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get('svg[class*="fa-pen-to-square"]').should('exist');
+    cy.get('svg[class*="fa-dollar-sign"]').should('exist');
+    cy.get('svg[class*="fa-user-group"]').should('exist');
   });
 
   it('empty list', () => {
@@ -120,5 +141,22 @@ describe('Test limited permissions', () => {
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(3) > .flex-row > .text-blue-500 > .ng-fa-icon').should('not.exist');
+  });
+
+  it('should hide billing icon if no billing view permission', () => {
+    cy.setPermission(
+      { verb: 'list', ...OrganizationPermissions },
+      { verb: 'list', ...OrganizationMembersPermissions, namespace: 'vshn' }
+    );
+    const org = organizationVshn;
+    org.spec.billingEntityRef = 'be-2345';
+    setBillingEntities(cy);
+    setOrganization(cy, org);
+    cy.visit('/organizations');
+    cy.get('#organizations-title').should('contain.text', 'Organizations');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get('svg[class*="fa-pen-to-square"]').should('not.exist');
+    cy.get('svg[class*="fa-dollar-sign"]').should('not.exist');
+    cy.get('svg[class*="fa-user-group"]').should('exist');
   });
 });

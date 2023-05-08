@@ -15,6 +15,7 @@ import { OrganizationCollectionService } from '../store/organization-collection.
 import { Organization } from '../types/organization';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
 import { JoinDialogService } from '../join-dialog/join-dialog.service';
+import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 
 @Component({
   selector: 'app-organizations',
@@ -40,6 +41,7 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public organizationService: OrganizationCollectionService,
     private organizationMembersService: OrganizationMembersCollectionService,
+    private billingService: BillingEntityCollectionService,
     public joinDialogService: JoinDialogService
   ) {}
 
@@ -86,12 +88,14 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
         of(org),
         this.organizationService.canEditOrganization(org),
         this.organizationMembersService.canViewMembers(org.metadata.name),
+        org.spec.billingEntityRef ? this.billingService.canViewBilling(org.spec.billingEntityRef) : of(false),
       ]).pipe(
-        map(([organization, canEdit, canViewMembers]) => {
+        map(([organization, canEdit, canViewMembers, canViewBillingEntity]) => {
           const orgVM: OrganizationViewModel = {
             organization,
             canEdit,
             canViewMembers,
+            canViewBillingEntity,
           };
           return orgVM;
         })
@@ -114,4 +118,5 @@ interface OrganizationViewModel {
   organization: Organization;
   canEdit: boolean;
   canViewMembers: boolean;
+  canViewBillingEntity: boolean;
 }

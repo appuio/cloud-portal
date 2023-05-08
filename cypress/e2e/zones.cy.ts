@@ -18,7 +18,7 @@ describe('Test zones', () => {
   it('list with two entries', () => {
     cy.setPermission({ verb: 'list', ...ZonePermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/zones', {
-      body: { items: [zoneCloudscale1, zoneCloudscale2] },
+      body: { items: [zoneCloudscale2, zoneCloudscale1] },
     });
     cy.visit('/zones');
     cy.get('#zones-title').should('contain.text', 'Zones');

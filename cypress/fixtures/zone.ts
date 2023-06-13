@@ -12,7 +12,7 @@ export interface ZoneConfig {
 }
 
 export const zoneCloudscale1 = createZone({
-  name: 'cloudscale.ch AG',
+  name: 'cloudscale-lpg-1',
   displayName: 'cloudscale.ch LPG 0',
   features: { kubernetesVersion: '1.21', openshiftVersion: '4.8', sdnPlugin: 'OVN-Kubernetes' },
   cname: 'cname.cloudscale-lpg-0.appuio.cloud',

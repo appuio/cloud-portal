@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
-import { catchError, forkJoin, map, Observable, Subscription, take } from 'rxjs';
+import { forkJoin, map, Observable, Subscription, take } from 'rxjs';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClusterRoleBinding } from '../../types/clusterrole-binding';
@@ -11,19 +11,7 @@ import { MessageService } from 'primeng/api';
 import { UserCollectionService } from '../../store/user-collection.service';
 import { User } from 'src/app/types/user';
 import { switchMap } from 'rxjs/operators';
-import { defaultIfNotFound } from '../../store/kubernetes-collection.service';
-import { ClusterRoleCollectionService } from '../../store/cluster-role-collection.service';
-import { ClusterRole } from '../../types/clusterRole';
-import { KubeObject } from '../../types/entity';
 import { NavigationService } from '../../shared/navigation.service';
-
-interface Payload {
-  billingEntity: BillingEntity;
-  viewerRole: ClusterRole;
-  adminRole: ClusterRole;
-  adminBinding: ClusterRoleBinding;
-  viewerBinding: ClusterRoleBinding;
-}
 
 @Component({
   selector: 'app-billingentity-members',
@@ -32,7 +20,7 @@ interface Payload {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingEntityMembersComponent implements OnInit, OnDestroy {
-  payload$?: Observable<Payload>;
+  viewModel$?: Observable<ViewModel>;
 
   faWarning = faWarning;
   faClose = faClose;
@@ -57,8 +45,7 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     private router: Router,
     private navigationService: NavigationService,
     private billingService: BillingEntityCollectionService,
-    private roleService: ClusterRoleCollectionService,
-    public rolebindingService: ClusterRolebindingCollectionService,
+    public roleBindingService: ClusterRolebindingCollectionService,
     private messageService: MessageService,
     private userService: UserCollectionService
   ) {}
@@ -76,59 +63,40 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     //   -> Check if we're allowed to do something and error handling
     //  Second, we enrich the pipe with more entities, based on whether we're allowed to.
     //  Last, map the results to the payload and render the UI based on those.
-    this.payload$ = forkJoin([
+    this.viewModel$ = forkJoin([
       this.billingService.canViewBilling(beName),
-      this.billingService.canEditMembers(viewerClusterRoleBindingName),
       this.billingService.canEditMembers(adminClusterRoleBindingName),
     ]).pipe(
-      switchMap(([canViewBE, canEditViewer, canEditAdmins]) => {
+      switchMap(([canViewBE, canEditAdmins]) => {
         if (!canViewBE) {
           this.messageService.add({
             severity: 'error',
             summary: `You don't have permissions to view Billing ${beName}.`,
           });
-          this.router.navigateByUrl('/home');
+          void this.router.navigateByUrl('/home');
         }
-        if (!canEditViewer || !canEditAdmins) {
+        if (!canEditAdmins) {
           this.messageService.add({
             severity: 'error',
             summary: `You don't have enough permissions to edit members of Billing ${beName}.`,
           });
-          this.router.navigateByUrl('/home');
+          void this.router.navigateByUrl('/home');
         }
 
         return forkJoin([
           this.billingService.getByKeyMemoized(beName),
-          this.rolebindingService
-            .getByKeyMemoized(adminClusterRoleBindingName)
-            .pipe(catchError(defaultIfNotFound(this.newRoleBinding(adminClusterRoleBindingName))), take(1)),
-          this.rolebindingService
-            .getByKeyMemoized(viewerClusterRoleBindingName)
-            .pipe(catchError(defaultIfNotFound(this.newRoleBinding(viewerClusterRoleBindingName))), take(1)),
+          this.roleBindingService.getByKeyMemoized(adminClusterRoleBindingName),
+          this.roleBindingService.getByKeyMemoized(viewerClusterRoleBindingName),
           this.userService.currentUser$.pipe(take(1)),
-          this.createClusterRole$(
-            adminClusterRoleBindingName,
-            beName,
-            ['*'],
-            [adminClusterRoleBindingName, viewerClusterRoleBindingName]
-          ),
-          this.createClusterRole$(
-            viewerClusterRoleBindingName,
-            beName,
-            ['get', 'watch'],
-            [viewerClusterRoleBindingName]
-          ),
         ]);
       }),
-      map(([billingEntity, adminBinding, viewerBinding, currentUser, adminRole, viewerRole]) => {
+      map(([billingEntity, adminBinding, viewerBinding, currentUser]) => {
         this.currentUser = currentUser;
         const payload = {
           billingEntity,
           adminBinding,
-          adminRole,
           viewerBinding,
-          viewerRole,
-        } satisfies Payload;
+        } satisfies ViewModel;
         this.initForm(payload);
         return payload;
       })
@@ -139,7 +107,7 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     return this.form?.get('userRefs') as FormArray;
   }
 
-  initForm(payload: Payload): void {
+  initForm(payload: ViewModel): void {
     const userRoles = this.mapRolesToUsers([payload.viewerBinding, payload.adminBinding]);
 
     const members: FormGroup[] = [];
@@ -214,28 +182,22 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     });
   }
 
-  save(payload: Payload): void {
+  save(payload: ViewModel): void {
     if (!this.form) {
       return;
     }
 
     const bindingClones = [payload.adminBinding, payload.viewerBinding].map((binding) => structuredClone(binding));
-    const roleClones = [payload.adminRole, payload.viewerRole].map((role) => structuredClone(role));
     this.mapUsersToRoles(bindingClones, this.form.getRawValue().userRefs);
-    const upsert$: Observable<KubeObject>[] = [];
-    bindingClones.forEach((binding) => {
-      upsert$.push(this.rolebindingService.upsert(binding));
-    });
-    roleClones.forEach((role) => {
-      upsert$.push(this.roleService.upsert(role));
-    });
-    forkJoin(upsert$).subscribe({
+    const update$ = bindingClones.map((binding) => this.roleBindingService.update(binding));
+    forkJoin(update$).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
           summary: $localize`Successfully saved`,
         });
-        void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.route });
+        const previous = this.navigationService.previousRoute('..');
+        void this.router.navigate([previous.path], { relativeTo: this.route });
       },
       error: (error) => {
         this.messageService.add({
@@ -266,54 +228,10 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
+}
 
-  private newRoleBinding(clusterRoleBindingName: string): ClusterRoleBinding {
-    return {
-      apiVersion: 'rbac.authorization.k8s.io/v1',
-      kind: 'ClusterRoleBinding',
-      metadata: {
-        name: clusterRoleBindingName,
-      },
-      roleRef: {
-        name: clusterRoleBindingName,
-        kind: 'ClusterRole',
-        apiGroup: 'rbac.authorization.k8s.io',
-      },
-    };
-  }
-
-  private createClusterRole$(
-    bindingName: string,
-    beName: string,
-    verbs: string[],
-    resourceNames: string[]
-  ): Observable<ClusterRole> {
-    return this.roleService
-      .getByKeyMemoized(bindingName)
-      .pipe(catchError(defaultIfNotFound(this.newRole(bindingName, beName, verbs, resourceNames))), take(1));
-  }
-
-  private newRole(roleName: string, beName: string, verbs: string[], resourceNames: string[]): ClusterRole {
-    return {
-      apiVersion: 'rbac.authorization.k8s.io/v1',
-      kind: 'ClusterRole',
-      metadata: {
-        name: roleName,
-      },
-      rules: [
-        {
-          verbs: verbs,
-          apiGroups: ['rbac.authorization.k8s.io'],
-          resources: ['clusterrolebindings'],
-          resourceNames: resourceNames,
-        },
-        {
-          verbs: ['get'],
-          apiGroups: ['rbac.appuio.io'],
-          resources: ['billingentities'],
-          resourceNames: [beName],
-        },
-      ],
-    };
-  }
+interface ViewModel {
+  billingEntity: BillingEntity;
+  adminBinding: ClusterRoleBinding;
+  viewerBinding: ClusterRoleBinding;
 }

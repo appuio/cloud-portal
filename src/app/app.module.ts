@@ -18,7 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { SharedModule } from './shared/shared.module';
-import * as Sentry from '@sentry/angular';
+import * as Sentry from '@sentry/angular-ivy';
 import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-time-login-dialog.component';
 import { ConfirmationService, MessageService } from 'primeng/api';

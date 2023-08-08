@@ -14,17 +14,17 @@ const routes: Routes = [
   },
   {
     path: 'zones',
-    loadChildren: () => import('./zones/zones.module'),
+    loadChildren: () => import('./zones/zones.routing').then((m) => m.routes),
     title: $localize`Zones`,
   },
   {
     path: 'organizations',
-    loadChildren: () => import('./organizations/organizations.module'),
+    loadChildren: () => import('./organizations/organizations.routing').then((m) => m.routes),
     title: $localize`Organizations`,
   },
   {
     path: 'teams',
-    loadChildren: () => import('./teams/teams.module'),
+    loadChildren: () => import('./teams/teams.routing').then((m) => m.routes),
     data: {
       organizationSelectionEnabled: true,
     },
@@ -32,27 +32,27 @@ const routes: Routes = [
   },
   {
     path: 'billingentities',
-    loadChildren: () => import('./billingentity/billing-entity.module'),
+    loadChildren: () => import('./billingentity/billing-entity.routing').then((m) => m.routes),
     title: $localize`Billing`,
   },
   {
     path: 'invitations',
-    loadChildren: () => import('./invitations/invitations.module'),
+    loadChildren: () => import('./invitations/invitations.routing').then((m) => m.routes),
     title: $localize`Invitations`,
   },
   {
     path: 'user',
-    loadChildren: () => import('./user/user.module'),
+    loadChildren: () => import('./user/user.routing').then((m) => m.routes),
     title: $localize`User Settings`,
   },
   {
     path: 'kubeconfig',
-    loadChildren: () => import('./kubeconfig/kubeconfig.module'),
+    loadChildren: () => import('./kubeconfig/kubeconfig.routing').then((m) => m.routes),
     title: $localize`Kubeconfig`,
   },
   {
     path: 'feedback',
-    loadChildren: () => import('./productboard/productboard.module'),
+    loadChildren: () => import('./productboard/productboard.routing').then((m) => m.routes),
     title: $localize`Feedback`,
   },
 ];

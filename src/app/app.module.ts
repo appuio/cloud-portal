@@ -17,7 +17,6 @@ import { AppEffects } from './store/app.effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { SharedModule } from './shared/shared.module';
 import * as Sentry from '@sentry/angular-ivy';
 import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-time-login-dialog.component';
@@ -41,58 +40,61 @@ import { NavigationService } from './shared/navigation.service';
 import { invitationTokenLocalStorageKey } from './types/invitation';
 import { BrowserStorageService } from './shared/browser-storage.service';
 import { JoinDialogComponent } from './join-dialog/join-dialog.component';
+import { PushModule } from '@ngrx/component';
+import { StyleClassModule } from 'primeng/styleclass';
 
 @NgModule({
-    declarations: [AppComponent],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        SharedModule,
-        AppRoutingModule,
-        HttpClientModule,
-        OAuthModule.forRoot(),
-        StoreModule.forRoot({ app: appReducer, router: routerReducer }),
-        !environment.production ? StoreDevtoolsModule.instrument() : [],
-        EffectsModule.forRoot([AppEffects]),
-        StoreRouterConnectingModule.forRoot(),
-        EntityDataModule.forRoot(entityConfig),
-        NavbarItemComponent,
-        HomeComponent,
-        StatusBadgeComponent,
-        FirstTimeLoginDialogComponent,
-        OrganizationSelectionComponent,
-        IdentityMenuComponent,
-        InfoMenuComponent,
-        InfoMenuItemComponent,
-        JoinDialogComponent,
-    ],
-    providers: [
-        MessageService,
-        DialogService,
-        ConfirmationService,
-        OrganizationCollectionService,
-        KubernetesCollectionServiceFactory,
-        SelfSubjectAccessReviewCollectionService,
-        {
-            provide: APP_INITIALIZER,
-            // start the NavigationService early to catch route events.
-            deps: [AppConfigService, OAuthService, BrowserStorageService, NavigationService],
-            useFactory: initializeAppFactory,
-            multi: true,
-        },
-        { provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: RetryInterceptor, multi: true },
-        { provide: DefaultDataServiceFactory, useClass: KubernetesDataServiceFactory },
-        {
-            provide: ErrorHandler,
-            useValue: Sentry.createErrorHandler({
-                showDialog: true,
-                logErrors: true,
-            }),
-        },
-        { provide: TitleStrategy, useClass: AppAndPageTitleStrategy },
-    ],
-    bootstrap: [AppComponent],
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    OAuthModule.forRoot(),
+    StoreModule.forRoot({ app: appReducer, router: routerReducer }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forRoot([AppEffects]),
+    StoreRouterConnectingModule.forRoot(),
+    EntityDataModule.forRoot(entityConfig),
+    NavbarItemComponent,
+    HomeComponent,
+    StatusBadgeComponent,
+    FirstTimeLoginDialogComponent,
+    OrganizationSelectionComponent,
+    IdentityMenuComponent,
+    InfoMenuComponent,
+    InfoMenuItemComponent,
+    JoinDialogComponent,
+    PushModule,
+    StyleClassModule,
+  ],
+  providers: [
+    MessageService,
+    DialogService,
+    ConfirmationService,
+    OrganizationCollectionService,
+    KubernetesCollectionServiceFactory,
+    SelfSubjectAccessReviewCollectionService,
+    {
+      provide: APP_INITIALIZER,
+      // start the NavigationService early to catch route events.
+      deps: [AppConfigService, OAuthService, BrowserStorageService, NavigationService],
+      useFactory: initializeAppFactory,
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: IdTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: RetryInterceptor, multi: true },
+    { provide: DefaultDataServiceFactory, useClass: KubernetesDataServiceFactory },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+        logErrors: true,
+      }),
+    },
+    { provide: TitleStrategy, useClass: AppAndPageTitleStrategy },
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {
   constructor(entityDefinitionService: EntityDefinitionService, entityDataService: EntityDataService) {

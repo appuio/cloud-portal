@@ -1,11 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { SingleZoneComponent } from './single-zone/single-zone.component';
 import { ZonesComponent } from './zones.component';
 import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { ZonePermissions } from '../types/zone';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: ZonesComponent,
@@ -23,9 +22,3 @@ const routes: Routes = [
     },
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class ZonesRoutingModule {}

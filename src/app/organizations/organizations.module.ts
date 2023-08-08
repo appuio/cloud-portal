@@ -8,12 +8,9 @@ import { OrganizationFormComponent } from './organization-form/organization-form
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
 
 @NgModule({
-  declarations: [
-    OrganizationsComponent,
-    OrganizationEditComponent,
-    OrganizationFormComponent,
-    OrganizationMembersEditComponent,
-  ],
-  imports: [SharedModule, OrganizationsRoutingModule],
+    imports: [SharedModule, OrganizationsRoutingModule, OrganizationsComponent,
+        OrganizationEditComponent,
+        OrganizationFormComponent,
+        OrganizationMembersEditComponent],
 })
 export default class OrganizationsModule {}

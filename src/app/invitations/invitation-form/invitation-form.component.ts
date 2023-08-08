@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 import { Invitation, TargetRef } from '../../types/invitation';
 import { v4 as uuidv4 } from 'uuid';
 import { faClose, faGift } from '@fortawesome/free-solid-svg-icons';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { take } from 'rxjs';
 import { Team } from '../../types/team';
 import { RoleBindingPermissions } from '../../types/role-binding';
@@ -23,12 +23,37 @@ import {
   TeamOption,
 } from './invitation-form.types';
 import { atLeastOneChecked } from './invitation-form.util';
+import { PushPipe } from '@ngrx/component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { NgIf, NgFor } from '@angular/common';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-invitation-form',
-  templateUrl: './invitation-form.component.html',
-  styleUrls: ['./invitation-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-invitation-form',
+    templateUrl: './invitation-form.component.html',
+    styleUrls: ['./invitation-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        InputTextModule,
+        InputTextareaModule,
+        NgIf,
+        NgFor,
+        DropdownModule,
+        CheckboxModule,
+        MultiSelectModule,
+        ButtonModule,
+        RippleModule,
+        FontAwesomeModule,
+        PushPipe,
+    ],
 })
 export class InvitationFormComponent implements OnInit {
   @Input()

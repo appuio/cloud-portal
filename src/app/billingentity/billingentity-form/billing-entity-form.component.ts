@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { faCancel, faSave } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
@@ -10,12 +10,36 @@ import { MessageService } from 'primeng/api';
 import { NavigationService } from '../../shared/navigation.service';
 import { multiEmail, sameEntries } from './billingentity-form.util';
 import { filter } from 'rxjs';
+import { PushPipe } from '@ngrx/component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { ChipsModule } from 'primeng/chips';
+import { DividerModule } from 'primeng/divider';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-billingentity-form',
-  templateUrl: './billing-entity-form.component.html',
-  styleUrls: ['./billing-entity-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-billingentity-form',
+    templateUrl: './billing-entity-form.component.html',
+    styleUrls: ['./billing-entity-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        InputTextModule,
+        DividerModule,
+        ChipsModule,
+        DropdownModule,
+        CheckboxModule,
+        NgIf,
+        ButtonModule,
+        RippleModule,
+        FontAwesomeModule,
+        PushPipe,
+    ],
 })
 export class BillingEntityFormComponent implements OnInit {
   @Input()

@@ -5,7 +5,6 @@ import { SharedModule } from '../shared/shared.module';
 import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
-  declarations: [UserEditComponent],
-  imports: [UserRoutingModule, CommonModule, SharedModule],
+    imports: [UserRoutingModule, CommonModule, SharedModule, UserEditComponent],
 })
 export default class UserModule {}

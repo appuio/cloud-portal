@@ -1,15 +1,36 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BillingEntity } from '../../types/billing-entity';
 import { combineLatestWith, filter, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { faCancel, faClose, faEdit, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { BillingEntityFormComponent } from '../billingentity-form/billing-entity-form.component';
+import { BillingEntityViewComponent } from '../billingentity-view/billing-entity-view.component';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgIf } from '@angular/common';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-  selector: 'app-billingentity-detail',
-  templateUrl: './billing-entity-detail.component.html',
-  styleUrls: ['./billing-entity-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-billingentity-detail',
+    templateUrl: './billing-entity-detail.component.html',
+    styleUrls: ['./billing-entity-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        RouterLink,
+        FontAwesomeModule,
+        BackLinkDirective,
+        BillingEntityViewComponent,
+        BillingEntityFormComponent,
+        MessagesModule,
+        SharedModule,
+        PushPipe,
+    ],
 })
 export class BillingEntityDetailComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;

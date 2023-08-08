@@ -1,15 +1,27 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, Subscription } from 'rxjs';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, SharedModule } from 'primeng/api';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { DropdownModule } from 'primeng/dropdown';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-  selector: 'app-organization-selection',
-  templateUrl: './organization-selection.component.html',
-  styleUrls: ['./organization-selection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-organization-selection',
+    templateUrl: './organization-selection.component.html',
+    styleUrls: ['./organization-selection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        DropdownModule,
+        ReactiveFormsModule,
+        SharedModule,
+        FontAwesomeModule,
+        PushPipe,
+    ],
 })
 export class OrganizationSelectionComponent implements OnInit, OnDestroy {
   organizations$?: Observable<SelectItem[]>;

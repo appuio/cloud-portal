@@ -3,12 +3,28 @@ import { faInfoCircle, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Zone } from '../types/zone';
 import { map, Observable } from 'rxjs';
 import { ZoneCollectionService } from '../store/zone-collection.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { ZoneDetailComponent } from './zone/zone-detail.component';
+import { NgFor, NgIf } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
-  selector: 'app-zones',
-  templateUrl: './zones.component.html',
-  styleUrls: ['./zones.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-zones',
+    templateUrl: './zones.component.html',
+    styleUrls: ['./zones.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgFor,
+        ZoneDetailComponent,
+        NgIf,
+        MessagesModule,
+        SharedModule,
+        FontAwesomeModule,
+    ],
 })
 export class ZonesComponent implements OnInit {
   zones$?: Observable<Zone[]>;

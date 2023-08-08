@@ -7,7 +7,6 @@ import { SharedModule } from '../shared/shared.module';
 import { ReplaceValuesPipe } from './replace-values.pipe';
 
 @NgModule({
-  declarations: [KubeconfigDownloadComponent, ReplaceValuesPipe],
-  imports: [CommonModule, SharedModule, KubeconfigDownloadRoutingModule],
+    imports: [CommonModule, SharedModule, KubeconfigDownloadRoutingModule, KubeconfigDownloadComponent, ReplaceValuesPipe],
 })
 export default class KubeconfigDownloadModule {}

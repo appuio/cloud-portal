@@ -4,10 +4,10 @@ import { BillingEntityCollectionService } from '../../store/billingentity-collec
 import { BillingEntity } from '../../types/billing-entity';
 import { catchError, forkJoin, map, Observable, Subscription, take } from 'rxjs';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ClusterRoleBinding } from '../../types/clusterrole-binding';
 import { ClusterRolebindingCollectionService } from '../../store/clusterrolebinding-collection.service';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { UserCollectionService } from '../../store/user-collection.service';
 import { User } from 'src/app/types/user';
 import { switchMap } from 'rxjs/operators';
@@ -16,6 +16,16 @@ import { ClusterRoleCollectionService } from '../../store/cluster-role-collectio
 import { ClusterRole } from '../../types/clusterRole';
 import { KubeObject } from '../../types/entity';
 import { NavigationService } from '../../shared/navigation.service';
+import { MessagesModule } from 'primeng/messages';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -26,10 +36,27 @@ interface Payload {
 }
 
 @Component({
-  selector: 'app-billingentity-members',
-  templateUrl: './billing-entity-members.component.html',
-  styleUrls: ['./billing-entity-members.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-billingentity-members',
+    templateUrl: './billing-entity-members.component.html',
+    styleUrls: ['./billing-entity-members.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        BackLinkDirective,
+        FontAwesomeModule,
+        ReactiveFormsModule,
+        MessageModule,
+        NgFor,
+        InputTextModule,
+        MultiSelectModule,
+        ButtonModule,
+        RippleModule,
+        MessagesModule,
+        SharedModule,
+        PushPipe,
+    ],
 })
 export class BillingEntityMembersComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;

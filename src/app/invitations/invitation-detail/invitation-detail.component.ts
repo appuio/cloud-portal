@@ -18,12 +18,37 @@ import { catchError, combineLatestAll, forkJoin, from, map, Observable, of } fro
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
 import { TeamCollectionService } from '../../store/team-collection.service';
+import { MessagesModule } from 'primeng/messages';
+import { RouterLink } from '@angular/router';
+import { SharedModule } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { NgIf, NgFor, NgSwitch, NgSwitchCase, DatePipe } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
-  selector: 'app-invitation-detail',
-  templateUrl: './invitation-detail.component.html',
-  styleUrls: ['./invitation-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-invitation-detail',
+    templateUrl: './invitation-detail.component.html',
+    styleUrls: ['./invitation-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        BackLinkDirective,
+        FontAwesomeModule,
+        NgFor,
+        TagModule,
+        TableModule,
+        SharedModule,
+        RouterLink,
+        NgSwitch,
+        NgSwitchCase,
+        MessagesModule,
+        DatePipe,
+    ],
 })
 export class InvitationDetailComponent implements OnInit {
   @Input()

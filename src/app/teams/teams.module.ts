@@ -6,7 +6,6 @@ import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.com
 import { TeamEditComponent } from './team-edit/team-edit.component';
 
 @NgModule({
-  declarations: [TeamsComponent, JoinTeamDialogComponent, TeamEditComponent],
-  imports: [SharedModule, TeamsRoutingModule],
+    imports: [SharedModule, TeamsRoutingModule, TeamsComponent, JoinTeamDialogComponent, TeamEditComponent],
 })
 export default class TeamsModule {}

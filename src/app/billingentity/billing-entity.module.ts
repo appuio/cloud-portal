@@ -8,13 +8,10 @@ import { BillingEntityViewComponent } from './billingentity-view/billing-entity-
 import { BillingEntityFormComponent } from './billingentity-form/billing-entity-form.component';
 
 @NgModule({
-  declarations: [
-    BillingEntityComponent,
-    BillingEntityDetailComponent,
-    BillingEntityMembersComponent,
-    BillingEntityViewComponent,
-    BillingEntityFormComponent,
-  ],
-  imports: [SharedModule, BillingEntityRoutingModule],
+    imports: [SharedModule, BillingEntityRoutingModule, BillingEntityComponent,
+        BillingEntityDetailComponent,
+        BillingEntityMembersComponent,
+        BillingEntityViewComponent,
+        BillingEntityFormComponent],
 })
 export default class BillingEntityModule {}

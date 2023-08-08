@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IncidentType } from '../types/statuspal';
 import { StatusService } from '../store/status.service';
+import { TagModule } from 'primeng/tag';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-status-badge',
-  templateUrl: './status-badge.component.html',
-  styleUrls: ['./status-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-status-badge',
+    templateUrl: './status-badge.component.html',
+    styleUrls: ['./status-badge.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, TagModule],
 })
 export class StatusBadgeComponent implements OnInit {
   status?: string;

@@ -10,18 +10,37 @@ import {
   faWarning,
 } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { Organization } from '../types/organization';
 import { OrganizationMembersCollectionService } from '../store/organizationmembers-collection.service';
 import { JoinDialogService } from '../join-dialog/join-dialog.service';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
-  selector: 'app-organizations',
-  templateUrl: './organizations.component.html',
-  styleUrls: ['./organizations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-organizations',
+    templateUrl: './organizations.component.html',
+    styleUrls: ['./organizations.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        ButtonModule,
+        RippleModule,
+        FontAwesomeModule,
+        RouterLink,
+        NgFor,
+        MessagesModule,
+        SharedModule,
+    ],
 })
 export class OrganizationsComponent implements OnInit, OnDestroy {
   faInfo = faInfoCircle;

@@ -5,7 +5,7 @@ import { InvitationCollectionService } from '../../store/invitation-collection.s
 import { Invitation, invitationTokenLocalStorageKey } from '../../types/invitation';
 import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { InvitationRedeemRequestCollectionService } from '../../store/invitation-redeem-request-collection.service';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { DataServiceError } from '@ngrx/data';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
@@ -14,12 +14,26 @@ import { HttpClient } from '@angular/common/http';
 import { KubernetesUrlGenerator } from '../../store/kubernetes-url-generator.service';
 import { invitationEntityKey } from '../../store/entity-metadata-map';
 import { BrowserStorageService } from '../../shared/browser-storage.service';
+import { InvitationDetailComponent } from '../invitation-detail/invitation-detail.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MessagesModule } from 'primeng/messages';
+import { NgIf } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
-  selector: 'app-invitation-view',
-  templateUrl: './invitation-view.component.html',
-  styleUrls: ['./invitation-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-invitation-view',
+    templateUrl: './invitation-view.component.html',
+    styleUrls: ['./invitation-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        MessagesModule,
+        SharedModule,
+        FontAwesomeModule,
+        InvitationDetailComponent,
+    ],
 })
 export class InvitationViewComponent implements OnInit {
   payload$?: Observable<Payload>;

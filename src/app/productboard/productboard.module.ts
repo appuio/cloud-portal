@@ -5,7 +5,6 @@ import { SharedModule } from 'primeng/api';
 import { ProductboardRoutingModule } from './productboard-routing.module';
 
 @NgModule({
-  declarations: [ProductboardComponent],
-  imports: [CommonModule, SharedModule, ProductboardRoutingModule],
+    imports: [CommonModule, SharedModule, ProductboardRoutingModule, ProductboardComponent],
 })
 export default class ProductboardModule {}

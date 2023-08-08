@@ -3,12 +3,23 @@ import { faSignOut, faUser, faUserGear } from '@fortawesome/free-solid-svg-icons
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AppConfigService } from '../app-config.service';
 import { NavMenuItem } from '../app.component';
+import { NavbarItemComponent } from '../navbar-item/navbar-item.component';
+import { NgFor } from '@angular/common';
+import { StyleClassModule } from 'primeng/styleclass';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
-  selector: 'app-identity-menu',
-  templateUrl: './identity-menu.component.html',
-  styleUrls: ['./identity-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-identity-menu',
+    templateUrl: './identity-menu.component.html',
+    styleUrls: ['./identity-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        RippleModule,
+        StyleClassModule,
+        NgFor,
+        NavbarItemComponent,
+    ],
 })
 export class IdentityMenuComponent {
   profileItems: NavMenuItem[] = [

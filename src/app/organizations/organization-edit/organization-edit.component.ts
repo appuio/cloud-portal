@@ -6,6 +6,13 @@ import { ActivatedRoute } from '@angular/router';
 import { combineLatestWith, map, Observable, of } from 'rxjs';
 import { BillingEntity } from '../../types/billing-entity';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { OrganizationFormComponent } from '../organization-form/organization-form.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { NgIf } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 interface Payload {
   organization: Organization;
@@ -13,10 +20,20 @@ interface Payload {
 }
 
 @Component({
-  selector: 'app-organization-edit',
-  templateUrl: './organization-edit.component.html',
-  styleUrls: ['./organization-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-organization-edit',
+    templateUrl: './organization-edit.component.html',
+    styleUrls: ['./organization-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        LetDirective,
+        NgIf,
+        BackLinkDirective,
+        FontAwesomeModule,
+        OrganizationFormComponent,
+        MessagesModule,
+        SharedModule,
+    ],
 })
 export class OrganizationEditComponent implements OnInit {
   payload$?: Observable<Payload>;

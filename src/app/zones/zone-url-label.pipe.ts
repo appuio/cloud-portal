@@ -3,7 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AppConfig, AppConfigService } from '../app-config.service';
 
 @Pipe({
-  name: 'zoneUrlLabel',
+    name: 'zoneUrlLabel',
+    standalone: true,
 })
 export class ZoneUrlLabelPipe implements PipeTransform {
   private appConfig: AppConfig;

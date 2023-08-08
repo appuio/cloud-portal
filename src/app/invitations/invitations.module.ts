@@ -8,13 +8,10 @@ import { InvitationFormComponent } from './invitation-form/invitation-form.compo
 import { InvitationEditComponent } from './invitation-edit/invitation-edit.component';
 
 @NgModule({
-  declarations: [
-    InvitationsComponent,
-    InvitationDetailComponent,
-    InvitationViewComponent,
-    InvitationFormComponent,
-    InvitationEditComponent,
-  ],
-  imports: [SharedModule, InvitationsRoutingModule],
+    imports: [SharedModule, InvitationsRoutingModule, InvitationsComponent,
+        InvitationDetailComponent,
+        InvitationViewComponent,
+        InvitationFormComponent,
+        InvitationEditComponent],
 })
 export default class InvitationsModule {}

@@ -9,8 +9,7 @@ import { SingleZoneComponent } from './single-zone/single-zone.component';
 import { ZoneUrlLabelPipe } from './zone-url-label.pipe';
 
 @NgModule({
-  declarations: [ZonesComponent, ZoneDetailComponent, ZoneFeaturesPipe, SingleZoneComponent, ZoneUrlLabelPipe],
-  imports: [CommonModule, SharedModule, ZonesRoutingModule],
-  providers: [TitleCasePipe],
+    imports: [CommonModule, SharedModule, ZonesRoutingModule, ZonesComponent, ZoneDetailComponent, ZoneFeaturesPipe, SingleZoneComponent, ZoneUrlLabelPipe],
+    providers: [TitleCasePipe],
 })
 export default class ZonesModule {}

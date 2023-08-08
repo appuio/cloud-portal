@@ -123,6 +123,7 @@ describe('Test invitation create', () => {
 
     cy.get('p-dropdown').eq(0).click().contains('nxt').click();
     cy.get('p-multiselect').eq(0).click().contains('Super').click();
+    cy.get('body').type('{esc}');
     cy.get('p-dropdown').eq(0).click().contains('DevOps').click();
     cy.get('p-multiselect').eq(0).should('contain.text', 'Select Team');
     cy.get('p-multiselect').eq(0).click().contains('ops-team').click();

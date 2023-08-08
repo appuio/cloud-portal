@@ -24,22 +24,22 @@ import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-billing-entity',
-    templateUrl: './billing-entity.component.html',
-    styleUrls: ['./billing-entity.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        RouterLink,
-        NgFor,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-billing-entity',
+  templateUrl: './billing-entity.component.html',
+  styleUrls: ['./billing-entity.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    RouterLink,
+    NgFor,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class BillingEntityComponent implements OnInit {
   faWarning = faWarning;

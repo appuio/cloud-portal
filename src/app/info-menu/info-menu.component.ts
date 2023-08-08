@@ -8,20 +8,12 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { RippleModule } from 'primeng/ripple';
 
 @Component({
-    selector: 'app-info-menu',
-    templateUrl: './info-menu.component.html',
-    styleUrls: ['./info-menu.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        RippleModule,
-        StyleClassModule,
-        FontAwesomeModule,
-        NgFor,
-        NgIf,
-        InfoMenuItemComponent,
-        RouterLink,
-    ],
+  selector: 'app-info-menu',
+  templateUrl: './info-menu.component.html',
+  styleUrls: ['./info-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [RippleModule, StyleClassModule, FontAwesomeModule, NgFor, NgIf, InfoMenuItemComponent, RouterLink],
 })
 export class InfoMenuComponent {
   references: Item[] = [

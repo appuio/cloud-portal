@@ -11,20 +11,12 @@ import { NgFor, NgIf } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-zones',
-    templateUrl: './zones.component.html',
-    styleUrls: ['./zones.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgFor,
-        ZoneDetailComponent,
-        NgIf,
-        MessagesModule,
-        SharedModule,
-        FontAwesomeModule,
-    ],
+  selector: 'app-zones',
+  templateUrl: './zones.component.html',
+  styleUrls: ['./zones.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [LetDirective, NgFor, ZoneDetailComponent, NgIf, MessagesModule, SharedModule, FontAwesomeModule],
 })
 export class ZonesComponent implements OnInit {
   zones$?: Observable<Zone[]>;

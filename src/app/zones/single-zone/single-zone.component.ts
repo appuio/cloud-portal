@@ -12,25 +12,21 @@ import { NgIf } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-single-zone',
-    templateUrl: './single-zone.component.html',
-    styleUrls: ['./single-zone.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ZoneDetailComponent,
-        MessagesModule,
-        SharedModule,
-        FontAwesomeModule,
-    ],
+  selector: 'app-single-zone',
+  templateUrl: './single-zone.component.html',
+  styleUrls: ['./single-zone.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [LetDirective, NgIf, ZoneDetailComponent, MessagesModule, SharedModule, FontAwesomeModule],
 })
 export class SingleZoneComponent implements OnInit {
   zone$?: Observable<Zone>;
   faWarning = faWarning;
 
-  constructor(private route: ActivatedRoute, private zoneService: ZoneCollectionService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private zoneService: ZoneCollectionService
+  ) {}
 
   ngOnInit(): void {
     const name = this.route.snapshot.paramMap.get('name');

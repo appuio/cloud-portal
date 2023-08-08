@@ -40,11 +40,7 @@
     "PS512",
     "RS512"
   ],
-  "id_token_encryption_alg_values_supported": [
-    "RSA-OAEP",
-    "RSA-OAEP-256",
-    "RSA1_5"
-  ],
+  "id_token_encryption_alg_values_supported": ["RSA-OAEP", "RSA-OAEP-256", "RSA1_5"],
   "id_token_encryption_enc_values_supported": [
     "A256GCM",
     "A192GCM",
@@ -83,11 +79,7 @@
     "RS512",
     "none"
   ],
-  "request_object_encryption_alg_values_supported": [
-    "RSA-OAEP",
-    "RSA-OAEP-256",
-    "RSA1_5"
-  ],
+  "request_object_encryption_alg_values_supported": ["RSA-OAEP", "RSA-OAEP-256", "RSA1_5"],
   "request_object_encryption_enc_values_supported": [
     "A256GCM",
     "A192GCM",
@@ -96,15 +88,7 @@
     "A192CBC-HS384",
     "A256CBC-HS512"
   ],
-  "response_modes_supported": [
-    "query",
-    "fragment",
-    "form_post",
-    "query.jwt",
-    "fragment.jwt",
-    "form_post.jwt",
-    "jwt"
-  ],
+  "response_modes_supported": ["query", "fragment", "form_post", "query.jwt", "fragment.jwt", "form_post.jwt", "jwt"],
   "registration_endpoint": "https://id.dev.appuio.cloud/auth/realms/development/clients-registrations/openid-connect",
   "token_endpoint_auth_methods_supported": [
     "private_key_jwt",
@@ -162,11 +146,7 @@
     "PS512",
     "RS512"
   ],
-  "authorization_encryption_alg_values_supported": [
-    "RSA-OAEP",
-    "RSA-OAEP-256",
-    "RSA1_5"
-  ],
+  "authorization_encryption_alg_values_supported": ["RSA-OAEP", "RSA-OAEP-256", "RSA1_5"],
   "authorization_encryption_enc_values_supported": [
     "A256GCM",
     "A192GCM",

@@ -13,25 +13,25 @@ import { RouterLink } from '@angular/router';
 import { NgIf, NgFor, JsonPipe, KeyValuePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-zone-detail',
-    templateUrl: './zone-detail.component.html',
-    styleUrls: ['./zone-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        RouterLink,
-        ButtonModule,
-        FontAwesomeModule,
-        BackLinkDirective,
-        NgFor,
-        TagModule,
-        ClipboardModule,
-        JsonPipe,
-        KeyValuePipe,
-        ZoneFeaturesPipe,
-        ZoneUrlLabelPipe,
-    ],
+  selector: 'app-zone-detail',
+  templateUrl: './zone-detail.component.html',
+  styleUrls: ['./zone-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    RouterLink,
+    ButtonModule,
+    FontAwesomeModule,
+    BackLinkDirective,
+    NgFor,
+    TagModule,
+    ClipboardModule,
+    JsonPipe,
+    KeyValuePipe,
+    ZoneFeaturesPipe,
+    ZoneUrlLabelPipe,
+  ],
 })
 export class ZoneDetailComponent {
   @Input() zone?: Zone;

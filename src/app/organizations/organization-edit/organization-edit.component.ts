@@ -20,20 +20,20 @@ interface Payload {
 }
 
 @Component({
-    selector: 'app-organization-edit',
-    templateUrl: './organization-edit.component.html',
-    styleUrls: ['./organization-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        BackLinkDirective,
-        FontAwesomeModule,
-        OrganizationFormComponent,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-organization-edit',
+  templateUrl: './organization-edit.component.html',
+  styleUrls: ['./organization-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    OrganizationFormComponent,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class OrganizationEditComponent implements OnInit {
   payload$?: Observable<Payload>;

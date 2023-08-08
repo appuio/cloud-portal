@@ -31,12 +31,17 @@
       [styleClass]="'w-full'"
       [filter]="true"
       placeholder="Select Billing"
-      i18n-placeholder
-    />
+      i18n-placeholder />
   </div>
 
   <div class="col-12">
-    <button [disabled]="form.invalid" [loading]="(organizationCollectionService.loading$ | ngrxPush) ?? false" class="w-auto mt-3" pButton pRipple type="submit">
+    <button
+      [disabled]="form.invalid"
+      [loading]="(organizationCollectionService.loading$ | ngrxPush) ?? false"
+      class="w-auto mt-3"
+      pButton
+      pRipple
+      type="submit">
       <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
       <span class="pr-2" i18n>Save</span>
     </button>

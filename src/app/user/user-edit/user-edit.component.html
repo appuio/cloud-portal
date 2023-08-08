@@ -7,14 +7,12 @@
         </div>
       </div>
       <div class="border-top-1 surface-border">
-
         <form (submit)="save(payload.user)" [formGroup]="form" class="grid formgrid p-fluid py-2" novalidate>
           <div class="col-12 mb-2">
             <p-message
               i18n-text
               severity="info"
-              text="If an organization is missing, make sure you are a member of it."
-            />
+              text="If an organization is missing, make sure you are a member of it." />
           </div>
           <div class="field mb-4 col-12">
             <label for="defaultOrganizationRef" i18n>Default Organization</label>
@@ -27,17 +25,17 @@
               [filter]="true"
               [showClear]="true"
               [optionLabel]="'label'"
-              id="defaultOrganizationRef"
-            />
+              id="defaultOrganizationRef" />
           </div>
           <div class="col-12">
             <button
               [disabled]="form.invalid"
-              [loading]="(userService.loading$ | ngrxPush)?? false"
+              [loading]="(userService.loading$ | ngrxPush) ?? false"
               class="w-auto mt-3"
-              pButton pRipple type="submit"
-            >
-              <fa-icon [icon]="faSave" class="pr-2"/>
+              pButton
+              pRipple
+              type="submit">
+              <fa-icon [icon]="faSave" class="pr-2" />
               <span class="pr-2" i18n>Save</span>
             </button>
           </div>
@@ -49,10 +47,10 @@
   <ng-container *ngIf="err">
     <p-messages severity="warn">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"/>
+        <fa-icon [icon]="faWarning" />
         <div class="ml-2" i18n id="failure-message">
-          User settings could not be loaded.
-          If you're a new user, please try again later, as your settings might take a while to initialize.
+          User settings could not be loaded. If you're a new user, please try again later, as your settings might take a
+          while to initialize.
         </div>
       </ng-template>
     </p-messages>

@@ -29,26 +29,26 @@ import { NgIf, NgFor, NgSwitch, NgSwitchCase, DatePipe } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-invitation-detail',
-    templateUrl: './invitation-detail.component.html',
-    styleUrls: ['./invitation-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        BackLinkDirective,
-        FontAwesomeModule,
-        NgFor,
-        TagModule,
-        TableModule,
-        SharedModule,
-        RouterLink,
-        NgSwitch,
-        NgSwitchCase,
-        MessagesModule,
-        DatePipe,
-    ],
+  selector: 'app-invitation-detail',
+  templateUrl: './invitation-detail.component.html',
+  styleUrls: ['./invitation-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    NgFor,
+    TagModule,
+    TableModule,
+    SharedModule,
+    RouterLink,
+    NgSwitch,
+    NgSwitchCase,
+    MessagesModule,
+    DatePipe,
+  ],
 })
 export class InvitationDetailComponent implements OnInit {
   @Input()

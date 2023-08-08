@@ -36,27 +36,27 @@ interface Payload {
 }
 
 @Component({
-    selector: 'app-billingentity-members',
-    templateUrl: './billing-entity-members.component.html',
-    styleUrls: ['./billing-entity-members.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        BackLinkDirective,
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        MessageModule,
-        NgFor,
-        InputTextModule,
-        MultiSelectModule,
-        ButtonModule,
-        RippleModule,
-        MessagesModule,
-        SharedModule,
-        PushPipe,
-    ],
+  selector: 'app-billingentity-members',
+  templateUrl: './billing-entity-members.component.html',
+  styleUrls: ['./billing-entity-members.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    MessageModule,
+    NgFor,
+    InputTextModule,
+    MultiSelectModule,
+    ButtonModule,
+    RippleModule,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class BillingEntityMembersComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;

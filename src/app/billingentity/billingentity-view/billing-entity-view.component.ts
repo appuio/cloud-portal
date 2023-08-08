@@ -4,12 +4,12 @@ import { BillingEntity } from '../../types/billing-entity';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-billingentity-view',
-    templateUrl: './billing-entity-view.component.html',
-    styleUrls: ['./billing-entity-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, NgFor],
+  selector: 'app-billingentity-view',
+  templateUrl: './billing-entity-view.component.html',
+  styleUrls: ['./billing-entity-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, NgFor],
 })
 export class BillingEntityViewComponent {
   @Input()

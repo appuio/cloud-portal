@@ -7,20 +7,12 @@ import { RippleModule } from 'primeng/ripple';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-navbar-item',
-    templateUrl: './navbar-item.component.html',
-    styleUrls: ['./navbar-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        RippleModule,
-        FontAwesomeModule,
-        RouterLinkActive,
-        RouterLink,
-        StyleClassModule,
-        NgFor,
-    ],
+  selector: 'app-navbar-item',
+  templateUrl: './navbar-item.component.html',
+  styleUrls: ['./navbar-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, RippleModule, FontAwesomeModule, RouterLinkActive, RouterLink, StyleClassModule, NgFor],
 })
 export class NavbarItemComponent {
   @Input() menuItem!: NavMenuItem;

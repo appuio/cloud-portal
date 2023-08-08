@@ -30,24 +30,24 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgFor,
-        StyleClassModule,
-        NavbarItemComponent,
-        StatusBadgeComponent,
-        NgIf,
-        OrganizationSelectionComponent,
-        InfoMenuComponent,
-        IdentityMenuComponent,
-        RouterOutlet,
-        FirstTimeLoginDialogComponent,
-        PushPipe,
-    ],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgFor,
+    StyleClassModule,
+    NavbarItemComponent,
+    StatusBadgeComponent,
+    NgIf,
+    OrganizationSelectionComponent,
+    InfoMenuComponent,
+    IdentityMenuComponent,
+    RouterOutlet,
+    FirstTimeLoginDialogComponent,
+    PushPipe,
+  ],
 })
 export class AppComponent implements OnInit {
   menuItems: NavMenuItem[] = [];

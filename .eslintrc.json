@@ -42,18 +42,14 @@
             "allowExpressions": true
           }
         ],
-        "semi": "error", 
+        "semi": "error",
         "curly": "error"
       },
       "plugins": ["ngrx", "change-detection-strategy", "prettier"]
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {
         "@angular-eslint/template/i18n": [
           "error",

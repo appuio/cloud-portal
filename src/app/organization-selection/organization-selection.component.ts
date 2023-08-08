@@ -9,19 +9,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-    selector: 'app-organization-selection',
-    templateUrl: './organization-selection.component.html',
-    styleUrls: ['./organization-selection.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        DropdownModule,
-        ReactiveFormsModule,
-        SharedModule,
-        FontAwesomeModule,
-        PushPipe,
-    ],
+  selector: 'app-organization-selection',
+  templateUrl: './organization-selection.component.html',
+  styleUrls: ['./organization-selection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [LetDirective, DropdownModule, ReactiveFormsModule, SharedModule, FontAwesomeModule, PushPipe],
 })
 export class OrganizationSelectionComponent implements OnInit, OnDestroy {
   organizations$?: Observable<SelectItem[]>;

@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AppConfig, AppConfigService } from '../app-config.service';
 
 @Pipe({
-    name: 'zoneFeatures',
-    standalone: true,
+  name: 'zoneFeatures',
+  standalone: true,
 })
 export class ZoneFeaturesPipe implements PipeTransform {
   private appConfig: AppConfig;

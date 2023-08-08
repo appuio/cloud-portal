@@ -27,26 +27,26 @@ interface Payload {
 }
 
 @Component({
-    selector: 'app-organization-members-edit',
-    templateUrl: './organization-members-edit.component.html',
-    styleUrls: ['./organization-members-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        BackLinkDirective,
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        MessageModule,
-        NgFor,
-        InputTextModule,
-        MultiSelectModule,
-        ButtonModule,
-        RippleModule,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-organization-members-edit',
+  templateUrl: './organization-members-edit.component.html',
+  styleUrls: ['./organization-members-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    MessageModule,
+    NgFor,
+    InputTextModule,
+    MultiSelectModule,
+    ButtonModule,
+    RippleModule,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class OrganizationMembersEditComponent implements OnInit {
   faClose = faClose;

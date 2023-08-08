@@ -7,11 +7,15 @@ import { ActivatedRoute, Router } from '@angular/router';
  * It accepts an input that is used as the default path in case there is no history (e.g. opened link in a new tab).
  */
 @Directive({
-    selector: '[appBackLink]',
-    standalone: true,
+  selector: '[appBackLink]',
+  standalone: true,
 })
 export class BackLinkDirective {
-  constructor(private navigation: NavigationService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private navigation: NavigationService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   @Input()
   appBackLink?: string;

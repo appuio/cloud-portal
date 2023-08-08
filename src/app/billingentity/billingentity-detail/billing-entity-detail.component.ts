@@ -14,23 +14,23 @@ import { NgIf } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-    selector: 'app-billingentity-detail',
-    templateUrl: './billing-entity-detail.component.html',
-    styleUrls: ['./billing-entity-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        RouterLink,
-        FontAwesomeModule,
-        BackLinkDirective,
-        BillingEntityViewComponent,
-        BillingEntityFormComponent,
-        MessagesModule,
-        SharedModule,
-        PushPipe,
-    ],
+  selector: 'app-billingentity-detail',
+  templateUrl: './billing-entity-detail.component.html',
+  styleUrls: ['./billing-entity-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    RouterLink,
+    FontAwesomeModule,
+    BackLinkDirective,
+    BillingEntityViewComponent,
+    BillingEntityFormComponent,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class BillingEntityDetailComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;

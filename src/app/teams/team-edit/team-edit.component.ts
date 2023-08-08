@@ -18,26 +18,26 @@ import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-    selector: 'app-team-edit',
-    templateUrl: './team-edit.component.html',
-    styleUrls: ['./team-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        BackLinkDirective,
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        MessageModule,
-        InputTextModule,
-        NgFor,
-        ButtonModule,
-        RippleModule,
-        MessagesModule,
-        SharedModule,
-        PushPipe,
-    ],
+  selector: 'app-team-edit',
+  templateUrl: './team-edit.component.html',
+  styleUrls: ['./team-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    MessageModule,
+    InputTextModule,
+    NgFor,
+    ButtonModule,
+    RippleModule,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class TeamEditComponent implements OnInit {
   team$?: Observable<Team>;

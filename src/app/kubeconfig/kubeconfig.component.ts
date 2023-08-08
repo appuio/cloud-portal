@@ -11,18 +11,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-kubeconfig-download',
-    templateUrl: './kubeconfig.component.html',
-    styleUrls: ['./kubeconfig.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        FontAwesomeModule,
-        ClipboardModule,
-        PushPipe,
-        ReplaceValuesPipe,
-    ],
+  selector: 'app-kubeconfig-download',
+  templateUrl: './kubeconfig.component.html',
+  styleUrls: ['./kubeconfig.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, FontAwesomeModule, ClipboardModule, PushPipe, ReplaceValuesPipe],
 })
 export class KubeconfigDownloadComponent implements OnInit {
   faClipboard = faClipboard;

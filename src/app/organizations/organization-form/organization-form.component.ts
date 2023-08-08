@@ -19,22 +19,22 @@ import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-    selector: 'app-organization-form',
-    templateUrl: './organization-form.component.html',
-    styleUrls: ['./organization-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        InputTextModule,
-        NgIf,
-        MessageModule,
-        DropdownModule,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        PushPipe,
-    ],
+  selector: 'app-organization-form',
+  templateUrl: './organization-form.component.html',
+  styleUrls: ['./organization-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    NgIf,
+    MessageModule,
+    DropdownModule,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    PushPipe,
+  ],
 })
 export class OrganizationFormComponent implements OnInit, OnDestroy {
   @Input()

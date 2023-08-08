@@ -6,7 +6,7 @@
           {{ payload.members.metadata.namespace }}
           <span i18n>Members</span>
         </div>
-        <a appBackLink="../.."  class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
+        <a appBackLink="../.." class="text-blue-500 hover:text-primary text-2xl cursor-pointer">
           <fa-icon [icon]="faClose"></fa-icon>
         </a>
       </div>
@@ -37,7 +37,7 @@
                   pInputText
                   tabindex="0"
                   type="text"
-                  [attr.data-cy]="'name-input-' + i"/>
+                  [attr.data-cy]="'name-input-' + i" />
               </div>
               <div class="field col-11 md:col-7">
                 <label i18n for="selectedRoles" class="md:hidden">Roles</label>
@@ -90,7 +90,6 @@
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

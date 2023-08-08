@@ -14,23 +14,23 @@ import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-invitations',
-    templateUrl: './invitations.component.html',
-    styleUrls: ['./invitations.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ButtonModule,
-        RippleModule,
-        RouterLink,
-        FontAwesomeModule,
-        NgFor,
-        InvitationDetailComponent,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-invitations',
+  templateUrl: './invitations.component.html',
+  styleUrls: ['./invitations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    RouterLink,
+    FontAwesomeModule,
+    NgFor,
+    InvitationDetailComponent,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class InvitationsComponent implements OnInit {
   payload$?: Observable<Payload>;

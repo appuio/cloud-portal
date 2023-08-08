@@ -10,41 +10,37 @@
             class="mr-2 w-full white-space-nowrap no-underline"
             id="createInvitationButton"
             [routerLink]="['create']"
-            pButton pRipple
-          >
-            <fa-icon [icon]="faGift" class="mr-2"/>
+            pButton
+            pRipple>
+            <fa-icon [icon]="faGift" class="mr-2" />
             <span i18n>Invite User</span>
           </a>
         </div>
-
       </div>
     </div>
     <app-invitation-detail
       *ngFor="let invitation of payload.invitations"
       [invitation]="invitation"
-      [showCloseButton]="false"
-    />
+      [showCloseButton]="false" />
   </ng-container>
 
   <ng-container *ngIf="payload?.invitations?.length === 0 && !err">
     <p-messages severity="info">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faInfo"/>
+        <fa-icon [icon]="faInfo" />
         <div class="ml-2" i18n id="emptylist">No invitations available.</div>
       </ng-template>
     </p-messages>
   </ng-container>
 
-
   <ng-container *ngIf="err">
     <p-messages severity="error">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"/>
+        <fa-icon [icon]="faWarning" />
         <div class="ml-2" i18n id="failure-message">Invitations could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

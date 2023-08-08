@@ -21,19 +21,12 @@ import { NgIf } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-invitation-view',
-    templateUrl: './invitation-view.component.html',
-    styleUrls: ['./invitation-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        MessagesModule,
-        SharedModule,
-        FontAwesomeModule,
-        InvitationDetailComponent,
-    ],
+  selector: 'app-invitation-view',
+  templateUrl: './invitation-view.component.html',
+  styleUrls: ['./invitation-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [LetDirective, NgIf, MessagesModule, SharedModule, FontAwesomeModule, InvitationDetailComponent],
 })
 export class InvitationViewComponent implements OnInit {
   payload$?: Observable<Payload>;

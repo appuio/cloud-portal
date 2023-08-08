@@ -25,22 +25,22 @@ import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 
 @Component({
-    selector: 'app-organizations',
-    templateUrl: './organizations.component.html',
-    styleUrls: ['./organizations.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        RouterLink,
-        NgFor,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-organizations',
+  templateUrl: './organizations.component.html',
+  styleUrls: ['./organizations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    RouterLink,
+    NgFor,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class OrganizationsComponent implements OnInit, OnDestroy {
   faInfo = faInfoCircle;

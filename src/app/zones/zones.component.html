@@ -1,10 +1,9 @@
 <h1 class="pt-0 mt-0" i18n id="zones-title">Zones</h1>
 
-
 <ng-container *ngrxLet="zones$ as zones; suspenseTpl: loading; error as err">
-    <ng-container *ngFor="let zone of zones; index as i">
-      <app-zone-detail [zone]="zone" [linkToDetailView]="true" [showCloseIcon]="false"></app-zone-detail>
-    </ng-container>
+  <ng-container *ngFor="let zone of zones; index as i">
+    <app-zone-detail [zone]="zone" [linkToDetailView]="true" [showCloseIcon]="false"></app-zone-detail>
+  </ng-container>
 
   <ng-container *ngIf="zones?.length === 0 && !err">
     <p-messages severity="info">

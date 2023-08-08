@@ -17,7 +17,9 @@ Using e.g. hidden & lg:block classes - like we usually do - leads to ugly flicke
       0% {
         opacity: 1;
         transform: translateX(0%);
-        transition: transform 0.12s cubic-bezier(0, 0, 0.2, 1), opacity 0.12s cubic-bezier(0, 0, 0.2, 1);
+        transition:
+          transform 0.12s cubic-bezier(0, 0, 0.2, 1),
+          opacity 0.12s cubic-bezier(0, 0, 0.2, 1);
       }
       100% {
         opacity: 0;

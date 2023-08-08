@@ -2,7 +2,7 @@
   <div class="">
     <div class="field mb-4 col-12">
       <label for="email" class="font-bold required" i18n>Email</label>
-      <input formControlName="email" id="email" pInputText type="email"/>
+      <input formControlName="email" id="email" pInputText type="email" />
     </div>
     <div class="field mb-4 col-12">
       <label for="note" i18n>Note</label>
@@ -16,8 +16,10 @@
         <label class="col-1 text-center" i18n>Admin</label>
         <label class="col-4" i18n>Team Memberships</label>
       </div>
-      <div *ngFor="let control of this.form.controls.organizationTargets.controls; let i = index; let last = last"
-           [formGroup]="$any(control)" class="mb-3 grid formgrid">
+      <div
+        *ngFor="let control of this.form.controls.organizationTargets.controls; let i = index; let last = last"
+        [formGroup]="$any(control)"
+        class="mb-3 grid formgrid">
         <div class="field col-11 md:col-5">
           <label i18n for="organization" class="md:hidden">Organization</label>
           <p-dropdown
@@ -27,16 +29,15 @@
             [styleClass]="'w-full'"
             placeholder="Select Organization"
             [filter]="true"
-            i18n-placeholder
-          />
+            i18n-placeholder />
         </div>
         <div class="field-checkbox col-1 md:justify-content-center min-w-min">
           <label i18n for="isViewer" class="md:hidden">Viewer</label>
-          <p-checkbox formControlName="isViewer" [binary]="true" styleClass="m-1"/>
+          <p-checkbox formControlName="isViewer" [binary]="true" styleClass="m-1" />
         </div>
         <div class="field-checkbox col-1 md:justify-content-center min-w-min">
           <label i18n for="isAdmin" class="md:hidden">Admin</label>
-          <p-checkbox formControlName="isAdmin" [binary]="true" styleClass="m-1"/>
+          <p-checkbox formControlName="isAdmin" [binary]="true" styleClass="m-1" />
         </div>
 
         <div class="field col-4">
@@ -50,8 +51,7 @@
             emptyMessage="No teams found in this organization"
             display="chip"
             i18n-placeholder
-            i18n-emptyMessage
-          />
+            i18n-emptyMessage />
         </div>
         <div class="field col-11 md:col-1 md:max-w-min min-w-min">
           <button
@@ -63,9 +63,8 @@
             pRipple
             tabindex="1"
             title="Remove"
-            type="button"
-          >
-            <fa-icon [icon]="faClose"/>
+            type="button">
+            <fa-icon [icon]="faClose" />
             <span class="ml-1 md:hidden sm:white-space-nowrap" i18n>Remove Organization</span>
           </button>
         </div>
@@ -81,8 +80,10 @@
         <label class="col-1 text-center" i18n>Viewer</label>
         <label class="col-1 text-center" i18n>Admin</label>
       </div>
-      <div *ngFor="let control of this.form.controls.billingTargets.controls; let i = index; let last = last"
-           [formGroup]="$any(control)" class="mb-3 grid formgrid">
+      <div
+        *ngFor="let control of this.form.controls.billingTargets.controls; let i = index; let last = last"
+        [formGroup]="$any(control)"
+        class="mb-3 grid formgrid">
         <div class="field col-11 md:col-5">
           <label i18n for="billing" class="md:hidden">Billing</label>
           <p-dropdown
@@ -91,17 +92,15 @@
             [options]="billingOptions"
             [styleClass]="'w-full'"
             placeholder="Select Billing"
-            i18n
-          />
+            i18n />
         </div>
         <div class="field-checkbox col-1 md:justify-content-center min-w-min">
           <label i18n for="isViewer" class="md:hidden">Viewer</label>
-          <p-checkbox [formControl]="control.controls.isViewer" [binary]="true" styleClass="m-1" value="Viewer"/>
-
+          <p-checkbox [formControl]="control.controls.isViewer" [binary]="true" styleClass="m-1" value="Viewer" />
         </div>
         <div class="field-checkbox col-1 md:justify-content-center min-w-min">
           <label i18n for="isAdmin" class="md:hidden">Admin</label>
-          <p-checkbox [formControl]="control.controls.isAdmin" [binary]="true" styleClass="m-1" value="Admin"/>
+          <p-checkbox [formControl]="control.controls.isAdmin" [binary]="true" styleClass="m-1" value="Admin" />
         </div>
         <div class="field-checkbox col-4">
           <small *ngIf="control.controls.isViewer.hasError('atLeastOneRequired')" class="block p-error" i18n>
@@ -119,7 +118,7 @@
             tabindex="1"
             title="Remove"
             type="button">
-            <fa-icon [icon]="faClose"/>
+            <fa-icon [icon]="faClose" />
             <span class="ml-1 md:hidden sm:white-space-nowrap" i18n>Remove Billing</span>
           </button>
         </div>
@@ -130,7 +129,13 @@
     </div>
 
     <div class="col-12">
-      <button [disabled]="form.invalid" [loading]="(invitationService.loading$ | ngrxPush) ?? false" class="w-auto mt-3" pButton pRipple type="submit">
+      <button
+        [disabled]="form.invalid"
+        [loading]="(invitationService.loading$ | ngrxPush) ?? false"
+        class="w-auto mt-3"
+        pButton
+        pRipple
+        type="submit">
         <fa-icon [icon]="faGift" class="pr-2" />
         <span class="pr-2" i18n>Invite</span>
       </button>

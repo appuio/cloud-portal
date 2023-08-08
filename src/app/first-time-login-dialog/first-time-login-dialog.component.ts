@@ -21,23 +21,23 @@ import { LetDirective } from '@ngrx/component';
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
 @Component({
-    selector: 'app-first-time-login-dialog',
-    templateUrl: './first-time-login-dialog.component.html',
-    styleUrls: ['./first-time-login-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        DialogModule,
-        CheckboxModule,
-        ReactiveFormsModule,
-        SharedModule,
-        ButtonModule,
-        RippleModule,
-        RouterLink,
-        FontAwesomeModule,
-    ],
+  selector: 'app-first-time-login-dialog',
+  templateUrl: './first-time-login-dialog.component.html',
+  styleUrls: ['./first-time-login-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    DialogModule,
+    CheckboxModule,
+    ReactiveFormsModule,
+    SharedModule,
+    ButtonModule,
+    RippleModule,
+    RouterLink,
+    FontAwesomeModule,
+  ],
 })
 export class FirstTimeLoginDialogComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;

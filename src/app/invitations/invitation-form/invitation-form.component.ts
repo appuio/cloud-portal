@@ -35,25 +35,25 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-    selector: 'app-invitation-form',
-    templateUrl: './invitation-form.component.html',
-    styleUrls: ['./invitation-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        InputTextModule,
-        InputTextareaModule,
-        NgIf,
-        NgFor,
-        DropdownModule,
-        CheckboxModule,
-        MultiSelectModule,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        PushPipe,
-    ],
+  selector: 'app-invitation-form',
+  templateUrl: './invitation-form.component.html',
+  styleUrls: ['./invitation-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    InputTextareaModule,
+    NgIf,
+    NgFor,
+    DropdownModule,
+    CheckboxModule,
+    MultiSelectModule,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    PushPipe,
+  ],
 })
 export class InvitationFormComponent implements OnInit {
   @Input()

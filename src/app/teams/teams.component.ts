@@ -28,22 +28,22 @@ interface Payload {
 }
 
 @Component({
-    selector: 'app-teams',
-    templateUrl: './teams.component.html',
-    styleUrls: ['./teams.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        RouterLink,
-        NgFor,
-        MessagesModule,
-        SharedModule,
-    ],
+  selector: 'app-teams',
+  templateUrl: './teams.component.html',
+  styleUrls: ['./teams.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    RouterLink,
+    NgFor,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class TeamsComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;

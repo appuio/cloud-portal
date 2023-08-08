@@ -22,24 +22,24 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-    selector: 'app-billingentity-form',
-    templateUrl: './billing-entity-form.component.html',
-    styleUrls: ['./billing-entity-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        InputTextModule,
-        DividerModule,
-        ChipsModule,
-        DropdownModule,
-        CheckboxModule,
-        NgIf,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        PushPipe,
-    ],
+  selector: 'app-billingentity-form',
+  templateUrl: './billing-entity-form.component.html',
+  styleUrls: ['./billing-entity-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    DividerModule,
+    ChipsModule,
+    DropdownModule,
+    CheckboxModule,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    PushPipe,
+  ],
 })
 export class BillingEntityFormComponent implements OnInit {
   @Input()

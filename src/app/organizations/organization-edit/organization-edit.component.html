@@ -13,7 +13,10 @@
         </a>
       </div>
       <div class="border-top-1 surface-border">
-        <app-organization-form [new]="isNew" [organization]="payload.organization" [billingEntities]="payload.billingEntities"></app-organization-form>
+        <app-organization-form
+          [new]="isNew"
+          [organization]="payload.organization"
+          [billingEntities]="payload.billingEntities"></app-organization-form>
       </div>
     </div>
   </ng-container>
@@ -26,7 +29,6 @@
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

@@ -6,16 +6,12 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-    selector: 'app-join-team-dialog',
-    templateUrl: './join-team-dialog.component.html',
-    styleUrls: ['./join-team-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-    ],
+  selector: 'app-join-team-dialog',
+  templateUrl: './join-team-dialog.component.html',
+  styleUrls: ['./join-team-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ButtonModule, RippleModule, FontAwesomeModule],
 })
 export class JoinTeamDialogComponent implements OnInit {
   username = '';

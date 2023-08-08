@@ -30,6 +30,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import * as Sentry from '@sentry/angular-ivy';
 import { SelfSubjectAccessReviewDataService } from './app/store/ssar-data.service';
 import { appRoutes } from './app/app.routing';
+import { TitleCasePipe } from '@angular/common';
 
 const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + window.location.pathname,
@@ -50,6 +51,7 @@ bootstrapApplication(AppComponent, {
     KubernetesCollectionServiceFactory,
     EntityDataService,
     SelfSubjectAccessReviewCollectionService,
+    TitleCasePipe,
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
     provideStore({ app: appReducer, router: routerReducer }),

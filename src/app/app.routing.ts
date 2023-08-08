@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 
-const routes: Routes = [
+export const appRoutes: Routes = [
   {
     path: '',
     redirectTo: 'zones',
@@ -56,9 +55,3 @@ const routes: Routes = [
     title: $localize`Feedback`,
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

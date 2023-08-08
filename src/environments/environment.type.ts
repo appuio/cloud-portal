@@ -3,6 +3,7 @@ import { AppConfig } from '../app/app-config.service';
 export interface EnvironmentType {
   production: boolean;
   appConfig?: AppConfig;
+  environmentSpecificModules: any[];
 }
 
 export const defaultZonesConfig = {

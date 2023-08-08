@@ -18,12 +18,36 @@ import { UserCollectionService } from './store/user-collection.service';
 import { ZonePermissions } from './types/zone';
 import { InvitationPermissions } from './types/invitation';
 import { defaultIfStatusCode } from './store/kubernetes-collection.service';
+import { PushPipe } from '@ngrx/component';
+import { FirstTimeLoginDialogComponent } from './first-time-login-dialog/first-time-login-dialog.component';
+import { RouterOutlet } from '@angular/router';
+import { IdentityMenuComponent } from './identity-menu/identity-menu.component';
+import { InfoMenuComponent } from './info-menu/info-menu.component';
+import { OrganizationSelectionComponent } from './organization-selection/organization-selection.component';
+import { StatusBadgeComponent } from './status-badge/status-badge.component';
+import { NavbarItemComponent } from './navbar-item/navbar-item.component';
+import { StyleClassModule } from 'primeng/styleclass';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgFor,
+        StyleClassModule,
+        NavbarItemComponent,
+        StatusBadgeComponent,
+        NgIf,
+        OrganizationSelectionComponent,
+        InfoMenuComponent,
+        IdentityMenuComponent,
+        RouterOutlet,
+        FirstTimeLoginDialogComponent,
+        PushPipe,
+    ],
 })
 export class AppComponent implements OnInit {
   menuItems: NavMenuItem[] = [];

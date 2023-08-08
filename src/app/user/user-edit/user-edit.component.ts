@@ -21,24 +21,24 @@ import { NgIf } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
-    selector: 'app-user-edit',
-    templateUrl: './user-edit.component.html',
-    styleUrls: ['./user-edit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        LetDirective,
-        NgIf,
-        ReactiveFormsModule,
-        MessageModule,
-        DropdownModule,
-        ButtonModule,
-        RippleModule,
-        FontAwesomeModule,
-        MessagesModule,
-        SharedModule,
-        PushPipe,
-    ],
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ReactiveFormsModule,
+    MessageModule,
+    DropdownModule,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class UserEditComponent implements OnInit {
   faSave = faSave;

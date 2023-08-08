@@ -21,11 +21,9 @@ export class BackLinkDirective {
   appBackLink?: string;
 
   @Input()
-  @Optional()
   clearAllQueryParams?: boolean;
 
   @Input()
-  @Optional()
   removeQueryParamList?: string[];
 
   @HostListener('click')

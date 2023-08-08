@@ -34,7 +34,7 @@ import { NgIf, NgFor, JsonPipe, KeyValuePipe } from '@angular/common';
   ],
 })
 export class ZoneDetailComponent {
-  @Input() zone?: Zone;
+  @Input({ required: true }) zone?: Zone;
   @Input() linkToDetailView = false;
   @Input() showCloseIcon = true;
 

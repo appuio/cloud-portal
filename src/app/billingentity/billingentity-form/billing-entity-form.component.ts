@@ -42,7 +42,7 @@ import { InputTextModule } from 'primeng/inputtext';
   ],
 })
 export class BillingEntityFormComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   billingEntity!: BillingEntity;
 
   form!: FormGroup<BillingForm>;
@@ -83,7 +83,10 @@ export class BillingEntityFormComponent implements OnInit {
       phone: new FormControl(spec.phone ?? '', { nonNullable: true, validators: [Validators.required] }),
       line1: new FormControl(spec.address?.line1 ?? '', { nonNullable: true, validators: [Validators.required] }),
       line2: new FormControl(spec.address?.line2 ?? '', { nonNullable: true }),
-      postal: new FormControl(spec.address?.postalCode ?? '', { nonNullable: true, validators: [Validators.required] }),
+      postal: new FormControl(spec.address?.postalCode ?? '', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       city: new FormControl(spec.address?.city ?? '', { nonNullable: true, validators: [Validators.required] }),
       country: new FormControl<{ name: string } | undefined>(preselectedCountry, {
         nonNullable: true,

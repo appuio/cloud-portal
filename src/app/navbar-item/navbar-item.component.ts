@@ -15,5 +15,5 @@ import { NgIf, NgFor } from '@angular/common';
   imports: [NgIf, RippleModule, FontAwesomeModule, RouterLinkActive, RouterLink, StyleClassModule, NgFor],
 })
 export class NavbarItemComponent {
-  @Input() menuItem!: NavMenuItem;
+  @Input({ required: true }) menuItem!: NavMenuItem;
 }

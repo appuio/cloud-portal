@@ -12,7 +12,7 @@ import { NgIf } from '@angular/common';
   imports: [NgIf, FontAwesomeModule],
 })
 export class InfoMenuItemComponent {
-  @Input()
+  @Input({ required: true })
   item!: Item;
 
   @Input()
@@ -20,6 +20,7 @@ export class InfoMenuItemComponent {
 
   faExternal = faArrowUpRightFromSquare;
 }
+
 export interface Item {
   label: string;
   subTitle?: string;

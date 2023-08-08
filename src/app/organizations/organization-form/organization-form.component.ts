@@ -37,11 +37,11 @@ import { InputTextModule } from 'primeng/inputtext';
   ],
 })
 export class OrganizationFormComponent implements OnInit, OnDestroy {
-  @Input()
+  @Input({ required: true })
   organization!: Organization;
   @Input()
   new = true;
-  @Input()
+  @Input({ required: true })
   billingEntities!: BillingEntity[];
   @Input()
   canEditBe = false;

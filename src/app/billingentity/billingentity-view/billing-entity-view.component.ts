@@ -12,7 +12,7 @@ import { NgIf, NgFor } from '@angular/common';
   imports: [NgIf, NgFor],
 })
 export class BillingEntityViewComponent {
-  @Input()
+  @Input({ required: true })
   billingEntity!: BillingEntity;
 
   faClose = faClose;

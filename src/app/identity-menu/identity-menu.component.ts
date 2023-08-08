@@ -40,9 +40,9 @@ export class IdentityMenuComponent {
     },
   ];
 
-  @Input() name = '';
-  @Input() username = '';
-  @Input() avatarSrc = '';
+  @Input({ required: true }) name = '';
+  @Input({ required: true }) username = '';
+  @Input({ required: true }) avatarSrc = '';
 
   constructor(
     private oauthService: OAuthService,

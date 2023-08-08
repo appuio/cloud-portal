@@ -56,17 +56,17 @@ import { InputTextModule } from 'primeng/inputtext';
   ],
 })
 export class InvitationFormComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   organizations!: Organization[];
   @Input()
   canInviteOrganization = false;
 
-  @Input()
+  @Input({ required: true })
   billingEntities!: BillingEntity[];
   @Input()
   canInviteBilling = false;
 
-  @Input()
+  @Input({ required: true })
   teams!: Team[];
 
   faGift = faGift;

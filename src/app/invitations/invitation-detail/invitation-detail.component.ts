@@ -51,7 +51,7 @@ import { LetDirective } from '@ngrx/component';
   ],
 })
 export class InvitationDetailComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   invitation!: Invitation;
   @Input()
   showCloseButton = true;
@@ -190,6 +190,7 @@ export class InvitationDetailComponent implements OnInit {
     );
     return from(billing$).pipe(combineLatestAll());
   }
+
   private collectBillingPermissions(inv: Invitation, billingEntities: BillingEntity[]): PermissionRecord[] {
     const bePermissions: PermissionRecord[] = [];
     inv.spec.targetRefs

@@ -28,6 +28,8 @@ import { StatusBadgeComponent } from './status-badge/status-badge.component';
 import { NavbarItemComponent } from './navbar-item/navbar-item.component';
 import { StyleClassModule } from 'primeng/styleclass';
 import { NgFor, NgIf } from '@angular/common';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
@@ -47,6 +49,8 @@ import { NgFor, NgIf } from '@angular/common';
     RouterOutlet,
     FirstTimeLoginDialogComponent,
     PushPipe,
+    ConfirmDialogModule,
+    ToastModule,
   ],
 })
 export class AppComponent implements OnInit {

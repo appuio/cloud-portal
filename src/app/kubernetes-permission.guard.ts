@@ -9,7 +9,10 @@ import { MessageService } from 'primeng/api';
 /**
  * This is a backed with @ngrx/data, intended to be replacing it over time.
  */
-export const KubernetesPermissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const KubernetesPermissionGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  _state: RouterStateSnapshot
+) => {
   const permissions: SelfSubjectAccessReviewAttributes[] = route.data['requiredKubernetesPermissions'];
   if (!permissions || permissions?.length === 0) {
     return of(false).pipe(tap(() => console.log('no permissions defined to check for in KubernetesPermissionGuard')));

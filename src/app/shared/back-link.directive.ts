@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input, Optional } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 import { NavigationService } from './navigation.service';
 import { ActivatedRoute, Router } from '@angular/router';
 

@@ -1,9 +1,10 @@
 import { AppConfig } from '../app/app-config.service';
+import { EnvironmentProviders, Provider } from '@angular/core';
 
 export interface EnvironmentType {
   production: boolean;
   appConfig?: AppConfig;
-  environmentSpecificModules: any[];
+  environmentSpecificModules: EnvironmentProviders[] | Provider[];
 }
 
 export const defaultZonesConfig = {

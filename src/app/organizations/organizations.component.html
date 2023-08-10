@@ -1,5 +1,4 @@
 <ng-container *ngrxLet="organizations$ as vm; suspenseTpl: loading; error as err">
-
   <ng-container *ngIf="vm">
     <div class="flex flex-row flex-wrap justify-content-between mb-2 gap-2">
       <h1 class="pt-0 mt-0 mb-0" i18n id="organizations-title">Organizations</h1>
@@ -10,20 +9,16 @@
             (click)="this.joinDialogService.showDialog()"
             class="mr-2 w-full white-space-nowrap"
             id="joinOrganizationButton"
-            pButton pRipple
-          >
-            <fa-icon [icon]="faSitemap" class="mr-2"/>
+            pButton
+            pRipple>
+            <fa-icon [icon]="faSitemap" class="mr-2" />
             <span i18n>Join Organization</span>
           </button>
         </div>
 
         <div *ngIf="vm.canAddOrganizations">
-          <button
-            [routerLink]="['$new']"
-            class="w-full white-space-nowrap" id="addOrganizationButton"
-            pButton pRipple
-          >
-            <fa-icon [icon]="faAdd" class="mr-2"/>
+          <button [routerLink]="['$new']" class="w-full white-space-nowrap" id="addOrganizationButton" pButton pRipple>
+            <fa-icon [icon]="faAdd" class="mr-2" />
             <span i18n>Add new Organization</span>
           </button>
         </div>
@@ -41,24 +36,25 @@
               *ngIf="dto.canViewBillingEntity"
               [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
-              i18n-title title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'"
-            >
-              <fa-icon [icon]="faDollarSign"/>
+              i18n-title
+              title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'">
+              <fa-icon [icon]="faDollarSign" />
             </a>
             <a
               *ngIf="dto.canViewMembers"
               [routerLink]="[dto.organization.metadata.name, 'members']"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
-              i18n-title title="Edit members"
-            >
-              <fa-icon [icon]="faUserGroup"/>
+              i18n-title
+              title="Edit members">
+              <fa-icon [icon]="faUserGroup" />
             </a>
             <a
-              *ngIf="dto.canEdit" [routerLink]="[dto.organization.metadata.name]"
+              *ngIf="dto.canEdit"
+              [routerLink]="[dto.organization.metadata.name]"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
-              i18n-title title="Edit organization"
-            >
-              <fa-icon [icon]="faEdit"/>
+              i18n-title
+              title="Edit organization">
+              <fa-icon [icon]="faEdit" />
             </a>
           </div>
         </div>
@@ -78,7 +74,7 @@
     <ng-container *ngIf="vm.organizations.length === 0 && !err">
       <p-messages severity="info">
         <ng-template pTemplate="content">
-          <fa-icon [icon]="faInfo"/>
+          <fa-icon [icon]="faInfo" />
           <div class="ml-2" i18n id="no-organization-message">
             No organizations available.
             <span *ngIf="vm.canAddOrganizations">Please create one first or ask to join an existing organization.</span>
@@ -92,12 +88,11 @@
   <ng-container *ngIf="err">
     <p-messages severity="error">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"/>
+        <fa-icon [icon]="faWarning" />
         <div class="ml-2" i18n id="failure-message">Organizations could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

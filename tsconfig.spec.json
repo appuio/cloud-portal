@@ -6,6 +6,6 @@
     "outDir": "./out-tsc/spec",
     "types": ["jest"]
   },
-  "files": ["src/polyfills.ts"],
+  "files": [],
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 }

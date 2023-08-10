@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
-import { MessageService, SelectItem } from 'primeng/api';
+import { MessageService, SelectItem, SharedModule } from 'primeng/api';
 import { faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
@@ -11,12 +11,34 @@ import { OrganizationMembersCollectionService } from '../../store/organizationme
 import { UserCollectionService } from '../../store/user-collection.service';
 import { switchMap } from 'rxjs/operators';
 import { defaultIfStatusCode } from '../../store/kubernetes-collection.service';
+import { MessagesModule } from 'primeng/messages';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { MessageModule } from 'primeng/message';
+import { NgIf } from '@angular/common';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ReactiveFormsModule,
+    MessageModule,
+    DropdownModule,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class UserEditComponent implements OnInit {
   faSave = faSave;

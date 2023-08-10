@@ -2,13 +2,23 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
 import { NavigationService } from '../../shared/navigation.service';
+import { MessagesModule } from 'primeng/messages';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 interface Payload {
   members: OrganizationMembers;
@@ -21,6 +31,22 @@ interface Payload {
   templateUrl: './organization-members-edit.component.html',
   styleUrls: ['./organization-members-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    MessageModule,
+    NgFor,
+    InputTextModule,
+    MultiSelectModule,
+    ButtonModule,
+    RippleModule,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class OrganizationMembersEditComponent implements OnInit {
   faClose = faClose;

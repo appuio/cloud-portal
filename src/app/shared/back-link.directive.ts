@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input, Optional } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 import { NavigationService } from './navigation.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -8,19 +8,22 @@ import { ActivatedRoute, Router } from '@angular/router';
  */
 @Directive({
   selector: '[appBackLink]',
+  standalone: true,
 })
 export class BackLinkDirective {
-  constructor(private navigation: NavigationService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private navigation: NavigationService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   @Input()
   appBackLink?: string;
 
   @Input()
-  @Optional()
   clearAllQueryParams?: boolean;
 
   @Input()
-  @Optional()
   removeQueryParamList?: string[];
 
   @HostListener('click')

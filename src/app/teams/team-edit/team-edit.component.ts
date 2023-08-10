@@ -2,17 +2,42 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MessageService, SharedModule } from 'primeng/api';
 import { Observable, of, take, tap } from 'rxjs';
 import { TeamCollectionService } from '../../store/team-collection.service';
 import { NavigationService } from '../../shared/navigation.service';
+import { MessagesModule } from 'primeng/messages';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BackLinkDirective } from '../../shared/back-link.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 @Component({
   selector: 'app-team-edit',
   templateUrl: './team-edit.component.html',
   styleUrls: ['./team-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    BackLinkDirective,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    MessageModule,
+    InputTextModule,
+    NgFor,
+    ButtonModule,
+    RippleModule,
+    MessagesModule,
+    SharedModule,
+    PushPipe,
+  ],
 })
 export class TeamEditComponent implements OnInit {
   team$?: Observable<Team>;

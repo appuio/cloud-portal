@@ -1,5 +1,3 @@
-
-
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
   <ng-container *ngIf="payload && payload.organization">
     <div class="flex flex-row flex-wrap justify-content-between mb-4">
@@ -15,7 +13,12 @@
 
         <ng-container *ngIf="payload.canCreate">
           <div>
-            <button [routerLink]="[payload.organization.metadata.name, '$new']" class="" id="addTeamButton" pButton pRipple>
+            <button
+              [routerLink]="[payload.organization.metadata.name, '$new']"
+              class=""
+              id="addTeamButton"
+              pButton
+              pRipple>
               <fa-icon [icon]="faAdd" class="mr-2"></fa-icon>
               <span i18n>Add new Team</span>
             </button>
@@ -31,12 +34,20 @@
             {{ team.metadata.name }}
           </div>
           <div>
-            <a *ngIf="payload.canDelete" (click)="deleteTeam(team)"
-              class="text-blue-500 hover:text-primary cursor-pointer mr-2" i18n-title title="Delete team">
+            <a
+              *ngIf="payload.canDelete"
+              (click)="deleteTeam(team)"
+              class="text-blue-500 hover:text-primary cursor-pointer mr-2"
+              i18n-title
+              title="Delete team">
               <fa-icon [icon]="faTrash"></fa-icon>
             </a>
-            <a *ngIf="payload.canEdit" [routerLink]="[payload.organization.metadata.name, team.metadata.name]"
-              class="text-blue-500 hover:text-primary cursor-pointer" i18n-title title="Edit team">
+            <a
+              *ngIf="payload.canEdit"
+              [routerLink]="[payload.organization.metadata.name, team.metadata.name]"
+              class="text-blue-500 hover:text-primary cursor-pointer"
+              i18n-title
+              title="Edit team">
               <fa-icon [icon]="faEdit"></fa-icon>
             </a>
           </div>
@@ -62,7 +73,6 @@
         </div>
       </div>
     </ng-container>
-
   </ng-container>
 
   <ng-container *ngIf="payload?.teams?.length === 0 && !err">

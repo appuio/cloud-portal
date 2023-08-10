@@ -17,4 +17,5 @@ export const environment: EnvironmentType = {
       { code: 'LI', name: 'Liechtenstein' },
     ],
   },
+  environmentSpecificModules: [],
 };

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { newOrganization, Organization } from '../../types/organization';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,19 +9,39 @@ import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
 import { NavigationService } from '../../shared/navigation.service';
+import { PushPipe } from '@ngrx/component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { MessageModule } from 'primeng/message';
+import { NgIf } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-organization-form',
   templateUrl: './organization-form.component.html',
   styleUrls: ['./organization-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    NgIf,
+    MessageModule,
+    DropdownModule,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    PushPipe,
+  ],
 })
 export class OrganizationFormComponent implements OnInit, OnDestroy {
-  @Input()
+  @Input({ required: true })
   organization!: Organization;
   @Input()
   new = true;
-  @Input()
+  @Input({ required: true })
   billingEntities!: BillingEntity[];
   @Input()
   canEditBe = false;

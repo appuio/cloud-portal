@@ -3,6 +3,7 @@ import { AppConfig, AppConfigService } from '../app-config.service';
 
 @Pipe({
   name: 'zoneFeatures',
+  standalone: true,
 })
 export class ZoneFeaturesPipe implements PipeTransform {
   private appConfig: AppConfig;

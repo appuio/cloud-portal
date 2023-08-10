@@ -3,12 +3,18 @@ import { faSignOut, faUser, faUserGear } from '@fortawesome/free-solid-svg-icons
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AppConfigService } from '../app-config.service';
 import { NavMenuItem } from '../app.component';
+import { NavbarItemComponent } from '../navbar-item/navbar-item.component';
+import { NgFor } from '@angular/common';
+import { StyleClassModule } from 'primeng/styleclass';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-identity-menu',
   templateUrl: './identity-menu.component.html',
   styleUrls: ['./identity-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [RippleModule, StyleClassModule, NgFor, NavbarItemComponent],
 })
 export class IdentityMenuComponent {
   profileItems: NavMenuItem[] = [
@@ -34,9 +40,12 @@ export class IdentityMenuComponent {
     },
   ];
 
-  @Input() name = '';
-  @Input() username = '';
-  @Input() avatarSrc = '';
+  @Input({ required: true }) name = '';
+  @Input({ required: true }) username = '';
+  @Input({ required: true }) avatarSrc = '';
 
-  constructor(private oauthService: OAuthService, private appConfigService: AppConfigService) {}
+  constructor(
+    private oauthService: OAuthService,
+    private appConfigService: AppConfigService
+  ) {}
 }

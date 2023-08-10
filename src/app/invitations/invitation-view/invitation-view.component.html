@@ -6,22 +6,21 @@
   <ng-container *ngIf="payload">
     <p-messages *ngIf="payload.isRedeemed" severity="warn">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"/>
+        <fa-icon [icon]="faWarning" />
         <div class="ml-2" id="redeemed-message" i18n>Invitation is already redeemed.</div>
       </ng-template>
     </p-messages>
-    <app-invitation-detail *ngIf="payload.invitation" [invitation]="payload.invitation"/>
+    <app-invitation-detail *ngIf="payload.invitation" [invitation]="payload.invitation" />
   </ng-container>
 
   <ng-container *ngIf="err">
     <p-messages severity="error">
       <ng-template pTemplate="content">
-        <fa-icon [icon]="faWarning"/>
+        <fa-icon [icon]="faWarning" />
         <div class="ml-2" i18n id="failure-message">Invitation could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

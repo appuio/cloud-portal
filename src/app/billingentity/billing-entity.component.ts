@@ -14,12 +14,32 @@ import { combineLatestAll, forkJoin, from, map, Observable, of } from 'rxjs';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 import { switchMap } from 'rxjs/operators';
 import { JoinDialogService } from '../join-dialog/join-dialog.service';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
   selector: 'app-billing-entity',
   templateUrl: './billing-entity.component.html',
   styleUrls: ['./billing-entity.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    RouterLink,
+    NgFor,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class BillingEntityComponent implements OnInit {
   faWarning = faWarning;

@@ -1,5 +1,4 @@
 <ng-container *ngrxLet="viewModel$ as vm; suspenseTpl: loading; error as err">
-
   <ng-container *ngIf="vm">
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
@@ -11,28 +10,24 @@
         </div>
         <div>
           <a
-            *ngIf="vm.canEdit &&!isNewBE(vm.billingEntity)"
+            *ngIf="vm.canEdit && !isNewBE(vm.billingEntity)"
             class="text-blue-500 ml-3 hover:text-primary text-2xl cursor-pointer"
             [routerLink]="[]"
-            [queryParams]="{edit: (isEditing$ | ngrxPush) ? undefined : 'y'}"
-            [queryParamsHandling]="'merge'"
-          >
+            [queryParams]="{ edit: (isEditing$ | ngrxPush) ? undefined : 'y' }"
+            [queryParamsHandling]="'merge'">
             <fa-icon *ngIf="!(isEditing$ | ngrxPush)" [icon]="faEdit" class="fa-xs" />
-            <fa-icon *ngIf="(isEditing$ | ngrxPush)" [icon]="faCancel" class="fa-xs" />
+            <fa-icon *ngIf="isEditing$ | ngrxPush" [icon]="faCancel" class="fa-xs" />
           </a>
-          <a class="text-blue-500 ml-3 hover:text-primary text-2xl cursor-pointer" appBackLink=".." [removeQueryParamList]="['edit']">
+          <a
+            class="text-blue-500 ml-3 hover:text-primary text-2xl cursor-pointer"
+            appBackLink=".."
+            [removeQueryParamList]="['edit']">
             <fa-icon [icon]="faClose" />
           </a>
         </div>
       </div>
-      <app-billingentity-view
-        *ngIf="!(isEditing$ | ngrxPush)"
-        [billingEntity]="vm.billingEntity"
-      />
-      <app-billingentity-form
-        *ngIf="isEditing$ | ngrxPush"
-        [billingEntity]="vm.billingEntity"
-      />
+      <app-billingentity-view *ngIf="!(isEditing$ | ngrxPush)" [billingEntity]="vm.billingEntity" />
+      <app-billingentity-form *ngIf="isEditing$ | ngrxPush" [billingEntity]="vm.billingEntity" />
     </div>
   </ng-container>
 
@@ -40,13 +35,10 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="failure-message">Billing entity "{{ billingEntityName }}" could not be
-          loaded.
-        </div>
+        <div class="ml-2" i18n id="failure-message">Billing entity "{{ billingEntityName }}" could not be loaded.</div>
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

@@ -4,12 +4,19 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { faClipboard, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { AppConfig, AppConfigService } from '../app-config.service';
+import { ReplaceValuesPipe } from './replace-values.pipe';
+import { PushPipe } from '@ngrx/component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-kubeconfig-download',
   templateUrl: './kubeconfig.component.html',
   styleUrls: ['./kubeconfig.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, FontAwesomeModule, ClipboardModule, PushPipe, ReplaceValuesPipe],
 })
 export class KubeconfigDownloadComponent implements OnInit {
   faClipboard = faClipboard;

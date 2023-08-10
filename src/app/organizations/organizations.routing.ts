@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationEditComponent } from './organization-edit/organization-edit.component';
 import { OrganizationMembersEditComponent } from './organization-members-edit/organization-members-edit.component';
@@ -7,7 +6,7 @@ import { KubernetesPermissionGuard } from '../kubernetes-permission.guard';
 import { OrganizationPermissions } from '../types/organization';
 import { BillingEntityPermissions } from '../types/billing-entity';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: OrganizationsComponent,
@@ -32,9 +31,3 @@ const routes: Routes = [
     component: OrganizationMembersEditComponent,
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class OrganizationsRoutingModule {}

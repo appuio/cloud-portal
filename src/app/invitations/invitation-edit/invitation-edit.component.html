@@ -1,6 +1,8 @@
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
   <ng-container *ngIf="payload">
-    <div *ngIf="payload.canViewOrganizations || payload.canViewBillingEntities; else nothingToInvite" class="surface-card p-4 shadow-2 border-round mb-4">
+    <div
+      *ngIf="payload.canViewOrganizations || payload.canViewBillingEntities; else nothingToInvite"
+      class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div id="title" class="text-3xl font-medium text-900 mb-3">
           <span i18n>Invite User</span>
@@ -11,15 +13,17 @@
       </div>
       <div class="border-top-1 surface-border">
         <div *ngIf="payload.billingEntitiesFailed" id="warning-message" class="col-12 mb-2">
-          <p-message i18n-text severity="warn" text="Billing Entities could not be loaded at the moment. Try again or create a separate invite later."></p-message>
+          <p-message
+            i18n-text
+            severity="warn"
+            text="Billing Entities could not be loaded at the moment. Try again or create a separate invite later."></p-message>
         </div>
         <app-invitation-form
           [organizations]="payload.organizations"
           [canInviteOrganization]="payload.canViewOrganizations"
           [billingEntities]="payload.billingEntities"
           [canInviteBilling]="payload.canViewBillingEntities"
-          [teams]="payload.teams"
-        />
+          [teams]="payload.teams" />
       </div>
     </div>
   </ng-container>
@@ -32,7 +36,6 @@
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>
@@ -47,7 +50,9 @@
   <p-messages severity="warn">
     <ng-template pTemplate="content">
       <fa-icon [icon]="faWarning" />
-      <div class="ml-2" i18n id="no-permissions">You cannot invite users without having enough permissions by yourself</div>
+      <div class="ml-2" i18n id="no-permissions">
+        You cannot invite users without having enough permissions by yourself
+      </div>
     </ng-template>
   </p-messages>
 </ng-template>

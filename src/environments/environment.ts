@@ -5,6 +5,8 @@
 // this environment is used as a template for environment.development.ts which is developer-specific
 
 import { defaultZonesConfig, EnvironmentType } from './environment.type';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { isDevMode } from '@angular/core';
 
 export const environment: EnvironmentType = {
   production: false,
@@ -23,6 +25,12 @@ export const environment: EnvironmentType = {
       { code: 'LI', name: 'Liechtenstein' },
     ],
   },
+  environmentSpecificModules: [
+    provideStoreDevtools({
+      maxAge: 25,
+      logOnly: !isDevMode(),
+    }),
+  ],
 };
 
 /*

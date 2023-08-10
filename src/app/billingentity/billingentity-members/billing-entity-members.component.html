@@ -38,7 +38,7 @@
                   pInputText
                   tabindex="0"
                   type="text"
-                  [attr.data-cy]="'name-input-' + i"/>
+                  [attr.data-cy]="'name-input-' + i" />
               </div>
               <div class="field col-11 md:col-7">
                 <label i18n for="selectedRoles" class="md:hidden">Roles</label>
@@ -80,7 +80,13 @@
                   severity="warn"
                   text="You are about to remove yourself as admin!"></p-message>
               </div>
-              <button [disabled]="form.invalid" [loading]="(rolebindingService.loading$ | ngrxPush) ?? false" class="w-auto mt-3" pButton pRipple type="submit">
+              <button
+                [disabled]="form.invalid"
+                [loading]="(rolebindingService.loading$ | ngrxPush) ?? false"
+                class="w-auto mt-3"
+                pButton
+                pRipple
+                type="submit">
                 <fa-icon [icon]="faSave" class="pr-2"></fa-icon>
                 <span class="pr-2" i18n>Save</span>
               </button>
@@ -95,11 +101,12 @@
     <p-messages severity="error">
       <ng-template pTemplate="content">
         <fa-icon [icon]="faWarning"></fa-icon>
-        <div class="ml-2" i18n id="failure-message">Billing members could not be loaded. {{ err.message ? err.message : '' }}</div>
+        <div class="ml-2" i18n id="failure-message">
+          Billing members could not be loaded. {{ err.message ? err.message : '' }}
+        </div>
       </ng-template>
     </p-messages>
   </ng-container>
-
 </ng-container>
 
 <ng-template #loading>

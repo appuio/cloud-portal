@@ -11,7 +11,11 @@ export declare type HttpMethods = 'DELETE' | 'GET' | 'POST' | 'PUT' | 'PATCH';
 export class KubernetesDataService<T extends KubeObject> implements EntityCollectionDataService<T> {
   protected _name: string;
 
-  constructor(entityName: string, protected http: HttpClient, protected urlGenerator: KubernetesUrlGenerator) {
+  constructor(
+    entityName: string,
+    protected http: HttpClient,
+    protected urlGenerator: KubernetesUrlGenerator
+  ) {
     this._name = entityName;
   }
 
@@ -141,7 +145,10 @@ export function splitID(id: string): { name: string; namespace?: string } {
 
 @Injectable()
 export class KubernetesDataServiceFactory {
-  constructor(protected http: HttpClient, protected urlGenerator: KubernetesUrlGenerator) {}
+  constructor(
+    protected http: HttpClient,
+    protected urlGenerator: KubernetesUrlGenerator
+  ) {}
 
   create<T extends KubeObject>(entityName: string): EntityCollectionDataService<T> {
     return new KubernetesDataService<T>(entityName, this.http, this.urlGenerator);

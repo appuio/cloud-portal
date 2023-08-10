@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivationStart, Router } from '@angular/router';
+import { ActivatedRoute, ActivationStart, Router, RouterLink } from '@angular/router';
 import { faAdd, faCog, faSitemap } from '@fortawesome/free-solid-svg-icons';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IdentityService } from '../core/identity.service';
 import { filter, forkJoin, map, Observable, of, take } from 'rxjs';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
@@ -9,6 +9,14 @@ import { UserCollectionService } from '../store/user-collection.service';
 import { BrowserStorageService } from '../shared/browser-storage.service';
 import { BillingEntityCollectionService } from '../store/billingentity-collection.service';
 import { switchMap } from 'rxjs/operators';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { SharedModule } from 'primeng/api';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
+import { NgIf } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
 
@@ -17,6 +25,19 @@ export const hideFirstTimeLoginDialogKey = 'hideFirstTimeLoginDialog';
   templateUrl: './first-time-login-dialog.component.html',
   styleUrls: ['./first-time-login-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    DialogModule,
+    CheckboxModule,
+    ReactiveFormsModule,
+    SharedModule,
+    ButtonModule,
+    RippleModule,
+    RouterLink,
+    FontAwesomeModule,
+  ],
 })
 export class FirstTimeLoginDialogComponent implements OnInit {
   viewModel$?: Observable<ViewModel>;

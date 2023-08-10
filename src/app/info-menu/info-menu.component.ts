@@ -1,12 +1,19 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { faQuestionCircle, faTerminal } from '@fortawesome/free-solid-svg-icons';
-import { Item } from '../info-menu-item/info-menu-item.component';
+import { Item, InfoMenuItemComponent } from '../info-menu-item/info-menu-item.component';
+import { RouterLink } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { StyleClassModule } from 'primeng/styleclass';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-info-menu',
   templateUrl: './info-menu.component.html',
   styleUrls: ['./info-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [RippleModule, StyleClassModule, FontAwesomeModule, NgFor, NgIf, InfoMenuItemComponent, RouterLink],
 })
 export class InfoMenuComponent {
   references: Item[] = [

@@ -14,12 +14,24 @@ Run `npm run e2e-dev` to execute the end-to-end tests with cypress.
 
 ## Development
 
-1. Duplicate `environments/environment.ts` and rename the file to `environment.development.ts`. Replace the values where necessary.
+1. Duplicate `environments/environment.ts` and rename the file to `environment.development.ts`. Replace the values where necessary (mainly: `clientId: 'local-dev'` and ` issuer: 'https://id.dev.appuio.cloud/auth/realms/<your-realm-name>'`).
 2. Start the local control api: https://github.com/appuio/control-api/tree/master/local-env
 3. Run `kubectl proxy` to start a proxy server between localhost and the Kubernetes API server.
 4. Run `npm start` to start angular locally.
 
-## Keycloak
+### Control API
+
+If you haven't yet setup the local control api, follow the instructions in the [control-api](https://github.com/appuio/control-api/tree/master/local-env).
+
+The control api serves all the data, such as organizations, teams, and users.
+
+Use the yaml files provided in the control api repo under /config/examples to create the custom resources in your local cluster.
+
+E.g. `kubectl apply -f config/examples/organization.yaml`
+
+Ensure that when you create a user, you replace the name with the one you used during the setup of the local control api for keycloak.
+
+### Keycloak
 
 Use the dev instance from VSHN: https://id.dev.appuio.cloud
 (if that returns a 404, use https://id.dev.appuio.cloud/auth/admin/master/console/)
@@ -30,8 +42,6 @@ Note: Once the setup is done, login to keycloak, select the new realm on the top
 ## Configuration
 
 The APPUiO Cloud Portal can be configured with the `config.json` file which is located in the `src` directory.
-
-In addition to that, the environment variable `APPUIO_API` has to be set as well. (i.E `https://control-api-v1.22.1-control-plane:6443/apis/`)
 
 ## Deploy to OpenShift
 

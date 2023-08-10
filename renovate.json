@@ -1,34 +1,18 @@
 {
-  "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
-  ],
-  "labels": [
-    "dependency"
-  ],
+  "extends": ["config:base", ":disableDependencyDashboard"],
+  "labels": ["dependency"],
   "npm": {
     "packageRules": [
       {
-        "matchUpdateTypes": [
-          "minor",
-          "patch",
-          "pin",
-          "digest"
-        ],
+        "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
         "automerge": true,
         "groupName": "npm",
-        "schedule": [
-          "on the first day of the week"
-        ]
+        "schedule": ["on the first day of the week"]
       },
       {
-        "matchUpdateTypes": [
-          "major"
-        ],
+        "matchUpdateTypes": ["major"],
         "groupName": "npm-major",
-        "schedule": [
-          "on the first day of the week"
-        ]
+        "schedule": ["on the first day of the week"]
       }
     ]
   }

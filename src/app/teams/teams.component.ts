@@ -3,15 +3,21 @@ import { Store } from '@ngrx/store';
 import { combineLatestWith, map, Observable, of, Subscription } from 'rxjs';
 import { faAdd, faEdit, faInfoCircle, faTrash, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { selectQueryParam } from '../store/router.selectors';
 import { Team } from '../types/team';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SharedModule } from 'primeng/api';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { TeamCollectionService } from '../store/team-collection.service';
 import { Organization } from '../types/organization';
 import { switchMap } from 'rxjs/operators';
+import { MessagesModule } from 'primeng/messages';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { NgIf, NgFor } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 interface Payload {
   organization?: Organization;
@@ -26,6 +32,18 @@ interface Payload {
   templateUrl: './teams.component.html',
   styleUrls: ['./teams.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    ButtonModule,
+    RippleModule,
+    FontAwesomeModule,
+    RouterLink,
+    NgFor,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class TeamsComponent implements OnInit, OnDestroy {
   payload$?: Observable<Payload>;

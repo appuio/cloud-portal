@@ -9,27 +9,25 @@
             (click)="this.joinDialogService.showDialog()"
             class="mr-2 w-full white-space-nowrap"
             id="joinOrganizationButton"
-            pButton pRipple
-          >
-            <fa-icon [icon]="faDollarSign" class="mr-2"/>
+            pButton
+            pRipple>
+            <fa-icon [icon]="faDollarSign" class="mr-2" />
             <span i18n>Join Billing</span>
           </button>
         </div>
         <div *ngIf="viewModel.canCreateBilling">
           <button
             [routerLink]="['$new']"
-            [queryParams]="{edit: 'y'}"
+            [queryParams]="{ edit: 'y' }"
             class="w-full white-space-nowrap"
             id="addButton"
             pButton
-            pRipple
-          >
+            pRipple>
             <fa-icon [icon]="faAdd" class="mr-2" />
             <span i18n>Add new Billing</span>
           </button>
         </div>
       </div>
-
     </div>
 
     <ng-container *ngFor="let p of viewModel.billingModels">
@@ -39,8 +37,12 @@
             {{ p.billingEntity.metadata.name }}
           </div>
           <div>
-            <a *ngIf="p.canViewMembers" [routerLink]="[p.billingEntity.metadata.name, 'members']"
-               class="text-blue-500 hover:text-primary cursor-pointer ml-3" i18n-title title="Edit members">
+            <a
+              *ngIf="p.canViewMembers"
+              [routerLink]="[p.billingEntity.metadata.name, 'members']"
+              class="text-blue-500 hover:text-primary cursor-pointer ml-3"
+              i18n-title
+              title="Edit members">
               <fa-icon [icon]="faUserGroup" />
             </a>
             <a
@@ -53,7 +55,7 @@
             <a
               *ngIf="p.canEdit"
               [routerLink]="[p.billingEntity.metadata.name]"
-              [queryParams]="{edit: 'y'}"
+              [queryParams]="{ edit: 'y' }"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
               i18n-title
               title="Edit details">
@@ -69,8 +71,9 @@
                 {{ p.billingEntity.spec.name }}
               </div>
             </li>
-            <li *ngIf="p.billingEntity.spec.accountingContact"
-                class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <li
+              *ngIf="p.billingEntity.spec.accountingContact"
+              class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
               <div class="text-500 w-full md:w-3 font-medium" i18n>Invoice Recipient</div>
               <div class="text-900 w-full md:w-9">
                 {{ p.billingEntity.spec.accountingContact.name }}
@@ -87,13 +90,14 @@
           <fa-icon [icon]="faInfo" />
           <div class="ml-2" i18n id="no-billingentity-message">
             No billing address available.
-            <span *ngIf="viewModel.canCreateBilling">Please create one first or ask to join an existing billing address.</span>
+            <span *ngIf="viewModel.canCreateBilling">
+              Please create one first or ask to join an existing billing address.
+            </span>
             <span *ngIf="!viewModel.canCreateBilling">Please ask to join an existing billing address.</span>
           </div>
         </ng-template>
       </p-messages>
     </ng-container>
-
   </ng-container>
 
   <ng-container *ngIf="err">

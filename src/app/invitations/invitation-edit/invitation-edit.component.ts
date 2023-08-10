@@ -8,12 +8,31 @@ import { BillingEntity } from '../../types/billing-entity';
 import { TeamCollectionService } from '../../store/team-collection.service';
 import { Team } from '../../types/team';
 import { defaultIfStatusCode } from '../../store/kubernetes-collection.service';
+import { SharedModule } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
+import { InvitationFormComponent } from '../invitation-form/invitation-form.component';
+import { MessageModule } from 'primeng/message';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { LetDirective } from '@ngrx/component';
 
 @Component({
   selector: 'app-invitation-edit',
   templateUrl: './invitation-edit.component.html',
   styleUrls: ['./invitation-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LetDirective,
+    NgIf,
+    RouterLink,
+    FontAwesomeModule,
+    MessageModule,
+    InvitationFormComponent,
+    MessagesModule,
+    SharedModule,
+  ],
 })
 export class InvitationEditComponent implements OnInit {
   payload$?: Observable<Payload>;

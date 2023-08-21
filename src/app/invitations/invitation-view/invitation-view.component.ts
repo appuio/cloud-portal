@@ -19,6 +19,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MessagesModule } from 'primeng/messages';
 import { NgIf } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-invitation-view',
@@ -26,7 +28,15 @@ import { LetDirective } from '@ngrx/component';
   styleUrls: ['./invitation-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [LetDirective, NgIf, MessagesModule, SharedModule, FontAwesomeModule, InvitationDetailComponent],
+  imports: [
+    LetDirective,
+    NgIf,
+    MessagesModule,
+    SharedModule,
+    FontAwesomeModule,
+    InvitationDetailComponent,
+    MessageModule,
+  ],
 })
 export class InvitationViewComponent implements OnInit {
   payload$?: Observable<Payload>;
@@ -34,18 +44,20 @@ export class InvitationViewComponent implements OnInit {
   faWarning = faWarning;
   faInfo = faInfo;
 
+  redeemSuccessMessage?: string;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private invitationService: InvitationCollectionService,
     private invitationRedeemRequestService: InvitationRedeemRequestCollectionService,
-    private messageService: MessageService,
     private router: Router,
     private http: HttpClient,
     private organizationService: OrganizationCollectionService,
     private billingService: BillingEntityCollectionService,
     private teamService: TeamCollectionService,
     private urlGenerator: KubernetesUrlGenerator,
-    private storageService: BrowserStorageService
+    private storageService: BrowserStorageService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -56,12 +68,10 @@ export class InvitationViewComponent implements OnInit {
 
     const storageAvailable = this.storageService.storageAvailable('localStorage');
     if (!storageAvailable) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Local storage is available in your browser.',
-        detail: 'This feature is required for redeeming invitations.',
-        sticky: true,
-      });
+      this.notificationService.showErrorMessageWithTitle(
+        $localize`Local storage not available in your browser.`,
+        $localize`Local storage is required for redeeming invitations.`
+      );
     }
     const tokenInQuery = this.activatedRoute.snapshot.queryParamMap.get('token');
     const tokenFromStorage = this.storageService.getLocalStorageItem(invitationTokenLocalStorageKey);
@@ -148,36 +158,19 @@ export class InvitationViewComponent implements OnInit {
   }
 
   addErrorNotification(err: DataServiceError | Error): void {
-    let detail = err.message ?? '';
-    if (err instanceof DataServiceError) {
-      if (err.error.status === 403) {
-        detail = $localize`Not allowed, most likely already redeemed`;
-      } else {
-        detail = err.error.message;
-      }
+    let message = $localize`Redeem failed`;
+    if (err instanceof DataServiceError && err.error.status === 403) {
+      message = $localize`Not allowed, most likely already redeemed`;
     }
-    this.messageService.add({
-      severity: 'error',
-      summary: $localize`Redeem failed`,
-      detail: detail,
-      sticky: true,
-    });
-  }
-  addSuccessNotification(detail: string): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Redeem successful',
-      detail: detail,
-      sticky: true,
-    });
+    this.notificationService.showErrorMessage(message);
   }
 
   private checkInvitation(invitation: Invitation): void {
     if (this.allTargetsReady(invitation)) {
-      this.addSuccessNotification($localize`Invitation accepted.`);
+      this.redeemSuccessMessage = $localize`Invitation accepted.`;
     }
     if (this.someTargetsFailed(invitation)) {
-      this.addSuccessNotification($localize`Invitation accepted, though not all permissions could be granted.`);
+      this.redeemSuccessMessage = $localize`Invitation accepted, though not all permissions could be granted.`;
     }
     this.billingService.resetMemoization();
     this.organizationService.resetMemoization();

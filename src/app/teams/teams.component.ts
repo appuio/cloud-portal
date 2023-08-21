@@ -18,6 +18,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { NotificationService } from '../core/notification.service';
 
 interface Payload {
   organization?: Organization;
@@ -64,7 +65,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private organizationService: OrganizationCollectionService,
     private teamService: TeamCollectionService,
-    private messageService: MessageService,
+    private notificationService: NotificationService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -139,29 +140,22 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   deleteTeam(team: Team): void {
+    const teamName = team.spec.displayName || team.metadata.name;
     this.confirmationService.confirm({
       header: 'Delete team',
-      message: $localize`Are you sure that you want to delete the team '${team.spec.displayName}'?`,
+      message: $localize`Are you sure that you want to delete the team '${teamName}'?`,
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.subscriptions.push(
           this.teamService.delete(team).subscribe({
             next: (name) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: $localize`Successfully deleted team ${name}`,
-              });
+              this.notificationService.showSuccessMessage($localize`Successfully deleted team '${name}'`);
               // After deleting, ensure that the displayed list doesn't contain the deleted element anymore.
               this.subscribePayloads();
               this.changeDetectorRef.markForCheck();
             },
-            error: (err: Error) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: $localize`Error`,
-                detail: err.message,
-                sticky: true,
-              });
+            error: () => {
+              this.notificationService.showErrorMessage($localize`Could not delete team '${teamName}'. `);
               this.subscribePayloads();
               this.changeDetectorRef.markForCheck();
             },

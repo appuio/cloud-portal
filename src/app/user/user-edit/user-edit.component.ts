@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
 import { NgIf } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -55,7 +56,7 @@ export class UserEditComponent implements OnInit {
     private organizationService: OrganizationCollectionService,
     private orgMembersService: OrganizationMembersCollectionService,
     public userService: UserCollectionService,
-    private messageService: MessageService
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -120,18 +121,10 @@ export class UserEditComponent implements OnInit {
     };
     this.userService.update(clone).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: $localize`Successfully saved`,
-        });
+        this.notificationService.showSuccessMessage($localize`Saved successfully`);
       },
       error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail: err.message,
-          sticky: true,
-        });
+        this.notificationService.showErrorMessage($localize`Could not save user preferences. Please try again later.`);
       },
     });
   }

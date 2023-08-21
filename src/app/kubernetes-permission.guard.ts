@@ -4,7 +4,7 @@ import { catchError, forkJoin, map, of, tap } from 'rxjs';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { SelfSubjectAccessReviewAttributes } from './types/self-subject-access-review';
 import { DataServiceError } from '@ngrx/data';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from './core/notification.service';
 
 /**
  * This is a backed with @ngrx/data, intended to be replacing it over time.
@@ -22,7 +22,7 @@ export const KubernetesPermissionGuard: CanActivateFn = (
     permissionService.isAllowed(attr.group, attr.resource, attr.verb, attr.namespace)
   );
   const router: Router = inject(Router);
-  const messageService: MessageService = inject(MessageService);
+  const notificationService: NotificationService = inject(NotificationService);
   return forkJoin(permissionList$).pipe(
     map((perms: boolean[]) => {
       return perms.every((allowed) => allowed);
@@ -33,11 +33,7 @@ export const KubernetesPermissionGuard: CanActivateFn = (
       }
     }),
     catchError((err: DataServiceError) => {
-      messageService.add({
-        severity: 'error',
-        summary: $localize`Could not determine access permissions`,
-        detail: err.message ?? undefined,
-      });
+      notificationService.showErrorMessage($localize`Server unavailable. Please try again in a few minutes.`);
       void router.navigate(['/home']);
       return of(false);
     })

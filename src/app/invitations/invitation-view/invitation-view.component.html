@@ -2,6 +2,10 @@
   <h1 class="pt-0 mt-0 mb-0" i18n id="title">Invitation</h1>
 </div>
 
+<div *ngIf="redeemSuccessMessage" class="mb-2">
+  <p-message [text]="redeemSuccessMessage" severity="success"></p-message>
+</div>
+
 <ng-container *ngrxLet="payload$ as payload; suspenseTpl: loading; error as err">
   <ng-container *ngIf="payload">
     <p-messages *ngIf="payload.isRedeemed" severity="warn">

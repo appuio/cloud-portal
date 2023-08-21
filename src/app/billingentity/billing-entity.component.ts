@@ -22,6 +22,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { DisplayNamePipe } from '../display-name.pipe';
 
 @Component({
   selector: 'app-billing-entity',
@@ -39,6 +40,7 @@ import { LetDirective } from '@ngrx/component';
     NgFor,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class BillingEntityComponent implements OnInit {

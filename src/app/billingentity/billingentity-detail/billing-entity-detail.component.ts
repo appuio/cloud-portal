@@ -12,6 +12,7 @@ import { BackLinkDirective } from '../../shared/back-link.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgIf } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 @Component({
   selector: 'app-billingentity-detail',
@@ -30,6 +31,7 @@ import { LetDirective, PushPipe } from '@ngrx/component';
     MessagesModule,
     SharedModule,
     PushPipe,
+    DisplayNamePipe,
   ],
 })
 export class BillingEntityDetailComponent implements OnInit {

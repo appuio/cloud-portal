@@ -17,6 +17,7 @@ import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { NotificationService } from '../../core/notification.service';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 @Component({
   selector: 'app-team-edit',
@@ -38,6 +39,7 @@ import { NotificationService } from '../../core/notification.service';
     MessagesModule,
     SharedModule,
     PushPipe,
+    DisplayNamePipe
   ],
 })
 export class TeamEditComponent implements OnInit {

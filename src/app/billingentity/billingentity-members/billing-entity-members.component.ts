@@ -27,6 +27,7 @@ import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { NotificationService } from '../../core/notification.service';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -57,6 +58,7 @@ interface Payload {
     MessagesModule,
     SharedModule,
     PushPipe,
+    DisplayNamePipe,
   ],
 })
 export class BillingEntityMembersComponent implements OnInit, OnDestroy {

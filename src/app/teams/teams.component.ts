@@ -19,6 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 import { NotificationService } from '../core/notification.service';
+import { DisplayNamePipe } from '../display-name.pipe';
 
 interface Payload {
   organization?: Organization;
@@ -44,6 +45,7 @@ interface Payload {
     NgFor,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class TeamsComponent implements OnInit, OnDestroy {

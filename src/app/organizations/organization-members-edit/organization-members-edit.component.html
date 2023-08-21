@@ -3,7 +3,7 @@
     <div class="surface-card p-4 shadow-2 border-round mb-4">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3">
-          {{ payload.members.metadata.namespace }}
+          {{ payload.organization | displayName }}
           <span i18n>Members</span>
         </div>
         <a appBackLink="../.." class="text-blue-500 hover:text-primary text-2xl cursor-pointer">

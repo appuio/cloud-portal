@@ -13,6 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 interface Payload {
   organization: Organization;
@@ -33,6 +34,7 @@ interface Payload {
     OrganizationFormComponent,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class OrganizationEditComponent implements OnInit {

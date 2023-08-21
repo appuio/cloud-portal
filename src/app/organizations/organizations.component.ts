@@ -9,7 +9,6 @@ import {
   faUserGroup,
   faWarning,
 } from '@fortawesome/free-solid-svg-icons';
-import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { Organization } from '../types/organization';
@@ -23,6 +22,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { DisplayNamePipe } from '../display-name.pipe';
 
 @Component({
   selector: 'app-organizations',
@@ -40,6 +40,7 @@ import { LetDirective } from '@ngrx/component';
     NgFor,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class OrganizationsComponent implements OnInit, OnDestroy {
@@ -55,7 +56,6 @@ export class OrganizationsComponent implements OnInit, OnDestroy {
   organizations$?: Observable<ViewModel>;
 
   constructor(
-    private dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public organizationService: OrganizationCollectionService,

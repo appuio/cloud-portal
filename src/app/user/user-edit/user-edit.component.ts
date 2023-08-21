@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
-import { MessageService, SelectItem, SharedModule } from 'primeng/api';
+import { SelectItem, SharedModule } from 'primeng/api';
 import { faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
@@ -123,7 +123,7 @@ export class UserEditComponent implements OnInit {
       next: () => {
         this.notificationService.showSuccessMessage($localize`Saved successfully`);
       },
-      error: (err) => {
+      error: () => {
         this.notificationService.showErrorMessage($localize`Could not save user preferences. Please try again later.`);
       },
     });

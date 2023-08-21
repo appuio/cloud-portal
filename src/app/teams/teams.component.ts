@@ -7,7 +7,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { selectQueryParam } from '../store/router.selectors';
 import { Team } from '../types/team';
 import { JoinTeamDialogComponent } from './join-team-dialog/join-team-dialog.component';
-import { ConfirmationService, MessageService, SharedModule } from 'primeng/api';
+import { ConfirmationService, SharedModule } from 'primeng/api';
 import { OrganizationCollectionService } from '../store/organization-collection.service';
 import { TeamCollectionService } from '../store/team-collection.service';
 import { Organization } from '../types/organization';

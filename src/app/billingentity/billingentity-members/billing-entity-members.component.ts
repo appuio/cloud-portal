@@ -260,7 +260,7 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.route });
       },
-      error: (error) => {
+      error: () => {
         this.notificationService.showErrorMessage(
           $localize`Could not save Billing ${payload.billingEntity.metadata.name}. Please try again later.`
         );

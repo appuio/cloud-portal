@@ -154,12 +154,12 @@ export class BillingEntityFormComponent implements OnInit {
     if (this.isNewBillingEntity(be)) {
       this.billingService.add(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: (err) => this.saveOrUpdateFailure(err),
+        error: this.saveOrUpdateFailure,
       });
     } else {
       this.billingService.update(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: (err) => this.saveOrUpdateFailure(err),
+        error: this.saveOrUpdateFailure,
       });
     }
   }
@@ -197,7 +197,7 @@ export class BillingEntityFormComponent implements OnInit {
     });
   }
 
-  private saveOrUpdateFailure(err: Error): void {
+  private saveOrUpdateFailure(): void {
     this.notificationService.showErrorMessage($localize`Failed to save billing details. Please try again later.`);
   }
 }

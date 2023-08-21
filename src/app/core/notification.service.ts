@@ -12,7 +12,7 @@ export class NotificationService {
    * This message is sticky and closable.
    * @param message
    */
-  showErrorMessage(message: string) {
+  showErrorMessage(message: string): void {
     this.messageService.add({
       severity: 'error',
       summary: $localize`Error`,
@@ -28,7 +28,7 @@ export class NotificationService {
    * @param title
    * @param message
    */
-  showErrorMessageWithTitle(title: string, message: string) {
+  showErrorMessageWithTitle(title: string, message: string): void {
     this.messageService.add({
       severity: 'error',
       summary: title,
@@ -46,7 +46,7 @@ export class NotificationService {
    * e.g. when editing a list item showing the updated list.
    * @param message
    */
-  showSuccessMessage(message: string) {
+  showSuccessMessage(message: string): void {
     this.messageService.add({
       severity: 'success',
       summary: $localize`Success`,
@@ -61,7 +61,7 @@ export class NotificationService {
    * The message is sticky and closable.
    * @param message
    */
-  showWarningMessage(message: string) {
+  showWarningMessage(message: string): void {
     this.messageService.add({
       severity: 'warn',
       summary: $localize`Warning`,
@@ -78,7 +78,7 @@ export class NotificationService {
    * @param title
    * @param message
    */
-  showInfoMessage(title: string, message: string) {
+  showInfoMessage(title: string, message: string): void {
     this.messageService.add({
       severity: 'info',
       summary: title,

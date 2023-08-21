@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } 
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService, SelectItem } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';

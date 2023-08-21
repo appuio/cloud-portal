@@ -4,7 +4,7 @@ import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
-import { MessageService, SharedModule } from 'primeng/api';
+import { SharedModule } from 'primeng/api';
 import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
@@ -196,7 +196,7 @@ export class OrganizationMembersEditComponent implements OnInit {
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
-      error: (error) => {
+      error: () => {
         this.notificationService.showErrorMessage($localize`Could not save changes. Please try again later.`);
       },
     });

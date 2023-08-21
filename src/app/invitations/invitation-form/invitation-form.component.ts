@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { Organization } from '../../types/organization';
 import { BillingEntity } from '../../types/billing-entity';
 import { InvitationCollectionService } from '../../store/invitation-collection.service';
-import { MessageService } from 'primeng/api';
 import { Invitation, TargetRef } from '../../types/invitation';
 import { v4 as uuidv4 } from 'uuid';
 import { faClose, faGift } from '@fortawesome/free-solid-svg-icons';
@@ -193,7 +192,7 @@ export class InvitationFormComponent implements OnInit {
         this.notificationService.showSuccessMessage($localize`Invitation successfully saved`);
         void this.router.navigate([this.navigationService.previousLocation('..')], { relativeTo: this.activatedRoute });
       },
-      error: (err) => {
+      error: () => {
         this.notificationService.showErrorMessage($localize`Invitation could not be saved. Please try again later.`);
       },
     });

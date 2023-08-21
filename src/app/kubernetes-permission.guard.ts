@@ -3,7 +3,6 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } fr
 import { catchError, forkJoin, map, of, tap } from 'rxjs';
 import { SelfSubjectAccessReviewCollectionService } from './store/ssar-collection.service';
 import { SelfSubjectAccessReviewAttributes } from './types/self-subject-access-review';
-import { DataServiceError } from '@ngrx/data';
 import { NotificationService } from './core/notification.service';
 
 /**
@@ -32,7 +31,7 @@ export const KubernetesPermissionGuard: CanActivateFn = (
         void router.navigate(['/home']);
       }
     }),
-    catchError((err: DataServiceError) => {
+    catchError(() => {
       notificationService.showErrorMessage($localize`Server unavailable. Please try again in a few minutes.`);
       void router.navigate(['/home']);
       return of(false);

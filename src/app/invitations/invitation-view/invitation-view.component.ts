@@ -67,8 +67,8 @@ export class InvitationViewComponent implements OnInit {
     const storageAvailable = this.storageService.storageAvailable('localStorage');
     if (!storageAvailable) {
       this.notificationService.showErrorMessageWithTitle(
-        $localize`Local storage not available in your browser.`,
-        $localize`Local storage is required for redeeming invitations.`
+        $localize`Local storage not available.`,
+        $localize`Enable local storage in your browser to redeem invitations.`
       );
     }
     const tokenInQuery = this.activatedRoute.snapshot.queryParamMap.get('token');

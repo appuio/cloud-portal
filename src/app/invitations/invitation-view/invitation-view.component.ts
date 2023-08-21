@@ -5,7 +5,7 @@ import { InvitationCollectionService } from '../../store/invitation-collection.s
 import { Invitation, invitationTokenLocalStorageKey } from '../../types/invitation';
 import { faInfo, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { InvitationRedeemRequestCollectionService } from '../../store/invitation-redeem-request-collection.service';
-import { MessageService, SharedModule } from 'primeng/api';
+import { SharedModule } from 'primeng/api';
 import { DataServiceError } from '@ngrx/data';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntityCollectionService } from '../../store/billingentity-collection.service';
@@ -43,8 +43,6 @@ export class InvitationViewComponent implements OnInit {
 
   faWarning = faWarning;
   faInfo = faInfo;
-
-  redeemSuccessMessage?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -158,19 +156,24 @@ export class InvitationViewComponent implements OnInit {
   }
 
   addErrorNotification(err: DataServiceError | Error): void {
-    let message = $localize`Redeem failed`;
     if (err instanceof DataServiceError && err.error.status === 403) {
-      message = $localize`Not allowed, most likely already redeemed`;
+      this.notificationService.showErrorMessageWithTitle(
+        $localize`Redeem failed`,
+        $localize`Not allowed, most likely already redeemed`
+      );
+    } else {
+      this.notificationService.showErrorMessage($localize`Redeem failed`);
     }
-    this.notificationService.showErrorMessage(message);
   }
 
   private checkInvitation(invitation: Invitation): void {
     if (this.allTargetsReady(invitation)) {
-      this.redeemSuccessMessage = $localize`Invitation accepted.`;
+      this.notificationService.showSuccessMessage($localize`Invitation accepted.`);
     }
     if (this.someTargetsFailed(invitation)) {
-      this.redeemSuccessMessage = $localize`Invitation accepted, though not all permissions could be granted.`;
+      this.notificationService.showWarningMessage(
+        $localize`Invitation accepted, though not all permissions could be granted.`
+      );
     }
     this.billingService.resetMemoization();
     this.organizationService.resetMemoization();

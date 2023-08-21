@@ -30,7 +30,7 @@ export class NotificationService {
    */
   showErrorMessageWithTitle(title: string, message: string) {
     this.messageService.add({
-      severity: 'warn',
+      severity: 'error',
       summary: title,
       detail: message,
       closable: true,
@@ -53,6 +53,16 @@ export class NotificationService {
       detail: message,
       closable: true,
       sticky: false,
+    });
+  }
+
+  showWarningMessage(message: string) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: $localize`Warning`,
+      detail: message,
+      closable: true,
+      sticky: true,
     });
   }
 

@@ -52,6 +52,12 @@ body {
   flex-shrink: 0;
 }
 
+.p-toast-message-icon {
+  timescircleicon {
+    display: none;
+  }
+}
+
 .p-divider.p-divider-horizontal {
   padding: 0;
   margin-bottom: 0.625rem;

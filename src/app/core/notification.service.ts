@@ -56,6 +56,11 @@ export class NotificationService {
     });
   }
 
+  /**
+   * Shows a warning message as toast.
+   * The message is sticky and closable.
+   * @param message
+   */
   showWarningMessage(message: string) {
     this.messageService.add({
       severity: 'warn',

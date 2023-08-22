@@ -171,8 +171,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private saveOrUpdateFailure(err: DataServiceError): void {
-    let message = $localize`Could not save organization '${this.form.get('organizationId')
-      ?.value}'. Please try again later.`;
+    let message = $localize`Could not save organization '${this.form.get('organizationId')?.value}'.`;
     if (409 === err.error?.status || err.message?.includes('already exists')) {
       this.form.get('organizationId')?.setErrors({ alreadyExists: true });
       message = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;

@@ -198,6 +198,6 @@ export class BillingEntityFormComponent implements OnInit {
   }
 
   private saveOrUpdateFailure(): void {
-    this.notificationService.showErrorMessage($localize`Failed to save billing details. Please try again later.`);
+    this.notificationService.showErrorMessage($localize`Failed to save billing details.`);
   }
 }

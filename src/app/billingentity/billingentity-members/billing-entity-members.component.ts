@@ -262,7 +262,7 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.notificationService.showErrorMessage(
-          $localize`Could not save Billing ${payload.billingEntity.metadata.name}. Please try again later.`
+          $localize`Could not save Billing ${payload.billingEntity.metadata.name}.`
         );
       },
     });

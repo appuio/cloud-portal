@@ -124,7 +124,7 @@ export class UserEditComponent implements OnInit {
         this.notificationService.showSuccessMessage($localize`Saved successfully`);
       },
       error: () => {
-        this.notificationService.showErrorMessage($localize`Could not save user preferences. Please try again later.`);
+        this.notificationService.showErrorMessage($localize`Could not save user preferences.`);
       },
     });
   }

@@ -99,7 +99,7 @@ export class TeamEditComponent implements OnInit {
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
-        let message = $localize`Could not save team '${this.form.get('name')?.value}'. Please try again later.`;
+        let message = $localize`Could not save team '${this.form.get('name')?.value}'. `;
         if (409 === error.error.status || error.message?.includes('already exists')) {
           this.form.get('name')?.setErrors({ alreadyExists: true });
           message = $localize`Team '${this.form.get('name')?.value}' already exists.`;

@@ -185,7 +185,11 @@ export class OrganizationMembersEditComponent implements OnInit {
           metadata: { ...roleBinding.metadata },
           roleRef: { ...roleBinding.roleRef },
           subjects: rolesToSubjects[roleBinding.roleRef.name].map((sub) => {
-            return { apiGroup: 'rbac.authorization.k8s.io', kind: 'User', name: `${this.userNamePrefix}${sub}` };
+            return {
+              apiGroup: 'rbac.authorization.k8s.io',
+              kind: 'User',
+              name: `${this.userNamePrefix}${sub}`,
+            };
           }),
         })
       ),
@@ -197,7 +201,7 @@ export class OrganizationMembersEditComponent implements OnInit {
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: () => {
-        this.notificationService.showErrorMessage($localize`Could not save changes. Please try again later.`);
+        this.notificationService.showErrorMessage($localize`Could not save changes.`);
       },
     });
   }

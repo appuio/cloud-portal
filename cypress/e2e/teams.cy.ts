@@ -25,6 +25,7 @@ describe('Test teams list', () => {
     cy.get('#teams-title').should('contain.text', 'Teams');
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
     cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 2');
+    cy.get(':nth-child(4) > .flex-row > .text-3xl').should('contain.text', 'team-no-display-name');
   });
 
   it('failed requests are retried', () => {

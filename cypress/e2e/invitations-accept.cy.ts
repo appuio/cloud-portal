@@ -229,7 +229,7 @@ describe('Test invitation accept for existing user', () => {
     ).as('getInvitation');
 
     cy.visit('/organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
 
     cy.visit('/invitations/e303b166-5d66-4151-8f5f-b84ba84a7559?token=93c05fe3-b20f-48cf-aea6-39eb2350d640');
     cy.wait('@createInvitationRedeemRequest');
@@ -239,8 +239,8 @@ describe('Test invitation accept for existing user', () => {
     cy.get('p-toast').should('contain.text', 'Invitation accepted');
 
     cy.get('app-navbar-item').contains('Organizations').click();
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering GmbH');
   });
 
   it('should display message even if navigated away', () => {
@@ -285,7 +285,7 @@ describe('Test invitation accept for existing user', () => {
     cy.get('#title').should('contain.text', 'Invitation');
 
     cy.get('app-navbar-item').contains('Organizations').click();
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering GmbH');
     cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Invitation accepted');
   });
 });

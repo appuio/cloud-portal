@@ -33,6 +33,11 @@ export const teamListNxt = createTeamList({
       displayName: 'My Super Team 2',
       userRefs: [{ name: 'cma' }],
     }),
+    createTeam({
+      name: 'team-no-display-name',
+      namespace: 'nxt',
+      userRefs: [{ name: 'ste' }],
+    }),
   ],
 });
 export const teamListVshn = createTeamList({

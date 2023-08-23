@@ -60,7 +60,7 @@ describe('Test organization add', () => {
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
         expect(body.spec.billingEntityRef).to.eq('be-2347');
       });
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'VSHN - the DevOps Company'
@@ -196,12 +196,12 @@ describe('Test organization edit', () => {
       'contain.text',
       'nxt Engineering GmbH'
     );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN AG');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should('contain.text', 'VSHN AG');
 
     cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('not.exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
-    cy.get('.text-3xl').should('contain.text', 'vshn');
+    cy.get('#title').should('contain.text', 'VSHN AG');
     cy.get('#selectedBillingEntity').should('contain.text', '👁️ AG');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');
@@ -215,12 +215,12 @@ describe('Test organization edit', () => {
         expect(body.spec.displayName).to.eq('VSHN - the DevOps Company');
         expect(body.spec.billingEntityRef).to.eq('be-2345');
       });
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering GmbH');
     cy.get(':nth-child(2) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'nxt Engineering GmbH'
     );
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
     cy.get(':nth-child(3) > .border-top-1 > .list-none > .flex > .text-900').should(
       'contain.text',
       'VSHN - the DevOps Company'

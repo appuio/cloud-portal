@@ -138,8 +138,8 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       rawValue.billingEntity?.value.metadata.name ?? ''
     );
     this.organizationCollectionService.add(org).subscribe({
-      next: this.saveOrUpdateSuccess,
-      error: this.saveOrUpdateFailure,
+      next: (org) => this.saveOrUpdateSuccess(org),
+      error: (err) => this.saveOrUpdateFailure(err),
     });
   }
 
@@ -150,9 +150,10 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       displayName: rawValue.displayName ?? '',
       billingEntityRef: rawValue.billingEntity?.value.metadata.name,
     };
-    this.organizationCollectionService
-      .update(org)
-      .subscribe({ next: this.saveOrUpdateSuccess, error: this.saveOrUpdateFailure });
+    this.organizationCollectionService.update(org).subscribe({
+      next: (org) => this.saveOrUpdateSuccess(org),
+      error: (err) => this.saveOrUpdateFailure(err),
+    });
   }
 
   private saveOrUpdateSuccess(org: Organization): void {

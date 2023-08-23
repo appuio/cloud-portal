@@ -48,7 +48,7 @@ describe('Test organization members', () => {
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
-    cy.get('.text-3xl').should('contain.text', 'nxt Members');
+    cy.get('.text-3xl').should('contain.text', 'nxt Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').should('have.value', 'hans.meier').and('be.disabled');
     cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster').and('be.disabled');
     cy.get(':nth-child(2) .p-multiselect')
@@ -112,7 +112,7 @@ describe('Test organization members', () => {
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').should('exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit members"]').should('not.exist');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
-    cy.get('.text-3xl').should('contain.text', 'nxt Members');
+    cy.get('.text-3xl').should('contain.text', 'nxt Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').should('have.value', 'hans.meier');
     cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
     cy.get('[data-cy="name-input-1"]').type('{selectall}test');
@@ -190,7 +190,7 @@ describe('Test organization members', () => {
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
     cy.get(':nth-child(2) > .flex-row [title="Edit members"]').click();
-    cy.get('.text-3xl').should('contain.text', 'nxt Members');
+    cy.get('.text-3xl').should('contain.text', 'nxt Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').first().should('have.value', 'hans.meier');
     cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
     cy.get('[data-cy="name-input-2"]').type('{selectall}test');

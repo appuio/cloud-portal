@@ -61,13 +61,13 @@
                 {{ team.metadata.name }}
               </div>
             </li>
-            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+            <li class="flex align-items-center py-2 px-2 flex-wrap">
               <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
               <div class="text-900 w-full md:w-9">
                 {{ team.spec.displayName }}
               </div>
             </li>
-            <li class="flex align-items-center py-2 px-2 flex-wrap">
+            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
               <div class="text-500 w-full md:w-3 font-medium" i18n>Members</div>
               <div class="text-900 w-full md:w-9">
                 <ul *ngFor="let user of team.spec.userRefs" class="pl-3">

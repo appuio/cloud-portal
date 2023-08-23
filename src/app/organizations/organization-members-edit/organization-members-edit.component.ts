@@ -4,7 +4,7 @@ import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { OrganizationMembers } from '../../types/organization-members';
 import { FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { combineLatestWith, forkJoin, map, Observable, take } from 'rxjs';
-import { MessageService, SharedModule } from 'primeng/api';
+import { SharedModule } from 'primeng/api';
 import { RoleBinding } from 'src/app/types/role-binding';
 import { OrganizationMembersCollectionService } from '../../store/organizationmembers-collection.service';
 import { RolebindingCollectionService } from '../../store/rolebinding-collection.service';
@@ -19,6 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
 
 interface Payload {
   members: OrganizationMembers;
@@ -71,11 +72,11 @@ export class OrganizationMembersEditComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private messageService: MessageService,
     private router: Router,
     private membersService: OrganizationMembersCollectionService,
     private rolebindingService: RolebindingCollectionService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private notificationService: NotificationService
   ) {}
 
   get userRefs(): FormArray | undefined {
@@ -129,6 +130,7 @@ export class OrganizationMembersEditComponent implements OnInit {
       this.addEmptyFormControl();
     }
   }
+
   addEmptyFormControl(): void {
     const emptyFormControl = new FormControl();
     emptyFormControl.valueChanges.pipe(take(1)).subscribe(() => {
@@ -183,24 +185,23 @@ export class OrganizationMembersEditComponent implements OnInit {
           metadata: { ...roleBinding.metadata },
           roleRef: { ...roleBinding.roleRef },
           subjects: rolesToSubjects[roleBinding.roleRef.name].map((sub) => {
-            return { apiGroup: 'rbac.authorization.k8s.io', kind: 'User', name: `${this.userNamePrefix}${sub}` };
+            return {
+              apiGroup: 'rbac.authorization.k8s.io',
+              kind: 'User',
+              name: `${this.userNamePrefix}${sub}`,
+            };
           }),
         })
       ),
     ]).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: $localize`Successfully saved`,
-        });
+        this.notificationService.showSuccessMessage(
+          $localize`Successfully saved changes to '${payload.members.metadata.namespace}'.`
+        );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail: error.message,
-        });
+      error: () => {
+        this.notificationService.showErrorMessage($localize`Could not save changes.`);
       },
     });
   }

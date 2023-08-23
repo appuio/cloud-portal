@@ -6,7 +6,6 @@ import { BillingEntity } from '../../types/billing-entity';
 import { BillingForm } from './billingentity-form.types';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfigService } from '../../app-config.service';
-import { MessageService } from 'primeng/api';
 import { NavigationService } from '../../shared/navigation.service';
 import { multiEmail, sameEntries } from './billingentity-form.util';
 import { filter } from 'rxjs';
@@ -20,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-billingentity-form',
@@ -58,8 +58,8 @@ export class BillingEntityFormComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private navigationService: NavigationService,
-    private messageService: MessageService,
-    private appConfig: AppConfigService
+    private appConfig: AppConfigService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -154,12 +154,12 @@ export class BillingEntityFormComponent implements OnInit {
     if (this.isNewBillingEntity(be)) {
       this.billingService.add(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: (err) => this.saveOrUpdateFailure(err),
+        error: this.saveOrUpdateFailure,
       });
     } else {
       this.billingService.update(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: (err) => this.saveOrUpdateFailure(err),
+        error: this.saveOrUpdateFailure,
       });
     }
   }
@@ -178,10 +178,7 @@ export class BillingEntityFormComponent implements OnInit {
 
   private saveOrUpdateSuccess(be: BillingEntity): void {
     this.billingService.resetMemoization();
-    this.messageService.add({
-      severity: 'success',
-      summary: $localize`Successfully saved`,
-    });
+    this.notificationService.showSuccessMessage($localize`Successfully saved billing`);
     const firstTime = this.activatedRoute.snapshot.queryParamMap.get('firstTime') === 'y';
     if (firstTime) {
       void this.router.navigate(['organizations', '$new'], {
@@ -200,16 +197,7 @@ export class BillingEntityFormComponent implements OnInit {
     });
   }
 
-  private saveOrUpdateFailure(err: Error): void {
-    let detail = '';
-    if ('message' in err) {
-      detail = err.message;
-    }
-    this.messageService.add({
-      severity: 'error',
-      summary: $localize`Error`,
-      sticky: true,
-      detail,
-    });
+  private saveOrUpdateFailure(): void {
+    this.notificationService.showErrorMessage($localize`Failed to save billing details.`);
   }
 }

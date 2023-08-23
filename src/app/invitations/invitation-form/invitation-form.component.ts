@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { Organization } from '../../types/organization';
 import { BillingEntity } from '../../types/billing-entity';
 import { InvitationCollectionService } from '../../store/invitation-collection.service';
-import { MessageService } from 'primeng/api';
 import { Invitation, TargetRef } from '../../types/invitation';
 import { v4 as uuidv4 } from 'uuid';
 import { faClose, faGift } from '@fortawesome/free-solid-svg-icons';
@@ -33,6 +32,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { NgIf, NgFor } from '@angular/common';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-invitation-form',
@@ -77,11 +77,11 @@ export class InvitationFormComponent implements OnInit {
 
   constructor(
     public invitationService: InvitationCollectionService,
-    private messageService: MessageService,
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -189,18 +189,11 @@ export class InvitationFormComponent implements OnInit {
     invitation.spec.targetRefs = targetRefs;
     this.invitationService.add(invitation).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Invitation successfully saved',
-        });
+        this.notificationService.showSuccessMessage($localize`Invitation successfully saved`);
         void this.router.navigate([this.navigationService.previousLocation('..')], { relativeTo: this.activatedRoute });
       },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: err.message,
-          sticky: true,
-        });
+      error: () => {
+        this.notificationService.showErrorMessage($localize`Invitation could not be saved. Please try again later.`);
       },
     });
   }

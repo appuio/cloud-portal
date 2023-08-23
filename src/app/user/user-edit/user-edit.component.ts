@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, combineLatestWith, forkJoin, map, Observable, of } from 'rxjs';
-import { MessageService, SelectItem, SharedModule } from 'primeng/api';
+import { SelectItem, SharedModule } from 'primeng/api';
 import { faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Organization } from '../../types/organization';
 import { IdentityService } from '../../core/identity.service';
@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
 import { NgIf } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -55,7 +56,7 @@ export class UserEditComponent implements OnInit {
     private organizationService: OrganizationCollectionService,
     private orgMembersService: OrganizationMembersCollectionService,
     public userService: UserCollectionService,
-    private messageService: MessageService
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -120,18 +121,10 @@ export class UserEditComponent implements OnInit {
     };
     this.userService.update(clone).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: $localize`Successfully saved`,
-        });
+        this.notificationService.showSuccessMessage($localize`Saved successfully`);
       },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail: err.message,
-          sticky: true,
-        });
+      error: () => {
+        this.notificationService.showErrorMessage($localize`Could not save user preferences.`);
       },
     });
   }

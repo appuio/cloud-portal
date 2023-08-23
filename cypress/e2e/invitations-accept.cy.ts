@@ -116,7 +116,7 @@ describe('Test invitation accept for existing user', () => {
     cy.wait('@createInvitationRedeemRequest');
     cy.get('#title').should('contain.text', 'Invitation');
     cy.get('.flex-row > .text-3xl', { timeout: 7000 }).should('contain.text', 'dev@nxt.engineering');
-    cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('p-toast').should('contain.text', 'Invitation accepted');
   });
 
   it('should accept but display message if some targets failed', () => {
@@ -236,7 +236,7 @@ describe('Test invitation accept for existing user', () => {
     cy.wait('@getInvitation');
     cy.get('#title').should('contain.text', 'Invitation');
     cy.get('.flex-row > .text-3xl').should('contain.text', 'dev@nxt.engineering');
-    cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('p-toast').should('contain.text', 'Invitation accepted');
 
     cy.get('app-navbar-item').contains('Organizations').click();
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
@@ -286,7 +286,7 @@ describe('Test invitation accept for existing user', () => {
 
     cy.get('app-navbar-item').contains('Organizations').click();
     cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Redeem successful');
+    cy.get('p-toast', { timeout: 10000 }).should('contain.text', 'Invitation accepted');
   });
 });
 
@@ -332,7 +332,7 @@ describe('Test invitation accept for new user', () => {
     cy.wait('@getInvitation');
     cy.get('#title').should('contain.text', 'Invitation');
     cy.get('.flex-row > .text-3xl', { timeout: 7000 }).should('contain.text', 'dev@nxt.engineering');
-    cy.get('p-toast').should('contain.text', 'Redeem successful');
+    cy.get('p-toast').should('contain.text', 'Invitation accepted');
   });
 
   it('should accept but display message if some targets failed', () => {

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled } from './store/app.selectors';
 import { Verb } from './store/app.reducer';
@@ -30,6 +29,7 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { NgFor, NgIf } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { NotificationService } from './core/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -63,14 +63,14 @@ export class AppComponent implements OnInit {
   faComment = faComment;
 
   constructor(
-    private oauthService: OAuthService,
     private store: Store,
     private appConfigService: AppConfigService,
     private identityService: IdentityService,
     private organizationService: OrganizationCollectionService,
     private permissionService: SelfSubjectAccessReviewCollectionService,
     private userService: UserCollectionService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +94,9 @@ export class AppComponent implements OnInit {
         },
         error: (err) => {
           console.warn('could not load the user object:', err.message ?? err);
+          this.notificationService.showErrorMessage(
+            $localize`Could not load user data. Please try again in a few minutes.`
+          );
         },
       });
 

@@ -67,6 +67,7 @@ describe('Test zones', () => {
   it('no permission', () => {
     cy.visit('/zones');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+    cy.get('p-toast').should('contain.text', 'Error');
   });
 });
 
@@ -118,5 +119,6 @@ describe('Test single zone', () => {
   it('no permission', () => {
     cy.visit('/zones/cloudscale-lpg-0');
     cy.get('h1').should('contain.text', 'Welcome to the APPUiO Cloud Portal');
+    cy.get('p-toast').should('contain.text', 'Error');
   });
 });

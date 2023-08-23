@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } 
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService, SelectItem } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { OrganizationNameService } from '../organization-name.service';
 import { OrganizationCollectionService } from '../../store/organization-collection.service';
 import { BillingEntity } from '../../types/billing-entity';
@@ -17,6 +17,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MessageModule } from 'primeng/message';
 import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import { NotificationService } from '../../core/notification.service';
+import { DataServiceError } from '@ngrx/data';
 
 @Component({
   selector: 'app-organization-form',
@@ -55,16 +57,16 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   billingOptions: SelectItem<BillingEntity>[] = [];
 
   faSave = faSave;
-  private subscriptions: Subscription[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private messageService: MessageService,
     private organizationNameService: OrganizationNameService,
     public organizationCollectionService: OrganizationCollectionService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -153,10 +155,9 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private saveOrUpdateSuccess(): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: $localize`Successfully saved`,
-    });
+    this.notificationService.showSuccessMessage(
+      $localize`Successfully saved organization '${this.form.getRawValue().displayName}'.`
+    );
     const firstTime = this.activatedRoute.snapshot.queryParamMap.get('firstTime') === 'y';
     if (firstTime) {
       void this.router.navigate(['zones'], {
@@ -169,22 +170,12 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     void this.router.navigate([previous.path], { relativeTo: this.activatedRoute, queryParams: previous.queryParams });
   }
 
-  private saveOrUpdateFailure(err: Error): void {
-    let detail = '';
-    if ('message' in err) {
-      detail = err.message;
+  private saveOrUpdateFailure(err: DataServiceError): void {
+    let message = $localize`Could not save organization '${this.form.get('organizationId')?.value}'.`;
+    if (409 === err.error?.status || err.message?.includes('already exists')) {
+      this.form.get('organizationId')?.setErrors({ alreadyExists: true });
+      message = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
     }
-    if ('reason' in err) {
-      if ('AlreadyExists' === err.reason) {
-        this.form.get('organizationId')?.setErrors({ alreadyExists: true });
-        detail = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
-      }
-    }
-    this.messageService.add({
-      severity: 'error',
-      summary: $localize`Error`,
-      sticky: true,
-      detail,
-    });
+    this.notificationService.showErrorMessage(message);
   }
 }

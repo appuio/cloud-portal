@@ -3,7 +3,7 @@ import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Team } from '../../types/team';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MessageService, SharedModule } from 'primeng/api';
+import { SharedModule } from 'primeng/api';
 import { Observable, of, take, tap } from 'rxjs';
 import { TeamCollectionService } from '../../store/team-collection.service';
 import { NavigationService } from '../../shared/navigation.service';
@@ -16,6 +16,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-team-edit',
@@ -51,9 +52,9 @@ export class TeamEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private messageService: MessageService,
     public teamService: TeamCollectionService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private notificationService: NotificationService
   ) {}
 
   get userRefs(): FormArray {
@@ -94,27 +95,16 @@ export class TeamEditComponent implements OnInit {
     team = this.getTeamFromForm(team);
     (this.new ? this.teamService.add(team) : this.teamService.update(team)).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: $localize`Successfully saved`,
-        });
+        this.notificationService.showSuccessMessage($localize`Team "${team.metadata.name}" saved.`);
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
-        let detail = '';
-        if ('message' in error.error) {
-          detail = error.error.message;
-        }
-        if ('AlreadyExists' === error.error.reason) {
+        let message = $localize`Could not save team '${this.form.get('name')?.value}'. `;
+        if (409 === error.error.status || error.message?.includes('already exists')) {
           this.form.get('name')?.setErrors({ alreadyExists: true });
-          detail = $localize`Team "${this.form.get('name')?.value}" already exists.`;
+          message = $localize`Team '${this.form.get('name')?.value}' already exists.`;
         }
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail,
-          sticky: true,
-        });
+        this.notificationService.showErrorMessage(message);
       },
     });
   }

@@ -7,7 +7,7 @@ import { faClose, faSave, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ClusterRoleBinding } from '../../types/clusterrole-binding';
 import { ClusterRolebindingCollectionService } from '../../store/clusterrolebinding-collection.service';
-import { MessageService, SharedModule } from 'primeng/api';
+import { SharedModule } from 'primeng/api';
 import { UserCollectionService } from '../../store/user-collection.service';
 import { User } from 'src/app/types/user';
 import { switchMap } from 'rxjs/operators';
@@ -26,6 +26,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
+import { NotificationService } from '../../core/notification.service';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -77,7 +78,7 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
   isRemovingOwnUser = false;
 
   readonly userNamePrefix = 'appuio#';
-  private subscriptions: Subscription[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -86,8 +87,8 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     private billingService: BillingEntityCollectionService,
     private roleService: ClusterRoleCollectionService,
     public rolebindingService: ClusterRolebindingCollectionService,
-    private messageService: MessageService,
-    private userService: UserCollectionService
+    private userService: UserCollectionService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -110,17 +111,13 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     ]).pipe(
       switchMap(([canViewBE, canEditViewer, canEditAdmins]) => {
         if (!canViewBE) {
-          this.messageService.add({
-            severity: 'error',
-            summary: `You don't have permissions to view Billing ${beName}.`,
-          });
+          this.notificationService.showErrorMessage($localize`You don't have permissions to view Billing ${beName}.`);
           this.router.navigateByUrl('/home');
         }
         if (!canEditViewer || !canEditAdmins) {
-          this.messageService.add({
-            severity: 'error',
-            summary: `You don't have enough permissions to edit members of Billing ${beName}.`,
-          });
+          this.notificationService.showErrorMessage(
+            $localize`You don't have permissions to edit members of Billing ${beName}.`
+          );
           this.router.navigateByUrl('/home');
         }
 
@@ -258,19 +255,15 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     });
     forkJoin(upsert$).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: $localize`Successfully saved`,
-        });
+        this.notificationService.showSuccessMessage(
+          $localize`Successfully saved Billing ${payload.billingEntity.metadata.name}.`
+        );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.route });
       },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: $localize`Error`,
-          detail: error.message,
-          sticky: true,
-        });
+      error: () => {
+        this.notificationService.showErrorMessage(
+          $localize`Could not save Billing ${payload.billingEntity.metadata.name}.`
+        );
       },
     });
   }

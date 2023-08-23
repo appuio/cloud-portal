@@ -203,12 +203,14 @@ export class OrganizationMembersEditComponent implements OnInit {
     ]).subscribe({
       next: () => {
         this.notificationService.showSuccessMessage(
-          $localize`Successfully saved changes to '${payload.members.metadata.namespace}'.`
+          $localize`Successfully saved '${DisplayNamePipe.transform(payload.organization)}'.`
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: () => {
-        this.notificationService.showErrorMessage($localize`Could not save changes.`);
+        this.notificationService.showErrorMessage(
+          $localize`Could not save changes for '${DisplayNamePipe.transform(payload.organization)}'.`
+        );
       },
     });
   }

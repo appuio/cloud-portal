@@ -258,13 +258,13 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     forkJoin(upsert$).subscribe({
       next: () => {
         this.notificationService.showSuccessMessage(
-          $localize`Successfully saved Billing ${payload.billingEntity.metadata.name}.`
+          $localize`Successfully saved Billing ${DisplayNamePipe.transform(payload.billingEntity)}.`
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.route });
       },
       error: () => {
         this.notificationService.showErrorMessage(
-          $localize`Could not save Billing ${payload.billingEntity.metadata.name}.`
+          $localize`Could not save Billing ${DisplayNamePipe.transform(payload.billingEntity)}.`
         );
       },
     });

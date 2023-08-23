@@ -39,7 +39,7 @@ import { DisplayNamePipe } from '../../display-name.pipe';
     MessagesModule,
     SharedModule,
     PushPipe,
-    DisplayNamePipe
+    DisplayNamePipe,
   ],
 })
 export class TeamEditComponent implements OnInit {
@@ -97,14 +97,16 @@ export class TeamEditComponent implements OnInit {
     team = this.getTeamFromForm(team);
     (this.new ? this.teamService.add(team) : this.teamService.update(team)).subscribe({
       next: () => {
-        this.notificationService.showSuccessMessage($localize`Team "${team.metadata.name}" saved.`);
+        this.notificationService.showSuccessMessage($localize`Team '${DisplayNamePipe.transform(team)}' saved.`);
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: (error) => {
-        let message = $localize`Could not save team '${this.form.get('name')?.value}'. `;
+        const id = this.form.controls.name.value;
+        const name = this.form.controls.displayName.value || id;
+        let message = $localize`Could not save team '${name}'. `;
         if (409 === error.error.status || error.message?.includes('already exists')) {
-          this.form.get('name')?.setErrors({ alreadyExists: true });
-          message = $localize`Team '${this.form.get('name')?.value}' already exists.`;
+          this.form.controls.name.setErrors({ alreadyExists: true });
+          message = $localize`Team with name '${id}' already exists.`;
         }
         this.notificationService.showErrorMessage(message);
       },

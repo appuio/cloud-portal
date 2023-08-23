@@ -142,7 +142,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   deleteTeam(team: Team): void {
-    const teamName = team.spec.displayName || team.metadata.name;
+    const teamName = DisplayNamePipe.transform(team);
     this.confirmationService.confirm({
       header: 'Delete team',
       message: $localize`Are you sure that you want to delete the team '${teamName}'?`,

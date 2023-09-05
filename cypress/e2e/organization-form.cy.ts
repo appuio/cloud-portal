@@ -201,7 +201,7 @@ describe('Test organization edit', () => {
 
     cy.get(':nth-child(2) > .flex-row [title="Edit organization"]').should('not.exist');
     cy.get(':nth-child(3) > .flex-row [title="Edit organization"]').click();
-    cy.get('#title').should('contain.text', 'VSHN AG');
+    cy.get('#title').should('contain.text', 'vshn');
     cy.get('#selectedBillingEntity').should('contain.text', '👁️ AG');
     cy.get('#displayName').type('{selectall}');
     cy.get('#displayName').type('VSHN - the DevOps Company');

@@ -5,7 +5,7 @@
         <div id="title" class="text-3xl font-medium text-900 mb-3">
           <span *ngIf="isNew; else isNotNew" i18n>New Organization</span>
           <ng-template #isNotNew>
-            {{ payload.organization | displayName }}
+            {{ payload.organization.metadata.name }}
           </ng-template>
         </div>
         <a appBackLink=".." class="text-blue-500 hover:text-primary text-2xl cursor-pointer">

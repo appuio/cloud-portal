@@ -165,7 +165,7 @@ describe('Test team edit', () => {
 
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Edit team"]').click();
 
-    cy.get('.text-3xl').should('contain.text', 'My Super Team 1');
+    cy.get('.text-3xl').should('contain.text', 'team1');
     cy.get('#displayName').type('{selectall}Awesome Team!');
 
     cy.get(':nth-child(3) > :nth-child(3) > .p-ripple').click();

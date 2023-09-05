@@ -245,7 +245,7 @@ describe('Test billing entity create', () => {
     cy.url().should('include', '/billingentities/be-2345').should('not.include', '?edit=y');
     cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
 
-    cy.get('#title').should('contain.text', '➡️ Engineering GmbH');
+    cy.get('#title').should('contain.text', 'be-2345');
     cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'be-2345');
     cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', 'hallo@nxt.engineering');
     cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '☎️');

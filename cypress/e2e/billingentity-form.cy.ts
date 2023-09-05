@@ -194,7 +194,7 @@ describe('Test billing entity create', () => {
     );
   });
 
-  it.only('should create billing', () => {
+  it('should create billing', () => {
     cy.intercept('POST', '/appuio-api/apis/billing.appuio.io/v1/billingentities', {
       body: billingEntityNxt,
     }).as('createBillingEntity');

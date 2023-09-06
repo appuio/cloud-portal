@@ -154,12 +154,12 @@ export class BillingEntityFormComponent implements OnInit {
     if (this.isNewBillingEntity(be)) {
       this.billingService.add(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: this.saveOrUpdateFailure,
+        error: () => this.saveOrUpdateFailure(),
       });
     } else {
       this.billingService.update(be).subscribe({
         next: (result) => this.saveOrUpdateSuccess(result),
-        error: this.saveOrUpdateFailure,
+        error: () => this.saveOrUpdateFailure(),
       });
     }
   }

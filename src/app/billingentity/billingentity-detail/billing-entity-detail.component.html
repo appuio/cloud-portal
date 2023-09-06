@@ -1,9 +1,16 @@
 <ng-container *ngrxLet="viewModel$ as vm; suspenseTpl: loading; error as err">
   <ng-container *ngIf="vm">
-    <div class="surface-card p-4 shadow-2 border-round mb-4">
+    <div class="surface-card p-4 shadow-2 border-round mb-4" *ngrxLet="isEditing$ as isEditing">
       <div class="flex flex-row justify-content-between">
         <div class="text-3xl font-medium text-900 mb-3" id="title">
-          <span *ngIf="!isNewBE(vm.billingEntity); else newBillingTitle">{{ vm.billingEntity.metadata.name }}</span>
+          <span *ngIf="!isNewBE(vm.billingEntity); else newBillingTitle">
+            <ng-container *ngIf="isEditing">
+              {{ vm.billingEntity.metadata.name }}
+            </ng-container>
+            <ng-container *ngIf="!isEditing">
+              {{ vm.billingEntity | displayName }}
+            </ng-container>
+          </span>
           <ng-template #newBillingTitle>
             <span i18n>New Billing</span>
           </ng-template>
@@ -26,8 +33,8 @@
           </a>
         </div>
       </div>
-      <app-billingentity-view *ngIf="!(isEditing$ | ngrxPush)" [billingEntity]="vm.billingEntity" />
-      <app-billingentity-form *ngIf="isEditing$ | ngrxPush" [billingEntity]="vm.billingEntity" />
+      <app-billingentity-view *ngIf="!isEditing" [billingEntity]="vm.billingEntity" />
+      <app-billingentity-form *ngIf="isEditing" [billingEntity]="vm.billingEntity" />
     </div>
   </ng-container>
 

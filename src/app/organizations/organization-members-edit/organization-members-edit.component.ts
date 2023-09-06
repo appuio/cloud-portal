@@ -20,11 +20,15 @@ import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 import { NotificationService } from '../../core/notification.service';
+import { OrganizationCollectionService } from '../../store/organization-collection.service';
+import { Organization } from '../../types/organization';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 interface Payload {
   members: OrganizationMembers;
   roleBindings: RoleBinding[];
   canEdit: boolean;
+  organization: Organization;
 }
 
 @Component({
@@ -47,6 +51,7 @@ interface Payload {
     RippleModule,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class OrganizationMembersEditComponent implements OnInit {
@@ -76,7 +81,8 @@ export class OrganizationMembersEditComponent implements OnInit {
     private membersService: OrganizationMembersCollectionService,
     private rolebindingService: RolebindingCollectionService,
     private navigationService: NavigationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private organizationService: OrganizationCollectionService
   ) {}
 
   get userRefs(): FormArray | undefined {
@@ -92,10 +98,11 @@ export class OrganizationMembersEditComponent implements OnInit {
     this.payload$ = this.membersService.getByKeyMemoized(`${name}/members`).pipe(
       combineLatestWith(
         this.membersService.canEditMembers(name),
-        this.rolebindingService.getAllInNamespaceMemoized(name)
+        this.rolebindingService.getAllInNamespaceMemoized(name),
+        this.organizationService.getByKeyMemoized(name)
       ),
-      map(([members, canEdit, roleBindings]) => {
-        const payload = { members, canEdit, roleBindings } satisfies Payload;
+      map(([members, canEdit, roleBindings, organization]) => {
+        const payload = { members, canEdit, roleBindings, organization } satisfies Payload;
         this.initForm(payload);
         return payload;
       })
@@ -196,12 +203,14 @@ export class OrganizationMembersEditComponent implements OnInit {
     ]).subscribe({
       next: () => {
         this.notificationService.showSuccessMessage(
-          $localize`Successfully saved changes to '${payload.members.metadata.namespace}'.`
+          $localize`Successfully saved '${DisplayNamePipe.transform(payload.organization)}'.`
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.activatedRoute });
       },
       error: () => {
-        this.notificationService.showErrorMessage($localize`Could not save changes.`);
+        this.notificationService.showErrorMessage(
+          $localize`Could not save changes for '${DisplayNamePipe.transform(payload.organization)}'.`
+        );
       },
     });
   }

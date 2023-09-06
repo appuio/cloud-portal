@@ -27,6 +27,7 @@ import { BackLinkDirective } from '../../shared/back-link.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { NotificationService } from '../../core/notification.service';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 interface Payload {
   billingEntity: BillingEntity;
@@ -57,6 +58,7 @@ interface Payload {
     MessagesModule,
     SharedModule,
     PushPipe,
+    DisplayNamePipe,
   ],
 })
 export class BillingEntityMembersComponent implements OnInit, OnDestroy {
@@ -256,13 +258,13 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     forkJoin(upsert$).subscribe({
       next: () => {
         this.notificationService.showSuccessMessage(
-          $localize`Successfully saved Billing ${payload.billingEntity.metadata.name}.`
+          $localize`Successfully saved Billing ${DisplayNamePipe.transform(payload.billingEntity)}.`
         );
         void this.router.navigate([this.navigationService.previousLocation()], { relativeTo: this.route });
       },
       error: () => {
         this.notificationService.showErrorMessage(
-          $localize`Could not save Billing ${payload.billingEntity.metadata.name}.`
+          $localize`Could not save Billing ${DisplayNamePipe.transform(payload.billingEntity)}.`
         );
       },
     });

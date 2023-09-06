@@ -111,8 +111,8 @@ describe('Test user', () => {
 
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 2');
 
     cy.visit('/user');
     cy.intercept('GET', 'appuio-api/apis/organization.appuio.io/v1/organizations', {
@@ -132,7 +132,7 @@ describe('Test user', () => {
     });
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'Tarazed');
   });
 
   it('with change of default organization to None', () => {

@@ -19,6 +19,7 @@ import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 import { NotificationService } from '../../core/notification.service';
 import { DataServiceError } from '@ngrx/data';
+import { DisplayNamePipe } from '../../display-name.pipe';
 
 @Component({
   selector: 'app-organization-form',
@@ -137,7 +138,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       rawValue.billingEntity?.value.metadata.name ?? ''
     );
     this.organizationCollectionService.add(org).subscribe({
-      next: () => this.saveOrUpdateSuccess(),
+      next: (org) => this.saveOrUpdateSuccess(org),
       error: (err) => this.saveOrUpdateFailure(err),
     });
   }
@@ -149,14 +150,15 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
       displayName: rawValue.displayName ?? '',
       billingEntityRef: rawValue.billingEntity?.value.metadata.name,
     };
-    this.organizationCollectionService
-      .update(org)
-      .subscribe({ next: () => this.saveOrUpdateSuccess(), error: (err) => this.saveOrUpdateFailure(err) });
+    this.organizationCollectionService.update(org).subscribe({
+      next: (org) => this.saveOrUpdateSuccess(org),
+      error: (err) => this.saveOrUpdateFailure(err),
+    });
   }
 
-  private saveOrUpdateSuccess(): void {
+  private saveOrUpdateSuccess(org: Organization): void {
     this.notificationService.showSuccessMessage(
-      $localize`Successfully saved organization '${this.form.getRawValue().displayName}'.`
+      $localize`Successfully saved organization '${DisplayNamePipe.transform(org)}'.`
     );
     const firstTime = this.activatedRoute.snapshot.queryParamMap.get('firstTime') === 'y';
     if (firstTime) {
@@ -171,10 +173,12 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   }
 
   private saveOrUpdateFailure(err: DataServiceError): void {
-    let message = $localize`Could not save organization '${this.form.get('organizationId')?.value}'.`;
+    const orgId = this.form.controls.organizationId.value;
+    const name = this.form.controls.displayName.value || orgId;
+    let message = $localize`Could not save organization '${name}'.`;
     if (409 === err.error?.status || err.message?.includes('already exists')) {
-      this.form.get('organizationId')?.setErrors({ alreadyExists: true });
-      message = $localize`Organization "${this.form.get('organizationId')?.value}" already exists.`;
+      this.form.controls.organizationId.setErrors({ alreadyExists: true });
+      message = $localize`Organization with ID "${orgId}" already exists.`;
     }
     this.notificationService.showErrorMessage(message);
   }

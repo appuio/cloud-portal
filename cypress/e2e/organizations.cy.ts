@@ -28,8 +28,8 @@ describe('Test organization list', () => {
     setOrganization(cy, ...organizationListNxtVshn.items);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering GmbH');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
   });
 
   it('list with edit permissions', () => {
@@ -43,7 +43,7 @@ describe('Test organization list', () => {
     setOrganization(cy, createOrganization({ name: 'nxt', displayName: 'nxt Engineering', billingRef: 'be-2345' }));
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering');
     cy.get('svg[class*="fa-pen-to-square"]').should('exist');
     cy.get('svg[class*="fa-dollar-sign"]').should('exist');
     cy.get('svg[class*="fa-user-group"]').should('exist');
@@ -77,8 +77,8 @@ describe('Test organization list', () => {
     });
     cy.visit('/organizations');
 
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'nxt Engineering GmbH');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
   });
 });
 
@@ -154,7 +154,7 @@ describe('Test limited permissions', () => {
     setOrganization(cy, org);
     cy.visit('/organizations');
     cy.get('#organizations-title').should('contain.text', 'Organizations');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'vshn');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'VSHN - the DevOps Company');
     cy.get('svg[class*="fa-pen-to-square"]').should('not.exist');
     cy.get('svg[class*="fa-dollar-sign"]').should('not.exist');
     cy.get('svg[class*="fa-user-group"]').should('exist');

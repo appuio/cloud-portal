@@ -19,6 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { NgIf, NgFor } from '@angular/common';
 import { LetDirective } from '@ngrx/component';
 import { NotificationService } from '../core/notification.service';
+import { DisplayNamePipe } from '../display-name.pipe';
 
 interface Payload {
   organization?: Organization;
@@ -44,6 +45,7 @@ interface Payload {
     NgFor,
     MessagesModule,
     SharedModule,
+    DisplayNamePipe,
   ],
 })
 export class TeamsComponent implements OnInit, OnDestroy {
@@ -140,7 +142,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   deleteTeam(team: Team): void {
-    const teamName = team.spec.displayName || team.metadata.name;
+    const teamName = DisplayNamePipe.transform(team);
     this.confirmationService.confirm({
       header: 'Delete team',
       message: $localize`Are you sure that you want to delete the team '${teamName}'?`,

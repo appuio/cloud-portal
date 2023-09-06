@@ -245,12 +245,13 @@ describe('Test billing entity create', () => {
     cy.url().should('include', '/billingentities/be-2345').should('not.include', '?edit=y');
     cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
 
-    cy.get('#title').should('contain.text', 'be-2345');
-    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'hallo@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
-    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️Switzerland');
-    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig hallo@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
+    cy.get('#title').should('contain.text', '➡️ Engineering GmbH');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'be-2345');
+    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', 'hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '☎️');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', '📃📋🏤 🏙️Switzerland');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', 'mig hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(6).should('contain.text', '🇩🇪');
   });
 
   it('should forward to organizations if first time', () => {
@@ -315,7 +316,7 @@ describe('Test billing entity edit', () => {
     }).as('updateBillingEntity');
 
     cy.visit('/billingentities/be-2345');
-    cy.get('#title').should('contain.text', 'be-2345');
+    cy.get('#title').should('contain.text', '➡️ Engineering GmbH');
 
     cy.get('svg[class*="fa-pen-to-square"]').click();
 
@@ -364,19 +365,20 @@ describe('Test billing entity edit', () => {
     cy.get('p-toast').should('contain.text', 'Successfully saved');
     cy.url().should('include', '/billingentities/be-2345').should('not.include', '?edit=y');
     // check values
-    cy.get('#title').should('contain.text', 'be-2345');
+    cy.get('#title').should('contain.text', 'nxt Engineering');
     cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', 'nxt Engineering');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'be-2345');
     cy.get('.flex-wrap > .text-900')
-      .eq(1)
+      .eq(2)
       .should('contain.text', 'hallo@nxt.engineering')
       .should('contain.text', 'info@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '1234');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '1234');
     cy.get('.flex-wrap > .text-900')
-      .eq(3)
+      .eq(4)
       .should('contain.text', 'line1')
       .should('contain.text', '4321 Berlin')
       .should('contain.text', 'Germany');
-    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'crc hallo@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', 'crc hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(6).should('contain.text', '🇩🇪');
   });
 });

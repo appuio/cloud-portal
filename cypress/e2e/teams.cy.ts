@@ -23,8 +23,9 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 2');
+    cy.get(':nth-child(4) > .flex-row > .text-3xl').should('contain.text', 'team-no-display-name');
   });
 
   it('failed requests are retried', () => {
@@ -47,8 +48,8 @@ describe('Test teams list', () => {
     cy.visit('/teams');
 
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 2');
   });
 
   it('list with one team and user with default organization', () => {
@@ -64,7 +65,7 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'Tarazed');
   });
 
   it('list with one team and user with default organization and change of selected organization', () => {
@@ -80,10 +81,10 @@ describe('Test teams list', () => {
 
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'tarazed');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'Tarazed');
     cy.get('app-organization-selection:visible').click().contains('nxt').click();
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'team2');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 2');
   });
 
   it('empty list', () => {
@@ -194,7 +195,7 @@ describe('Test team edit', () => {
     });
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Edit team"]').should('not.exist');
   });
 });
@@ -258,7 +259,7 @@ describe('Test teams add', () => {
         expect(body.spec.displayName).to.eq('New Team!');
         expect(body.spec.userRefs[0].name).to.eq('test');
       });
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'new-team');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'New Team');
   });
 
   it('no create permission', () => {
@@ -317,7 +318,7 @@ describe('Test teams delete', () => {
     );
     cy.get('.p-confirm-dialog-accept').click();
     cy.wait('@delete');
-    cy.get(':nth-child(2) > .flex-row > :nth-child(1)').should('not.contain.text', 'team1');
+    cy.get(':nth-child(2) > .flex-row > :nth-child(1)').should('not.contain.text', 'My Super Team 1');
   });
 
   it('no delete permission', () => {
@@ -333,7 +334,7 @@ describe('Test teams delete', () => {
     });
     cy.visit('/teams');
     cy.get('#teams-title').should('contain.text', 'Teams');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'team1');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'My Super Team 1');
 
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Delete team"]').should('not.exist');
   });

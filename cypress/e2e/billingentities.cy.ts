@@ -21,8 +21,8 @@ describe('Test billing entity list', () => {
     cy.visit('/billingentities');
     cy.get('#billingentities-title').should('contain.text', 'Billing');
     cy.get('#addButton').should('contain.text', 'Add new Billing');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', '➡️ Engineering GmbH');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', '👁️ AG');
   });
 
   it('empty list', () => {
@@ -54,8 +54,8 @@ describe('Test billing entity list', () => {
     cy.visit('/billingentities');
 
     cy.get('#billingentities-title').should('contain.text', 'Billing');
-    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', 'be-2345');
-    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', 'be-2347');
+    cy.get(':nth-child(2) > .flex-row > .text-3xl').should('contain.text', '➡️ Engineering GmbH');
+    cy.get(':nth-child(3) > .flex-row > .text-3xl').should('contain.text', '👁️ AG');
   });
 });
 
@@ -132,10 +132,11 @@ describe('Test billing entity details', () => {
     });
     cy.visit('/billingentities/be-2345');
     cy.get('.flex-wrap > .text-900').eq(0).should('contain.text', '➡️ Engineering GmbH');
-    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'hallo@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', '☎️');
-    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '📃📋🏤 🏙️Switzerland');
-    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', 'mig hallo@nxt.engineering');
-    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', '🇩🇪');
+    cy.get('.flex-wrap > .text-900').eq(1).should('contain.text', 'be-2345');
+    cy.get('.flex-wrap > .text-900').eq(2).should('contain.text', 'hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(3).should('contain.text', '☎️');
+    cy.get('.flex-wrap > .text-900').eq(4).should('contain.text', '📃📋🏤 🏙️Switzerland');
+    cy.get('.flex-wrap > .text-900').eq(5).should('contain.text', 'mig hallo@nxt.engineering');
+    cy.get('.flex-wrap > .text-900').eq(6).should('contain.text', '🇩🇪');
   });
 });

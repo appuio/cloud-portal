@@ -75,7 +75,7 @@ describe('billing entity edit members with existing roles', () => {
     ).as('updateAdmin');
 
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     cy.get('[data-cy="name-input-1"]').type('crc');
     cy.get('p-multiselect').eq(1).click().contains('billingentities-be-2345-admin').click();
     cy.get('button[type=submit]').click();
@@ -139,7 +139,7 @@ describe('billing entity edit members with existing roles', () => {
     ).as('updateAdmin');
 
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     cy.get('button[title="Remove"]').eq(1).click();
     cy.get('button[type=submit]').click();
     cy.wait('@updateViewer');
@@ -188,7 +188,7 @@ describe('billing entity edit members with existing roles', () => {
     );
 
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     cy.get('button[title="Remove"]').eq(0).click();
     cy.get('p-message').contains('You are about to remove yourself as admin!');
   });
@@ -239,7 +239,7 @@ describe('billing entity edit members with existing roles', () => {
     ).as('updateAdmin');
 
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     const multiSelect = cy.get('p-multiselect').eq(1);
     multiSelect.click();
     multiSelect.get('p-multiselectitem').contains('billingentities-be-2345-admin').click();
@@ -283,7 +283,7 @@ describe('billing entity edit members with existing roles', () => {
       }
     );
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     const multiSelect = cy.get('p-multiselect').eq(0);
     multiSelect.click();
     multiSelect.get('p-multiselectitem').contains('billingentities-be-2345-admin').click();
@@ -370,7 +370,7 @@ describe('billing entity edit members without initial roles', () => {
     }).as('createRoleBinding');
 
     cy.visit('/billingentities/be-2345/members');
-    cy.get('.text-3xl').should('contain.text', 'be-2345 Members');
+    cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').type('crc');
     cy.get('p-multiselect').eq(0).click().contains('billingentities-be-2345-admin').click();
     cy.get('button[type=submit]').click();

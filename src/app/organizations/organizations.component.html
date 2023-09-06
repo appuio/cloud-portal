@@ -29,7 +29,7 @@
       <div class="surface-card p-4 shadow-2 border-round mb-4">
         <div class="flex flex-row justify-content-between">
           <div class="text-3xl font-medium text-900 mb-3">
-            {{ dto.organization.metadata.name }}
+            {{ dto.organization | displayName }}
           </div>
           <div>
             <a
@@ -37,7 +37,9 @@
               [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]"
               class="text-blue-500 hover:text-primary cursor-pointer ml-3"
               i18n-title
-              title="View '{{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}'">
+              title="View Billing '{{
+                dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef
+              }}'">
               <fa-icon [icon]="faDollarSign" />
             </a>
             <a
@@ -61,9 +63,25 @@
         <div class="flex flex-wrap border-top-1 surface-border">
           <ul class="w-full list-none p-0 m-0 surface-border">
             <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>ID</div>
+              <div class="text-900 w-full md:w-9">
+                {{ dto.organization.metadata.name }}
+              </div>
+            </li>
+            <li class="flex align-items-center py-2 px-2 flex-wrap">
               <div class="text-500 w-full md:w-3 font-medium" i18n>Display Name</div>
               <div class="text-900 w-full md:w-9">
                 {{ dto.organization.spec.displayName }}
+              </div>
+            </li>
+            <li class="flex align-items-center py-2 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-3 font-medium" i18n>Billing Entity</div>
+              <div class="text-900 w-full md:w-9">
+                <a
+                  class="text-blue-500 hover:text-primary cursor-pointer no-underline"
+                  [routerLink]="['/billingentities', dto.organization.spec.billingEntityRef]">
+                  {{ dto.organization.status?.billingEntityName ?? dto.organization.spec.billingEntityRef }}
+                </a>
               </div>
             </li>
           </ul>

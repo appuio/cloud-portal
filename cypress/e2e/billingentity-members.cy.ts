@@ -76,7 +76,7 @@ describe('billing entity edit members with existing roles', () => {
 
     cy.visit('/billingentities/be-2345/members');
     cy.get('.text-3xl').should('contain.text', '➡️ Engineering GmbH Members');
-    cy.get('[data-cy="name-input-1"]').type('crc');
+    cy.get('[data-cy="name-input-1"]').type('crc ');
     cy.get('p-multiselect').eq(1).click().contains('billingentities-be-2345-admin').click();
     cy.get('button[type=submit]').click();
     cy.wait('@updateViewer');

@@ -166,10 +166,10 @@ describe('Test team edit', () => {
     cy.get(':nth-child(2) > .flex-row > :nth-child(2) > [title="Edit team"]').click();
 
     cy.get('.text-3xl').should('contain.text', 'team1');
-    cy.get('#displayName').type('{selectall}Awesome Team!');
+    cy.get('#displayName').type('{selectall}Awesome Team! ');
 
     cy.get(':nth-child(3) > :nth-child(3) > .p-ripple').click();
-    cy.get(':nth-child(3) > .p-inputtext').type('cma');
+    cy.get(':nth-child(3) > .p-inputtext').type('cma ');
     cy.get('button[type=submit]').click();
     cy.wait('@update');
     cy.get('@update')
@@ -247,9 +247,9 @@ describe('Test teams add', () => {
     cy.get('.text-3xl > .ng-star-inserted').should('contain.text', 'New Team');
 
     cy.get('#name').type('new-team');
-    cy.get('#displayName').type('New Team!');
+    cy.get('#displayName').type(' New Team! ');
 
-    cy.get('.flex > .p-inputtext').type('test');
+    cy.get('.flex > .p-inputtext').type('test ');
     cy.get('button[type=submit]').click();
     cy.wait('@create');
     cy.get('@create')

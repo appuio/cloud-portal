@@ -202,17 +202,17 @@ describe('Test billing entity create', () => {
     cy.visit('/billingentities/$new?edit=y');
     cy.get('#title').should('contain.text', 'New Billing');
 
-    cy.get('#displayName').type('➡️ Engineering GmbH');
+    cy.get('#displayName').type('➡️ Engineering GmbH  ');
 
-    cy.get('#companyEmail').find('input').type('hallo@nxt.engineering,');
-    cy.get('#phone').type('☎️');
-    cy.get('#line1').type('📃');
-    cy.get('#line2').type('📋');
-    cy.get('#postal').type('🏤');
-    cy.get('#city').type('🏙️');
+    cy.get('#companyEmail').find('input').type('  hallo@nxt.engineering,');
+    cy.get('#phone').type('☎️ ');
+    cy.get('#line1').type('📃 ');
+    cy.get('#line2').type('📋 ');
+    cy.get('#postal').type('🏤 ');
+    cy.get('#city').type('🏙️ ');
     cy.get('p-dropdown').click().contains('Switzerland').click();
 
-    cy.get('#accountingName').type('mig');
+    cy.get('#accountingName').type('mig ');
 
     cy.get('button[type="submit"]').should('be.enabled').click();
     cy.wait('@createBillingEntity')
@@ -322,7 +322,7 @@ describe('Test billing entity edit', () => {
 
     cy.get('#displayName').should('have.value', '➡️ Engineering GmbH');
 
-    cy.get('#displayName').type('{selectAll}nxt Engineering');
+    cy.get('#displayName').type('{selectAll}nxt Engineering ');
     cy.get('#companyEmail').type('info@nxt.engineering{enter}');
     cy.get('#phone').type('{selectAll}1234');
     cy.get('#line1').type('{selectAll}line1');

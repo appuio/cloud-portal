@@ -133,8 +133,8 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
   private addOrg(): void {
     const rawValue = this.form.getRawValue();
     const org = newOrganization(
-      rawValue.organizationId,
-      rawValue.displayName ?? '',
+      rawValue.organizationId.trim(),
+      rawValue.displayName?.trim() ?? '',
       rawValue.billingEntity?.value.metadata.name ?? ''
     );
     this.organizationCollectionService.add(org).subscribe({
@@ -147,7 +147,7 @@ export class OrganizationFormComponent implements OnInit, OnDestroy {
     const rawValue = this.form.getRawValue();
     const org = structuredClone(this.organization);
     org.spec = {
-      displayName: rawValue.displayName ?? '',
+      displayName: rawValue.displayName?.trim() ?? '',
       billingEntityRef: rawValue.billingEntity?.value.metadata.name,
     };
     this.organizationCollectionService.update(org).subscribe({

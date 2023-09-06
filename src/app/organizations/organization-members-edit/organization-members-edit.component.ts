@@ -170,23 +170,26 @@ export class OrganizationMembersEditComponent implements OnInit {
     if (!this.form) {
       return;
     }
-    const userNames: string[] = this.form
-      .getRawValue()
-      .userRefs?.map((userDetails: { userName: string; selectedRoles: string[] }) => userDetails.userName)
-      .filter((val: string) => val);
 
+    const userNames: Set<string> = new Set();
     const rolesToSubjects: Record<string, string[]> = {};
-    this.form.getRawValue().userRefs?.forEach((userDetails: { userName: string; selectedRoles: string[] }) => {
-      userDetails.selectedRoles?.forEach((role) => {
+
+    this.form.getRawValue().userRefs?.forEach(({ userName, selectedRoles }) => {
+      userName = userName?.trim();
+      if (!userName) {
+        return;
+      }
+      userNames.add(userName);
+      selectedRoles?.forEach((role) => {
         if (!rolesToSubjects[role]) {
           rolesToSubjects[role] = [];
         }
-        rolesToSubjects[role].push(userDetails.userName);
+        rolesToSubjects[role].push(userName);
       });
     });
 
     forkJoin([
-      this.membersService.update(this.newOrganizationMembers(payload.members, userNames)),
+      this.membersService.update(this.newOrganizationMembers(payload.members, Array.from(userNames))),
       ...payload.roleBindings.map((roleBinding) =>
         this.rolebindingService.update({
           metadata: { ...roleBinding.metadata },

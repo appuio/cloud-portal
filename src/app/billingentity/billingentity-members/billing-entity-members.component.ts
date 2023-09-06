@@ -226,7 +226,11 @@ export class BillingEntityMembersComponent implements OnInit, OnDestroy {
     roleBindings.forEach((binding) => {
       binding.subjects = []; // reset to remove other unselected users.
       userRefs
-        .filter((ref) => ref.userName)
+        .map((ref) => ({
+          ...ref,
+          userName: ref.userName?.trim(),
+        }))
+        .filter((ref) => ref.userName?.trim())
         .forEach((ref) => {
           const hasSelected = ref.selectedRoles.some((role) => role === binding.roleRef.name);
           if (hasSelected) {

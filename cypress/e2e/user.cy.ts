@@ -164,8 +164,6 @@ describe('Test user', () => {
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
     });
-
-    cy.get('.p-dropdown').click();
     cy.get('button[type=submit]').click();
     cy.wait('@putUser');
     cy.get('.p-dropdown-label').should('contain.text', 'None');

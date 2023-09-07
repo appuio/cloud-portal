@@ -2,6 +2,8 @@ import { defineConfig } from 'cypress';
 import * as installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter';
 
 export default defineConfig({
+  video: true,
+  videoCompression: true,
   videosFolder: 'cypress/videos',
   screenshotsFolder: 'cypress/screenshots',
   fixturesFolder: 'cypress/fixtures',

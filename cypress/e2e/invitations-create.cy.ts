@@ -81,7 +81,7 @@ describe('Test invitation create', () => {
     cy.visit('/invitations/create');
 
     cy.get('#title').should('contain.text', 'Invite User');
-    cy.get('#email').type('dev@nxt.engineering');
+    cy.get('#email').type('dev@nxt.engineering ');
     cy.get('#note').type('New Employee working for 👁️');
 
     cy.get('p-checkbox input').should('be.disabled');

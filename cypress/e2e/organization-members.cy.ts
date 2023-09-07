@@ -115,7 +115,7 @@ describe('Test organization members', () => {
     cy.get('.text-3xl').should('contain.text', 'nxt Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').should('have.value', 'hans.meier');
     cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
-    cy.get('[data-cy="name-input-1"]').type('{selectall}test');
+    cy.get('[data-cy="name-input-1"]').type('{selectall}test ');
     cy.get('p-multiselect').eq(1).click().contains('control-api:organization-admin').click();
     cy.get('button[type=submit]').click();
     cy.wait('@save');
@@ -193,7 +193,7 @@ describe('Test organization members', () => {
     cy.get('.text-3xl').should('contain.text', 'nxt Engineering GmbH Members');
     cy.get('[data-cy="name-input-0"]').first().should('have.value', 'hans.meier');
     cy.get('[data-cy="name-input-1"]').should('have.value', 'peter.muster');
-    cy.get('[data-cy="name-input-2"]').type('{selectall}test');
+    cy.get('[data-cy="name-input-2"]').type('{selectall}  test');
     cy.get('button[type=submit]').click();
     cy.wait('@save');
     cy.get('@save')

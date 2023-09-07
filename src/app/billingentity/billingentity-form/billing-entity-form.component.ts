@@ -134,21 +134,21 @@ export class BillingEntityFormComponent implements OnInit {
     const be = this.billingEntity;
     be.spec = {
       ...be.spec,
-      name: controls.displayName.value,
-      phone: controls.phone.value,
+      name: controls.displayName.value.trim(),
+      phone: controls.phone.value.trim(),
       address: {
         ...be.spec.address,
-        line1: controls.line1.value,
-        line2: controls.line2.value,
-        postalCode: controls.postal.value,
-        city: controls.city.value,
+        line1: controls.line1.value.trim(),
+        line2: controls.line2.value.trim(),
+        postalCode: controls.postal.value.trim(),
+        city: controls.city.value.trim(),
         country: controls.country.value?.name,
       },
-      emails: controls.companyEmail.value,
+      emails: controls.companyEmail.value.map((email) => email.trim()),
       accountingContact: {
         ...be.spec.accountingContact,
-        name: controls.accountingName.value,
-        emails: controls.accountingEmail.value,
+        name: controls.accountingName.value.trim(),
+        emails: controls.accountingEmail.value.map((email) => email.trim()),
       },
     };
     if (this.isNewBillingEntity(be)) {

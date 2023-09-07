@@ -44,7 +44,7 @@ describe('Test organization add', () => {
 
     cy.get('#addOrganizationButton').click();
 
-    cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#displayName').type('VSHN - the DevOps Company ');
     cy.get('#id').should('contain.value', 'vshn-the-dev-ops-company');
     const button = cy.get('button[type=submit]');
     button.should('be.disabled');
@@ -204,7 +204,7 @@ describe('Test organization edit', () => {
     cy.get('#title').should('contain.text', 'vshn');
     cy.get('#selectedBillingEntity').should('contain.text', '👁️ AG');
     cy.get('#displayName').type('{selectall}');
-    cy.get('#displayName').type('VSHN - the DevOps Company');
+    cy.get('#displayName').type('VSHN - the DevOps Company  ');
     cy.get('#selectedBillingEntity').click().contains('➡️ Engineering GmbH').click();
     cy.get('button[type=submit]').click();
     cy.wait('@update');

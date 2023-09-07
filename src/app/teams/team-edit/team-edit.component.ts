@@ -130,13 +130,13 @@ export class TeamEditComponent implements OnInit {
 
   private getTeamFromForm(team: Team): Team {
     const clone = structuredClone(team);
-    clone.metadata.name = this.form.getRawValue().name;
+    clone.metadata.name = this.form.getRawValue().name.trim();
     clone.spec = {
-      displayName: this.form.getRawValue().displayName,
+      displayName: this.form.getRawValue().displayName.trim(),
       userRefs: this.form
         .getRawValue()
-        .userRefs.filter((name?: string) => !!name)
-        .map((name: string) => ({ name })),
+        .userRefs.filter((name?: string) => !!name?.trim())
+        .map((name: string) => ({ name: name.trim() })),
     };
     return clone;
   }

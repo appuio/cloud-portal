@@ -119,7 +119,7 @@ export class InvitationFormComponent implements OnInit {
       },
       spec: {
         note: this.form.controls.note.value,
-        email: this.form.controls.email.value,
+        email: this.form.controls.email.value.trim(),
         targetRefs: [],
       },
     };

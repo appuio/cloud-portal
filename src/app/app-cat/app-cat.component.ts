@@ -7,8 +7,6 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './app-cat.component.html',
   styleUrls: ['./app-cat.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppCatComponent {
-
-}
+export class AppCatComponent {}

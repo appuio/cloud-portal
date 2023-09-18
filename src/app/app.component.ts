@@ -2,7 +2,15 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { Store } from '@ngrx/store';
 import { selectOrganizationSelectionEnabled } from './store/app.selectors';
 import { Verb } from './store/app.reducer';
-import { faComment, faDatabase, faDollarSign, faGift, faSitemap, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBookOpen,
+  faComment,
+  faDatabase,
+  faDollarSign,
+  faGift,
+  faSitemap,
+  faUserGroup,
+} from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import * as Sentry from '@sentry/browser';
 import { AppConfigService } from './app-config.service';
@@ -181,6 +189,11 @@ export class AppComponent implements OnInit {
             routerLink: ['invitations'],
           });
         }
+        this.menuItems.push({
+          label: $localize`VSHN AppCat`,
+          icon: faBookOpen,
+          routerLink: ['app-cat'],
+        });
         // needed to render the menu if other rendering tasks are running in the background,
         // e.g. polling invitations
         this.changeDetectorRef.markForCheck();

@@ -1,0 +1,49 @@
+:host {
+  height: calc(100% + 2rem);
+  width: calc(100% + 4rem);
+  margin: -2rem;
+}
+
+.header {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* Using the break points from services.appcat.ch (+280px for the sidebar on desktop)
+** to set the width so the header with margin:auto is aligned with the iframe content
+*/
+@media (min-width: 576px) {
+  .header {
+    width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .header {
+    width: 720px;
+  }
+}
+
+@media (min-width: 1048px) {
+  .header {
+    width: 720px;
+  }
+}
+
+@media (min-width: 1272px) {
+  .header {
+    width: 960px;
+  }
+}
+
+@media (min-width: 1480px) {
+  .header {
+    width: 1140px;
+  }
+}
+
+@media (min-width: 1680px) {
+  .header {
+    width: 1312px;
+  }
+}

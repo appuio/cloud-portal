@@ -54,4 +54,9 @@ export const appRoutes: Routes = [
     loadChildren: () => import('./productboard/productboard.routing').then((m) => m.routes),
     title: $localize`Feedback`,
   },
+  {
+    path: 'app-cat',
+    loadChildren: () => import('./app-cat/app-cat.routing').then((m) => m.routes),
+    title: $localize`AppCat`,
+  },
 ];

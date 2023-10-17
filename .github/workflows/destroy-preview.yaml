@@ -61,7 +61,7 @@ jobs:
         run: .github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on success
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.number }}
           body: |

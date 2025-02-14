@@ -1,4 +1,4 @@
-FROM nginxinc/nginx-unprivileged:1.25.2
+FROM nginxinc/nginx-unprivileged:1.27.4
 
 COPY docker/nginx.conf /etc/nginx/templates/default.conf.template
 COPY dist/cloud-portal/en-CH /usr/share/nginx/html

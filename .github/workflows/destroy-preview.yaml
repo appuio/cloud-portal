@@ -4,19 +4,25 @@ on:
   pull_request:
     types:
       - closed
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to clean up'
+        required: true
+        type: string
 
 env:
   ENVIRONMENT: preview
   OPENSHIFT_API: https://api.cloudscale-lpg-2.appuio.cloud:6443
-  HELM_RELEASE_NAME: portal-pr-${{ github.event.number }}
-  IMG_TAG: pr-${{ github.event.number }}
+  HELM_RELEASE_NAME: portal-pr-${{ inputs.pr_number || github.event.number }}
+  IMG_TAG: pr-${{ inputs.pr_number || github.event.number }}
   NAMESPACE: appuio-control-api-preview
   IMAGE_NAME: cloud-portal
 
 jobs:
   uninstall:
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.head_ref, 'renovate/') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.head_ref, 'renovate/') }}
     environment: preview
     steps:
       - uses: actions/checkout@v4
@@ -58,12 +64,14 @@ jobs:
         run: oc -n ${{ env.NAMESPACE }} delete imagestreamtags ${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }} --ignore-not-found
 
       - name: Remove route URL from Keycloak client
+        if: ${{ steps.deployment_info.outputs.route_host != '' }}
         run: .github/keycloak-redirect-url.sh "${{ secrets.KEYCLOAK_USER }}" "${{ secrets.KEYCLOAK_PASSWORD }}" "https://${{ steps.deployment_info.outputs.route_host }}/*" remove
 
       - name: Notify on success
+        if: ${{ inputs.pr_number || github.event.number }}
         uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: ${{ github.event.number }}
+          issue-number: ${{ inputs.pr_number || github.event.number }}
           body: |
             ## ✔️ Preview deployment uninstalled
 
@@ -74,9 +82,9 @@ jobs:
 
       - name: Notify on failure
         uses: peter-evans/create-or-update-comment@v3
-        if: ${{ failure() }}
+        if: ${{ failure() && (inputs.pr_number || github.event.number) }}
         with:
-          issue-number: ${{ github.event.number }}
+          issue-number: ${{ inputs.pr_number || github.event.number }}
           body: |
             ## ❌ Failed to remove preview deployment
 

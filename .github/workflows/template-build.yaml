@@ -52,7 +52,7 @@ jobs:
         with:
           name: dist
           path: dist
-      - uses: cypress-io/github-action@v5
+      - uses: cypress-io/github-action@v7.1.9
         with:
           start: npm run http-server
           # workaround so that Cypress runs with the system node version rather than action's configured node version.

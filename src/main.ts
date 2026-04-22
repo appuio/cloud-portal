@@ -35,7 +35,7 @@ import { TitleCasePipe } from '@angular/common';
 const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + window.location.pathname,
   responseType: 'code',
-  scope: 'openid profile email roles offline_access web-origins',
+  scope: 'openid profile email roles web-origins',
 };
 
 if (environment.production) {

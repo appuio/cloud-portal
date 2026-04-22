@@ -20,7 +20,6 @@ describe('Test organization add', () => {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
 
   it('add organization with button', () => {
@@ -169,7 +168,6 @@ describe('Test organization edit', () => {
       body: createUser({ username: 'mig', defaultOrganizationRef: 'nxt' }),
     });
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
 
   it('edit organization with button', () => {

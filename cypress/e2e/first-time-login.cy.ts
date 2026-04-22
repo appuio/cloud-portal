@@ -12,7 +12,6 @@ describe('Test First Time Login', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.removeItem('hideFirstTimeLoginDialog');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // we assume we don't have the user object yet.
@@ -120,7 +119,6 @@ describe('hide dialog', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.removeItem('hideFirstTimeLoginDialog');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -169,7 +167,6 @@ describe('skip dialog', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.removeItem('hideFirstTimeLoginDialog');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

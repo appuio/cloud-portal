@@ -8,7 +8,6 @@ describe('Test user', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
     cy.setPermission();
   });
 
@@ -174,7 +173,6 @@ describe('Test failures', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
     cy.setPermission();
   });
 

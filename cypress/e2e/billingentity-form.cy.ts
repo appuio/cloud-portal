@@ -7,7 +7,6 @@ describe('Test billing entity form elements', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -180,7 +179,6 @@ describe('Test billing entity create', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -292,7 +290,6 @@ describe('Test billing entity edit', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

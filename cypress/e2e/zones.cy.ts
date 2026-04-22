@@ -6,7 +6,6 @@ describe('Test zones', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -75,7 +74,6 @@ describe('Test single zone', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

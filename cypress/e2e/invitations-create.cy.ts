@@ -11,7 +11,6 @@ describe('Test invitation create', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -198,7 +197,6 @@ describe('limited permissions', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -283,7 +281,6 @@ describe('degradation', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

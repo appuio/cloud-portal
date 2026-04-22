@@ -5,7 +5,6 @@ import { ZonePermissions } from '../../src/app/types/zone';
 describe('Test zones', () => {
   beforeEach(() => {
     cy.setupAuth();
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     cy.setPermission({ verb: 'list', ...ZonePermissions });

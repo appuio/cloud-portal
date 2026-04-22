@@ -8,7 +8,6 @@ describe('Test invitation list', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -75,7 +74,6 @@ describe('no permissions', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request
@@ -97,7 +95,6 @@ describe('invitation details', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

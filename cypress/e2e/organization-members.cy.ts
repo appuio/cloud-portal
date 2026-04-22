@@ -9,7 +9,6 @@ describe('Test organization members', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     // needed for initial getUser request

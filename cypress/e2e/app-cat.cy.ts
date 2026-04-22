@@ -5,7 +5,6 @@ describe('Test AppCat embed', () => {
   beforeEach(() => {
     // needed for initial getUser request
     cy.setPermission({ verb: 'list', resource: 'zones', group: 'rbac.appuio.io' });
-    cy.disableCookieBanner();
   });
 
   it('shows the application catalog', () => {

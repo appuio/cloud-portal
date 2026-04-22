@@ -7,7 +7,6 @@ import { OrganizationPermissions } from '../../src/app/types/organization';
 describe('Test token storage and retrieval', () => {
   beforeEach(() => {
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
   });
   beforeEach(() => {
     cy.setPermission();
@@ -63,7 +62,6 @@ describe('Test invitation accept for existing user', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'true');
-    cy.disableCookieBanner();
     cy.setPermission({ verb: 'list', ...OrganizationPermissions });
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       body: userMigWithoutPreferences,
@@ -294,7 +292,6 @@ describe('Test invitation accept for new user', () => {
   beforeEach(() => {
     cy.setupAuth();
     window.localStorage.setItem('hideFirstTimeLoginDialog', 'false');
-    cy.disableCookieBanner();
     cy.setPermission();
     cy.intercept('GET', 'appuio-api/apis/appuio.io/v1/users/mig', {
       statusCode: 404,

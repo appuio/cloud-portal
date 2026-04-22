@@ -25,7 +25,7 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.head_ref, 'renovate/') }}
     environment: preview
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v2.2.0

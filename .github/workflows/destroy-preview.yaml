@@ -41,7 +41,7 @@ jobs:
           oc: "4"
 
       - name: Authenticate and set context
-        uses: redhat-actions/oc-login@v1
+        uses: redhat-actions/oc-login@v2
         with:
           openshift_server_url: ${{ env.OPENSHIFT_API }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}

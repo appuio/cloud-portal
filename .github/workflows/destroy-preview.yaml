@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.2.0
+        uses: mamezou-tech/setup-helmfile@v2.4.0
         with:
           helm-version: v3.19.4
           helmfile-version: v0.171.0
